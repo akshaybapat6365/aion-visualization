@@ -2,6 +2,10 @@
 
 An interactive visualization suite exploring the core themes from C.G. Jung's *Aion: Researches into the Phenomenology of the Self* (CW9ii).
 
+## Live Demo
+
+**View the live visualization**: [https://akshaybapat6365.github.io/aion-visualization/](https://akshaybapat6365.github.io/aion-visualization/)
+
 ## Visualizations
 
 This project includes four interactive visualizations:
