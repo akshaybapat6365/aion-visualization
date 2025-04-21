@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion - Historical Timeline</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .timeline-chart-container {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scroll */
+        }
+        .timeline-svg {
+            display: block; /* Prevent extra space below SVG */
+            margin: auto; /* Center if narrower than container */
+        }
+        .event-group .marker {
+            font-size: 1.5em;
+            cursor: default;
+        }
+        .event-group text {
+            font-size: 10px;
+            fill: var(--foreground); /* Use theme foreground */
+        }
+        .event-group .title {
+            font-weight: bold;
+            font-size: 11px;
+            fill: var(--foreground); /* Ensure title uses main foreground */
+        }
+         .event-group .desc {
+            fill: var(--muted-foreground); /* Use muted for description */
+        }
+         .event-group .shadow {
+            fill: var(--muted-foreground); /* Use muted for shadow text */
+            font-style: italic;
+            opacity: 0.8;
+        }
+        .axis-center line {
+            stroke-dasharray: 4, 4;
+            stroke: var(--border); /* Use theme border */
+            stroke-width: 1px;
+        }
+        .axis-year text {
+             fill: var(--muted-foreground); /* Use muted for axis text */
+        }
+        .axis-year path {
+            stroke: var(--border); /* Use theme border */
+        }
+    </style>
+</head>
+<body>
+    <div class="tooltip" style="opacity:0;"></div>
+    <div class="container">
+        <h1>Historical Timeline (▲ Christ-pole / ▼ Antichrist-shadow)</h1>
+        <p>Visualizing the emergence and convergence of opposing archetypal forces through history.</p>
+
+        <div class="visualization-area timeline-chart-container">
+            <svg id="timeline-chart" class="timeline-svg"></svg>
+        </div>
+
+        <a href="index.html" class="back-link">Back to Hub</a>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const tooltip = d3.select("body").append("div").attr("class","tooltip").style("opacity",0);
+
+        const eventsData = [
+            // Remapped dates to approximate single years for plotting
+            { dateStr: "c. 30 CE", year: 30, degree: 0, title: "Historical Jesus", description: "Self breaks into history (light, order)", shadow: "(Shadow latent)", type: "light" },
+            { dateStr: "2nd–4th c.", year: 300, degree: 45, title: "Early Church", description: "Dogma crystallizes 'good' Self", shadow: "Gnostic 'false prophets'", type: "light" },
+            { dateStr: "1000 CE±", year: 1000, degree: 120, title: "High Middle Ages", description: "Sacramental synthesis", shadow: "Millennial panics, Antichrist legends", type: "light" },
+            { dateStr: "1517–1648", year: 1580, degree: 157.5, title: "Reformation", description: "Inward faith (conscience)", shadow: "Satan/Antichrist rhetoric peaks", type: "dark" },
+            { dateStr: "18th c.", year: 1750, degree: 170, title: "Enlightenment", description: "Reason internalizes moral law", shadow: "'God is dead' undercurrent", type: "light" },
+            { dateStr: "19th c.", year: 1850, degree: 176.5, title: "Industrial Age", description: "Social gospel, progress credo", shadow: "Nietzsche's Antichrist, nationalism", type: "dark" },
+            { dateStr: "1914–1945", year: 1930, degree: 179.5, title: "World Wars", description: "Symbols powerless", shadow: "Totalitarian secular-messiahs", type: "dark" },
+            { dateStr: "1945–now", year: 1985, degree: 180, title: "Nuclear Age", description: "Ecumenism, depth psychology", shadow: "Shadow goes viral", type: "dark" },
+            { dateStr: "Future", year: 2100, degree: 300, title: "Age of Aquarius", description: "Task: integrate opposites", shadow: "Risk: De-humanization", type: "light" } // Placed future event for context
+        ];
+
+        const margin = { top: 60, right: 50, bottom: 40, left: 50 };
+        // Calculate width based on year range to provide adequate spacing
+        const minYear = d3.min(eventsData, d => d.year);
+        const maxYear = d3.max(eventsData, d => d.year);
+        const estimatedWidthPerYear = 1.5; // Adjust this for more/less spacing
+        const chartWidth = (maxYear - minYear) * estimatedWidthPerYear + margin.left + margin.right;
+        const height = 400 - margin.top - margin.bottom; // Fixed height
+
+        const svg = d3.select("#timeline-chart")
+            .attr("width", chartWidth)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Scales
+        const xScale = d3.scaleLinear()
+            .domain([minYear - 50, maxYear + 50]) // Add padding to domain
+            .range([0, chartWidth - margin.left - margin.right]);
+
+        const yPosition = {
+            light: height * 0.25, // Top track
+            dark: height * 0.75  // Bottom track
+        };
+        const yAxisPos = height / 2;
+
+        // Draw central dashed axis
+        svg.append("line")
+            .attr("class", "axis-center")
+            .attr("x1", 0)
+            .attr("x2", chartWidth - margin.left - margin.right)
+            .attr("y1", yAxisPos)
+            .attr("y2", yAxisPos);
+
+        // Draw X axis (Years)
+        const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")); // Format as integer years
+        svg.append("g")
+            .attr("class", "axis-year")
+            .attr("transform", `translate(0,${height})`)
+            .call(xAxis);
+
+        // Create groups for each event
+        const eventGroups = svg.selectAll(".event-group")
+            .data(eventsData)
+            .enter()
+            .append("g")
+            .attr("class", "event-group")
+            .attr("transform", d => `translate(${xScale(d.year)}, ${yPosition[d.type]})`)
+            .on("mouseover", function(event, d) {
+                tooltip.html(`<strong>${d.dateStr}: ${d.title}</strong><br>${d.description}<br><em>${d.shadow}</em>`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px")
+                    .transition().duration(200).style("opacity", .9);
+            })
+            .on("mouseout", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", 0);
+            });
+
+        // Add markers (▲/▼)
+        eventGroups.append("text")
+            .attr("class", "marker")
+            .attr("text-anchor", "middle")
+            .attr("dy", d => d.type === 'light' ? "-0.6em" : "1.1em") // Adjust vertical position
+            .style("fill", d => d.type === 'light' ? "var(--color-self-jung)" : "var(--color-shadow-jung)")
+            .text(d => d.type === 'light' ? '▲' : '▼');
+
+        // Add annotations (Date + Title) - keep concise
+        eventGroups.append("text")
+            .attr("class", "title")
+            .attr("text-anchor", "middle")
+            .attr("dy", d => d.type === 'light' ? "-2.5em" : "2.8em") // Position above/below marker
+            .text(d => `${d.dateStr}: ${d.title}`);
+
+        // Add annotations (Description)
+         eventGroups.append("text")
+            .attr("class", "desc")
+            .attr("text-anchor", "middle")
+            .attr("dy", d => d.type === 'light' ? "-4.0em" : "4.3em")
+            .text(d => d.description);
+
+        // Add annotations (Shadow)
+         eventGroups.append("text")
+            .attr("class", "shadow")
+            .attr("text-anchor", "middle")
+            .attr("dy", d => d.type === 'light' ? "-5.2em" : "5.5em")
+            .text(d => d.shadow);
+
+    </script>
+    <script src="navigation.js"></script>
+</body>
+</html>

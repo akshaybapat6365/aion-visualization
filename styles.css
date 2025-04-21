@@ -1,0 +1,470 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---------- Sidebar navigation and transitions ---------- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  transform: translateX(-250px);
+}
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: var(--radius);
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 101;
+  opacity: 0;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  opacity: 1;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin-bottom: 5px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: var(--foreground);
+  border-radius: var(--radius);
+  transition: background-color 0.2s ease;
+  gap: 12px;
+}
+
+.nav-link:hover {
+  background-color: var(--secondary);
+}
+
+.nav-item.active .nav-link {
+  background-color: var(--secondary);
+  font-weight: 500;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--foreground);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+}
+
+.theme-toggle:hover {
+  background-color: var(--muted);
+}
+
+.sun-icon, .moon-icon {
+  display: block;
+}
+
+.dark .sun-icon {
+  display: none;
+}
+
+.sun-icon {
+  display: none;
+}
+
+.dark .moon-icon {
+  display: none;
+}
+
+.dark .sun-icon {
+  display: block;
+}
+
+/* Content wrapper styles */
+.content-wrapper {
+  transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.content-wrapper.sidebar-open {
+  margin-left: 250px;
+}
+
+/* Page transition animations */
+.page-transition {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.page-exit {
+  opacity: 0;
+}
+
+.page-enter {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content-wrapper.sidebar-open {
+    margin-left: 0;
+  }
+  
+  .sidebar {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Theme variables using provided OKLCH color values */
+:root {
+  --background: oklch(1.00 0 0);
+  --foreground: oklch(0.26 0 0);
+  --card: oklch(1.00 0 0);
+  --card-foreground: oklch(0.26 0 0);
+  --popover: oklch(1.00 0 0);
+  --popover-foreground: oklch(0.26 0 0);
+  --primary: oklch(0.33 0 0);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.98 0 0);
+  --secondary-foreground: oklch(0.33 0 0);
+  --muted: oklch(0.98 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.98 0 0);
+  --accent-foreground: oklch(0.33 0 0);
+  --destructive: oklch(0.62 0.21 25.77);
+  --destructive-foreground: oklch(1.00 0 0);
+  --border: oklch(0.94 0 0);
+  --input: oklch(0.94 0 0);
+  --ring: oklch(0.77 0 0);
+  --chart-1: oklch(0.82 0.13 84.49);
+  --chart-2: oklch(0.80 0.11 203.60);
+  --chart-3: oklch(0.42 0.17 266.78);
+  --chart-4: oklch(0.92 0.08 125.58);
+  --chart-5: oklch(0.92 0.10 116.19);
+  --sidebar: oklch(0.99 0 0);
+  --sidebar-foreground: oklch(0.26 0 0);
+  --sidebar-primary: oklch(0.33 0 0);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.98 0 0);
+  --sidebar-accent-foreground: oklch(0.33 0 0);
+  --sidebar-border: oklch(0.94 0 0);
+  --sidebar-ring: oklch(0.77 0 0);
+  
+  /* Jung archetype colors from provided chart colors */
+  --color-shadow-jung: var(--destructive);
+  --color-self-jung: var(--chart-2);
+  --color-anima-jung: var(--chart-1);
+  --color-trickster-jung: var(--chart-3);
+  
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  /* UI */
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Shadows */
+  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
+  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
+  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
+  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+}
+
+/* Dark mode variables */
+.dark {
+  --background: oklch(0.14 0.00 285.82);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.14 0.00 285.82);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.14 0.00 285.82);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.98 0 0);
+  --primary-foreground: oklch(0.21 0.01 285.88);
+  --secondary: oklch(0.27 0.01 286.03);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.27 0.01 286.03);
+  --muted-foreground: oklch(0.71 0.01 286.07);
+  --accent: oklch(0.27 0.01 286.03);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.40 0.13 25.72);
+  --destructive-foreground: oklch(0.97 0.01 17.38);
+  --border: oklch(0.27 0.01 286.03);
+  --input: oklch(0.27 0.01 286.03);
+  --ring: oklch(0.87 0.01 286.29);
+  --chart-1: oklch(0.53 0.19 262.13);
+  --chart-2: oklch(0.70 0.13 165.46);
+  --chart-3: oklch(0.72 0.15 60.63);
+  --chart-4: oklch(0.62 0.20 312.73);
+  --chart-5: oklch(0.61 0.21 6.39);
+  --sidebar: oklch(0.21 0.01 285.88);
+  --sidebar-foreground: oklch(0.97 0.00 286.38);
+  --sidebar-primary: oklch(0.49 0.22 264.39);
+  --sidebar-primary-foreground: oklch(1.00 0 0);
+  --sidebar-accent: oklch(0.27 0.01 286.03);
+  --sidebar-accent-foreground: oklch(0.97 0.00 286.38);
+  --sidebar-border: oklch(0.27 0.01 286.03);
+  --sidebar-ring: oklch(0.87 0.01 286.29);
+  
+  /* Jung archetype colors from provided chart colors for dark mode */
+  --color-shadow-jung: var(--destructive);
+  --color-self-jung: var(--chart-2);
+  --color-anima-jung: var(--chart-1);
+  --color-trickster-jung: var(--chart-3);
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    margin: 0;
+    padding: 20px;
+    color: var(--foreground);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-sans);
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2rem;
+    letter-spacing: -0.025em;
+}
+
+.container {
+    max-width: 1100px;
+    width: 95%;
+    margin: 20px auto;
+    text-align: center;
+    background-color: var(--card);
+    color: var(--card-foreground);
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+}
+
+p {
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.visualization-area {
+    background: var(--card);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin: 30px 0;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border);
+}
+
+/* Chart elements */
+.axis path,
+.axis line {
+    fill: none;
+    stroke: var(--border);
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    fill: var(--muted-foreground);
+}
+
+.legend rect {
+    stroke-width: 2;
+}
+
+.legend text {
+    font-size: 12px;
+    font-family: var(--font-sans);
+    fill: var(--foreground);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+
+.back-link:hover {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.tooltip {
+    position: absolute;
+    text-align: left;
+    max-width: 250px;
+    padding: 12px 16px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    background: var(--card);
+    color: var(--card-foreground);
+    border-radius: var(--radius);
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    line-height: 1.5;
+}
+
+/* Timeline specific */
+.event-group .marker {
+    font-size: 1.5em;
+    cursor: default;
+}
+
+.event-group text {
+    font-size: 10px;
+    fill: var(--foreground);
+}
+
+.event-group .title {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.event-group .desc {
+    fill: var(--muted-foreground);
+}
+
+.event-group .shadow {
+    fill: var(--muted-foreground);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Specific to line charts */
+.line {
+    fill: none;
+    stroke-width: 2.5px;
+}
+
+.chart-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    fill: var(--foreground);
+    text-anchor: middle;
+}
+
+.axis-label {
+    font-size: 0.9em;
+    fill: var(--muted-foreground);
+    text-anchor: middle;
+}
+
+/* Radar chart specific */
+.radar-polygon {
+    stroke-width: 2px;
+    fill-opacity: 0.25;
+}
+
+.radar-dot {
+    stroke-width: 1px;
+    stroke: var(--background);
+}
+
+.grid-circle {
+    fill: var(--border);
+    stroke: var(--border);
+    fill-opacity: 0.1;
+}
+
+.axis .line {
+    stroke: var(--muted-foreground);
+    stroke-width: 1px;
+}

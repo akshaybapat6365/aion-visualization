@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion Visualization Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Card grid layout */
+        .viz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .viz-card {
+            background-color: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: var(--card-foreground);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .viz-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+        
+        .viz-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        
+        .viz-card p {
+            color: var(--muted-foreground);
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .viz-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, 
+                var(--color-shadow-jung), 
+                var(--color-self-jung), 
+                var(--color-anima-jung), 
+                var(--color-trickster-jung));
+            opacity: 0.7;
+            transform: scaleX(0.97);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .viz-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        /* Intro animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container > * {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .container > h1 { animation-delay: 0.1s; }
+        .container > p { animation-delay: 0.2s; }
+        .viz-grid { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Jung's Aion: Archetype Visualizations</h1>
+        <p>Interactive visualizations exploring the core themes from C.G. Jung's <em>Aion: Researches into the Phenomenology of the Self</em> (CW9ii).</p>
+
+        <div class="viz-grid">
+            <a href="timeline.html" class="viz-card">
+                <h2>Historical Timeline</h2>
+                <p>Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."</p>
+            </a>
+
+            <a href="dynamics.html" class="viz-card">
+                <h2>Archetype Dynamics</h2>
+                <p>Mathematical projections showing the shifting intensities of key archetypes (Shadow, Self, Anima/Animus, Trickster) from 1900-2300.</p>
+            </a>
+
+            <a href="profiles.html" class="viz-card">
+                <h2>Archetype Profiles</h2>
+                <p>Radar chart comparison of archetypal configurations, contrasting patterns between 2025 and 2200 to reveal epochal shifts.</p>
+            </a>
+
+            <a href="integration.html" class="viz-card">
+                <h2>Self-Integration Curve</h2>
+                <p>The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."</p>
+            </a>
+        </div>
+        
+        <p><em>This visualization suite is based on a Jungian interpretation of archetype theory, emphasizing the emergence of archetypal patterns in collective history.</em></p>
+    </div>
+
+    <script>
+        // Ensure animations play even when page is refreshed
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.viz-grid').style.opacity = '1';
+        });
+    </script>
+    <script src="navigation.js"></script>
+</body>
+</html>
