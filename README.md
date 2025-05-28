@@ -39,3 +39,7 @@ This visualization suite explores several key concepts from Jung's Aion:
 - The projection-integration dynamic
 - The psychological interpretation of historical developments
 - The anticipation of future archetypal constellations
+
+## Hosting on GitHub Pages
+
+To make this visualization publicly available, enable GitHub Pages in your repository settings. See [setup-github-pages.md](setup-github-pages.md) for step-by-step instructions.
