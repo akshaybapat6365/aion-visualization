@@ -6,6 +6,15 @@
     <title>Aion Visualization Hub</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        .hero-banner {
+            background: linear-gradient(135deg, var(--chart-1), var(--chart-4));
+            color: var(--card-foreground);
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
+        }
+
         /* Card grid layout */
         .viz-grid {
             display: grid;
@@ -88,8 +97,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Jung's Aion: Archetype Visualizations</h1>
-        <p>Interactive visualizations exploring the core themes from C.G. Jung's <em>Aion: Researches into the Phenomenology of the Self</em> (CW9ii).</p>
+        <div class="hero-banner">
+            <h1>Jung's Aion: Archetype Visualizations</h1>
+            <p>Interactive explorations of Jungian archetypes and their historical interplay.</p>
+        </div>
 
         <div class="viz-grid">
             <a href="timeline.html" class="viz-card">
@@ -110,6 +121,11 @@
             <a href="integration.html" class="viz-card">
                 <h2>Self-Integration Curve</h2>
                 <p>The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."</p>
+            </a>
+
+            <a href="network.html" class="viz-card">
+                <h2>Archetype Network</h2>
+                <p>Force-directed graph exploring relationships among Self, Shadow, Anima/Animus and Trickster.</p>
             </a>
 
             <a href="hexagon.html" class="viz-card">
