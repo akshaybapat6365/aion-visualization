@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinning Polygon Bounce</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    label {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Spinning Polygon Bounce</h1>
+    <p>A p5.js sketch of a ball bouncing inside a spinning polygon.</p>
+    <div id="sketch-holder" class="visualization-area"></div>
+    <div class="controls">
+      <label>Rotation Speed <input type="range" id="rotSpeed" min="0" max="0.1" step="0.005" value="0.02"></label>
+      <label>Ball Speed <input type="range" id="ballSpeed" min="1" max="8" step="0.5" value="3"></label>
+      <button id="minusSides">-</button>
+      <span id="sideCount">6</span> sides
+      <button id="plusSides">+</button>
+    </div>
+    <a href="index.html" class="back-link">Back to Hub</a>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script>
+    let rot = 0;
+    let rotSpeedSlider, ballSpeedSlider;
+    let sides = 6;
+    let radius;
+    let ball;
+
+    function setup() {
+      const holder = document.getElementById('sketch-holder');
+      const canvas = createCanvas(500, 500);
+      canvas.parent(holder);
+      radius = width * 0.35;
+      ball = new Ball();
+      rotSpeedSlider = document.getElementById('rotSpeed');
+      ballSpeedSlider = document.getElementById('ballSpeed');
+      document.getElementById('minusSides').addEventListener('click', () => {
+        sides = max(3, sides - 1);
+        document.getElementById('sideCount').textContent = sides;
+      });
+      document.getElementById('plusSides').addEventListener('click', () => {
+        sides = min(12, sides + 1);
+        document.getElementById('sideCount').textContent = sides;
+      });
+    }
+
+    function draw() {
+      background(getComputedStyle(document.documentElement).getPropertyValue('--background') || '#fff');
+      translate(width/2, height/2);
+      stroke(getComputedStyle(document.documentElement).getPropertyValue('--primary') || '#333');
+      noFill();
+      rot += parseFloat(rotSpeedSlider.value);
+      push();
+      rotate(rot);
+      polygon(0,0,radius,sides);
+      pop();
+      ball.update(parseFloat(ballSpeedSlider.value));
+      ball.checkEdges();
+      ball.display();
+    }
+
+    function polygon(x,y,r,n) {
+      beginShape();
+      for (let i=0; i<n; i++) {
+        const angle = TWO_PI/n * i;
+        vertex(x + r*cos(angle), y + r*sin(angle));
+      }
+      endShape(CLOSE);
+    }
+
+    class Ball {
+      constructor() {
+        this.r = 12;
+        this.pos = createVector(0, 0);
+        this.vel = p5.Vector.random2D().mult(3);
+      }
+      update(spd) {
+        this.pos.add(p5.Vector.mult(this.vel, spd*0.1));
+      }
+      checkEdges() {
+        // Check collision with polygon edges in polygon space
+        const relative = p5.Vector.sub(this.pos, createVector(0,0));
+        const angleOff = -rot;
+        const rotated = createVector(relative.x*cos(angleOff) - relative.y*sin(angleOff),
+                                    relative.x*sin(angleOff) + relative.y*cos(angleOff));
+        let bounced = false;
+        const verts = [];
+        for (let i=0;i<sides;i++) {
+          const angle = TWO_PI/sides * i;
+          verts.push(createVector(radius*cos(angle), radius*sin(angle)));
+        }
+        for (let i=0;i<sides;i++) {
+          const a = verts[i];
+          const b = verts[(i+1)%sides];
+          const edge = p5.Vector.sub(b,a);
+          const normal = createVector(-edge.y, edge.x).normalize();
+          const pa = p5.Vector.sub(rotated,a);
+          const dist = pa.dot(normal);
+          if (dist > -this.r && pa.dot(normal) < 0) {
+            // Reflect velocity
+            const velRot = createVector(this.vel.x*cos(angleOff) - this.vel.y*sin(angleOff),
+                                        this.vel.x*sin(angleOff) + this.vel.y*cos(angleOff));
+            const vn = normal.mult(velRot.dot(normal));
+            const vt = p5.Vector.sub(velRot, vn);
+            velRot.set(p5.Vector.sub(vt, vn));
+            // rotate back
+            this.vel = createVector(velRot.x*cos(rot) - velRot.y*sin(rot),
+                                    velRot.x*sin(rot) + velRot.y*cos(rot));
+            bounced = true;
+            break;
+          }
+        }
+        if (bounced) {
+          // move slightly inside
+          this.pos.add(this.vel.copy().mult(0.1));
+        }
+      }
+      display() {
+        fill(getComputedStyle(document.documentElement).getPropertyValue('--color-self-jung') || '#666');
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r*2);
+      }
+    }
+  </script>
+  <script src="navigation.js"></script>
+</body>
+</html>
