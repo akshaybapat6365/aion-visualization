@@ -70,10 +70,16 @@ function createSidebar() {
           <span>Network</span>
         </a>
       </li>
-      <li class="nav-item ${window.location.pathname.includes('hexagon.html') ? 'active' : ''}">
-        <a href="hexagon.html" class="nav-link">
-          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 0L14 4L14 11L7.5 15L1 11L1 4L7.5 0Z" fill="currentColor"></path></svg>
-          <span>Polygon</span>
+      <li class="nav-item ${window.location.pathname.includes('concepts.html') ? 'active' : ''}">
+        <a href="concepts.html" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 0.5L14 5v5l-6.5 4.5L1 10V5L7.5 0.5Z" fill="currentColor"/></svg>
+          <span>Concepts</span>
+        </a>
+      </li>
+      <li class="nav-item ${window.location.pathname.includes('chapters.html') ? 'active' : ''}">
+        <a href="chapters.html" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 1h11v13H2V1zm1 1v11h9V2H3z" fill="currentColor"/><path d="M4 4h7v1H4V4zm0 3h7v1H4V7z" fill="currentColor"/></svg>
+          <span>Chapters</span>
         </a>
       </li>
       </ul>
