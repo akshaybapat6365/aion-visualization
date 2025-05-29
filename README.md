@@ -46,3 +46,8 @@ This visualization suite explores several key concepts from Jung's Aion:
 ## Hosting on GitHub Pages
 
 To make this visualization publicly available, enable GitHub Pages in your repository settings. See [setup-github-pages.md](setup-github-pages.md) for step-by-step instructions.
+
+## License
+
+This project is released under the [MIT License](LICENSE).
+
