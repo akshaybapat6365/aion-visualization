@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: The Ego - Aion Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="chapter-styles.css">
+</head>
+<body>
+    <div id="starfield"></div>
+    
+    <nav class="chapter-nav">
+        <a href="chapters.html" class="back-button">← Back to Chapters</a>
+        <div class="chapter-progress-mini">
+            <div class="progress-bar-mini">
+                <div class="progress-fill-mini" data-progress="0"></div>
+            </div>
+            <span class="progress-text-mini">0% Complete</span>
+        </div>
+    </nav>
+
+    <div class="chapter-content">
+        <header class="chapter-header">
+            <div class="chapter-symbol-large">
+                <svg viewBox="0 0 200 200" class="ego-mandala">
+                    <!-- Outer circle - conscious boundary -->
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="var(--primary)" stroke-width="2" opacity="0.8"/>
+                    
+                    <!-- Cross - quaternity of consciousness -->
+                    <path d="M100 10 L100 190 M10 100 L190 100" stroke="var(--primary)" stroke-width="3"/>
+                    
+                    <!-- Inner circles - layers of consciousness -->
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="var(--secondary)" stroke-width="1.5" opacity="0.6"/>
+                    <circle cx="100" cy="100" r="50" fill="none" stroke="var(--accent)" stroke-width="1" opacity="0.4"/>
+                    
+                    <!-- Central ego -->
+                    <circle cx="100" cy="100" r="20" fill="var(--primary)" opacity="0.9"/>
+                    <circle cx="100" cy="100" r="10" fill="var(--background)" />
+                </svg>
+            </div>
+            <h1>Chapter 1: The Ego</h1>
+            <p class="chapter-quote">"The ego is the subject of all personal acts of consciousness."<br>- C.G. Jung</p>
+        </header>
+
+        <section class="concept-section">
+            <h2>Understanding the Ego</h2>
+            <p>In Jung's psychology, the ego represents the center of consciousness - the "I" that we identify with in our daily lives. It is the organizing principle of the conscious mind, responsible for our sense of identity and continuity.</p>
+            
+            <div class="interactive-demo" id="ego-consciousness-demo">
+                <h3>Interactive: The Field of Consciousness</h3>
+                <div class="demo-container">
+                    <canvas id="consciousness-field"></canvas>
+                    <div class="demo-controls">
+                        <label>
+                            <span>Ego Strength:</span>
+                            <input type="range" id="ego-strength" min="0" max="100" value="50">
+                        </label>
+                        <label>
+                            <span>Conscious Awareness:</span>
+                            <input type="range" id="awareness-level" min="0" max="100" value="30">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="concept-section">
+            <h2>The Ego-Self Axis</h2>
+            <p>The ego is not the totality of the psyche, but rather a complex that has emerged from the Self - the archetype of wholeness. The relationship between ego and Self is crucial for psychological development.</p>
+            
+            <div class="visualization-container">
+                <div id="ego-self-axis"></div>
+            </div>
+        </section>
+
+        <section class="concept-section">
+            <h2>Functions of the Ego</h2>
+            <div class="functions-grid">
+                <div class="function-card">
+                    <div class="function-icon">🎭</div>
+                    <h3>Identity</h3>
+                    <p>Maintains a consistent sense of "I" across time and experiences</p>
+                </div>
+                <div class="function-card">
+                    <div class="function-icon">🛡️</div>
+                    <h3>Defense</h3>
+                    <p>Protects the psyche from overwhelming unconscious contents</p>
+                </div>
+                <div class="function-card">
+                    <div class="function-icon">⚖️</div>
+                    <h3>Reality Testing</h3>
+                    <p>Distinguishes between inner and outer reality</p>
+                </div>
+                <div class="function-card">
+                    <div class="function-icon">🎯</div>
+                    <h3>Executive Function</h3>
+                    <p>Makes decisions and directs conscious action</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="concept-section">
+            <h2>The Ego in Aion</h2>
+            <p>In "Aion," Jung explores how the ego relates to the historical development of consciousness, particularly through the Christian aeon. The ego's relationship to Christ as a symbol of the Self reveals the Western psyche's evolution.</p>
+            
+            <div class="timeline-preview">
+                <h3>Ego Development Through History</h3>
+                <div id="ego-history-timeline"></div>
+            </div>
+        </section>
+
+        <section class="practice-section">
+            <h2>Reflection Exercise</h2>
+            <div class="exercise-card">
+                <h3>Mapping Your Ego</h3>
+                <p>Take a moment to reflect on your own ego consciousness:</p>
+                <ol>
+                    <li>What aspects of yourself do you most identify with?</li>
+                    <li>Where do you feel the boundaries of your conscious awareness?</li>
+                    <li>How does your ego relate to the deeper Self?</li>
+                </ol>
+                <button class="reflection-button" id="save-reflection">Save Reflection</button>
+            </div>
+        </section>
+
+        <nav class="chapter-navigation">
+            <a href="chapters.html" class="nav-prev">← Back to Chapters</a>
+            <a href="chapter2.html" class="nav-next">Chapter 2: The Shadow →</a>
+        </nav>
+    </div>
+
+    <script src="starfield.js"></script>
+    <script src="chapter1.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</body>
+</html>
