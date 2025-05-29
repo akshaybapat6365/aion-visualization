@@ -70,12 +70,6 @@ function createSidebar() {
           <span>Network</span>
         </a>
       </li>
-      <li class="nav-item ${window.location.pathname.includes('hexagon.html') ? 'active' : ''}">
-        <a href="hexagon.html" class="nav-link">
-          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 0L14 4L14 11L7.5 15L1 11L1 4L7.5 0Z" fill="currentColor"></path></svg>
-          <span>Polygon</span>
-        </a>
-      </li>
       </ul>
     </nav>
     <div class="sidebar-footer">
