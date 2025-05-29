@@ -70,13 +70,20 @@ function createSidebar() {
           <span>Network</span>
         </a>
       </li>
-      <li class="nav-item ${window.location.pathname.includes('hexagon.html') ? 'active' : ''}">
-        <a href="hexagon.html" class="nav-link">
-          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 0L14 4L14 11L7.5 15L1 11L1 4L7.5 0Z" fill="currentColor"></path></svg>
-          <span>Polygon</span>
+      
+      <li class="nav-item ${window.location.pathname.includes('concepts.html') ? 'active' : ''}">
+        <a href="concepts.html" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 2H13V13H2V2Z" stroke="currentColor"/></svg>
+          <span>Concepts</span>
         </a>
       </li>
-      </ul>
+      <li class="nav-item ${window.location.pathname.includes('chapters.html') ? 'active' : ''}">
+        <a href="chapters.html" class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 2H13V4H2V2ZM2 6H13V8H2V6ZM2 10H13V12H2V10Z" fill="currentColor"/></svg>
+          <span>Chapters</span>
+        </a>
+      </li>
+</ul>
     </nav>
     <div class="sidebar-footer">
       <button class="theme-toggle" aria-label="Toggle dark theme">

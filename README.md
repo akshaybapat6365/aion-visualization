@@ -8,7 +8,7 @@ An interactive visualization suite exploring the core themes from C.G. Jung's *A
 
 ## Visualizations
 
-This project includes six interactive visualizations:
+This project includes five interactive visualizations:
 
 1. **Historical Timeline** - Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."
 
@@ -18,12 +18,17 @@ This project includes six interactive visualizations:
 
 4. **Self-Integration Curve** - The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."
 5. **Archetype Network** - Force-directed graph exploring relationships between Self, Shadow, Anima/Animus and Trickster.
-6. **Polygon Bounce** - A playful p5.js sketch showing a ball bouncing inside a spinning polygon with adjustable sides and speed controls.
 
+
+## Reference Guides
+
+- **Key Concepts** - Quick explanations of major archetypes.
+- **Chapter Guide** - Summaries of each chapter in *Aion*.
 ## Features
 
 - Modern, responsive design with light/dark mode support
 - Smooth transitions between visualizations
+- Animated starfield background that respects reduced-motion preferences
 - Interactive charts with tooltips and animations
 - Sidebar navigation with collapsible menu
 
