@@ -55,7 +55,6 @@ window.addEventListener('DOMContentLoaded', () => {
       svg.appendChild(line);
     }
   }
-  drawMandala();
 
   const stars = Array.from({ length: 150 }, () => ({
     x: Math.random() * canvas.width,
