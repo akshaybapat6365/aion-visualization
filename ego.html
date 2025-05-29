@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion - The Ego</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { overflow: hidden; }
+        #sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--muted);
+            color: var(--foreground);
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: right 0.6s cubic-bezier(0.16,1,0.3,1);
+        }
+        #sidebar.show { right: 0; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>On the Ego</h2>
+        <p>"The ego is a complex of ideas which constitute the centre of my field of consciousness."</p>
+        <a href="index.html" class="back-link">Back to Hub</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script>
+        let labels = [];
+        let angles = [];
+        let rX, rY;
+        let bodyR;
+        let orbOpacity = 1;
+        let lastMove = 0;
+        let dragging = -1;
+        const persona = [
+            'Architect','Friend','Son','Daughter','Artist','Teacher','Leader','Thinker','Seeker','Lover','Parent','Hero','Healer','Warrior','Trickster','Visionary','Child','Scholar','Rebel','Guardian'
+        ];
+        function setup(){
+            createCanvas(windowWidth, windowHeight);
+            textAlign(CENTER, CENTER);
+            bodyR = min(width, height)*0.3;
+            rX = bodyR*0.6;
+            rY = bodyR*0.4;
+            for(let i=0;i<persona.length;i++){
+                angles[i] = random(TWO_PI);
+                labels[i] = createVector();
+            }
+        }
+        function draw(){
+            background(0,0,0,0);
+            noStroke();
+            fill(255,255,255,40);
+            ellipse(width/2, height/2, bodyR*1.2, bodyR*2); // simple body
+            fill(208,167,67, orbOpacity*255);
+            ellipse(width/2, height/2, bodyR*0.5);
+            for(let i=0;i<labels.length;i++){
+                if(dragging===i){
+                    labels[i].x = mouseX;
+                    labels[i].y = mouseY;
+                } else {
+                    labels[i].x = width/2 + rX*cos(angles[i]);
+                    labels[i].y = height/2 + rY*sin(angles[i]);
+                    angles[i]+=0.01;
+                }
+                let alpha = 255;
+                if(dist(labels[i].x, labels[i].y, width/2, height/2) > bodyR){
+                    alpha = 40;
+                }
+                fill(255, alpha);
+                textSize(14);
+                text(persona[i], labels[i].x, labels[i].y);
+            }
+            if(millis()-lastMove > 8000){
+                document.getElementById('sidebar').classList.add('show');
+            }
+        }
+        function mousePressed(){
+            for(let i=0;i<labels.length;i++){
+                if(dist(mouseX, mouseY, labels[i].x, labels[i].y) < 20){
+                    dragging = i;
+                    break;
+                }
+            }
+        }
+        function mouseReleased(){
+            if(dragging>=0){
+                if(dist(labels[dragging].x, labels[dragging].y, width/2, height/2) > bodyR){
+                    orbOpacity = max(0, orbOpacity-0.05);
+                }
+                dragging = -1;
+            }
+        }
+        function mouseMoved(){
+            lastMove = millis();
+        }
+        function windowResized(){
+            resizeCanvas(windowWidth, windowHeight);
+            bodyR = min(width, height)*0.3;
+            rX = bodyR*0.6;
+            rY = bodyR*0.4;
+        }
+    </script>
+    <script src="starfield.js"></script>
+    <script src="navigation.js"></script>
+</body>
+</html>

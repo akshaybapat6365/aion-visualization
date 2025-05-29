@@ -40,6 +40,12 @@ function createSidebar() {
             <span>Hub</span>
           </a>
         </li>
+        <li class="nav-item ${window.location.pathname.includes('ego.html') ? 'active' : ''}">
+          <a href="ego.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" fill="none"/></svg>
+            <span>Ego</span>
+          </a>
+        </li>
         <li class="nav-item ${window.location.pathname.includes('timeline.html') ? 'active' : ''}">
           <a href="timeline.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.877075 7.49988C0.877075 3.84219 3.84222 0.877045 7.49991 0.877045C11.1576 0.877045 14.1227 3.84219 14.1227 7.49988C14.1227 11.1575 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1575 0.877075 7.49988ZM7.49991 1.82704C4.36689 1.82704 1.82708 4.36686 1.82708 7.49988C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49988C13.1727 4.36686 10.6329 1.82704 7.49991 1.82704ZM8.24993 4.49999C8.24993 4.9142 7.91413 5.24999 7.49993 5.24999C7.08573 5.24999 6.74993 4.9142 6.74993 4.49999C6.74993 4.08579 7.08573 3.74999 7.49993 3.74999C7.91413 3.74999 8.24993 4.08579 8.24993 4.49999ZM6.00003 5.99999H6.74003L6.74003 10.5H8.25003V10.5H6.00003V5.99999Z" fill="currentColor"></path></svg>
@@ -70,11 +76,6 @@ function createSidebar() {
           <span>Network</span>
         </a>
       </li>
-      <li class="nav-item ${window.location.pathname.includes('hexagon.html') ? 'active' : ''}">
-        <a href="hexagon.html" class="nav-link">
-          <svg width="20" height="20" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 0L14 4L14 11L7.5 15L1 11L1 4L7.5 0Z" fill="currentColor"></path></svg>
-          <span>Polygon</span>
-        </a>
       </li>
       </ul>
     </nav>
