@@ -9,16 +9,54 @@ window.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
+  // Faint mandala watermark
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'mandala');
+  Object.assign(svg.style, {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+    opacity: '0.04',
+  });
+  document.body.appendChild(svg);
 
   const starColor =
     getComputedStyle(document.documentElement).getPropertyValue('--primary') ||
     '#ffffff';
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawMandala();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function drawMandala() {
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const radius = Math.min(centerX, centerY) * 0.6;
+    svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+    svg.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', centerX);
+      line.setAttribute('y1', centerY);
+      line.setAttribute('x2', x);
+      line.setAttribute('y2', y);
+      line.setAttribute('stroke', starColor.trim());
+      line.setAttribute('stroke-width', '1');
+      svg.appendChild(line);
+    }
+  }
+  window.addEventListener('resize', drawMandala);
+  drawMandala();
 
   const stars = Array.from({ length: 150 }, () => ({
     x: Math.random() * canvas.width,
