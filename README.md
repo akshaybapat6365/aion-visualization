@@ -26,6 +26,7 @@ This project includes six interactive visualizations:
 - Smooth transitions between visualizations
 - Interactive charts with tooltips and animations
 - Sidebar navigation with collapsible menu
+- Animated starfield background that respects reduced-motion preferences
 
 ## Technologies
 
