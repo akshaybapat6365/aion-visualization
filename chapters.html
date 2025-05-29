@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion - Chapter Guide</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .tab { padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--secondary); cursor: pointer; }
+        .tab.active { background: var(--primary); color: var(--background); }
+        .chapter { display: none; }
+        .chapter.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chapter Summaries</h1>
+        <div class="tabs">
+            <button class="tab active" data-target="c1">1</button>
+            <button class="tab" data-target="c2">2</button>
+            <button class="tab" data-target="c3">3</button>
+            <button class="tab" data-target="c4">4</button>
+            <button class="tab" data-target="c5">5</button>
+            <button class="tab" data-target="c6">6</button>
+            <button class="tab" data-target="c7">7</button>
+            <button class="tab" data-target="c8">8</button>
+        </div>
+        <div id="c1" class="chapter active">
+            <h2>1. The Ego</h2>
+            <p>Jung describes the conscious personality and its limits.</p>
+        </div>
+        <div id="c2" class="chapter">
+            <h2>2. The Shadow</h2>
+            <p>Explores the dark, unacknowledged aspects of the psyche.</p>
+        </div>
+        <div id="c3" class="chapter">
+            <h2>3. The Syzygy</h2>
+            <p>The pairing of Anima and Animus as mediators to the unconscious.</p>
+        </div>
+        <div id="c4" class="chapter">
+            <h2>4. The Self</h2>
+            <p>Introduction of the Self as a regulating center aiming for wholeness.</p>
+        </div>
+        <div id="c5" class="chapter">
+            <h2>5. Christ as Symbol of the Self</h2>
+            <p>Historical expression of the Self archetype through the figure of Christ.</p>
+        </div>
+        <div id="c6" class="chapter">
+            <h2>6. The Sign of the Fishes</h2>
+            <p>Discusses the astrological background of the Christian era.</p>
+        </div>
+        <div id="c7" class="chapter">
+            <h2>7. The Historical Significance of the Fish</h2>
+            <p>Surveys fish symbolism across cultures leading into alchemical motifs.</p>
+        </div>
+        <div id="c8" class="chapter">
+            <h2>8. The Coniunctio</h2>
+            <p>Final chapter detailing the integration of opposites.</p>
+        </div>
+        <a href="index.html" class="back-link">Back to Hub</a>
+    </div>
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.chapter');
+        tabs.forEach(tab => tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.target).classList.add('active');
+        }));
+    </script>
+    <script src="starfield.js"></script>
+    <script src="navigation.js"></script>
+</body>
+</html>

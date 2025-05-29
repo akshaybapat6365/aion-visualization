@@ -30,10 +30,13 @@
          .event-group .desc {
             fill: var(--muted-foreground); /* Use muted for description */
         }
-         .event-group .shadow {
+        .event-group .shadow {
             fill: var(--muted-foreground); /* Use muted for shadow text */
             font-style: italic;
             opacity: 0.8;
+        }
+        .event-group .stem {
+            stroke-width: 1px;
         }
         .axis-center line {
             stroke-dasharray: 4, 4;
@@ -69,12 +72,14 @@
             // Remapped dates to approximate single years for plotting
             { dateStr: "c. 30 CE", year: 30, degree: 0, title: "Historical Jesus", description: "Self breaks into history (light, order)", shadow: "(Shadow latent)", type: "light" },
             { dateStr: "2nd–4th c.", year: 300, degree: 45, title: "Early Church", description: "Dogma crystallizes 'good' Self", shadow: "Gnostic 'false prophets'", type: "light" },
+            { dateStr: "325", year: 325, degree: 60, title: "Council of Nicaea", description: "Creed defines orthodoxy", shadow: "Suppression of heresies", type: "light" },
             { dateStr: "1000 CE±", year: 1000, degree: 120, title: "High Middle Ages", description: "Sacramental synthesis", shadow: "Millennial panics, Antichrist legends", type: "light" },
             { dateStr: "1517–1648", year: 1580, degree: 157.5, title: "Reformation", description: "Inward faith (conscience)", shadow: "Satan/Antichrist rhetoric peaks", type: "dark" },
             { dateStr: "18th c.", year: 1750, degree: 170, title: "Enlightenment", description: "Reason internalizes moral law", shadow: "'God is dead' undercurrent", type: "light" },
             { dateStr: "19th c.", year: 1850, degree: 176.5, title: "Industrial Age", description: "Social gospel, progress credo", shadow: "Nietzsche's Antichrist, nationalism", type: "dark" },
             { dateStr: "1914–1945", year: 1930, degree: 179.5, title: "World Wars", description: "Symbols powerless", shadow: "Totalitarian secular-messiahs", type: "dark" },
             { dateStr: "1945–now", year: 1985, degree: 180, title: "Nuclear Age", description: "Ecumenism, depth psychology", shadow: "Shadow goes viral", type: "dark" },
+            { dateStr: "1951", year: 1951, degree: 181, title: "Jung's *Aion*", description: "Psychological age articulated", shadow: "Integration still incomplete", type: "light" },
             { dateStr: "Future", year: 2100, degree: 300, title: "Age of Aquarius", description: "Task: integrate opposites", shadow: "Risk: De-humanization", type: "light" } // Placed future event for context
         ];
 
@@ -135,6 +140,16 @@
                 tooltip.transition().duration(200).style("opacity", 0);
             });
 
+        // Connect event to center axis
+        eventGroups.append("line")
+            .attr("class", "stem")
+            .attr("x1", 0)
+            .attr("y1", d => yAxisPos - yPosition[d.type])
+            .attr("x2", 0)
+            .attr("y2", 0)
+            .attr("stroke", d => d.type === 'light' ? "var(--color-self-jung)" : "var(--color-shadow-jung)")
+            .attr("stroke-width", 1);
+
         // Add markers (▲/▼)
         eventGroups.append("text")
             .attr("class", "marker")
@@ -165,6 +180,7 @@
             .text(d => d.shadow);
 
     </script>
+    <script src="starfield.js"></script>
     <script src="navigation.js"></script>
 </body>
 </html>
