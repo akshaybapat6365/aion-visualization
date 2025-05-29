@@ -10,7 +10,7 @@ An interactive visualization suite exploring the core themes from C.G. Jung's *A
 
 This project includes six interactive visualizations:
 
-1. **Ego Visualization** - Orbiting persona labels around a glowing ego centre with interactive drag dynamics.
+1. **The Ego** - A short interactive demo where persona labels orbit a glowing ego center that can be dragged.
 2. **Historical Timeline** - Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."
 
 3. **Archetype Dynamics** - Mathematical projections showing the shifting intensities of key archetypes (Shadow, Self, Anima/Animus, Trickster) from 1900-2300.
