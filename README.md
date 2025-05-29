@@ -8,17 +8,18 @@ An interactive visualization suite exploring the core themes from C.G. Jung's *A
 
 ## Visualizations
 
-This project includes six interactive visualizations:
+This project includes seven interactive visualizations:
 
-1. **The Ego** - A short interactive demo where persona labels orbit a glowing ego center that can be dragged.
-2. **Historical Timeline** - Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."
+1. **Ego Demo (`ego.html`)** - Persona labels orbit a glowing center and can be dragged.
+2. **The Ego** - A short interactive demo where persona labels orbit a glowing ego center that can be dragged.
+3. **Historical Timeline** - Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."
 
-3. **Archetype Dynamics** - Mathematical projections showing the shifting intensities of key archetypes (Shadow, Self, Anima/Animus, Trickster) from 1900-2300.
+4. **Archetype Dynamics** - Mathematical projections showing the shifting intensities of key archetypes (Shadow, Self, Anima/Animus, Trickster) from 1900-2300.
 
-4. **Archetype Profiles** - Radar chart comparison of archetypal configurations, contrasting patterns between 2025 and 2200 to reveal epochal shifts.
+5. **Archetype Profiles** - Radar chart comparison of archetypal configurations, contrasting patterns between 2025 and 2200 to reveal epochal shifts.
 
-5. **Self-Integration Curve** - The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."
-6. **Archetype Network** - Force-directed graph exploring relationships between Self, Shadow, Anima/Animus and Trickster.
+6. **Self-Integration Curve** - The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."
+7. **Archetype Network** - Force-directed graph exploring relationships between Self, Shadow, Anima/Animus and Trickster.
 
 ## Features
 
