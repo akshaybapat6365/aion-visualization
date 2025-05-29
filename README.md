@@ -18,13 +18,15 @@ This project includes six interactive visualizations:
 
 4. **Self-Integration Curve** - The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."
 5. **Archetype Network** - Force-directed graph exploring relationships between Self, Shadow, Anima/Animus and Trickster.
-6. **Polygon Bounce** - A playful p5.js sketch showing a ball bouncing inside a spinning polygon with adjustable sides and speed controls.
 
+6. **Key Concepts** - Quick reference explaining archetypes like the Self, Shadow, Anima/Animus and Trickster.
+7. **Chapter Guide** - Summaries of Jung's chapters for fast orientation.
 ## Features
 
 - Modern, responsive design with light/dark mode support
 - Smooth transitions between visualizations
 - Interactive charts with tooltips and animations
+- Animated starfield background (respects reduced-motion settings)
 - Sidebar navigation with collapsible menu
 
 ## Technologies
