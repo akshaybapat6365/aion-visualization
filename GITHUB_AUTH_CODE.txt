@@ -1,0 +1,7 @@
+GitHub Authentication Code: 8926-1FBB
+
+To complete authentication:
+1. Open your browser and go to: https://github.com/login/device
+2. Enter the code: 8926-1FBB
+3. Authorize GitHub CLI
+4. Return to the terminal to complete the process
