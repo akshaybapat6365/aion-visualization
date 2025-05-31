@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion Visualization Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero-banner {
+            background: linear-gradient(135deg, var(--chart-1), var(--chart-4));
+            color: var(--card-foreground);
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
+        }
+
+        /* Card grid layout */
+        .viz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .viz-card {
+            background-color: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: var(--card-foreground);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .viz-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+        
+        .viz-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        
+        .viz-card p {
+            color: var(--muted-foreground);
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .viz-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, 
+                var(--color-shadow-jung), 
+                var(--color-self-jung), 
+                var(--color-anima-jung), 
+                var(--color-trickster-jung));
+            opacity: 0.7;
+            transform: scaleX(0.97);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .viz-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        /* Intro animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container > * {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .container > h1 { animation-delay: 0.1s; }
+        .container > p { animation-delay: 0.2s; }
+        .viz-grid { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-banner">
+            <h1>Jung's Aion: Archetype Visualizations</h1>
+            <p>Interactive explorations of Jungian archetypes and their historical interplay.</p>
+        </div>
+
+        <div class="viz-grid">
+            <a href="ego.html" class="viz-card">
+                <h2>The Ego</h2>
+                <p>Interactive exploration of persona labels orbiting a glowing ego center.</p>
+            </a>
+            <a href="timeline.html" class="viz-card">
+                <h2>Historical Timeline</h2>
+                <p>Tracing the Christ-pole and Antichrist-shadow dynamics across 2000+ years of history, following the zodiacal "hour-hand."</p>
+            </a>
+
+            <a href="dynamics.html" class="viz-card">
+                <h2>Archetype Dynamics</h2>
+                <p>Mathematical projections showing the shifting intensities of key archetypes (Shadow, Self, Anima/Animus, Trickster) from 1900-2300.</p>
+            </a>
+
+            <a href="profiles.html" class="viz-card">
+                <h2>Archetype Profiles</h2>
+                <p>Radar chart comparison of archetypal configurations, contrasting patterns between 2025 and 2200 to reveal epochal shifts.</p>
+            </a>
+
+            <a href="integration.html" class="viz-card">
+                <h2>Self-Integration Curve</h2>
+                <p>The trajectory from projection to integration of the Self archetype through historical milestones, moving toward Jung's "coniunctio."</p>
+            </a>
+
+            <a href="network.html" class="viz-card">
+                <h2>Archetype Network</h2>
+                <p>Force-directed graph exploring relationships among Self, Shadow, Anima/Animus and Trickster.</p>
+            </a>
+        </div>
+        
+        <p><em>This visualization suite is based on a Jungian interpretation of archetype theory, emphasizing the emergence of archetypal patterns in collective history.</em></p>
+        <p class="github-link"><a href="https://github.com/akshaybapat6365/aion-visualization" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+    </div>
+
+    <style>
+        .github-link {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .github-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted-foreground);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+        .github-link a:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+        .github-link a::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Cpath fill='currentColor' d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+
+    <script>
+        // Ensure animations play even when page is refreshed
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.viz-grid').style.opacity = '1';
+        });
+    </script>
+    <script src="starfield.js"></script>
+    <script src="navigation.js"></script>
+</body>
+</html>

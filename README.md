@@ -52,3 +52,12 @@ To make this visualization publicly available, enable GitHub Pages in your repos
 
 This project is released under the [MIT License](LICENSE).
 
+
+## 🎨 New Minimalist Design (2024)
+
+The visualization has been completely redesigned with:
+- Consistent dark theme throughout
+- WebGL shader visualizations
+- All 14 chapters of Aion
+- Smooth page transitions
+- Mobile-responsive design
