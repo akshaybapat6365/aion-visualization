@@ -1,0 +1,35 @@
+INSTRUCTIONS TO PUSH PHASE 1 UPDATES TO GITHUB
+==============================================
+
+Please run these commands in your terminal:
+
+1. Open Terminal
+
+2. Navigate to the project directory:
+   cd /Users/akshaybapat/aion-visualization
+
+3. Make the push script executable:
+   chmod +x push-to-github.sh
+
+4. Run the push script:
+   ./push-to-github.sh
+
+OR manually run these commands:
+
+   git add -A
+   git commit -m "Phase 1: Foundation improvements and missing pages"
+   git push origin main
+
+WHAT'S BEING PUSHED:
+- New timeline page (timeline-v2.html)
+- New symbols encyclopedia (symbols-v2.html)
+- Visualization loader for performance (visualization-loader.js)
+- Navigation fixes in all chapter files
+- Comprehensive documentation (IMPROVEMENT_PLAN.md, etc.)
+
+After pushing, your updates will be live at:
+https://akshaybapat6365.github.io/aion-visualization/
+
+New pages:
+- https://akshaybapat6365.github.io/aion-visualization/timeline-v2.html
+- https://akshaybapat6365.github.io/aion-visualization/symbols-v2.html
