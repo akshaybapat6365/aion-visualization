@@ -88,6 +88,73 @@
   --nav-height: 48px;
 }
 
+/* Accessibility Styles */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.5rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--accent);
+  color: white;
+  border-radius: 0.25rem;
+}
+
+/* Skip Links */
+.skip-links {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  z-index: 10000;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 6px;
+  padding: 8px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  transition: top var(--transition-base);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Focus Indicators */
+:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Reset */
 *, *::before, *::after {
   box-sizing: border-box;

@@ -5,22 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 5: Christ as Archetype - Aion by Carl Jung</title>
     <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 <body>
-    <nav class="main-nav">
-        <a href="index-v2.html" class="nav-home">Aion</a>
-        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
-        <div class="nav-links">
-            <a href="chapters-v2.html">Chapters</a>
-            <a href="timeline-v2.html">Timeline</a>
-            <a href="symbols-v2.html">Symbols</a>
-            <a href="about-v2.html">About</a>
+    <!-- WebGL Background -->
+    <canvas id="webgl-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></canvas>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters-v2.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline-v2.html" class="nav-link">Timeline</a>
+            <a href="symbols-v2.html" class="nav-link">Symbols</a>
+            <a href="about-v2.html" class="nav-link">About</a>
         </div>
     </nav>
 
     <main class="chapter-content">
-        <div class="chapter-header">
+        <div class="chapter-header reveal">
             <div class="chapter-number">Chapter V</div>
             <h1 class="chapter-title">Christ as Archetype</h1>
             <p class="chapter-subtitle">The Incomplete Symbol of the Self</p>

@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: Christ as Symbol of the Self - Enhanced Visualization</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <style>
+        .enhanced-container {
+            min-height: 100vh;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #webgl-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            padding: 60px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .viz-section {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .symbol-explorer {
+            height: 600px;
+            position: relative;
+        }
+
+        #symbol-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            cursor: grab;
+        }
+
+        #symbol-canvas:active {
+            cursor: grabbing;
+        }
+
+        .symbol-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .religion-filter {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .religion-filter:hover,
+        .religion-filter.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+
+        .pattern-game {
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .pattern-card {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pattern-card.selected {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .pattern-card.matched {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            pointer-events: none;
+        }
+
+        .pattern-symbol {
+            font-size: 36px;
+            color: #fff;
+        }
+
+        .pattern-name {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .pattern-card:hover .pattern-name {
+            opacity: 1;
+        }
+
+        .manifestation-viewer {
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .manifestation-item {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .manifestation-item:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .manifestation-symbol {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .manifestation-culture {
+            font-size: 14px;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .manifestation-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .comparison-panel {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-symbol {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .comparison-details {
+            flex: 1;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .symbol-info-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .symbol-info-popup.active {
+            display: block;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .connection-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            height: 2px;
+            transform-origin: left center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .connection-line.active {
+            opacity: 0.6;
+        }
+
+        @media (max-width: 968px) {
+            .visualization-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pattern-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .pattern-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .manifestation-item {
+                width: 200px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="enhanced-container">
+        <canvas id="webgl-bg"></canvas>
+        
+        <nav class="nav-header">
+            <a href="index.html" class="back-button">← Back to Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </nav>
+
+        <div class="content-wrapper">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl font-bold mb-4">Christ as Symbol of the Self</h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Explore the universal patterns of the Self archetype across religious traditions.
+                    Discover how different cultures express the same fundamental psychological truth.
+                </p>
+            </header>
+
+            <div class="visualization-grid">
+                <div class="viz-section">
+                    <h2>Comparative Religion Symbol Explorer</h2>
+                    <div class="symbol-controls">
+                        <button class="religion-filter active" data-religion="all">All Traditions</button>
+                        <button class="religion-filter" data-religion="christian">Christianity</button>
+                        <button class="religion-filter" data-religion="buddhist">Buddhism</button>
+                        <button class="religion-filter" data-religion="hindu">Hinduism</button>
+                        <button class="religion-filter" data-religion="islamic">Islam</button>
+                        <button class="religion-filter" data-religion="jewish">Judaism</button>
+                        <button class="religion-filter" data-religion="taoist">Taoism</button>
+                    </div>
+                    <div class="symbol-explorer">
+                        <canvas id="symbol-canvas"></canvas>
+                    </div>
+                    <div class="comparison-panel" id="comparison-panel">
+                        <h3>Symbol Connections</h3>
+                        <div id="comparison-content">
+                            <p style="color: rgba(255, 255, 255, 0.6);">
+                                Click on symbols to explore their archetypal connections
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-section">
+                    <h2>Archetypal Pattern Recognition</h2>
+                    <div class="pattern-game">
+                        <div class="game-stats">
+                            <div class="stat-item">Matches: <span id="match-count">0</span>/8</div>
+                            <div class="stat-item">Attempts: <span id="attempt-count">0</span></div>
+                            <div class="stat-item">Time: <span id="game-timer">0:00</span></div>
+                        </div>
+                        <div class="pattern-grid" id="pattern-grid">
+                            <!-- Pattern cards will be generated here -->
+                        </div>
+                        <button class="control-button" onclick="resetPatternGame()">Reset Game</button>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Cross-Cultural Self Manifestations</h3>
+                    <div class="manifestation-viewer" id="manifestation-viewer">
+                        <!-- Manifestation items will be positioned here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="showAllConnections()">Show All Connections</button>
+                <button onclick="startGuidedExploration()">Guided Exploration</button>
+                <button onclick="exportSymbolMap()">Export Symbol Map</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="symbol-info-popup" id="symbol-popup">
+        <button class="popup-close" onclick="closeSymbolPopup()">×</button>
+        <h2 id="popup-title"></h2>
+        <div id="popup-content"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // WebGL Background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('webgl-bg'), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Create sacred geometry background
+        const geometry = new THREE.IcosahedronGeometry(1, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xffd700,
+            wireframe: true,
+            opacity: 0.1,
+            transparent: true
+        });
+
+        const shapes = [];
+        for (let i = 0; i < 20; i++) {
+            const mesh = new THREE.Mesh(geometry, material.clone());
+            mesh.position.set(
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 20
+            );
+            mesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            mesh.scale.setScalar(Math.random() * 2 + 0.5);
+            scene.add(mesh);
+            shapes.push(mesh);
+        }
+
+        camera.position.z = 10;
+
+        // Symbol data with archetypal connections
+        const symbols = [
+            {
+                id: 'christ-cross',
+                symbol: '✝️',
+                name: 'Christian Cross',
+                religion: 'christian',
+                archetype: 'sacrifice-renewal',
+                description: 'Symbol of sacrifice and resurrection, representing the death and rebirth of the ego',
+                connections: ['buddha-dharma', 'ankh', 'om']
+            },
+            {
+                id: 'buddha-dharma',
+                symbol: '☸️',
+                name: 'Dharma Wheel',
+                religion: 'buddhist',
+                archetype: 'wholeness',
+                description: 'The Eightfold Path, representing the complete integration of consciousness',
+                connections: ['christ-cross', 'star-david', 'yin-yang']
+            },
+            {
+                id: 'om',
+                symbol: '🕉️',
+                name: 'Om',
+                religion: 'hindu',
+                archetype: 'unity',
+                description: 'The primordial sound, representing the unity of all existence',
+                connections: ['christ-cross', 'allah', 'yin-yang']
+            },
+            {
+                id: 'star-david',
+                symbol: '✡️',
+                name: 'Star of David',
+                religion: 'jewish',
+                archetype: 'union-opposites',
+                description: 'Union of upward and downward triangles, heaven and earth',
+                connections: ['yin-yang', 'buddha-dharma', 'ankh']
+            },
+            {
+                id: 'crescent-star',
+                symbol: '☪️',
+                name: 'Crescent and Star',
+                religion: 'islamic',
+                archetype: 'guidance',
+                description: 'Divine guidance and the light in darkness',
+                connections: ['christ-cross', 'star-david', 'om']
+            },
+            {
+                id: 'yin-yang',
+                symbol: '☯️',
+                name: 'Yin Yang',
+                religion: 'taoist',
+                archetype: 'balance',
+                description: 'The dance of opposites in perfect harmony',
+                connections: ['star-david', 'buddha-dharma', 'om']
+            },
+            {
+                id: 'ankh',
+                symbol: '☥',
+                name: 'Ankh',
+                religion: 'egyptian',
+                archetype: 'eternal-life',
+                description: 'The key of life, union of masculine and feminine',
+                connections: ['christ-cross', 'star-david', 'om']
+            },
+            {
+                id: 'lotus',
+                symbol: '🪷',
+                name: 'Lotus',
+                religion: 'buddhist',
+                archetype: 'enlightenment',
+                description: 'Purity rising from the mud of material existence',
+                connections: ['christ-cross', 'om', 'ankh']
+            }
+        ];
+
+        // Cross-cultural Self manifestations
+        const manifestations = [
+            {
+                symbol: '✝️',
+                culture: 'Christianity',
+                name: 'Christ',
+                description: 'The God-man who bridges divine and human nature'
+            },
+            {
+                symbol: '🧘',
+                culture: 'Buddhism',
+                name: 'Buddha',
+                description: 'The awakened one who achieved perfect enlightenment'
+            },
+            {
+                symbol: '🕎',
+                culture: 'Judaism',
+                name: 'Messiah',
+                description: 'The anointed one who brings redemption'
+            },
+            {
+                symbol: '☪️',
+                culture: 'Islam',
+                name: 'Al-Insan al-Kamil',
+                description: 'The perfect human who reflects divine attributes'
+            },
+            {
+                symbol: '🕉️',
+                culture: 'Hinduism',
+                name: 'Atman',
+                description: 'The eternal Self that is one with Brahman'
+            },
+            {
+                symbol: '☯️',
+                culture: 'Taoism',
+                name: 'True Person',
+                description: 'One who embodies the Tao perfectly'
+            },
+            {
+                symbol: '⚛️',
+                culture: 'Gnosticism',
+                name: 'Anthropos',
+                description: 'The cosmic human, template of perfection'
+            },
+            {
+                symbol: '🌟',
+                culture: 'Hermeticism',
+                name: 'Philosopher\'s Stone',
+                description: 'The perfected Self, goal of spiritual alchemy'
+            }
+        ];
+
+        // Symbol Explorer Canvas
+        class SymbolExplorer {
+            constructor() {
+                this.canvas = document.getElementById('symbol-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.symbols = [];
+                this.selectedSymbol = null;
+                this.connections = [];
+                this.filter = 'all';
+                
+                this.resize();
+                this.init();
+                this.setupEventListeners();
+            }
+
+            resize() {
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                this.canvas.width = rect.width;
+                this.canvas.height = rect.height;
+            }
+
+            init() {
+                // Position symbols in a circular pattern
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.7;
+
+                symbols.forEach((symbol, index) => {
+                    const angle = (index / symbols.length) * Math.PI * 2;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    this.symbols.push({
+                        ...symbol,
+                        x: x,
+                        y: y,
+                        targetX: x,
+                        targetY: y,
+                        scale: 1,
+                        targetScale: 1,
+                        rotation: 0,
+                        visible: true
+                    });
+                });
+            }
+
+            setupEventListeners() {
+                this.canvas.addEventListener('click', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    this.symbols.forEach(symbol => {
+                        if (!symbol.visible) return;
+                        
+                        const dist = Math.sqrt(
+                            Math.pow(x - symbol.x, 2) + 
+                            Math.pow(y - symbol.y, 2)
+                        );
+                        
+                        if (dist < 40) {
+                            this.selectSymbol(symbol);
+                        }
+                    });
+                });
+
+                // Religion filters
+                document.querySelectorAll('.religion-filter').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.religion-filter').forEach(b => 
+                            b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.filterSymbols(btn.dataset.religion);
+                    });
+                });
+            }
+
+            selectSymbol(symbol) {
+                this.selectedSymbol = symbol;
+                
+                // Update connections
+                this.connections = [];
+                if (symbol.connections) {
+                    symbol.connections.forEach(connId => {
+                        const connected = this.symbols.find(s => s.id === connId);
+                        if (connected && connected.visible) {
+                            this.connections.push({
+                                from: symbol,
+                                to: connected
+                            });
+                        }
+                    });
+                }
+
+                // Update comparison panel
+                this.updateComparisonPanel(symbol);
+                
+                // Animate selection
+                symbol.targetScale = 1.2;
+                setTimeout(() => {
+                    symbol.targetScale = 1;
+                }, 300);
+            }
+
+            updateComparisonPanel(symbol) {
+                const panel = document.getElementById('comparison-content');
+                let html = `
+                    <div class="comparison-item">
+                        <div class="comparison-symbol">${symbol.symbol}</div>
+                        <div class="comparison-details">
+                            <h4>${symbol.name}</h4>
+                            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">
+                                ${symbol.description}
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                if (symbol.connections) {
+                    html += '<h4 style="margin-top: 20px;">Archetypal Connections:</h4>';
+                    symbol.connections.forEach(connId => {
+                        const connected = symbols.find(s => s.id === connId);
+                        if (connected) {
+                            html += `
+                                <div class="comparison-item">
+                                    <div class="comparison-symbol">${connected.symbol}</div>
+                                    <div class="comparison-details">
+                                        <strong>${connected.name}</strong>
+                                        <p style="font-size: 11px; color: rgba(255, 255, 255, 0.6);">
+                                            Shared archetype: ${this.getSharedArchetype(symbol, connected)}
+                                        </p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                panel.innerHTML = html;
+            }
+
+            getSharedArchetype(symbol1, symbol2) {
+                const archetypes = {
+                    'sacrifice-renewal': 'Death and Rebirth',
+                    'wholeness': 'Complete Integration',
+                    'unity': 'Oneness of All',
+                    'union-opposites': 'Reconciliation of Opposites',
+                    'guidance': 'Divine Wisdom',
+                    'balance': 'Harmony of Forces',
+                    'eternal-life': 'Transcendence of Death',
+                    'enlightenment': 'Awakened Consciousness'
+                };
+                
+                // Find common archetypal theme
+                if (symbol1.archetype === symbol2.archetype) {
+                    return archetypes[symbol1.archetype] || 'Shared Mystery';
+                }
+                
+                return 'Universal Truth';
+            }
+
+            filterSymbols(religion) {
+                this.filter = religion;
+                
+                this.symbols.forEach(symbol => {
+                    if (religion === 'all' || symbol.religion === religion) {
+                        symbol.visible = true;
+                        symbol.targetScale = 1;
+                    } else {
+                        symbol.visible = false;
+                        symbol.targetScale = 0;
+                    }
+                });
+
+                // Rearrange visible symbols
+                const visibleSymbols = this.symbols.filter(s => s.visible);
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.7;
+
+                visibleSymbols.forEach((symbol, index) => {
+                    const angle = (index / visibleSymbols.length) * Math.PI * 2;
+                    symbol.targetX = centerX + Math.cos(angle) * radius;
+                    symbol.targetY = centerY + Math.sin(angle) * radius;
+                });
+            }
+
+            animate() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw connections
+                this.connections.forEach(conn => {
+                    this.ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(conn.from.x, conn.from.y);
+                    this.ctx.lineTo(conn.to.x, conn.to.y);
+                    this.ctx.stroke();
+                });
+
+                // Update and draw symbols
+                this.symbols.forEach(symbol => {
+                    // Smooth animation
+                    symbol.x += (symbol.targetX - symbol.x) * 0.1;
+                    symbol.y += (symbol.targetY - symbol.y) * 0.1;
+                    symbol.scale += (symbol.targetScale - symbol.scale) * 0.1;
+                    symbol.rotation += 0.01;
+
+                    if (symbol.scale < 0.1) return;
+
+                    // Draw symbol
+                    this.ctx.save();
+                    this.ctx.translate(symbol.x, symbol.y);
+                    this.ctx.rotate(symbol.rotation);
+                    this.ctx.scale(symbol.scale, symbol.scale);
+
+                    // Glow effect
+                    if (this.selectedSymbol === symbol) {
+                        this.ctx.shadowColor = '#ffd700';
+                        this.ctx.shadowBlur = 20;
+                    }
+
+                    // Background circle
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, 35, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // Symbol
+                    this.ctx.font = '32px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.fillText(symbol.symbol, 0, 0);
+
+                    this.ctx.restore();
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Pattern Recognition Game
+        class PatternGame {
+            constructor() {
+                this.grid = document.getElementById('pattern-grid');
+                this.matches = 0;
+                this.attempts = 0;
+                this.selectedCards = [];
+                this.gameTime = 0;
+                this.timerInterval = null;
+                
+                this.patterns = [
+                    { symbol: '✝️', name: 'Cross', archetype: 'sacrifice' },
+                    { symbol: '☸️', name: 'Wheel', archetype: 'wholeness' },
+                    { symbol: '🕉️', name: 'Om', archetype: 'unity' },
+                    { symbol: '✡️', name: 'Star', archetype: 'union' },
+                    { symbol: '☪️', name: 'Crescent', archetype: 'guidance' },
+                    { symbol: '☯️', name: 'Balance', archetype: 'harmony' },
+                    { symbol: '☥', name: 'Ankh', archetype: 'life' },
+                    { symbol: '🪷', name: 'Lotus', archetype: 'purity' }
+                ];
+                
+                this.init();
+            }
+
+            init() {
+                // Create pairs
+                const cards = [];
+                this.patterns.forEach((pattern, index) => {
+                    cards.push({ ...pattern, id: index * 2 });
+                    cards.push({ ...pattern, id: index * 2 + 1 });
+                });
+
+                // Shuffle
+                cards.sort(() => Math.random() - 0.5);
+
+                // Create card elements
+                this.grid.innerHTML = '';
+                cards.forEach((card, index) => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'pattern-card';
+                    cardEl.dataset.index = index;
+                    cardEl.innerHTML = `
+                        <div class="pattern-symbol">?</div>
+                        <div class="pattern-name">${card.name}</div>
+                    `;
+                    cardEl.addEventListener('click', () => this.selectCard(index, card));
+                    this.grid.appendChild(cardEl);
+                });
+
+                // Start timer
+                this.startTimer();
+            }
+
+            selectCard(index, card) {
+                const cardEl = this.grid.children[index];
+                
+                if (cardEl.classList.contains('matched') || 
+                    this.selectedCards.some(c => c.index === index)) {
+                    return;
+                }
+
+                // Reveal card
+                cardEl.classList.add('selected');
+                cardEl.querySelector('.pattern-symbol').textContent = card.symbol;
+                
+                this.selectedCards.push({ index, card, element: cardEl });
+
+                if (this.selectedCards.length === 2) {
+                    this.attempts++;
+                    document.getElementById('attempt-count').textContent = this.attempts;
+                    
+                    setTimeout(() => this.checkMatch(), 500);
+                }
+            }
+
+            checkMatch() {
+                const [first, second] = this.selectedCards;
+                
+                if (first.card.symbol === second.card.symbol) {
+                    // Match found
+                    first.element.classList.add('matched');
+                    second.element.classList.add('matched');
+                    this.matches++;
+                    document.getElementById('match-count').textContent = this.matches;
+                    
+                    if (this.matches === 8) {
+                        this.endGame();
+                    }
+                } else {
+                    // No match
+                    first.element.classList.remove('selected');
+                    second.element.classList.remove('selected');
+                    first.element.querySelector('.pattern-symbol').textContent = '?';
+                    second.element.querySelector('.pattern-symbol').textContent = '?';
+                }
+                
+                this.selectedCards = [];
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    this.gameTime++;
+                    const minutes = Math.floor(this.gameTime / 60);
+                    const seconds = this.gameTime % 60;
+                    document.getElementById('game-timer').textContent = 
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+
+            endGame() {
+                clearInterval(this.timerInterval);
+                setTimeout(() => {
+                    alert(`Congratulations! You found all matches in ${this.attempts} attempts and ${Math.floor(this.gameTime / 60)}:${(this.gameTime % 60).toString().padStart(2, '0')}!`);
+                }, 500);
+            }
+
+            reset() {
+                this.matches = 0;
+                this.attempts = 0;
+                this.gameTime = 0;
+                this.selectedCards = [];
+                clearInterval(this.timerInterval);
+                
+                document.getElementById('match-count').textContent = '0';
+                document.getElementById('attempt-count').textContent = '0';
+                document.getElementById('game-timer').textContent = '0:00';
+                
+                this.init();
+            }
+        }
+
+        // Cross-Cultural Manifestations
+        class ManifestationViewer {
+            constructor() {
+                this.container = document.getElementById('manifestation-viewer');
+                this.manifestations = manifestations;
+                this.init();
+            }
+
+            init() {
+                this.manifestations.forEach((manifestation, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'manifestation-item';
+                    
+                    // Position items in a scattered pattern
+                    const x = Math.random() * (this.container.offsetWidth - 250);
+                    const y = Math.random() * (this.container.offsetHeight - 150);
+                    
+                    item.style.left = x + 'px';
+                    item.style.top = y + 'px';
+                    
+                    item.innerHTML = `
+                        <div class="manifestation-symbol">${manifestation.symbol}</div>
+                        <div class="manifestation-culture">${manifestation.culture}</div>
+                        <div class="manifestation-name">${manifestation.name}</div>
+                        <div class="manifestation-description">${manifestation.description}</div>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        this.showManifestationDetails(manifestation);
+                    });
+                    
+                    this.container.appendChild(item);
+                    
+                    // Animate entrance
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'scale(1)';
+                    }, index * 100);
+                });
+            }
+
+            showManifestationDetails(manifestation) {
+                const popup = document.getElementById('symbol-popup');
+                const title = document.getElementById('popup-title');
+                const content = document.getElementById('popup-content');
+                
+                title.textContent = `${manifestation.name} - ${manifestation.culture}`;
+                content.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 72px;">${manifestation.symbol}</div>
+                    </div>
+                    <p>${manifestation.description}</p>
+                    <h3 style="margin-top: 20px;">Archetypal Qualities:</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>• Integration of opposites</li>
+                        <li>• Bridge between divine and human</li>
+                        <li>• Teacher of wisdom</li>
+                        <li>• Healer of wounds</li>
+                        <li>• Model of wholeness</li>
+                    </ul>
+                `;
+                
+                popup.classList.add('active');
+            }
+        }
+
+        // Initialize components
+        const symbolExplorer = new SymbolExplorer();
+        const patternGame = new PatternGame();
+        const manifestationViewer = new ManifestationViewer();
+
+        // Start animations
+        symbolExplorer.animate();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate shapes
+            shapes.forEach((shape, i) => {
+                shape.rotation.x += 0.001 * (i % 2 ? 1 : -1);
+                shape.rotation.y += 0.001 * (i % 3 ? 1 : -1);
+                shape.material.opacity = 0.05 + Math.sin(Date.now() * 0.001 + i) * 0.05;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Utility functions
+        function resetPatternGame() {
+            patternGame.reset();
+        }
+
+        function closeSymbolPopup() {
+            document.getElementById('symbol-popup').classList.remove('active');
+        }
+
+        function showAllConnections() {
+            // Show all symbol connections temporarily
+            const explorer = symbolExplorer;
+            explorer.connections = [];
+            
+            symbols.forEach(symbol => {
+                if (symbol.connections) {
+                    symbol.connections.forEach(connId => {
+                        const connected = explorer.symbols.find(s => s.id === connId);
+                        if (connected && connected.visible) {
+                            explorer.connections.push({
+                                from: explorer.symbols.find(s => s.id === symbol.id),
+                                to: connected
+                            });
+                        }
+                    });
+                }
+            });
+            
+            setTimeout(() => {
+                explorer.connections = [];
+            }, 3000);
+        }
+
+        function startGuidedExploration() {
+            // Guide through archetypal connections
+            const guide = [
+                { symbol: 'christ-cross', message: 'The Cross: Symbol of sacrifice leading to renewal' },
+                { symbol: 'buddha-dharma', message: 'The Dharma Wheel: Path to complete integration' },
+                { symbol: 'star-david', message: 'The Star: Union of heaven and earth' },
+                { symbol: 'yin-yang', message: 'The Balance: Harmony of opposing forces' }
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= guide.length) {
+                    clearInterval(interval);
+                    return;
+                }
+                
+                const symbol = symbolExplorer.symbols.find(s => s.id === guide[index].symbol);
+                if (symbol) {
+                    symbolExplorer.selectSymbol(symbol);
+                    
+                    // Show message
+                    const popup = document.getElementById('symbol-popup');
+                    document.getElementById('popup-title').textContent = 'Guided Exploration';
+                    document.getElementById('popup-content').innerHTML = `<p>${guide[index].message}</p>`;
+                    popup.classList.add('active');
+                    
+                    setTimeout(() => {
+                        popup.classList.remove('active');
+                    }, 3000);
+                }
+                
+                index++;
+            }, 4000);
+        }
+
+        function exportSymbolMap() {
+            // Create a visualization of all connections
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 1200;
+            const ctx = canvas.getContext('2d');
+            
+            // Black background
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw connections
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 400;
+            
+            symbols.forEach((symbol, index) => {
+                const angle = (index / symbols.length) * Math.PI * 2;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                // Draw connections
+                if (symbol.connections) {
+                    symbol.connections.forEach(connId => {
+                        const connIndex = symbols.findIndex(s => s.id === connId);
+                        if (connIndex !== -1) {
+                            const connAngle = (connIndex / symbols.length) * Math.PI * 2;
+                            const connX = centerX + Math.cos(connAngle) * radius;
+                            const connY = centerY + Math.sin(connAngle) * radius;
+                            
+                            ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(connX, connY);
+                            ctx.stroke();
+                        }
+                    });
+                }
+                
+                // Draw symbol
+                ctx.fillStyle = '#fff';
+                ctx.font = '48px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(symbol.symbol, x, y);
+                
+                // Draw name
+                ctx.font = '14px Arial';
+                ctx.fillText(symbol.name, x, y + 40);
+            });
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = 'archetypal-symbol-map.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            symbolExplorer.resize();
+        });
+
+        // Handle visibility change for performance
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(patternGame.timerInterval);
+            } else if (patternGame.gameTime > 0 && patternGame.matches < 8) {
+                patternGame.startTimer();
+            }
+        });
+
+        // Error boundary
+        window.addEventListener('error', (e) => {
+            console.error('Visualization error:', e);
+            // Graceful degradation would go here
+        });
+    </script>
+</body>
+</html>
