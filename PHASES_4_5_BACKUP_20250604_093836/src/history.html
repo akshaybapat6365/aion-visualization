@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historical Context</title>
+  <link rel="stylesheet" href="styles-v3.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="timeline-component.js"></script>
+  <script src="cultural-map.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="chapters.html" class="nav-link">Chapters</a>
+      <a href="timeline.html" class="nav-link">Timeline</a>
+      <a href="symbols.html" class="nav-link">Symbols</a>
+      <a href="about.html" class="nav-link">About</a>
+    </div>
+  </nav>
+
+  <section class="hero-small">
+    <h1 class="hero-title">Historical Context</h1>
+    <p class="hero-subtitle">Explore Jung's life events and cultural backdrop</p>
+  </section>
+
+  <div id="timeline" style="width:90%;max-width:1000px;margin:2rem auto;"></div>
+  <div id="culture-map" style="width:90%;max-width:1000px;margin:2rem auto;height:500px;"></div>
+
+  <script>
+    const events = [
+      { date: new Date(1875,6,26), event:'Born in Switzerland', category:'personal', importance:5 },
+      { date: new Date(1913,0,1), event:'Red Book period begins', category:'personal', importance:5 },
+      { date: new Date(1951,0,1), event:'Publishes Aion', category:'publications', importance:5 }
+    ];
+
+    initTimeline('timeline', events);
+
+    const cultureEvents = [
+      { name:'Trip to India', year:1938, lat:20, lon:78, type:'travel', intensity:0.8 },
+      { name:'Visit to Taos', year:1925, lat:36.4, lon:-105.6, type:'travel', intensity:0.8 }
+    ];
+
+    initCulturalMap('culture-map', cultureEvents);
+  </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+/* Chapter Navigation Styles - Premium Visual Design */
+
+.chapter-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.chapter-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    text-align: center;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.05em;
+}
+
+.chapter-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    opacity: 0.8;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    max-width: 600px;
+    margin: 0 auto 60px;
+    text-align: center;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    border-radius: 4px;
+    transition: width 0.5s ease-out;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Chapter Sections */
+.chapter-section {
+    margin-bottom: 80px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: shimmer 3s infinite;
+}
+
+/* Chapter Grid */
+.chapters-grid {
+    display: grid;
+    gap: 30px;
+}
+
+.chapter-section .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Chapter Cards */
+.chapter-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.chapter-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+    border-radius: 16px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.chapter-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.chapter-card:hover::before {
+    opacity: 0.3;
+}
+
+.chapter-card:hover .chapter-symbol svg {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Chapter Symbols */
+.chapter-symbol {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+.chapter-symbol svg {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.chapter-symbol::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0.1;
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+/* Chapter Content */
+.chapter-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.chapter-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Chapter Progress */
+.chapter-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.chapter-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+    width: var(--progress, 0%);
+    transition: width 0.5s ease;
+}
+
+/* Locked Chapters */
+.chapter-card.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chapter-card.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    opacity: 0.5;
+}
+
+/* Completed Chapters */
+.chapter-card.completed {
+    border-color: var(--primary);
+}
+
+.chapter-card.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+/* Active Chapter */
+.chapter-card.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--secondary);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.chapter-card.active::before {
+    opacity: 0.5;
+    animation: pulse 2s infinite;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Symbol-specific Animations */
+.christ-symbol {
+    animation: rotate 20s linear infinite;
+}
+
+.shadow-symbol ellipse:last-child {
+    animation: shadowPulse 3s ease-in-out infinite;
+}
+
+.syzygy-symbol circle {
+    animation: orbit 8s linear infinite;
+}
+
+.fish-symbol path {
+    animation: swim 4s ease-in-out infinite alternate;
+}
+
+.gnostic-symbol circle {
+    animation: ripple 3s ease-out infinite;
+}
+
+.quaternary-symbol {
+    animation: rotate 30s linear infinite reverse;
+}
+
+@keyframes rotate {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shadowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes orbit {
+    to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
+}
+
+@keyframes swim {
+    to { transform: translateX(5px); }
+}
+
+@keyframes ripple {
+    0% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chapter-section .chapters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chapter-card {
+        padding: 20px;
+    }
+    
+    .chapter-symbol {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .chapter-title {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+}
+
+/* Theme Support */
+@media (prefers-color-scheme: light) {
+    .chapter-card {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .chapter-card:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-bar,
+    .chapter-progress {
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+@media (max-width: 480px) {
+  .chapter-card {
+    margin-bottom: 1rem;
+  }
+}

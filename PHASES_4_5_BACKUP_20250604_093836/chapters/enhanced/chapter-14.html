@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: The Self - Aion by Carl Jung</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="../../index.html" class="nav-home">Aion</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+            <a href="chapters.html">Chapters</a>
+            <a href="timeline.html">Timeline</a>
+            <a href="symbols.html">Symbols</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter XIV</div>
+            <h1 class="chapter-title">The Self</h1>
+            <p class="chapter-subtitle">The Complete Integration of Conscious and Unconscious</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung concludes Aion with the Self as the ultimate goal of individuation—the archetype of wholeness that transcends the ego, integrating all opposites into a unified totality. The Self represents the divine spark within, the imago Dei, achieved through conscious realization of unconscious contents.</p>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Complete Integration Mandala</h2>
+            <div id="self-mandala" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="animate-integration">Animate Integration</button>
+                <button id="show-wholeness">Show Wholeness</button>
+                <button id="reset-self">Reset</button>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Integrated Self</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Ego Integration</h3>
+                    <p>Conscious personality centered but not identified with the Self.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Shadow Acceptance</h3>
+                    <p>Dark aspects acknowledged and integrated rather than projected.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Anima/Animus Union</h3>
+                    <p>Contrasexual elements consciously related to and integrated.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Divine Wholeness</h3>
+                    <p>Transcendent unity containing all opposites in dynamic balance.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <h2>The Journey Complete</h2>
+            <div id="journey-complete" class="visualization-container"></div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Realization of Wholeness</h2>
+            <p>The Self represents the culmination of the individuation process:</p>
+            <ul class="insight-list">
+                <li><strong>Coincidentia Oppositorum:</strong> The union of all opposites in conscious awareness</li>
+                <li><strong>Transcendent Function:</strong> Bridging conscious and unconscious through symbols</li>
+                <li><strong>Imago Dei:</strong> The divine image within realized through psychological work</li>
+                <li><strong>Eternal Perspective:</strong> Aion—the eternal dimension of human experience</li>
+                <li><strong>Living Symbol:</strong> The Self as a dynamic, ever-renewing source of meaning</li>
+            </ul>
+        </section>
+
+        <div class="chapter-nav">
+            <a href="chapter13.html" class="prev-chapter">← Chapter 13: The Quaternary</a>
+            <a href="chapters.html" class="next-chapter">Return to Chapters</a>
+        </div>
+    </main>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <script>
+        // Background shader - ultimate integration
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                vec2 center = vec2(0.5, 0.5);
+                float dist = length(uv - center);
+                float angle = atan(uv.y - center.y, uv.x - center.x);
+                
+                // Complete integration pattern
+                float mandala = sin(dist * 12.0 - time) * 
+                               cos(angle * 8.0 + time * 0.3) * 
+                               sin(angle * 4.0 - time * 0.5) * 
+                               exp(-dist * 1.5);
+                
+                // All colors unified
+                vec3 gold = vec3(1.0, 0.8, 0.2);
+                vec3 purple = vec3(0.6, 0.3, 0.9);
+                vec3 white = vec3(0.9, 0.9, 1.0);
+                vec3 dark = vec3(0.05, 0.05, 0.15);
+                
+                vec3 color = mix(dark, 
+                    mix(gold, mix(purple, white, mandala * 0.5 + 0.5), mandala * 0.3 + 0.7) * 0.4, 
+                    abs(mandala));
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+        const timeLocation = gl.getUniformLocation(program, 'time');
+
+        function animate(time) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+        }
+        animate(0);
+
+        // Self Mandala - Ultimate Integration
+        const mandalaWidth = 800;
+        const mandalaHeight = 800;
+
+        const mandalaSvg = d3.select("#self-mandala")
+            .append("svg")
+            .attr("viewBox", `0 0 ${mandalaWidth} ${mandalaHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const mandalaCenter = { x: mandalaWidth / 2, y: mandalaHeight / 2 };
+
+        // Create concentric layers representing integration
+        const layers = [
+            { radius: 350, elements: 12, color: "#9370DB", opacity: 0.2, name: "Collective Unconscious" },
+            { radius: 280, elements: 8, color: "#4B0082", opacity: 0.3, name: "Personal Unconscious" },
+            { radius: 210, elements: 4, color: "#6B46C1", opacity: 0.4, name: "Archetypes" },
+            { radius: 140, elements: 4, color: "#8A2BE2", opacity: 0.6, name: "Psychological Functions" },
+            { radius: 70, elements: 1, color: "#FFD700", opacity: 1.0, name: "Self" }
+        ];
+
+        // Draw concentric mandala layers
+        layers.forEach((layer, layerIndex) => {
+            // Background circle
+            mandalaSvg.append("circle")
+                .attr("cx", mandalaCenter.x)
+                .attr("cy", mandalaCenter.y)
+                .attr("r", layer.radius)
+                .attr("fill", layer.color)
+                .attr("fill-opacity", layer.opacity * 0.3)
+                .attr("stroke", layer.color)
+                .attr("stroke-width", 2)
+                .attr("stroke-opacity", layer.opacity);
+
+            // Elements around the circle
+            if (layer.elements > 1) {
+                for (let i = 0; i < layer.elements; i++) {
+                    const angle = (i * 360 / layer.elements) * Math.PI / 180;
+                    const x = mandalaCenter.x + Math.cos(angle) * layer.radius;
+                    const y = mandalaCenter.y + Math.sin(angle) * layer.radius;
+                    
+                    const elementGroup = mandalaSvg.append("g")
+                        .attr("class", `layer-${layerIndex}-element-${i}`)
+                        .attr("opacity", 0);
+                    
+                    elementGroup.append("circle")
+                        .attr("cx", x)
+                        .attr("cy", y)
+                        .attr("r", 15)
+                        .attr("fill", layer.color)
+                        .attr("stroke", "#FFF")
+                        .attr("stroke-width", 1);
+                    
+                    // Different symbols for different layers
+                    let symbol = "●";
+                    if (layerIndex === 0) symbol = "✦"; // Collective symbols
+                    else if (layerIndex === 1) symbol = "◊"; // Personal symbols
+                    else if (layerIndex === 2) symbol = "⚡"; // Archetypal symbols
+                    else if (layerIndex === 3) symbol = ["🧠", "❤️", "👁️", "✨"][i]; // Functions
+                    
+                    elementGroup.append("text")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("text-anchor", "middle")
+                        .attr("dy", "0.35em")
+                        .attr("fill", "#FFF")
+                        .attr("font-size", "12px")
+                        .text(symbol);
+                }
+            }
+        });
+
+        // Central Self symbol
+        const selfGroup = mandalaSvg.append("g").attr("class", "central-self");
+        
+        selfGroup.append("circle")
+            .attr("cx", mandalaCenter.x)
+            .attr("cy", mandalaCenter.y)
+            .attr("r", 60)
+            .attr("fill", "#FFD700")
+            .attr("stroke", "#9370DB")
+            .attr("stroke-width", 6);
+
+        selfGroup.append("text")
+            .attr("x", mandalaCenter.x)
+            .attr("y", mandalaCenter.y)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#9370DB")
+            .attr("font-size", "40px")
+            .attr("font-weight", "bold")
+            .text("⊕");
+
+        selfGroup.append("text")
+            .attr("x", mandalaCenter.x)
+            .attr("y", mandalaCenter.y + 90)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#FFD700")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .text("SELF");
+
+        // Journey Complete Visualization
+        const journeyWidth = 1000;
+        const journeyHeight = 400;
+
+        const journeySvg = d3.select("#journey-complete")
+            .append("svg")
+            .attr("viewBox", `0 0 ${journeyWidth} ${journeyHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // All major symbols of the journey
+        const journeySymbols = [
+            { x: 80, symbol: "⚪", name: "Ego", color: "#87CEEB" },
+            { x: 180, symbol: "🌑", name: "Shadow", color: "#4B0082" },
+            { x: 280, symbol: "♀♂", name: "Anima/Animus", color: "#FF69B4" },
+            { x: 380, symbol: "♓", name: "Pisces Age", color: "#4169E1" },
+            { x: 480, symbol: "✝", name: "Christ", color: "#FFD700" },
+            { x: 580, symbol: "😈", name: "Antichrist", color: "#DC143C" },
+            { x: 680, symbol: "☿", name: "Mercurius", color: "#C0C0C0" },
+            { x: 780, symbol: "💎", name: "Lapis", color: "#9370DB" },
+            { x: 880, symbol: "⊕", name: "Self", color: "#FFD700" }
+        ];
+
+        const journeyY = journeyHeight / 2;
+
+        // Draw journey path
+        const journeyPath = d3.line()
+            .x(d => d.x)
+            .y(d => journeyY)
+            .curve(d3.curveBasis);
+
+        journeySvg.append("path")
+            .datum(journeySymbols)
+            .attr("d", journeyPath)
+            .attr("fill", "none")
+            .attr("stroke", "#9370DB")
+            .attr("stroke-width", 3)
+            .attr("stroke-dasharray", "10,5")
+            .attr("opacity", 0.6);
+
+        // Add journey symbols
+        journeySymbols.forEach((symbol, i) => {
+            const symbolGroup = journeySvg.append("g");
+            
+            symbolGroup.append("circle")
+                .attr("cx", symbol.x)
+                .attr("cy", journeyY)
+                .attr("r", 25)
+                .attr("fill", symbol.color)
+                .attr("fill-opacity", 0.8)
+                .attr("stroke", "#FFF")
+                .attr("stroke-width", 2);
+            
+            symbolGroup.append("text")
+                .attr("x", symbol.x)
+                .attr("y", journeyY)
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("fill", "#FFF")
+                .attr("font-size", "16px")
+                .text(symbol.symbol);
+            
+            symbolGroup.append("text")
+                .attr("x", symbol.x)
+                .attr("y", journeyY + 45)
+                .attr("text-anchor", "middle")
+                .attr("fill", symbol.color)
+                .attr("font-size", "12px")
+                .attr("font-weight", "bold")
+                .text(symbol.name);
+        });
+
+        // Add title
+        journeySvg.append("text")
+            .attr("x", journeyWidth / 2)
+            .attr("y", 30)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#9370DB")
+            .attr("font-size", "18px")
+            .attr("font-weight", "bold")
+            .text("The Complete Journey of Individuation");
+
+        // Animation controls
+        let integrationAnimating = false;
+        document.getElementById("animate-integration").addEventListener("click", function() {
+            if (!integrationAnimating) {
+                integrationAnimating = true;
+                this.textContent = "Stop Integration";
+                animateIntegration();
+            } else {
+                integrationAnimating = false;
+                this.textContent = "Animate Integration";
+                resetIntegration();
+            }
+        });
+
+        function animateIntegration() {
+            if (!integrationAnimating) return;
+            
+            // Animate layers appearing from outside to inside
+            layers.forEach((layer, layerIndex) => {
+                setTimeout(() => {
+                    if (layer.elements > 1) {
+                        mandalaSvg.selectAll(`g[class^="layer-${layerIndex}-element"]`)
+                            .transition()
+                            .duration(1000)
+                            .attr("opacity", 1);
+                    }
+                }, layerIndex * 800);
+            });
+            
+            // Final pulse animation
+            setTimeout(() => {
+                selfGroup.transition()
+                    .duration(1000)
+                    .attr("transform", "scale(1.3)")
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", "scale(1)");
+            }, layers.length * 800);
+        }
+
+        function resetIntegration() {
+            mandalaSvg.selectAll("g[class*='layer-']").attr("opacity", 0);
+            selfGroup.attr("transform", "scale(1)");
+        }
+
+        document.getElementById("reset-self").addEventListener("click", resetIntegration);
+
+        // Show wholeness - reveal everything at once
+        document.getElementById("show-wholeness").addEventListener("click", function() {
+            mandalaSvg.selectAll("g[class*='layer-']").attr("opacity", 1);
+            selfGroup.attr("transform", "scale(1)");
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+    <script src="personalization.js"></script>
+</body>
+</html>
