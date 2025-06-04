@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: The Shadow - Enhanced Shadow Integration</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="css/styles-v3.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="webgl-context-manager.js"></script>
+    <script src="error-boundaries.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters-v2.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline-v2.html" class="nav-link">Timeline</a>
+            <a href="symbols-v2.html" class="nav-link">Symbols</a>
+            <a href="about-v2.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter II</div>
+            <h1 class="chapter-title">The Shadow</h1>
+            <p class="chapter-subtitle">Interactive Shadow Recognition & Integration</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>The shadow contains all the personal characteristics that the ego refuses to acknowledge—our rejected traits, repressed impulses, and undeveloped aspects. Jung emphasized that integrating the shadow is the first essential step in individuation. Explore your personal shadow and understand how projection works in relationships and society.</p>
+        </section>
+
+        <!-- Shadow Recognition Mirror -->
+        <section class="visualization-section">
+            <h2>Shadow Recognition Mirror</h2>
+            <div class="visualization-intro">
+                <p>Look into the interactive shadow mirror to explore your rejected traits. This visualization reveals how shadow projections work and guides you through the recognition process.</p>
+            </div>
+            <div id="shadow-mirror" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="shadow-intensity">Shadow Visibility:</label>
+                    <input type="range" id="shadow-intensity" min="0" max="100" value="30">
+                    <span id="shadow-level">Partially Hidden</span>
+                </div>
+                <div class="control-group">
+                    <button id="reveal-shadow" class="glass-button">Gradually Reveal Shadow</button>
+                    <button id="hide-shadow" class="glass-button">Hide Shadow</button>
+                    <button id="animate-projection" class="glass-button">Show Projection</button>
+                </div>
+                <div class="control-group">
+                    <label for="trait-selector">Focus on Trait:</label>
+                    <select id="trait-selector" class="glass-button">
+                        <option value="anger">Anger</option>
+                        <option value="selfishness">Selfishness</option>
+                        <option value="weakness">Weakness</option>
+                        <option value="cruelty">Cruelty</option>
+                        <option value="laziness">Laziness</option>
+                        <option value="jealousy">Jealousy</option>
+                    </select>
+                    <button id="explore-trait" class="glass-button">Explore This Trait</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personal Shadow Map -->
+        <section class="visualization-section">
+            <h2>Personal Shadow Constellation</h2>
+            <div class="visualization-intro">
+                <p>Map your personal shadow traits as a constellation. Identify trigger points and work with the shadow-light balance meter to understand integration progress.</p>
+            </div>
+            <div id="shadow-constellation" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <button id="add-shadow-trait" class="glass-button">Add Shadow Trait</button>
+                    <button id="add-trigger-point" class="glass-button">Add Trigger Point</button>
+                    <button id="show-connections" class="glass-button">Show Trait Connections</button>
+                </div>
+                <div class="control-group">
+                    <label for="integration-progress">Integration Progress:</label>
+                    <div id="shadow-light-meter" class="balance-meter"></div>
+                    <div class="integration-status">
+                        <span id="shadow-percentage">50%</span> Shadow - 
+                        <span id="light-percentage">50%</span> Light
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="shadow-dialogue" class="glass-button">Start Shadow Dialogue</button>
+                    <button id="integration-exercise" class="glass-button">Integration Exercise</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Collective Shadow Timeline -->
+        <section class="visualization-section">
+            <h2>Collective Shadow Manifestations</h2>
+            <div class="visualization-intro">
+                <p>Explore how collective shadow has manifested throughout history in cultural events, social movements, and group dynamics.</p>
+            </div>
+            <div id="collective-shadow" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="time-period">Historical Period:</label>
+                    <select id="time-period" class="glass-button">
+                        <option value="ancient">Ancient Times (3000 BCE - 500 CE)</option>
+                        <option value="medieval">Medieval (500 - 1500 CE)</option>
+                        <option value="renaissance">Renaissance (1500 - 1800 CE)</option>
+                        <option value="industrial">Industrial Age (1800 - 1950 CE)</option>
+                        <option value="modern">Modern Era (1950 - Present)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="shadow-type">Shadow Type:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="religious-shadow" checked> Religious</label>
+                        <label><input type="checkbox" id="racial-shadow" checked> Racial</label>
+                        <label><input type="checkbox" id="political-shadow" checked> Political</label>
+                        <label><input type="checkbox" id="cultural-shadow" checked> Cultural</label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="play-timeline" class="glass-button">Play Timeline</button>
+                    <button id="pause-timeline" class="glass-button">Pause</button>
+                    <button id="focus-event" class="glass-button">Focus on Event</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Content -->
+        <section class="content-section">
+            <h2>Understanding the Shadow</h2>
+            <div class="concept-grid">
+                <div class="concept-card glass-card">
+                    <h3>Shadow Formation</h3>
+                    <p>The shadow forms early in life as we learn what is acceptable to our family and society. Traits that are rejected or punished become part of the personal unconscious.</p>
+                    <ul>
+                        <li>Social conditioning creates shadow</li>
+                        <li>Family values shape acceptance/rejection</li>
+                        <li>Cultural norms influence shadow content</li>
+                        <li>Personal experiences add unique elements</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Projection Mechanism</h3>
+                    <p>We unconsciously project our shadow traits onto others, seeing in them what we cannot accept in ourselves. This is the source of much interpersonal conflict.</p>
+                    <ul>
+                        <li><strong>Identification:</strong> Strong emotional reactions to others</li>
+                        <li><strong>Projection:</strong> Seeing our traits in others</li>
+                        <li><strong>Recognition:</strong> Owning what we've projected</li>
+                        <li><strong>Integration:</strong> Accepting rejected aspects</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Personal vs. Collective Shadow</h3>
+                    <p>The shadow operates on both personal and collective levels, influencing individual psychology and group dynamics.</p>
+                    <ul>
+                        <li><strong>Personal:</strong> Individual rejected traits</li>
+                        <li><strong>Cultural:</strong> Society's rejected values</li>
+                        <li><strong>National:</strong> Country's historical shadow</li>
+                        <li><strong>Universal:</strong> Human species shadow</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Shadow Integration Process</h3>
+                    <p>Integrating the shadow requires courage to face rejected aspects and wisdom to incorporate them constructively.</p>
+                    <ul>
+                        <li><strong>Recognition:</strong> Identifying shadow projections</li>
+                        <li><strong>Ownership:</strong> Taking back projections</li>
+                        <li><strong>Dialogue:</strong> Communicating with shadow</li>
+                        <li><strong>Integration:</strong> Including shadow in conscious life</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shadow Work Exercises -->
+        <section class="exercise-section">
+            <h2>Shadow Work Exercises</h2>
+            
+            <div class="exercise-card glass-card">
+                <h3>Projection Withdrawal Exercise</h3>
+                <p>Identify someone who irritates you and explore what this might reveal about your own shadow.</p>
+                <div class="exercise-controls">
+                    <input type="text" id="irritating-person" placeholder="Who irritates you and why?">
+                    <button id="analyze-projection" class="glass-button">Analyze Projection</button>
+                    <div id="projection-analysis" class="analysis-result"></div>
+                </div>
+            </div>
+            
+            <div class="exercise-card glass-card">
+                <h3>Shadow Dialogue Practice</h3>
+                <p>Have a written dialogue with your shadow to understand its perspective and needs.</p>
+                <div class="exercise-controls">
+                    <div class="dialogue-interface">
+                        <div class="dialogue-history" id="shadow-dialogue-history"></div>
+                        <div class="dialogue-input">
+                            <input type="text" id="ego-message" placeholder="Speak to your shadow...">
+                            <button id="send-to-shadow" class="glass-button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exercise-card glass-card">
+                <h3>Dream Shadow Tracker</h3>
+                <p>Record shadow figures and themes that appear in your dreams.</p>
+                <div class="exercise-controls">
+                    <textarea id="dream-record" placeholder="Describe shadow figures or dark themes from your dreams..."></textarea>
+                    <button id="add-dream" class="glass-button">Add Dream</button>
+                    <div id="dream-patterns" class="pattern-analysis"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <section class="chapter-navigation">
+            <a href="enhanced-chapter1.html" class="nav-button glass-button">
+                ← Previous: Chapter 1 - The Ego
+            </a>
+            <a href="enhanced-chapter3.html" class="nav-button glass-button">
+                Next: Chapter 3 - The Syzygy →
+            </a>
+        </section>
+    </main>
+
+    <script>
+        // Enhanced Chapter 2: The Shadow Implementation
+        
+        // Initialize WebGL context manager
+        const contextManager = new WebGLContextManager();
+        let shadowMirror, shadowConstellation, collectiveShadowViz;
+        
+        // Shadow traits data
+        const shadowTraits = {
+            anger: { color: '#EF4444', intensity: 0.7, description: 'Repressed anger and rage' },
+            selfishness: { color: '#F59E0B', intensity: 0.5, description: 'Hidden self-centered tendencies' },
+            weakness: { color: '#6B7280', intensity: 0.6, description: 'Fear of vulnerability' },
+            cruelty: { color: '#7C2D12', intensity: 0.8, description: 'Capacity for causing harm' },
+            laziness: { color: '#059669', intensity: 0.4, description: 'Resistance to effort' },
+            jealousy: { color: '#8B5CF6', intensity: 0.6, description: 'Envy and possessiveness' }
+        };
+        
+        // ========== Shadow Recognition Mirror ==========
+        function initShadowMirror() {
+            const container = document.getElementById('shadow-mirror');
+            const canvas = document.createElement('canvas');
+            canvas.id = 'shadow-mirror-canvas';
+            canvas.style.width = '100%';
+            canvas.style.height = '500px';
+            
+            container.appendChild(canvas);
+            
+            // Get WebGL context through manager
+            const context = contextManager.getContext(canvas, {
+                alpha: true,
+                antialias: true,
+                preserveDrawingBuffer: false
+            });
+            
+            if (!context) {
+                container.innerHTML = '<div class="fallback-message">WebGL not supported. Please use a modern browser.</div>';
+                return;
+            }
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / 500, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true });
+            
+            renderer.setSize(container.offsetWidth, 500);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
+            
+            // Create mirror surface
+            const mirrorGeometry = new THREE.PlaneGeometry(4, 5);
+            const mirrorMaterial = new THREE.MeshBasicMaterial({
+                color: 0x1a1a1a,
+                transparent: true,
+                opacity: 0.8,
+                side: THREE.DoubleSide
+            });
+            const mirror = new THREE.Mesh(mirrorGeometry, mirrorMaterial);
+            scene.add(mirror);
+            
+            // Create reflection figure (ego)
+            const egoGroup = new THREE.Group();
+            
+            // Ego figure - bright
+            const egoGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const egoMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFFFFFF,
+                transparent: true,
+                opacity: 0.9
+            });
+            const egoFigure = new THREE.Mesh(egoGeometry, egoMaterial);
+            egoFigure.position.set(-1, 0, 0.1);
+            egoGroup.add(egoFigure);
+            
+            // Add ego details
+            const egoDetails = [];
+            for (let i = 0; i < 5; i++) {
+                const detailGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+                const detailMaterial = new THREE.MeshBasicMaterial({ color: 0x3B82F6 });
+                const detail = new THREE.Mesh(detailGeometry, detailMaterial);
+                detail.position.set(
+                    -1 + (Math.random() - 0.5) * 0.4,
+                    (Math.random() - 0.5) * 0.4,
+                    0.1
+                );
+                egoDetails.push(detail);
+                egoGroup.add(detail);
+            }
+            
+            scene.add(egoGroup);
+            
+            // Create shadow figure (initially hidden)
+            const shadowGroup = new THREE.Group();
+            
+            // Shadow figure - dark
+            const shadowGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const shadowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x333333,
+                transparent: true,
+                opacity: 0.3
+            });
+            const shadowFigure = new THREE.Mesh(shadowGeometry, shadowMaterial);
+            shadowFigure.position.set(1, 0, 0.1);
+            shadowGroup.add(shadowFigure);
+            
+            // Add shadow details (traits)
+            const shadowDetails = [];
+            Object.keys(shadowTraits).forEach((trait, index) => {
+                const traitGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+                const traitMaterial = new THREE.MeshBasicMaterial({
+                    color: shadowTraits[trait].color,
+                    transparent: true,
+                    opacity: 0.0
+                });
+                const traitMesh = new THREE.Mesh(traitGeometry, traitMaterial);
+                
+                const angle = (index / Object.keys(shadowTraits).length) * Math.PI * 2;
+                traitMesh.position.set(
+                    1 + Math.cos(angle) * 0.4,
+                    Math.sin(angle) * 0.4,
+                    0.1
+                );
+                traitMesh.userData = { trait, originalOpacity: shadowTraits[trait].intensity };
+                shadowDetails.push(traitMesh);
+                shadowGroup.add(traitMesh);
+            });
+            
+            scene.add(shadowGroup);
+            
+            // Add ambient lighting effect
+            const ambientGeometry = new THREE.RingGeometry(3, 5, 32);
+            const ambientMaterial = new THREE.MeshBasicMaterial({
+                color: 0x444444,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            });
+            const ambientRing = new THREE.Mesh(ambientGeometry, ambientMaterial);
+            ambientRing.position.z = -0.1;
+            scene.add(ambientRing);
+            
+            camera.position.set(0, 0, 3);
+            camera.lookAt(0, 0, 0);
+            
+            // Animation loop
+            let animationId;
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                // Subtle ego breathing
+                const time = Date.now() * 0.001;
+                egoFigure.scale.setScalar(1 + Math.sin(time * 2) * 0.05);
+                
+                // Shadow intensity based on slider
+                const intensity = parseFloat(document.getElementById('shadow-intensity').value) / 100;
+                shadowFigure.material.opacity = intensity * 0.8;
+                
+                shadowDetails.forEach(detail => {
+                    detail.material.opacity = intensity * detail.userData.originalOpacity;
+                });
+                
+                // Rotate ambient ring
+                ambientRing.rotation.z += 0.002;
+                
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // Store references
+            shadowMirror = { renderer, scene, camera, animationId, canvas, shadowDetails, shadowGroup };
+            
+            // Setup controls
+            setupShadowMirrorControls();
+        }
+        
+        function setupShadowMirrorControls() {
+            const intensitySlider = document.getElementById('shadow-intensity');
+            const levelSpan = document.getElementById('shadow-level');
+            
+            intensitySlider.addEventListener('input', (e) => {
+                const intensity = parseInt(e.target.value);
+                
+                if (intensity < 25) {
+                    levelSpan.textContent = 'Deeply Hidden';
+                    levelSpan.style.color = '#6B7280';
+                } else if (intensity < 50) {
+                    levelSpan.textContent = 'Partially Hidden';
+                    levelSpan.style.color = '#F59E0B';
+                } else if (intensity < 75) {
+                    levelSpan.textContent = 'Becoming Visible';
+                    levelSpan.style.color = '#EF4444';
+                } else {
+                    levelSpan.textContent = 'Fully Revealed';
+                    levelSpan.style.color = '#DC2626';
+                }
+            });
+            
+            document.getElementById('reveal-shadow').addEventListener('click', () => {
+                animateSliderTo(intensitySlider, 90, 2000);
+            });
+            
+            document.getElementById('hide-shadow').addEventListener('click', () => {
+                animateSliderTo(intensitySlider, 10, 1500);
+            });
+            
+            document.getElementById('animate-projection').addEventListener('click', () => {
+                animateProjection();
+            });
+            
+            document.getElementById('explore-trait').addEventListener('click', () => {
+                const selectedTrait = document.getElementById('trait-selector').value;
+                highlightTrait(selectedTrait);
+            });
+        }
+        
+        function animateSliderTo(slider, targetValue, duration) {
+            const startValue = parseFloat(slider.value);
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentValue = startValue + (targetValue - startValue) * progress;
+                
+                slider.value = currentValue;
+                slider.dispatchEvent(new Event('input'));
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            animate();
+        }
+        
+        function animateProjection() {
+            if (!shadowMirror) return;
+            
+            // Create projection animation - shadow traits moving toward ego
+            shadowMirror.shadowDetails.forEach((detail, index) => {
+                const originalPosition = detail.position.clone();
+                const targetPosition = new THREE.Vector3(-1, 0, 0.1);
+                
+                setTimeout(() => {
+                    const duration = 2000;
+                    const startTime = Date.now();
+                    
+                    function animateDetail() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                        
+                        detail.position.lerpVectors(originalPosition, targetPosition, easeProgress);
+                        detail.material.opacity = (1 - progress) * detail.userData.originalOpacity;
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animateDetail);
+                        } else {
+                            // Reset after animation
+                            setTimeout(() => {
+                                detail.position.copy(originalPosition);
+                                detail.material.opacity = detail.userData.originalOpacity * 
+                                    (parseFloat(document.getElementById('shadow-intensity').value) / 100);
+                            }, 500);
+                        }
+                    }
+                    
+                    animateDetail();
+                }, index * 200);
+            });
+        }
+        
+        function highlightTrait(traitName) {
+            if (!shadowMirror) return;
+            
+            shadowMirror.shadowDetails.forEach(detail => {
+                if (detail.userData.trait === traitName) {
+                    // Highlight selected trait
+                    detail.material.opacity = 1.0;
+                    detail.scale.setScalar(2);
+                    
+                    // Show trait description
+                    showTraitDescription(traitName, shadowTraits[traitName].description);
+                    
+                    // Reset after 3 seconds
+                    setTimeout(() => {
+                        detail.scale.setScalar(1);
+                        detail.material.opacity = detail.userData.originalOpacity * 
+                            (parseFloat(document.getElementById('shadow-intensity').value) / 100);
+                    }, 3000);
+                } else {
+                    // Dim other traits
+                    detail.material.opacity *= 0.3;
+                }
+            });
+        }
+        
+        function showTraitDescription(trait, description) {
+            // Create temporary tooltip
+            const tooltip = document.createElement('div');
+            tooltip.innerHTML = `<strong>${trait.charAt(0).toUpperCase() + trait.slice(1)}:</strong> ${description}`;
+            tooltip.style.cssText = `
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.9);
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 1000;
+                max-width: 300px;
+            `;
+            
+            document.getElementById('shadow-mirror').appendChild(tooltip);
+            
+            setTimeout(() => {
+                tooltip.remove();
+            }, 3000);
+        }
+        
+        // ========== Personal Shadow Constellation ==========
+        function initShadowConstellation() {
+            const container = document.getElementById('shadow-constellation');
+            const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            // Create force simulation
+            let nodes = [];
+            let links = [];
+            
+            // Add default shadow traits
+            Object.keys(shadowTraits).forEach((trait, index) => {
+                nodes.push({
+                    id: trait,
+                    type: 'shadow',
+                    name: trait.charAt(0).toUpperCase() + trait.slice(1),
+                    color: shadowTraits[trait].color,
+                    intensity: shadowTraits[trait].intensity,
+                    x: width/2 + (Math.random() - 0.5) * 200,
+                    y: height/2 + (Math.random() - 0.5) * 200
+                });
+            });
+            
+            const simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(25));
+            
+            // Create links
+            const link = g.append('g')
+                .attr('class', 'links')
+                .selectAll('line')
+                .data(links)
+                .enter()
+                .append('line')
+                .attr('stroke', '#6B7280')
+                .attr('stroke-opacity', 0.6)
+                .attr('stroke-width', 2);
+            
+            // Create nodes
+            const node = g.append('g')
+                .attr('class', 'nodes')
+                .selectAll('g')
+                .data(nodes)
+                .enter()
+                .append('g')
+                .attr('class', 'node')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+            
+            node.append('circle')
+                .attr('r', d => 15 + d.intensity * 10)
+                .attr('fill', d => d.color)
+                .attr('opacity', 0.8);
+            
+            node.append('text')
+                .attr('dy', '.35em')
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold')
+                .text(d => d.name);
+            
+            // Update positions
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node.attr('transform', d => `translate(${d.x}, ${d.y})`);
+            });
+            
+            // Drag functions
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            
+            // Create shadow-light balance meter
+            createBalanceMeter();
+            
+            shadowConstellation = { svg, simulation, nodes, links, node, link };
+        }
+        
+        function createBalanceMeter() {
+            const container = document.getElementById('shadow-light-meter');
+            const width = 300;
+            const height = 20;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Background
+            svg.append('rect')
+                .attr('width', width)
+                .attr('height', height)
+                .attr('fill', '#374151')
+                .attr('rx', 10);
+            
+            // Shadow side
+            svg.append('rect')
+                .attr('width', width / 2)
+                .attr('height', height)
+                .attr('fill', '#7C2D12')
+                .attr('rx', 10);
+            
+            // Light side
+            svg.append('rect')
+                .attr('x', width / 2)
+                .attr('width', width / 2)
+                .attr('height', height)
+                .attr('fill', '#F59E0B')
+                .attr('rx', 10);
+            
+            // Balance indicator
+            const indicator = svg.append('circle')
+                .attr('cx', width / 2)
+                .attr('cy', height / 2)
+                .attr('r', 8)
+                .attr('fill', '#FFFFFF')
+                .attr('stroke', '#000000')
+                .attr('stroke-width', 2);
+        }
+        
+        // ========== Collective Shadow Timeline ==========
+        function initCollectiveShadow() {
+            const container = document.getElementById('collective-shadow');
+            const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            // Sample historical shadow events
+            const shadowEvents = [
+                { year: -500, event: 'Scapegoating in Ancient Greece', type: 'religious', intensity: 60 },
+                { year: 1095, event: 'First Crusade', type: 'religious', intensity: 90 },
+                { year: 1347, event: 'Black Death Persecution', type: 'racial', intensity: 85 },
+                { year: 1692, event: 'Salem Witch Trials', type: 'religious', intensity: 80 },
+                { year: 1789, event: 'Reign of Terror', type: 'political', intensity: 95 },
+                { year: 1861, event: 'American Civil War', type: 'racial', intensity: 85 },
+                { year: 1914, event: 'World War I', type: 'political', intensity: 100 },
+                { year: 1939, event: 'Holocaust', type: 'racial', intensity: 100 },
+                { year: 1950, event: 'McCarthyism', type: 'political', intensity: 70 },
+                { year: 1994, event: 'Rwanda Genocide', type: 'racial', intensity: 100 },
+                { year: 2001, event: 'Post-9/11 Islamophobia', type: 'cultural', intensity: 75 }
+            ];
+            
+            // Create scales
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(shadowEvents, d => d.year))
+                .range([0, width]);
+            
+            const yScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+            
+            // Color scale for shadow types
+            const colorScale = d3.scaleOrdinal()
+                .domain(['religious', 'racial', 'political', 'cultural'])
+                .range(['#DC2626', '#7C2D12', '#1F2937', '#6B46C1']);
+            
+            // Create axes
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(xScale).tickFormat(d3.format('d')))
+                .append('text')
+                .attr('x', width / 2)
+                .attr('y', 35)
+                .attr('fill', '#D1D5DB')
+                .style('text-anchor', 'middle')
+                .text('Year');
+            
+            g.append('g')
+                .call(d3.axisLeft(yScale))
+                .append('text')
+                .attr('transform', 'rotate(-90)')
+                .attr('y', -40)
+                .attr('x', -height / 2)
+                .attr('fill', '#D1D5DB')
+                .style('text-anchor', 'middle')
+                .text('Shadow Intensity');
+            
+            // Create event circles
+            const events = g.selectAll('.shadow-event')
+                .data(shadowEvents)
+                .enter()
+                .append('g')
+                .attr('class', 'shadow-event')
+                .attr('transform', d => `translate(${xScale(d.year)}, ${yScale(d.intensity)})`);
+            
+            events.append('circle')
+                .attr('r', 8)
+                .attr('fill', d => colorScale(d.type))
+                .attr('opacity', 0.8);
+            
+            // Add event labels on hover
+            events.on('mouseover', function(event, d) {
+                const tooltip = d3.select('body').append('div')
+                    .attr('class', 'shadow-tooltip')
+                    .style('position', 'absolute')
+                    .style('visibility', 'visible')
+                    .style('background', 'rgba(0,0,0,0.9)')
+                    .style('color', 'white')
+                    .style('padding', '8px 12px')
+                    .style('border-radius', '4px')
+                    .style('font-size', '12px')
+                    .style('z-index', '1000')
+                    .html(`<strong>${d.event}</strong><br/>Year: ${d.year}<br/>Type: ${d.type}<br/>Intensity: ${d.intensity}/100`);
+                
+                d3.select(this).select('circle').attr('r', 12);
+            })
+            .on('mousemove', function(event) {
+                d3.select('.shadow-tooltip')
+                    .style('top', (event.pageY - 10) + 'px')
+                    .style('left', (event.pageX + 10) + 'px');
+            })
+            .on('mouseout', function() {
+                d3.select('.shadow-tooltip').remove();
+                d3.select(this).select('circle').attr('r', 8);
+            });
+            
+            collectiveShadowViz = { svg, events, shadowEvents, xScale, yScale, colorScale };
+        }
+        
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', () => {
+            initShadowMirror();
+            initShadowConstellation();
+            initCollectiveShadow();
+        });
+        
+        // Exercise implementations
+        document.getElementById('analyze-projection').addEventListener('click', () => {
+            const irritatingPerson = document.getElementById('irritating-person').value;
+            if (irritatingPerson.trim()) {
+                analyzeProjection(irritatingPerson);
+            }
+        });
+        
+        function analyzeProjection(description) {
+            // Simple analysis based on keywords
+            const traits = ['anger', 'selfishness', 'weakness', 'cruelty', 'laziness', 'jealousy'];
+            const foundTraits = traits.filter(trait => 
+                description.toLowerCase().includes(trait) || 
+                description.toLowerCase().includes(trait.slice(0, -4)) // stem matching
+            );
+            
+            let analysis = `<h4>Projection Analysis</h4>`;
+            if (foundTraits.length > 0) {
+                analysis += `<p>Potential shadow traits you may be projecting:</p><ul>`;
+                foundTraits.forEach(trait => {
+                    analysis += `<li><strong>${trait.charAt(0).toUpperCase() + trait.slice(1)}</strong></li>`;
+                });
+                analysis += `</ul>`;
+            } else {
+                analysis += `<p>Consider what specific behaviors or attitudes irritate you most. These often point to unacknowledged aspects of yourself.</p>`;
+            }
+            
+            analysis += `<p class="body-small">Reflection: Ask yourself "How might this trait exist in me, even in small ways?"</p>`;
+            
+            document.getElementById('projection-analysis').innerHTML = analysis;
+        }
+        
+        // Shadow dialogue system
+        let dialogueHistory = [];
+        
+        document.getElementById('send-to-shadow').addEventListener('click', () => {
+            const message = document.getElementById('ego-message').value;
+            if (message.trim()) {
+                addDialogueMessage('ego', message);
+                generateShadowResponse(message);
+                document.getElementById('ego-message').value = '';
+            }
+        });
+        
+        function addDialogueMessage(speaker, message) {
+            const historyDiv = document.getElementById('shadow-dialogue-history');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `dialogue-message ${speaker}`;
+            messageDiv.innerHTML = `<strong>${speaker === 'ego' ? 'You' : 'Shadow'}:</strong> ${message}`;
+            historyDiv.appendChild(messageDiv);
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+            
+            dialogueHistory.push({ speaker, message, timestamp: Date.now() });
+        }
+        
+        function generateShadowResponse(egoMessage) {
+            // Simple shadow response generator
+            const shadowResponses = [
+                "You always try to be so perfect, but I know your dark thoughts.",
+                "Why do you fear me? I am part of you.",
+                "You judge others for what you cannot accept in yourself.",
+                "I hold your power that you're afraid to claim.",
+                "Your anger is my strength. Stop denying it.",
+                "I see what you pretend not to see.",
+                "Embrace me, and become whole."
+            ];
+            
+            const response = shadowResponses[Math.floor(Math.random() * shadowResponses.length)];
+            
+            setTimeout(() => {
+                addDialogueMessage('shadow', response);
+            }, 1000 + Math.random() * 2000);
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (shadowMirror && shadowMirror.animationId) {
+                cancelAnimationFrame(shadowMirror.animationId);
+            }
+            if (contextManager) {
+                contextManager.cleanup();
+            }
+        });
+    </script>
+    
+    <!-- Phase 3 Scripts -->
+    <script src="js/advanced-animations.js"></script>
+    <script src="js/gesture-controller.js"></script>
+    <script src="js/contextual-help.js"></script>
+    <script src="js/keyboard-shortcuts.js"></script>
+    <script src="js/smart-asset-loader.js"></script>
+    <script src="js/adaptive-quality.js"></script>
+    <script src="js/learning-analytics.js"></script>
+    <script src="js/production-error-handler.js"></script>
+    
+    <script>
+    // Initialize Phase 3 features
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initialize production error handler
+        window.errorHandler = new ProductionErrorHandler();
+        
+        // Initialize adaptive quality
+        window.adaptiveQuality = new AdaptiveQuality();
+        
+        // Initialize gesture controller for touch devices
+        if ('ontouchstart' in window) {
+            window.gestureController = new GestureController(document.body);
+        }
+        
+        // Initialize keyboard shortcuts
+        window.keyboardShortcuts = new KeyboardShortcuts();
+        
+        // Initialize contextual help
+        window.contextualHelp = new ContextualHelp();
+        
+        // Initialize advanced animations
+        window.advancedAnimations = new AdvancedAnimations();
+        
+        // Initialize smart asset loader
+        window.assetLoader = new SmartAssetLoader();
+        
+        // Initialize learning analytics
+        window.learningAnalytics = new LearningAnalytics();
+        
+        // Track page view
+        if (window.learningAnalytics) {
+            window.learningAnalytics.trackPageView();
+        }
+    });
+    </script>
+</body>
+</html>

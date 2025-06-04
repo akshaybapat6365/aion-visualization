@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12: Signs of the Fishes - Jung's Aion</title>
+    <link rel="stylesheet" href="css/phase3-styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chapter-container {
+            background: linear-gradient(135deg, #0a1525 0%, #1a2332 50%, #2a3542 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #ffffff;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chapter-title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #87ceeb;
+            text-shadow: 0 0 20px rgba(135, 206, 235, 0.5);
+        }
+
+        .chapter-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .large-viz-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .visualization-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            min-height: 600px;
+        }
+
+        .visualization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #87ceeb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        #astrological-timeline {
+            width: 100%;
+            height: 500px;
+            background: radial-gradient(circle, #0a1525, #000511);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #fish-evolution {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #1a2332, #2a3542);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #age-transition {
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle, #2a3542, #1a2332);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            padding: 0.5rem 1rem;
+            background: rgba(135, 206, 235, 0.2);
+            border: 1px solid rgba(135, 206, 235, 0.5);
+            border-radius: 25px;
+            color: #87ceeb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .control-button:hover {
+            background: rgba(135, 206, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .control-button.active {
+            background: rgba(135, 206, 235, 0.6);
+            color: #0a1525;
+        }
+
+        .age-info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid rgba(135, 206, 235, 0.2);
+        }
+
+        .age-characteristics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .characteristic-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #87ceeb;
+        }
+
+        .characteristic-title {
+            color: #87ceeb;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .fish-symbol {
+            font-size: 3rem;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fish-symbol:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 20px rgba(135, 206, 235, 0.8);
+        }
+
+        .timeline-marker {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-marker:hover {
+            stroke-width: 3;
+            filter: drop-shadow(0 0 10px rgba(135, 206, 235, 0.8));
+        }
+
+        .precession-wheel {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .precession-wheel:hover {
+            opacity: 0.8;
+        }
+
+        .assessment-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .assessment-question {
+            margin-bottom: 1.5rem;
+        }
+
+        .assessment-question label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #87ceeb;
+            font-weight: 500;
+        }
+
+        .assessment-question input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            accent-color: #87ceeb;
+        }
+
+        .assessment-question select,
+        .assessment-question textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(135, 206, 235, 0.3);
+            border-radius: 5px;
+            color: #ffffff;
+        }
+
+        .meditation-timer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            color: #87ceeb;
+            font-weight: 300;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #87ceeb;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 2rem;
+            }
+            
+            .large-viz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .age-characteristics {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter-container">
+        <div class="chapter-header">
+            <h1 class="chapter-title">🐠 Signs of the Fishes</h1>
+            <p class="chapter-subtitle">The astrological symbolism of the Piscean Age and its transition to the Aquarian Age</p>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🌌 Astrological Age Timeline
+                </h2>
+                <p class="card-description">
+                    Explore the 26,000-year precession cycle and understand where we are in the great cosmic rhythm. Journey through the Piscean Age characteristics and witness the dawn of the Aquarian Age.
+                </p>
+                <div id="astrological-timeline"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="showPrecessionCycle()">Full Precession Cycle</button>
+                    <button class="control-button" onclick="focusPisceanAge()">Focus Piscean Age</button>
+                    <button class="control-button" onclick="showTransition()">Show Transition</button>
+                    <button class="control-button" onclick="animateTimeline()">Animate</button>
+                </div>
+                <div class="age-info-panel">
+                    <h3 style="color: #87ceeb; margin-bottom: 1rem;">Current Age Information</h3>
+                    <div id="current-age-info">
+                        <p>We are currently in the late Piscean Age, approaching the Aquarian Age transition.</p>
+                    </div>
+                    <div class="age-characteristics">
+                        <div class="characteristic-item">
+                            <div class="characteristic-title">Piscean Characteristics</div>
+                            <div>Faith, sacrifice, unity through suffering, institutional religion, hierarchical structures</div>
+                        </div>
+                        <div class="characteristic-item">
+                            <div class="characteristic-title">Aquarian Characteristics</div>
+                            <div>Knowledge, individual spirituality, technology, equality, group consciousness</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="large-viz-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🐟 Fish Symbol Evolution
+                </h2>
+                <p class="card-description">
+                    Trace the evolution of fish symbolism from early Christianity through its dual nature representation. Discover how the fish embodies both Christ and Antichrist principles.
+                </p>
+                <div id="fish-evolution"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="showEarlyChristian()">Early Christian</button>
+                    <button class="control-button" onclick="showDualNature()">Dual Nature</button>
+                    <button class="control-button" onclick="showOpposingForces()">Opposing Forces</button>
+                    <button class="control-button" onclick="showIntegration()">Integration</button>
+                </div>
+                <div class="fish-symbol" onclick="interactWithFish()">🐟</div>
+            </div>
+
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    ⚖️ Age Transition Simulator
+                </h2>
+                <p class="card-description">
+                    Calculate your personal alignment with astrological ages and explore how the transition affects consciousness. Understand your position in this cosmic shift.
+                </p>
+                <div id="age-transition"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="calculatePosition()">Calculate My Position</button>
+                    <button class="control-button" onclick="showCharacteristics()">Age Characteristics</button>
+                    <button class="control-button" onclick="projectFuture()">Future Projections</button>
+                </div>
+                <div class="assessment-form">
+                    <h3 style="color: #87ceeb; margin-bottom: 1rem;">Personal Age Alignment</h3>
+                    <div class="assessment-question">
+                        <label>How aligned do you feel with traditional religious institutions? (1=Not at all, 10=Completely)</label>
+                        <input type="range" id="religious-alignment" min="1" max="10" value="5">
+                        <span id="religious-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>How important is technological advancement in your spiritual practice?</label>
+                        <input type="range" id="tech-spiritual" min="1" max="10" value="5">
+                        <span id="tech-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Which resonates more with your spiritual path?</label>
+                        <select id="spiritual-preference">
+                            <option value="faith">Faith and surrender (Piscean)</option>
+                            <option value="knowledge">Knowledge and understanding (Aquarian)</option>
+                            <option value="balance">Both in balance</option>
+                        </select>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Describe your experience of the current age transition:</label>
+                        <textarea id="transition-experience" rows="3" placeholder="Share your observations..."></textarea>
+                    </div>
+                    <button class="control-button" onclick="analyzeAlignment()">Analyze Alignment</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🧘 Fish Symbol Meditation
+                </h2>
+                <p class="card-description">
+                    Practice contemplative meditation on the fish symbol and the transition between ages. Develop deeper understanding of your place in cosmic time.
+                </p>
+                <div class="meditation-timer">
+                    <div class="timer-display" id="meditation-timer">00:00</div>
+                    <button class="control-button" onclick="startMeditation()">Start Meditation</button>
+                    <button class="control-button" onclick="stopMeditation()">Stop</button>
+                    <select id="meditation-duration">
+                        <option value="5">5 minutes</option>
+                        <option value="10">10 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="20">20 minutes</option>
+                    </select>
+                </div>
+                <div class="assessment-form">
+                    <h3 style="color: #87ceeb; margin-bottom: 1rem;">Meditation Insights</h3>
+                    <div class="assessment-question">
+                        <label>What insights arose during your fish symbol meditation?</label>
+                        <textarea id="meditation-insights" rows="4" placeholder="Record your experiences..."></textarea>
+                    </div>
+                    <button class="control-button" onclick="saveMeditationInsights()">Save Insights</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <script>
+        // Global variables
+        let timelineData = [];
+        let fishEvolutionData = [];
+        let currentPosition = { piscean: 50, aquarian: 50 };
+        let meditationInterval = null;
+        let meditationSeconds = 0;
+
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', function() {
+            initAstrologicalTimeline();
+            initFishEvolution();
+            initAgeTransition();
+            setupEventListeners();
+        });
+
+        // 1. Astrological Age Timeline Implementation
+        function initAstrologicalTimeline() {
+            const container = document.getElementById('astrological-timeline');
+            const width = container.offsetWidth;
+            const height = 500;
+
+            // Create SVG
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Astrological ages data (simplified 12-age cycle)
+            const ages = [
+                { name: "Aquarius", duration: 2150, color: "#4169e1", current: false, upcoming: true },
+                { name: "Pisces", duration: 2150, color: "#87ceeb", current: true, upcoming: false },
+                { name: "Aries", duration: 2150, color: "#ff4500", current: false, upcoming: false },
+                { name: "Taurus", duration: 2150, color: "#32cd32", current: false, upcoming: false },
+                { name: "Gemini", duration: 2150, color: "#ffd700", current: false, upcoming: false },
+                { name: "Cancer", duration: 2150, color: "#e6e6fa", current: false, upcoming: false },
+                { name: "Leo", duration: 2150, color: "#ff69b4", current: false, upcoming: false },
+                { name: "Virgo", duration: 2150, color: "#8fbc8f", current: false, upcoming: false },
+                { name: "Libra", duration: 2150, color: "#dda0dd", current: false, upcoming: false },
+                { name: "Scorpio", duration: 2150, color: "#dc143c", current: false, upcoming: false },
+                { name: "Sagittarius", duration: 2150, color: "#9370db", current: false, upcoming: false },
+                { name: "Capricorn", duration: 2150, color: "#2f4f4f", current: false, upcoming: false }
+            ];
+
+            // Create circular timeline
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(centerX, centerY) - 50;
+
+            // Draw outer circle
+            svg.append('circle')
+                .attr('cx', centerX)
+                .attr('cy', centerY)
+                .attr('r', radius)
+                .attr('fill', 'none')
+                .attr('stroke', '#87ceeb')
+                .attr('stroke-width', 2)
+                .attr('opacity', 0.5);
+
+            // Create age segments
+            const angleStep = (2 * Math.PI) / ages.length;
+            
+            ages.forEach((age, i) => {
+                const startAngle = i * angleStep - Math.PI / 2;
+                const endAngle = (i + 1) * angleStep - Math.PI / 2;
+                
+                // Create arc path
+                const arc = d3.arc()
+                    .innerRadius(radius - 30)
+                    .outerRadius(radius)
+                    .startAngle(startAngle)
+                    .endAngle(endAngle);
+
+                // Add age segment
+                const segment = svg.append('path')
+                    .datum(age)
+                    .attr('d', arc)
+                    .attr('transform', `translate(${centerX}, ${centerY})`)
+                    .attr('fill', age.color)
+                    .attr('opacity', age.current ? 0.8 : 0.4)
+                    .attr('stroke', '#ffffff')
+                    .attr('stroke-width', age.current ? 3 : 1)
+                    .attr('class', 'timeline-marker')
+                    .on('mouseover', function(event, d) {
+                        d3.select(this).attr('opacity', 0.9);
+                        showTooltip(event, `${d.name} Age (${d.duration} years)<br/>${d.current ? 'Current Age' : d.upcoming ? 'Next Age' : 'Past/Future Age'}`);
+                    })
+                    .on('mouseout', function(event, d) {
+                        d3.select(this).attr('opacity', d.current ? 0.8 : 0.4);
+                        hideTooltip();
+                    });
+
+                // Add age labels
+                const labelAngle = startAngle + angleStep / 2;
+                const labelX = centerX + Math.cos(labelAngle) * (radius + 20);
+                const labelY = centerY + Math.sin(labelAngle) * (radius + 20);
+                
+                svg.append('text')
+                    .attr('x', labelX)
+                    .attr('y', labelY)
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', age.color)
+                    .attr('font-size', '12px')
+                    .attr('font-weight', age.current ? 'bold' : 'normal')
+                    .text(age.name);
+            });
+
+            // Add center information
+            svg.append('circle')
+                .attr('cx', centerX)
+                .attr('cy', centerY)
+                .attr('r', 80)
+                .attr('fill', 'rgba(135, 206, 235, 0.2)')
+                .attr('stroke', '#87ceeb')
+                .attr('stroke-width', 2);
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY - 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('26,000 Year');
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY + 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('Precession Cycle');
+
+            // Add transition indicator
+            const transitionAngle = -Math.PI / 2; // Between Pisces and Aquarius
+            const transitionX = centerX + Math.cos(transitionAngle) * radius;
+            const transitionY = centerY + Math.sin(transitionAngle) * radius;
+            
+            svg.append('circle')
+                .attr('cx', transitionX)
+                .attr('cy', transitionY)
+                .attr('r', 8)
+                .attr('fill', '#ffd700')
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2)
+                .append('title')
+                .text('Current Transition Point');
+        }
+
+        function showPrecessionCycle() {
+            // Highlight the full cycle
+            d3.selectAll('.timeline-marker')
+                .transition()
+                .duration(1000)
+                .attr('opacity', 0.8);
+        }
+
+        function focusPisceanAge() {
+            // Highlight only Pisces
+            d3.selectAll('.timeline-marker')
+                .transition()
+                .duration(500)
+                .attr('opacity', d => d.name === 'Pisces' ? 1.0 : 0.2);
+        }
+
+        function showTransition() {
+            // Highlight Pisces and Aquarius
+            d3.selectAll('.timeline-marker')
+                .transition()
+                .duration(500)
+                .attr('opacity', d => (d.name === 'Pisces' || d.name === 'Aquarius') ? 1.0 : 0.2);
+        }
+
+        function animateTimeline() {
+            // Animate each segment in sequence
+            d3.selectAll('.timeline-marker')
+                .transition()
+                .delay((d, i) => i * 200)
+                .duration(300)
+                .attr('opacity', 1.0)
+                .transition()
+                .duration(200)
+                .attr('opacity', d => d.current ? 0.8 : 0.4);
+        }
+
+        // 2. Fish Symbol Evolution Implementation
+        function initFishEvolution() {
+            const container = document.getElementById('fish-evolution');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Fish evolution stages
+            const stages = [
+                { 
+                    name: "Early Christian", 
+                    symbol: "🐟", 
+                    x: width * 0.2, 
+                    description: "Secret symbol of Christ",
+                    meaning: "ICHTHYS - Jesus Christ, Son of God, Savior"
+                },
+                { 
+                    name: "Medieval", 
+                    symbol: "🐠", 
+                    x: width * 0.4, 
+                    description: "Ecclesiastical fish",
+                    meaning: "Symbol of abundance and divine providence"
+                },
+                { 
+                    name: "Dual Nature", 
+                    symbol: "♓", 
+                    x: width * 0.6, 
+                    description: "Two fish opposing",
+                    meaning: "Christ and Antichrist, light and shadow"
+                },
+                { 
+                    name: "Integration", 
+                    symbol: "☯", 
+                    x: width * 0.8, 
+                    description: "United opposites",
+                    meaning: "Conscious integration of dual nature"
+                }
+            ];
+
+            // Draw connecting line
+            svg.append('line')
+                .attr('x1', width * 0.1)
+                .attr('y1', height / 2)
+                .attr('x2', width * 0.9)
+                .attr('y2', height / 2)
+                .attr('stroke', '#87ceeb')
+                .attr('stroke-width', 2)
+                .attr('opacity', 0.5);
+
+            // Add evolution stages
+            stages.forEach((stage, i) => {
+                const group = svg.append('g')
+                    .attr('class', 'fish-stage')
+                    .attr('transform', `translate(${stage.x}, ${height / 2})`);
+
+                // Background circle
+                group.append('circle')
+                    .attr('r', 40)
+                    .attr('fill', 'rgba(135, 206, 235, 0.2)')
+                    .attr('stroke', '#87ceeb')
+                    .attr('stroke-width', 2)
+                    .attr('opacity', 0.7);
+
+                // Fish symbol
+                group.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('font-size', '32px')
+                    .text(stage.symbol)
+                    .style('cursor', 'pointer')
+                    .on('mouseover', function(event) {
+                        d3.select(this.parentNode).select('circle').attr('opacity', 1);
+                        showTooltip(event, `${stage.name}<br/>${stage.description}<br/><em>${stage.meaning}</em>`);
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this.parentNode).select('circle').attr('opacity', 0.7);
+                        hideTooltip();
+                    });
+
+                // Stage name
+                group.append('text')
+                    .attr('y', 60)
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', '#87ceeb')
+                    .attr('font-size', '12px')
+                    .text(stage.name);
+            });
+        }
+
+        function showEarlyChristian() {
+            highlightStage(0);
+        }
+
+        function showDualNature() {
+            highlightStage(2);
+        }
+
+        function showOpposingForces() {
+            // Show animation of opposing forces
+            const svg = d3.select('#fish-evolution svg');
+            svg.append('text')
+                .attr('x', svg.attr('width') / 2)
+                .attr('y', 100)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ff4500')
+                .attr('font-size', '24px')
+                .text('⚡ TENSION ⚡')
+                .transition()
+                .duration(2000)
+                .attr('opacity', 0)
+                .remove();
+        }
+
+        function showIntegration() {
+            highlightStage(3);
+        }
+
+        function highlightStage(index) {
+            d3.selectAll('.fish-stage circle')
+                .transition()
+                .duration(500)
+                .attr('opacity', (d, i) => i === index ? 1 : 0.3);
+        }
+
+        function interactWithFish() {
+            const fishElement = document.querySelector('.fish-symbol');
+            fishElement.style.transform = 'scale(1.5) rotate(360deg)';
+            setTimeout(() => {
+                fishElement.style.transform = 'scale(1) rotate(0deg)';
+            }, 1000);
+        }
+
+        // 3. Age Transition Simulator Implementation
+        function initAgeTransition() {
+            const container = document.getElementById('age-transition');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create transition visualization
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Piscean age (left side)
+            svg.append('circle')
+                .attr('cx', centerX - 100)
+                .attr('cy', centerY)
+                .attr('r', 80)
+                .attr('fill', 'rgba(135, 206, 235, 0.3)')
+                .attr('stroke', '#87ceeb')
+                .attr('stroke-width', 2);
+
+            svg.append('text')
+                .attr('x', centerX - 100)
+                .attr('y', centerY - 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('Piscean');
+
+            svg.append('text')
+                .attr('x', centerX - 100)
+                .attr('y', centerY + 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('Age');
+
+            // Aquarian age (right side)
+            svg.append('circle')
+                .attr('cx', centerX + 100)
+                .attr('cy', centerY)
+                .attr('r', 80)
+                .attr('fill', 'rgba(65, 105, 225, 0.3)')
+                .attr('stroke', '#4169e1')
+                .attr('stroke-width', 2);
+
+            svg.append('text')
+                .attr('x', centerX + 100)
+                .attr('y', centerY - 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#4169e1')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('Aquarian');
+
+            svg.append('text')
+                .attr('x', centerX + 100)
+                .attr('y', centerY + 10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#4169e1')
+                .attr('font-size', '16px')
+                .attr('font-weight', 'bold')
+                .text('Age');
+
+            // Transition zone (center)
+            svg.append('rect')
+                .attr('x', centerX - 50)
+                .attr('y', centerY - 60)
+                .attr('width', 100)
+                .attr('height', 120)
+                .attr('fill', 'rgba(255, 215, 0, 0.2)')
+                .attr('stroke', '#ffd700')
+                .attr('stroke-width', 2)
+                .attr('rx', 10);
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY - 20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ffd700')
+                .attr('font-size', '14px')
+                .attr('font-weight', 'bold')
+                .text('Transition');
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ffd700')
+                .attr('font-size', '14px')
+                .attr('font-weight', 'bold')
+                .text('Zone');
+
+            // Personal position indicator
+            const positionIndicator = svg.append('circle')
+                .attr('id', 'position-indicator')
+                .attr('cx', centerX)
+                .attr('cy', centerY + 20)
+                .attr('r', 8)
+                .attr('fill', '#ffd700')
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2);
+
+            // Add characteristics text
+            svg.append('text')
+                .attr('x', centerX - 100)
+                .attr('y', centerY + 100)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '10px')
+                .text('Faith • Sacrifice • Unity');
+
+            svg.append('text')
+                .attr('x', centerX + 100)
+                .attr('y', centerY + 100)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#4169e1')
+                .attr('font-size', '10px')
+                .text('Knowledge • Technology • Equality');
+        }
+
+        function calculatePosition() {
+            const religious = parseInt(document.getElementById('religious-alignment').value);
+            const tech = parseInt(document.getElementById('tech-spiritual').value);
+            const preference = document.getElementById('spiritual-preference').value;
+            
+            // Calculate position based on responses
+            let pisceanScore = religious;
+            let aquarianScore = tech;
+            
+            if (preference === 'faith') pisceanScore += 3;
+            else if (preference === 'knowledge') aquarianScore += 3;
+            
+            const total = pisceanScore + aquarianScore;
+            const pisceanPercent = (pisceanScore / total) * 100;
+            const aquarianPercent = (aquarianScore / total) * 100;
+            
+            currentPosition = { piscean: pisceanPercent, aquarian: aquarianPercent };
+            
+            updatePositionIndicator();
+            
+            alert(`Your Age Alignment:\nPiscean: ${pisceanPercent.toFixed(0)}%\nAquarian: ${aquarianPercent.toFixed(0)}%\n\nYou are ${pisceanPercent > 60 ? 'strongly Piscean' : aquarianPercent > 60 ? 'strongly Aquarian' : 'in the transition zone'}.`);
+        }
+
+        function updatePositionIndicator() {
+            const svg = d3.select('#age-transition svg');
+            const width = svg.attr('width');
+            const centerX = width / 2;
+            const centerY = svg.attr('height') / 2;
+            
+            // Calculate position based on alignment
+            const offset = (currentPosition.aquarian - currentPosition.piscean) * 1.5;
+            const newX = centerX + offset;
+            
+            svg.select('#position-indicator')
+                .transition()
+                .duration(1000)
+                .attr('cx', newX);
+        }
+
+        function showCharacteristics() {
+            alert(`Piscean Age Characteristics:
+• Emphasis on faith over reason
+• Hierarchical religious structures
+• Sacrifice and suffering as path to salvation
+• Unity through shared belief systems
+• Emotional and mystical approaches
+
+Aquarian Age Characteristics:
+• Emphasis on knowledge and understanding
+• Individual spiritual exploration
+• Technology as spiritual tool
+• Equality and group consciousness
+• Rational and scientific approaches`);
+        }
+
+        function projectFuture() {
+            const transition = Math.abs(currentPosition.piscean - currentPosition.aquarian);
+            let projection = "";
+            
+            if (transition < 20) {
+                projection = "You are well-positioned for the age transition. Continue developing both faith and knowledge.";
+            } else if (currentPosition.piscean > currentPosition.aquarian) {
+                projection = "Consider exploring more knowledge-based spiritual practices to prepare for the Aquarian Age.";
+            } else {
+                projection = "Balance your technological orientation with heart-centered practices from the Piscean tradition.";
+            }
+            
+            alert(`Future Projection:\n${projection}`);
+        }
+
+        function analyzeAlignment() {
+            calculatePosition();
+            
+            const experience = document.getElementById('transition-experience').value;
+            if (experience.trim()) {
+                alert(`Thank you for sharing your transition experience. Your insights contribute to understanding this cosmic shift.`);
+            }
+        }
+
+        // Meditation Functions
+        function startMeditation() {
+            const duration = parseInt(document.getElementById('meditation-duration').value) * 60;
+            meditationSeconds = 0;
+            
+            meditationInterval = setInterval(() => {
+                meditationSeconds++;
+                updateMeditationTimer();
+                
+                if (meditationSeconds >= duration) {
+                    stopMeditation();
+                    alert('Meditation complete! 🐟 May the fish symbol continue to guide your understanding of cosmic transitions.');
+                }
+            }, 1000);
+        }
+
+        function stopMeditation() {
+            if (meditationInterval) {
+                clearInterval(meditationInterval);
+                meditationInterval = null;
+            }
+        }
+
+        function updateMeditationTimer() {
+            const minutes = Math.floor(meditationSeconds / 60);
+            const seconds = meditationSeconds % 60;
+            document.getElementById('meditation-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function saveMeditationInsights() {
+            const insights = document.getElementById('meditation-insights').value;
+            if (!insights.trim()) {
+                alert('Please add your meditation insights before saving.');
+                return;
+            }
+            
+            const session = {
+                date: new Date().toISOString(),
+                duration: Math.floor(meditationSeconds / 60),
+                insights: insights,
+                position: currentPosition
+            };
+            
+            // Save to localStorage
+            const sessions = JSON.parse(localStorage.getItem('fishMeditations') || '[]');
+            sessions.push(session);
+            localStorage.setItem('fishMeditations', JSON.stringify(sessions));
+            
+            alert('Meditation insights saved! Your understanding of the age transition has been recorded.');
+            document.getElementById('meditation-insights').value = '';
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Assessment sliders
+            document.getElementById('religious-alignment').addEventListener('input', function() {
+                document.getElementById('religious-value').textContent = this.value;
+            });
+
+            document.getElementById('tech-spiritual').addEventListener('input', function() {
+                document.getElementById('tech-value').textContent = this.value;
+            });
+        }
+
+        // Tooltip functions
+        function showTooltip(event, text) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            tooltip.style.left = event.pageX + 10 + 'px';
+            tooltip.style.top = event.pageY - 10 + 'px';
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Reinitialize visualizations on resize
+            document.getElementById('astrological-timeline').innerHTML = '';
+            document.getElementById('fish-evolution').innerHTML = '';
+            document.getElementById('age-transition').innerHTML = '';
+            
+            initAstrologicalTimeline();
+            initFishEvolution();
+            initAgeTransition();
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (meditationInterval) {
+                clearInterval(meditationInterval);
+            }
+        });
+    </script>
+</body>
+</html>

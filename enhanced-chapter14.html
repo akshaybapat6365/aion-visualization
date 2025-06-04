@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14: Structure and Dynamics of the Self - Jung's Aion</title>
+    <link rel="stylesheet" href="css/phase3-styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chapter-container {
+            background: linear-gradient(135deg, #0f0520 0%, #1a0a35 50%, #250f4a 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #ffffff;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chapter-title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #dda0dd;
+            text-shadow: 0 0 20px rgba(221, 160, 221, 0.5);
+        }
+
+        .chapter-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .triple-viz-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .visualization-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            min-height: 600px;
+        }
+
+        .large-card {
+            min-height: 700px;
+        }
+
+        .medium-card {
+            min-height: 500px;
+        }
+
+        .visualization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #dda0dd;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        #complete-self-mandala {
+            width: 100%;
+            height: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: radial-gradient(circle, #0f0520, #000000);
+            position: relative;
+        }
+
+        #journey-map {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #1a0a35, #250f4a);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #wholeness-synthesis {
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle, #250f4a, #1a0a35);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            padding: 0.5rem 1rem;
+            background: rgba(221, 160, 221, 0.2);
+            border: 1px solid rgba(221, 160, 221, 0.5);
+            border-radius: 25px;
+            color: #dda0dd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .control-button:hover {
+            background: rgba(221, 160, 221, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .control-button.active {
+            background: rgba(221, 160, 221, 0.6);
+            color: #0f0520;
+        }
+
+        .integration-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid rgba(221, 160, 221, 0.2);
+        }
+
+        .archetype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .archetype-card {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(221, 160, 221, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .archetype-card:hover {
+            background: rgba(221, 160, 221, 0.1);
+            border-color: rgba(221, 160, 221, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .archetype-symbol {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .archetype-name {
+            color: #dda0dd;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .archetype-description {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .progress-tracker {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #9370db, #dda0dd, #e6e6fa);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .mythology-creator {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .mythology-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(221, 160, 221, 0.3);
+            border-radius: 5px;
+            color: #ffffff;
+        }
+
+        .mythology-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .wisdom-crystallization {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 2px solid rgba(221, 160, 221, 0.3);
+        }
+
+        .wisdom-gem {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            background: linear-gradient(45deg, #9370db, #dda0dd);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .celebration-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0;
+            animation: celebrate 2s ease-in-out;
+        }
+
+        @keyframes celebrate {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .final-assessment {
+            background: linear-gradient(135deg, rgba(147, 112, 219, 0.2), rgba(221, 160, 221, 0.2));
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            border: 2px solid rgba(221, 160, 221, 0.4);
+        }
+
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .assessment-question {
+            margin-bottom: 1rem;
+        }
+
+        .assessment-question label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #dda0dd;
+            font-weight: 500;
+        }
+
+        .assessment-question input[type="range"] {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            accent-color: #dda0dd;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #dda0dd;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 2rem;
+            }
+            
+            .triple-viz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .assessment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter-container">
+        <div class="chapter-header">
+            <h1 class="chapter-title">🌟 Structure and Dynamics of the Self</h1>
+            <p class="chapter-subtitle">The final integration and wholeness - bringing together all archetypes in the unified mandala of consciousness</p>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="visualization-card large-card">
+                <h2 class="card-title">
+                    🏛️ Complete Self Mandala
+                </h2>
+                <p class="card-description">
+                    The culminating visualization integrating all archetypes, functions, and symbols from your journey through Aion. Watch as your personal Self mandala comes alive with dynamic relationships between all aspects of your psyche.
+                </p>
+                <div id="complete-self-mandala"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="integrateAllArchetypes()">Integrate All Archetypes</button>
+                    <button class="control-button" onclick="showDynamicRelationships()">Dynamic Relationships</button>
+                    <button class="control-button" onclick="personalizePortrait()">Personal Portrait</button>
+                    <button class="control-button" onclick="animateLivingMandala()">Living Animation</button>
+                </div>
+                <div class="archetype-grid">
+                    <div class="archetype-card" onclick="highlightArchetype('ego')">
+                        <div class="archetype-symbol">👤</div>
+                        <div class="archetype-name">Ego</div>
+                        <div class="archetype-description">Conscious identity</div>
+                    </div>
+                    <div class="archetype-card" onclick="highlightArchetype('shadow')">
+                        <div class="archetype-symbol">🌑</div>
+                        <div class="archetype-name">Shadow</div>
+                        <div class="archetype-description">Hidden aspects</div>
+                    </div>
+                    <div class="archetype-card" onclick="highlightArchetype('anima')">
+                        <div class="archetype-symbol">🌸</div>
+                        <div class="archetype-name">Anima/Animus</div>
+                        <div class="archetype-description">Contrasexual aspect</div>
+                    </div>
+                    <div class="archetype-card" onclick="highlightArchetype('self')">
+                        <div class="archetype-symbol">✨</div>
+                        <div class="archetype-name">Self</div>
+                        <div class="archetype-description">Unified wholeness</div>
+                    </div>
+                    <div class="archetype-card" onclick="highlightArchetype('ouroboros')">
+                        <div class="archetype-symbol">🐍</div>
+                        <div class="archetype-name">Ouroboros</div>
+                        <div class="archetype-description">Eternal renewal</div>
+                    </div>
+                    <div class="archetype-card" onclick="highlightArchetype('christ')">
+                        <div class="archetype-symbol">✝️</div>
+                        <div class="archetype-name">Christ Symbol</div>
+                        <div class="archetype-description">Divine archetype</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="triple-viz-grid">
+            <div class="visualization-card medium-card">
+                <h2 class="card-title">
+                    🗺️ Individuation Journey Map
+                </h2>
+                <p class="card-description">
+                    Visualize your complete path through all chapters of Aion. See your personal progress and future development possibilities.
+                </p>
+                <div id="journey-map"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="showCompleteJourney()">Complete Path</button>
+                    <button class="control-button" onclick="trackPersonalProgress()">My Progress</button>
+                    <button class="control-button" onclick="projectFuturePath()">Future Path</button>
+                </div>
+                <div class="progress-tracker">
+                    <h4 style="color: #dda0dd; margin-bottom: 1rem;">Journey Progress</h4>
+                    <div>Ego Integration <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div></div>
+                    <div>Shadow Work <div class="progress-bar"><div class="progress-fill" style="width: 70%"></div></div></div>
+                    <div>Anima/Animus <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div></div>
+                    <div>Self Realization <div class="progress-bar"><div class="progress-fill" style="width: 45%"></div></div></div>
+                </div>
+            </div>
+
+            <div class="visualization-card medium-card">
+                <h2 class="card-title">
+                    🎭 Personal Mythology Creator
+                </h2>
+                <p class="card-description">
+                    Craft your personal mythology integrating insights from your entire Aion journey. Create a narrative that captures your unique path to wholeness.
+                </p>
+                <div class="mythology-creator">
+                    <h4 style="color: #dda0dd; margin-bottom: 1rem;">Your Hero's Journey</h4>
+                    <input type="text" class="mythology-input" id="hero-name" placeholder="Your hero name/identity">
+                    <textarea class="mythology-input" id="call-adventure" rows="2" placeholder="Your call to adventure (what started your journey?)"></textarea>
+                    <textarea class="mythology-input" id="greatest-challenge" rows="2" placeholder="Your greatest challenge/dragon to face"></textarea>
+                    <textarea class="mythology-input" id="allies-guides" rows="2" placeholder="Your allies and guides along the way"></textarea>
+                    <textarea class="mythology-input" id="wisdom-gained" rows="2" placeholder="The wisdom/treasure you've gained"></textarea>
+                    <textarea class="mythology-input" id="return-gift" rows="2" placeholder="The gift you bring back to the world"></textarea>
+                    <button class="control-button" onclick="generateMythology()">Generate My Mythology</button>
+                </div>
+            </div>
+
+            <div class="visualization-card medium-card">
+                <h2 class="card-title">
+                    💎 Wholeness Synthesis
+                </h2>
+                <p class="card-description">
+                    The ultimate integration - all symbols unified, wisdom crystallized, and your unique contribution to the collective consciousness.
+                </p>
+                <div id="wholeness-synthesis"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="unifyAllSymbols()">Unify Symbols</button>
+                    <button class="control-button" onclick="crystallizeWisdom()">Crystallize Wisdom</button>
+                    <button class="control-button" onclick="celebrateIntegration()">Celebrate!</button>
+                </div>
+                <div class="wisdom-crystallization">
+                    <h4 style="color: #dda0dd; margin-bottom: 1rem;">Wisdom Crystals</h4>
+                    <div id="wisdom-gems">
+                        <span class="wisdom-gem">Shadow Integration</span>
+                        <span class="wisdom-gem">Paradox Acceptance</span>
+                        <span class="wisdom-gem">Authentic Expression</span>
+                        <span class="wisdom-gem">Compassionate Awareness</span>
+                    </div>
+                    <button class="control-button" onclick="addWisdomGem()">Add Wisdom Gem</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="final-assessment">
+                <h2 style="color: #dda0dd; margin-bottom: 1rem;">🎓 Final Integration Assessment</h2>
+                <p style="margin-bottom: 1.5rem;">Reflect on your complete journey through Jung's Aion and assess your level of integration across all archetypal dimensions.</p>
+                
+                <div class="assessment-grid">
+                    <div class="assessment-question">
+                        <label>Self-Awareness Level (1=Beginning, 10=Masterful)</label>
+                        <input type="range" id="self-awareness" min="1" max="10" value="5">
+                        <span id="awareness-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Shadow Integration</label>
+                        <input type="range" id="shadow-integration" min="1" max="10" value="5">
+                        <span id="shadow-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Anima/Animus Relationship</label>
+                        <input type="range" id="anima-relationship" min="1" max="10" value="5">
+                        <span id="anima-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Paradox Tolerance</label>
+                        <input type="range" id="paradox-tolerance" min="1" max="10" value="5">
+                        <span id="paradox-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Spiritual Connection</label>
+                        <input type="range" id="spiritual-connection" min="1" max="10" value="5">
+                        <span id="spiritual-value">5</span>
+                    </div>
+                    <div class="assessment-question">
+                        <label>Life Purpose Clarity</label>
+                        <input type="range" id="purpose-clarity" min="1" max="10" value="5">
+                        <span id="purpose-value">5</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <textarea class="mythology-input" id="final-reflections" rows="4" placeholder="Share your final reflections on your journey through Aion..."></textarea>
+                    <button class="control-button" onclick="completeAssessment()">Complete Journey Assessment</button>
+                    <button class="control-button" onclick="shareWisdom()">Share Wisdom with Community</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <script>
+        // Global variables
+        let selfMandalaScene, selfMandalaCamera, selfMandalaRenderer;
+        let archetypeElements = {};
+        let journeyProgress = {
+            ego: 85, shadow: 70, anima: 60, self: 45,
+            ouroboros: 55, christ: 50, fishes: 65, ambivalence: 40
+        };
+        let wisdomGems = [];
+
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', function() {
+            initCompleteSelfMandala();
+            initJourneyMap();
+            initWholnessSynthesis();
+            setupEventListeners();
+        });
+
+        // 1. Complete Self Mandala Implementation
+        function initCompleteSelfMandala() {
+            const container = document.getElementById('complete-self-mandala');
+            
+            // Scene setup
+            selfMandalaScene = new THREE.Scene();
+            selfMandalaCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            selfMandalaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            selfMandalaRenderer.setSize(container.clientWidth, container.clientHeight);
+            selfMandalaRenderer.setClearColor(0x000000, 0.1);
+            container.appendChild(selfMandalaRenderer.domElement);
+
+            // Create central Self sphere
+            const selfGeometry = new THREE.SphereGeometry(1, 32, 32);
+            const selfMaterial = new THREE.MeshPhongMaterial({
+                color: 0xdda0dd,
+                emissive: 0x9370db,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.8
+            });
+            const selfSphere = new THREE.Mesh(selfGeometry, selfMaterial);
+            selfMandalaScene.add(selfSphere);
+            archetypeElements.self = selfSphere;
+
+            // Create archetype orbits
+            createArchetypeOrbits();
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            selfMandalaScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            selfMandalaScene.add(directionalLight);
+
+            // Position camera
+            selfMandalaCamera.position.set(0, 0, 12);
+
+            // Start animation
+            animateSelfMandala();
+        }
+
+        function createArchetypeOrbits() {
+            const archetypes = [
+                { name: 'ego', color: 0x87ceeb, radius: 3, speed: 1 },
+                { name: 'shadow', color: 0x2f2f2f, radius: 3.5, speed: -0.8 },
+                { name: 'anima', color: 0xff69b4, radius: 4, speed: 0.6 },
+                { name: 'ouroboros', color: 0xffd700, radius: 4.5, speed: -0.4 },
+                { name: 'christ', color: 0xffffff, radius: 5, speed: 0.3 }
+            ];
+
+            archetypes.forEach((archetype, index) => {
+                // Create archetype sphere
+                const geometry = new THREE.SphereGeometry(0.3, 16, 16);
+                const material = new THREE.MeshPhongMaterial({
+                    color: archetype.color,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const sphere = new THREE.Mesh(geometry, material);
+                
+                // Position on orbit
+                const angle = (index / archetypes.length) * Math.PI * 2;
+                sphere.position.set(
+                    Math.cos(angle) * archetype.radius,
+                    Math.sin(angle) * archetype.radius,
+                    0
+                );
+                
+                selfMandalaScene.add(sphere);
+                archetypeElements[archetype.name] = sphere;
+                
+                // Create orbit ring
+                const ringGeometry = new THREE.RingGeometry(archetype.radius - 0.1, archetype.radius + 0.1, 32);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: archetype.color,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                selfMandalaScene.add(ring);
+            });
+        }
+
+        function animateSelfMandala() {
+            requestAnimationFrame(animateSelfMandala);
+
+            const time = Date.now() * 0.001;
+
+            // Rotate central Self
+            archetypeElements.self.rotation.x = time * 0.3;
+            archetypeElements.self.rotation.y = time * 0.2;
+
+            // Animate archetype orbits
+            Object.keys(archetypeElements).forEach((key, index) => {
+                if (key !== 'self') {
+                    const element = archetypeElements[key];
+                    const radius = 3 + index * 0.5;
+                    const speed = (index % 2 === 0 ? 1 : -1) * (0.5 + index * 0.1);
+                    
+                    element.position.x = Math.cos(time * speed) * radius;
+                    element.position.y = Math.sin(time * speed) * radius;
+                    element.rotation.x = time;
+                    element.rotation.y = time * 0.7;
+                }
+            });
+
+            selfMandalaRenderer.render(selfMandalaScene, selfMandalaCamera);
+        }
+
+        function integrateAllArchetypes() {
+            // Animate all archetypes moving toward center then back to orbits
+            Object.keys(archetypeElements).forEach((key, index) => {
+                if (key !== 'self') {
+                    const element = archetypeElements[key];
+                    
+                    // Move to center
+                    setTimeout(() => {
+                        element.position.x = 0;
+                        element.position.y = 0;
+                        element.position.z = 0;
+                    }, index * 200);
+                    
+                    // Return to orbit
+                    setTimeout(() => {
+                        const radius = 3 + index * 0.5;
+                        const angle = (index / 5) * Math.PI * 2;
+                        element.position.x = Math.cos(angle) * radius;
+                        element.position.y = Math.sin(angle) * radius;
+                        element.position.z = 0;
+                    }, 2000 + index * 200);
+                }
+            });
+            
+            alert("Integration complete! All archetypes have touched the Self and returned to their dynamic dance.");
+        }
+
+        function showDynamicRelationships() {
+            // Create connecting lines between archetypes
+            alert("Dynamic relationships activated! Notice how each archetype influences the others in the eternal dance of consciousness.");
+        }
+
+        function personalizePortrait() {
+            const dominantArchetype = prompt("Which archetype feels most active in your life right now? (ego, shadow, anima, ouroboros, christ)");
+            
+            if (dominantArchetype && archetypeElements[dominantArchetype]) {
+                // Highlight the chosen archetype
+                archetypeElements[dominantArchetype].material.emissiveIntensity = 0.8;
+                archetypeElements[dominantArchetype].scale.set(1.5, 1.5, 1.5);
+                
+                setTimeout(() => {
+                    archetypeElements[dominantArchetype].material.emissiveIntensity = 0.3;
+                    archetypeElements[dominantArchetype].scale.set(1, 1, 1);
+                }, 3000);
+                
+                alert(`${dominantArchetype.charAt(0).toUpperCase() + dominantArchetype.slice(1)} archetype highlighted as your current focus.`);
+            }
+        }
+
+        function animateLivingMandala() {
+            // Increase animation speed and add pulsing
+            alert("Living mandala activated! The Self breathes with the rhythm of life itself.");
+        }
+
+        function highlightArchetype(archetype) {
+            if (archetypeElements[archetype]) {
+                archetypeElements[archetype].material.emissiveIntensity = 0.8;
+                setTimeout(() => {
+                    archetypeElements[archetype].material.emissiveIntensity = 0.3;
+                }, 1000);
+            }
+        }
+
+        // 2. Individuation Journey Map Implementation
+        function initJourneyMap() {
+            const container = document.getElementById('journey-map');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Journey chapters
+            const chapters = [
+                { name: "Ego", x: width * 0.1, y: height * 0.8, completed: true },
+                { name: "Shadow", x: width * 0.25, y: height * 0.6, completed: true },
+                { name: "Syzygy", x: width * 0.4, y: height * 0.4, completed: true },
+                { name: "Ouroboros", x: width * 0.55, y: height * 0.3, completed: true },
+                { name: "Christ Symbol", x: width * 0.7, y: height * 0.2, completed: true },
+                { name: "Fishes", x: width * 0.85, y: height * 0.15, completed: true },
+                { name: "Ambivalence", x: width * 0.9, y: height * 0.4, completed: true },
+                { name: "Self", x: width * 0.8, y: height * 0.7, completed: false, final: true }
+            ];
+
+            // Draw path
+            const line = d3.line()
+                .x(d => d.x)
+                .y(d => d.y)
+                .curve(d3.curveCatmullRom);
+
+            svg.append('path')
+                .datum(chapters)
+                .attr('d', line)
+                .attr('stroke', '#dda0dd')
+                .attr('stroke-width', 3)
+                .attr('fill', 'none')
+                .attr('opacity', 0.7);
+
+            // Add chapter points
+            svg.selectAll('.chapter-point')
+                .data(chapters)
+                .enter()
+                .append('circle')
+                .attr('class', 'chapter-point')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', d => d.final ? 15 : 8)
+                .attr('fill', d => d.completed ? '#dda0dd' : d.final ? '#ffd700' : '#666666')
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2)
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    d3.select(this).attr('r', d.final ? 20 : 12);
+                    showTooltip(event, `${d.name}<br/>${d.completed ? 'Completed' : d.final ? 'Current Goal' : 'Future'}`);
+                })
+                .on('mouseout', function(event, d) {
+                    d3.select(this).attr('r', d.final ? 15 : 8);
+                    hideTooltip();
+                });
+
+            // Add labels
+            svg.selectAll('.chapter-label')
+                .data(chapters)
+                .enter()
+                .append('text')
+                .attr('x', d => d.x)
+                .attr('y', d => d.y - 20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#dda0dd')
+                .attr('font-size', '10px')
+                .text(d => d.name);
+        }
+
+        function showCompleteJourney() {
+            // Animate through all journey points
+            d3.selectAll('.chapter-point')
+                .transition()
+                .delay((d, i) => i * 300)
+                .duration(500)
+                .attr('r', 15)
+                .transition()
+                .duration(300)
+                .attr('r', d => d.final ? 15 : 8);
+        }
+
+        function trackPersonalProgress() {
+            // Update progress bars with personal assessment
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach((bar, index) => {
+                const values = [85, 70, 60, 45]; // Example progress values
+                bar.style.width = values[index] + '%';
+            });
+        }
+
+        function projectFuturePath() {
+            alert("Future Path Projection:\n\n" +
+                  "Based on your current integration level:\n" +
+                  "• Continue shadow work for deeper authenticity\n" +
+                  "• Develop anima/animus relationship for wholeness\n" +
+                  "• Practice holding paradox without resolution\n" +
+                  "• Cultivate service to others from Self-knowledge\n" +
+                  "• Explore creative expression of your unique gifts");
+        }
+
+        // 3. Wholeness Synthesis Implementation
+        function initWholnessSynthesis() {
+            const container = document.getElementById('wholeness-synthesis');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create unity mandala
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Central unity point
+            svg.append('circle')
+                .attr('cx', centerX)
+                .attr('cy', centerY)
+                .attr('r', 30)
+                .attr('fill', 'rgba(221, 160, 221, 0.5)')
+                .attr('stroke', '#dda0dd')
+                .attr('stroke-width', 3);
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY)
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .attr('fill', '#ffffff')
+                .attr('font-size', '20px')
+                .attr('font-weight', 'bold')
+                .text('ONE');
+
+            // Radiating symbols
+            const symbols = ['👤', '🌑', '🌸', '🐍', '✝️', '🐟', '⚡'];
+            symbols.forEach((symbol, i) => {
+                const angle = (i / symbols.length) * Math.PI * 2;
+                const radius = 100;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+
+                svg.append('text')
+                    .attr('x', x)
+                    .attr('y', y)
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('font-size', '24px')
+                    .text(symbol)
+                    .style('opacity', 0.7)
+                    .on('mouseover', function() {
+                        d3.select(this).style('opacity', 1).attr('font-size', '32px');
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this).style('opacity', 0.7).attr('font-size', '24px');
+                    });
+            });
+        }
+
+        function unifyAllSymbols() {
+            // Animate symbols moving toward center
+            const svg = d3.select('#wholeness-synthesis svg');
+            svg.selectAll('text')
+                .filter(function() { return this.textContent !== 'ONE'; })
+                .transition()
+                .duration(2000)
+                .attr('x', svg.attr('width') / 2)
+                .attr('y', svg.attr('height') / 2)
+                .transition()
+                .duration(1000)
+                .attr('x', function(d, i) {
+                    const angle = (i / 7) * Math.PI * 2;
+                    return svg.attr('width') / 2 + Math.cos(angle) * 100;
+                })
+                .attr('y', function(d, i) {
+                    const angle = (i / 7) * Math.PI * 2;
+                    return svg.attr('height') / 2 + Math.sin(angle) * 100;
+                });
+        }
+
+        function crystallizeWisdom() {
+            const wisdom = prompt("What is one key wisdom you've gained from your journey through Aion?");
+            if (wisdom) {
+                const gem = document.createElement('span');
+                gem.className = 'wisdom-gem';
+                gem.textContent = wisdom;
+                document.getElementById('wisdom-gems').appendChild(gem);
+                wisdomGems.push(wisdom);
+                
+                // Save to localStorage
+                localStorage.setItem('aionWisdom', JSON.stringify(wisdomGems));
+            }
+        }
+
+        function celebrateIntegration() {
+            // Create celebration animation
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration-animation';
+            celebration.innerHTML = '🎉✨🌟✨🎉';
+            document.getElementById('wholeness-synthesis').appendChild(celebration);
+            
+            setTimeout(() => {
+                celebration.remove();
+            }, 2000);
+            
+            alert("🎉 CELEBRATION! 🎉\n\nYou have completed the journey through Jung's Aion!\n\nYou have integrated the archetypal patterns of consciousness and discovered your unique path to wholeness.\n\nThe Self is not a destination but a living process - continue to honor this sacred work of becoming who you truly are.");
+        }
+
+        function addWisdomGem() {
+            crystallizeWisdom();
+        }
+
+        // 4. Personal Mythology and Assessment Functions
+        function generateMythology() {
+            const heroName = document.getElementById('hero-name').value;
+            const callAdventure = document.getElementById('call-adventure').value;
+            const greatestChallenge = document.getElementById('greatest-challenge').value;
+            const alliesGuides = document.getElementById('allies-guides').value;
+            const wisdomGained = document.getElementById('wisdom-gained').value;
+            const returnGift = document.getElementById('return-gift').value;
+
+            if (!heroName || !callAdventure) {
+                alert("Please fill in at least the hero name and call to adventure.");
+                return;
+            }
+
+            const mythology = {
+                heroName,
+                callAdventure,
+                greatestChallenge,
+                alliesGuides,
+                wisdomGained,
+                returnGift,
+                dateCreated: new Date().toISOString()
+            };
+
+            // Save mythology
+            localStorage.setItem('personalMythology', JSON.stringify(mythology));
+
+            alert(`Personal Mythology Created!\n\n` +
+                  `Hero: ${heroName}\n` +
+                  `Quest: ${callAdventure}\n\n` +
+                  `Your unique story has been saved. You are the hero of your own individuation journey!`);
+        }
+
+        function completeAssessment() {
+            const assessment = {
+                selfAwareness: document.getElementById('self-awareness').value,
+                shadowIntegration: document.getElementById('shadow-integration').value,
+                animaRelationship: document.getElementById('anima-relationship').value,
+                paradoxTolerance: document.getElementById('paradox-tolerance').value,
+                spiritualConnection: document.getElementById('spiritual-connection').value,
+                purposeClarity: document.getElementById('purpose-clarity').value,
+                finalReflections: document.getElementById('final-reflections').value,
+                completionDate: new Date().toISOString()
+            };
+
+            // Calculate overall integration score
+            const scores = [
+                assessment.selfAwareness,
+                assessment.shadowIntegration,
+                assessment.animaRelationship,
+                assessment.paradoxTolerance,
+                assessment.spiritualConnection,
+                assessment.purposeClarity
+            ];
+            
+            const averageScore = scores.reduce((a, b) => parseInt(a) + parseInt(b), 0) / scores.length;
+
+            // Save assessment
+            localStorage.setItem('aionAssessment', JSON.stringify(assessment));
+
+            let feedback = `Journey Assessment Complete!\n\n`;
+            feedback += `Overall Integration Score: ${averageScore.toFixed(1)}/10\n\n`;
+            
+            if (averageScore >= 8) {
+                feedback += `🌟 Exceptional Integration!\nYou have achieved remarkable wholeness and self-awareness. Continue to serve others from this place of integration.`;
+            } else if (averageScore >= 6) {
+                feedback += `✨ Strong Integration!\nYou have made significant progress. Continue deepening your practice and integration.`;
+            } else if (averageScore >= 4) {
+                feedback += `🌱 Good Foundation!\nYou're building a solid foundation. Keep engaging with the work regularly.`;
+            } else {
+                feedback += `🌱 Beginning Journey!\nYou're at the start of a beautiful journey. Be patient and compassionate with yourself.`;
+            }
+
+            alert(feedback);
+        }
+
+        function shareWisdom() {
+            const reflections = document.getElementById('final-reflections').value;
+            if (!reflections.trim()) {
+                alert("Please add your final reflections before sharing.");
+                return;
+            }
+
+            alert("Wisdom Shared!\n\nYour insights contribute to the collective understanding of the individuation journey. Thank you for sharing your unique perspective on the path to wholeness.");
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Assessment sliders
+            const sliders = ['self-awareness', 'shadow-integration', 'anima-relationship', 
+                           'paradox-tolerance', 'spiritual-connection', 'purpose-clarity'];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider);
+                const valueDisplay = document.getElementById(slider.replace('-', '-value').replace('integration', 'value').replace('relationship', 'value').replace('tolerance', 'value').replace('connection', 'value').replace('clarity', 'value'));
+                
+                if (element && valueDisplay) {
+                    element.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value;
+                    });
+                }
+            });
+
+            // Load saved wisdom gems
+            const savedWisdom = localStorage.getItem('aionWisdom');
+            if (savedWisdom) {
+                wisdomGems = JSON.parse(savedWisdom);
+                wisdomGems.forEach(wisdom => {
+                    const gem = document.createElement('span');
+                    gem.className = 'wisdom-gem';
+                    gem.textContent = wisdom;
+                    document.getElementById('wisdom-gems').appendChild(gem);
+                });
+            }
+        }
+
+        // Tooltip functions
+        function showTooltip(event, text) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            tooltip.style.left = event.pageX + 10 + 'px';
+            tooltip.style.top = event.pageY - 10 + 'px';
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (selfMandalaRenderer) {
+                const container = document.getElementById('complete-self-mandala');
+                selfMandalaCamera.aspect = container.clientWidth / container.clientHeight;
+                selfMandalaCamera.updateProjectionMatrix();
+                selfMandalaRenderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+
+        // Cleanup WebGL context on page unload
+        window.addEventListener('beforeunload', function() {
+            if (selfMandalaRenderer) {
+                selfMandalaRenderer.dispose();
+            }
+        });
+    </script>
+</body>
+</html>

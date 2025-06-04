@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: The Syzygy - Enhanced Anima/Animus Exploration</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="css/styles-v3.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="webgl-context-manager.js"></script>
+    <script src="error-boundaries.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters-v2.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline-v2.html" class="nav-link">Timeline</a>
+            <a href="symbols-v2.html" class="nav-link">Symbols</a>
+            <a href="about-v2.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter III</div>
+            <h1 class="chapter-title">The Syzygy</h1>
+            <p class="chapter-subtitle">Interactive Anima/Animus Constellation</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>The syzygy represents the divine couple—the union of masculine and feminine principles within the psyche. Jung identified the anima (feminine aspect in men) and animus (masculine aspect in women) as contrasexual archetypes that mediate between conscious and unconscious. Understanding and integrating these forces is essential for psychological wholeness.</p>
+        </section>
+
+        <!-- Anima/Animus Constellation -->
+        <section class="visualization-section">
+            <h2>Anima/Animus Constellation</h2>
+            <div class="visualization-intro">
+                <p>Explore the multi-layered archetype of your contrasexual side. This constellation shows the development stages and how anima/animus manifests in relationships and creativity.</p>
+            </div>
+            <div id="syzygy-constellation" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="gender-perspective">Your Perspective:</label>
+                    <select id="gender-perspective" class="glass-button">
+                        <option value="masculine">Masculine (exploring Anima)</option>
+                        <option value="feminine">Feminine (exploring Animus)</option>
+                        <option value="both">Both (exploring integration)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="development-stage">Development Stage:</label>
+                    <select id="development-stage" class="glass-button">
+                        <option value="all">All Stages</option>
+                        <option value="stage1">Stage 1: Biological Image</option>
+                        <option value="stage2">Stage 2: Romantic Ideal</option>
+                        <option value="stage3">Stage 3: Spiritual Guide</option>
+                        <option value="stage4">Stage 4: Wisdom Bearer</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <button id="show-projections" class="glass-button">Show Projections</button>
+                    <button id="animate-integration" class="glass-button">Animate Integration</button>
+                    <button id="explore-shadow-anima" class="glass-button">Explore Shadow Anima/us</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Syzygy Dynamics Simulator -->
+        <section class="visualization-section">
+            <h2>Relationship Dynamics Simulator</h2>
+            <div class="visualization-intro">
+                <p>Interactive field showing how anima/animus projections operate in relationships. Watch projection and withdrawal cycles unfold.</p>
+            </div>
+            <div id="relationship-dynamics" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="relationship-stage">Relationship Stage:</label>
+                    <select id="relationship-stage" class="glass-button">
+                        <option value="initial">Initial Attraction</option>
+                        <option value="projection">Projection Phase</option>
+                        <option value="disillusion">Disillusionment</option>
+                        <option value="withdrawal">Projection Withdrawal</option>
+                        <option value="integration">Conscious Relationship</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="projection-intensity">Projection Intensity:</label>
+                    <input type="range" id="projection-intensity" min="0" max="100" value="50">
+                    <span id="projection-level">Moderate</span>
+                </div>
+                <div class="control-group">
+                    <button id="play-relationship-cycle" class="glass-button">Play Full Cycle</button>
+                    <button id="add-consciousness" class="glass-button">Add Consciousness</button>
+                    <button id="show-individuation-path" class="glass-button">Show Individuation Path</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Archetypal Image Gallery -->
+        <section class="visualization-section">
+            <h2>Archetypal Image Gallery</h2>
+            <div class="visualization-intro">
+                <p>Explore how anima/animus appears across cultures and throughout personal development. Build your personal archetypal image collection.</p>
+            </div>
+            <div id="archetypal-gallery" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="culture-filter">Cultural Context:</label>
+                    <select id="culture-filter" class="glass-button">
+                        <option value="all">All Cultures</option>
+                        <option value="western">Western</option>
+                        <option value="eastern">Eastern</option>
+                        <option value="indigenous">Indigenous</option>
+                        <option value="classical">Classical Mythology</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="archetype-type">Archetype Type:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="anima-images" checked> Anima Images</label>
+                        <label><input type="checkbox" id="animus-images" checked> Animus Images</label>
+                        <label><input type="checkbox" id="syzygy-pairs" checked> Divine Couples</label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="add-personal-image" class="glass-button">Add Personal Image</button>
+                    <button id="create-image-timeline" class="glass-button">Create Personal Timeline</button>
+                    <button id="analyze-patterns" class="glass-button">Analyze My Patterns</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Content -->
+        <section class="content-section">
+            <h2>Understanding the Syzygy</h2>
+            <div class="concept-grid">
+                <div class="concept-card glass-card">
+                    <h3>Anima (Feminine in Masculine)</h3>
+                    <p>The anima represents the unconscious feminine side of a man's psyche, mediating between ego consciousness and the unconscious depths.</p>
+                    <ul>
+                        <li><strong>Stage 1:</strong> Eve - Biological/Sexual</li>
+                        <li><strong>Stage 2:</strong> Helen - Romantic/Aesthetic</li>
+                        <li><strong>Stage 3:</strong> Mary - Spiritual/Religious</li>
+                        <li><strong>Stage 4:</strong> Sophia - Wisdom/Transcendent</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Animus (Masculine in Feminine)</h3>
+                    <p>The animus represents the unconscious masculine side of a woman's psyche, often manifesting as opinions, judgments, and spiritual authority.</p>
+                    <ul>
+                        <li><strong>Stage 1:</strong> Physical Power/Athlete</li>
+                        <li><strong>Stage 2:</strong> Romantic Hero/Adventure</li>
+                        <li><strong>Stage 3:</strong> Spiritual Teacher/Professor</li>
+                        <li><strong>Stage 4:</strong> Wise Guide/Meaning-Giver</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Projection in Relationships</h3>
+                    <p>We unconsciously project our anima/animus onto potential partners, creating initial attraction but also eventual disappointment.</p>
+                    <ul>
+                        <li><strong>Fascination:</strong> Unconscious attraction to contrasexual qualities</li>
+                        <li><strong>Idealization:</strong> Partner carries projected qualities</li>
+                        <li><strong>Disillusionment:</strong> Partner fails to match projection</li>
+                        <li><strong>Integration:</strong> Owning contrasexual qualities</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Sacred Marriage (Hieros Gamos)</h3>
+                    <p>The ultimate goal is the inner marriage between masculine and feminine principles within the individual psyche.</p>
+                    <ul>
+                        <li><strong>Union of Opposites:</strong> Conscious integration</li>
+                        <li><strong>Creative Fertility:</strong> Psychological renewal</li>
+                        <li><strong>Whole Self:</strong> Complete individuation</li>
+                        <li><strong>Divine Couple:</strong> Archetypal wholeness</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Syzygy Work Exercises -->
+        <section class="exercise-section">
+            <h2>Anima/Animus Integration Exercises</h2>
+            
+            <div class="exercise-card glass-card">
+                <h3>Contrasexual Dialogue Exercise</h3>
+                <p>Have a written dialogue with your anima/animus to understand its perspective and needs.</p>
+                <div class="exercise-controls">
+                    <div class="dialogue-interface">
+                        <div class="dialogue-history" id="contrasexual-dialogue-history"></div>
+                        <div class="dialogue-input">
+                            <input type="text" id="ego-to-contrasexual" placeholder="Speak to your anima/animus...">
+                            <button id="send-to-contrasexual" class="glass-button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exercise-card glass-card">
+                <h3>Relationship Pattern Analysis</h3>
+                <p>Identify patterns in your relationships that reveal anima/animus projections.</p>
+                <div class="exercise-controls">
+                    <textarea id="relationship-patterns" placeholder="Describe patterns you notice in your attractions and relationships..."></textarea>
+                    <button id="analyze-relationship-patterns" class="glass-button">Analyze Patterns</button>
+                    <div id="pattern-analysis" class="analysis-result"></div>
+                </div>
+            </div>
+            
+            <div class="exercise-card glass-card">
+                <h3>Creative Expression Exercise</h3>
+                <p>Express your anima/animus through creative work—art, writing, music, or movement.</p>
+                <div class="exercise-controls">
+                    <input type="text" id="creative-expression" placeholder="Describe your creative expression of the contrasexual...">
+                    <button id="add-creative-work" class="glass-button">Add to Gallery</button>
+                    <div id="creative-gallery" class="creative-collection"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <section class="chapter-navigation">
+            <a href="enhanced-chapter2.html" class="nav-button glass-button">
+                ← Previous: Chapter 2 - The Shadow
+            </a>
+            <a href="enhanced-chapter9.html" class="nav-button glass-button">
+                Next: Chapter 9 - Ouroboros →
+            </a>
+        </section>
+    </main>
+
+    <script>
+        // Enhanced Chapter 3: The Syzygy Implementation
+        
+        // Initialize WebGL context manager
+        const contextManager = new WebGLContextManager();
+        let syzygyConstellation, relationshipDynamics, archetypalGallery;
+        
+        // Archetypal data
+        const archetypeData = {
+            anima: {
+                stages: [
+                    { name: 'Eve', level: 1, color: '#DC2626', description: 'Biological/Sexual', qualities: ['sensual', 'instinctual', 'fertile'] },
+                    { name: 'Helen', level: 2, color: '#F59E0B', description: 'Romantic/Aesthetic', qualities: ['beautiful', 'inspiring', 'artistic'] },
+                    { name: 'Mary', level: 3, color: '#3B82F6', description: 'Spiritual/Religious', qualities: ['pure', 'devoted', 'nurturing'] },
+                    { name: 'Sophia', level: 4, color: '#8B5CF6', description: 'Wisdom/Transcendent', qualities: ['wise', 'transformative', 'mystical'] }
+                ]
+            },
+            animus: {
+                stages: [
+                    { name: 'Athlete', level: 1, color: '#DC2626', description: 'Physical Power', qualities: ['strong', 'competitive', 'heroic'] },
+                    { name: 'Hero', level: 2, color: '#F59E0B', description: 'Romantic Adventure', qualities: ['brave', 'adventurous', 'charismatic'] },
+                    { name: 'Professor', level: 3, color: '#3B82F6', description: 'Spiritual Teacher', qualities: ['knowledgeable', 'authoritative', 'wise'] },
+                    { name: 'Guide', level: 4, color: '#8B5CF6', description: 'Meaning-Giver', qualities: ['transcendent', 'spiritual', 'enlightened'] }
+                ]
+            }
+        };
+        
+        // Cultural archetypal images
+        const culturalImages = {
+            western: [
+                { name: 'Adam & Eve', type: 'syzygy', culture: 'Judeo-Christian' },
+                { name: 'Persephone', type: 'anima', culture: 'Greek' },
+                { name: 'Lancelot', type: 'animus', culture: 'Arthurian' },
+                { name: 'Beauty & Beast', type: 'syzygy', culture: 'European Fairy Tale' }
+            ],
+            eastern: [
+                { name: 'Yin & Yang', type: 'syzygy', culture: 'Chinese' },
+                { name: 'Kali', type: 'anima', culture: 'Hindu' },
+                { name: 'Krishna', type: 'animus', culture: 'Hindu' },
+                { name: 'Shiva & Shakti', type: 'syzygy', culture: 'Hindu' }
+            ],
+            classical: [
+                { name: 'Aphrodite & Ares', type: 'syzygy', culture: 'Greek' },
+                { name: 'Isis & Osiris', type: 'syzygy', culture: 'Egyptian' },
+                { name: 'Diana', type: 'anima', culture: 'Roman' },
+                { name: 'Apollo', type: 'animus', culture: 'Greek' }
+            ]
+        };
+        
+        // ========== Anima/Animus Constellation ==========
+        function initSyzygyConstellation() {
+            const container = document.getElementById('syzygy-constellation');
+            const canvas = document.createElement('canvas');
+            canvas.id = 'syzygy-canvas';
+            canvas.style.width = '100%';
+            canvas.style.height = '600px';
+            
+            container.appendChild(canvas);
+            
+            // Get WebGL context through manager
+            const context = contextManager.getContext(canvas, {
+                alpha: true,
+                antialias: true,
+                preserveDrawingBuffer: false
+            });
+            
+            if (!context) {
+                container.innerHTML = '<div class="fallback-message">WebGL not supported. Please use a modern browser.</div>';
+                return;
+            }
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / 600, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true });
+            
+            renderer.setSize(container.offsetWidth, 600);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
+            
+            // Create central syzygy symbol
+            const syzygyGroup = new THREE.Group();
+            
+            // Central unity sphere
+            const unityGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const unityMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFFD700,
+                transparent: true,
+                opacity: 0.8
+            });
+            const unitySphere = new THREE.Mesh(unityGeometry, unityMaterial);
+            syzygyGroup.add(unitySphere);
+            
+            // Create anima constellation (left side)
+            const animaGroup = new THREE.Group();
+            const animaStages = archetypeData.anima.stages;
+            
+            animaStages.forEach((stage, index) => {
+                const angle = (index / animaStages.length) * Math.PI * 2;
+                const radius = 2 + index * 0.3;
+                
+                // Stage sphere
+                const stageGeometry = new THREE.SphereGeometry(0.15 + index * 0.05, 32, 32);
+                const stageMaterial = new THREE.MeshBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const stageMesh = new THREE.Mesh(stageGeometry, stageMaterial);
+                
+                stageMesh.position.set(
+                    Math.cos(angle) * radius - 3,
+                    Math.sin(angle) * radius,
+                    Math.cos(index) * 0.5
+                );
+                
+                stageMesh.userData = { type: 'anima', stage: stage, index };
+                animaGroup.add(stageMesh);
+                
+                // Stage label
+                const labelGeometry = new THREE.RingGeometry(0.25, 0.35, 32);
+                const labelMaterial = new THREE.MeshBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                const label = new THREE.Mesh(labelGeometry, labelMaterial);
+                label.position.copy(stageMesh.position);
+                animaGroup.add(label);
+                
+                // Connection to center
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                    stageMesh.position,
+                    new THREE.Vector3(0, 0, 0)
+                ]);
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.4
+                });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                animaGroup.add(line);
+            });
+            
+            // Create animus constellation (right side)
+            const animusGroup = new THREE.Group();
+            const animusStages = archetypeData.animus.stages;
+            
+            animusStages.forEach((stage, index) => {
+                const angle = (index / animusStages.length) * Math.PI * 2;
+                const radius = 2 + index * 0.3;
+                
+                // Stage sphere
+                const stageGeometry = new THREE.SphereGeometry(0.15 + index * 0.05, 32, 32);
+                const stageMaterial = new THREE.MeshBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const stageMesh = new THREE.Mesh(stageGeometry, stageMaterial);
+                
+                stageMesh.position.set(
+                    Math.cos(angle) * radius + 3,
+                    Math.sin(angle) * radius,
+                    Math.sin(index) * 0.5
+                );
+                
+                stageMesh.userData = { type: 'animus', stage: stage, index };
+                animusGroup.add(stageMesh);
+                
+                // Stage label
+                const labelGeometry = new THREE.RingGeometry(0.25, 0.35, 32);
+                const labelMaterial = new THREE.MeshBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                const label = new THREE.Mesh(labelGeometry, labelMaterial);
+                label.position.copy(stageMesh.position);
+                animusGroup.add(label);
+                
+                // Connection to center
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                    stageMesh.position,
+                    new THREE.Vector3(0, 0, 0)
+                ]);
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: 0.4
+                });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                animusGroup.add(line);
+            });
+            
+            scene.add(syzygyGroup);
+            scene.add(animaGroup);
+            scene.add(animusGroup);
+            
+            // Add particle field for unconscious
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 150;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 12;     // x
+                positions[i + 1] = (Math.random() - 0.5) * 8;  // y
+                positions[i + 2] = (Math.random() - 0.5) * 6;  // z
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x8B5CF6,
+                size: 0.03,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            camera.position.set(0, 2, 8);
+            camera.lookAt(0, 0, 0);
+            
+            // Animation loop
+            let animationId;
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                const time = Date.now() * 0.001;
+                
+                // Rotate constellation
+                syzygyGroup.rotation.y += 0.005;
+                animaGroup.rotation.y += 0.003;
+                animusGroup.rotation.y -= 0.003;
+                
+                // Breathing effect on unity sphere
+                unitySphere.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
+                
+                // Particle movement
+                particles.rotation.y += 0.001;
+                particles.rotation.x += 0.0005;
+                
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // Store references
+            syzygyConstellation = { 
+                renderer, scene, camera, animationId, canvas, 
+                animaGroup, animusGroup, syzygyGroup, particles 
+            };
+            
+            // Setup mouse interaction
+            setupConstellationInteraction();
+        }
+        
+        function setupConstellationInteraction() {
+            const canvas = document.getElementById('syzygy-canvas');
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            
+            canvas.addEventListener('click', (event) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                raycaster.setFromCamera(mouse, syzygyConstellation.camera);
+                
+                const animaChildren = syzygyConstellation.animaGroup.children.filter(child => child.userData.type);
+                const animusChildren = syzygyConstellation.animusGroup.children.filter(child => child.userData.type);
+                const allStages = [...animaChildren, ...animusChildren];
+                
+                const intersects = raycaster.intersectObjects(allStages);
+                
+                if (intersects.length > 0) {
+                    const selected = intersects[0].object;
+                    if (selected.userData.stage) {
+                        showStageInfo(selected.userData);
+                    }
+                }
+            });
+        }
+        
+        function showStageInfo(stageData) {
+            const { type, stage, index } = stageData;
+            
+            const info = `
+                <div class="stage-info-popup" style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.9);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 12px;
+                    border: 2px solid ${stage.color};
+                    z-index: 1000;
+                    max-width: 400px;
+                ">
+                    <h3>${type === 'anima' ? 'Anima' : 'Animus'} Stage ${stage.level}: ${stage.name}</h3>
+                    <p><strong>Description:</strong> ${stage.description}</p>
+                    <p><strong>Qualities:</strong> ${stage.qualities.join(', ')}</p>
+                    <button onclick="this.parentElement.remove()" style="
+                        margin-top: 10px;
+                        padding: 8px 16px;
+                        background: ${stage.color};
+                        border: none;
+                        border-radius: 6px;
+                        color: white;
+                        cursor: pointer;
+                    ">Close</button>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', info);
+        }
+        
+        // ========== Relationship Dynamics Simulator ==========
+        function initRelationshipDynamics() {
+            const container = document.getElementById('relationship-dynamics');
+            const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 500 - margin.top - margin.bottom;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            // Create relationship field
+            const person1 = { x: width * 0.25, y: height * 0.5, type: 'person1' };
+            const person2 = { x: width * 0.75, y: height * 0.5, type: 'person2' };
+            
+            // Background field
+            const fieldGradient = svg.append('defs')
+                .append('radialGradient')
+                .attr('id', 'relationship-field')
+                .attr('cx', '50%')
+                .attr('cy', '50%')
+                .attr('r', '50%');
+            
+            fieldGradient.append('stop')
+                .attr('offset', '0%')
+                .attr('stop-color', '#8B5CF6')
+                .attr('stop-opacity', 0.3);
+            
+            fieldGradient.append('stop')
+                .attr('offset', '100%')
+                .attr('stop-color', '#1F2937')
+                .attr('stop-opacity', 0.1);
+            
+            g.append('ellipse')
+                .attr('cx', width / 2)
+                .attr('cy', height / 2)
+                .attr('rx', width * 0.4)
+                .attr('ry', height * 0.3)
+                .attr('fill', 'url(#relationship-field)');
+            
+            // Person 1 (with anima projection)
+            const person1Group = g.append('g')
+                .attr('class', 'person1-group')
+                .attr('transform', `translate(${person1.x}, ${person1.y})`);
+            
+            person1Group.append('circle')
+                .attr('r', 30)
+                .attr('fill', '#3B82F6')
+                .attr('opacity', 0.8);
+            
+            person1Group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('fill', 'white')
+                .attr('font-weight', 'bold')
+                .text('Person A');
+            
+            // Anima projection from Person 1
+            const animaProjection = person1Group.append('circle')
+                .attr('class', 'anima-projection')
+                .attr('r', 15)
+                .attr('fill', '#EC4899')
+                .attr('opacity', 0.6)
+                .attr('cx', (person2.x - person1.x) * 0.7)
+                .attr('cy', 0);
+            
+            // Person 2 (with animus projection)
+            const person2Group = g.append('g')
+                .attr('class', 'person2-group')
+                .attr('transform', `translate(${person2.x}, ${person2.y})`);
+            
+            person2Group.append('circle')
+                .attr('r', 30)
+                .attr('fill', '#10B981')
+                .attr('opacity', 0.8);
+            
+            person2Group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('fill', 'white')
+                .attr('font-weight', 'bold')
+                .text('Person B');
+            
+            // Animus projection from Person 2
+            const animusProjection = person2Group.append('circle')
+                .attr('class', 'animus-projection')
+                .attr('r', 15)
+                .attr('fill', '#F59E0B')
+                .attr('opacity', 0.6)
+                .attr('cx', (person1.x - person2.x) * 0.7)
+                .attr('cy', 0);
+            
+            // Projection lines
+            const projectionLine1 = g.append('line')
+                .attr('class', 'projection-line')
+                .attr('x1', person1.x)
+                .attr('y1', person1.y)
+                .attr('x2', person2.x)
+                .attr('y2', person2.y)
+                .attr('stroke', '#EC4899')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0.6);
+            
+            const projectionLine2 = g.append('line')
+                .attr('class', 'projection-line')
+                .attr('x1', person2.x)
+                .attr('y1', person2.y)
+                .attr('x2', person1.x)
+                .attr('y2', person1.y)
+                .attr('stroke', '#F59E0B')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0.6);
+            
+            relationshipDynamics = { 
+                svg, g, person1Group, person2Group, 
+                animaProjection, animusProjection,
+                projectionLine1, projectionLine2
+            };
+        }
+        
+        // ========== Archetypal Gallery ==========
+        function initArchetypalGallery() {
+            const container = document.getElementById('archetypal-gallery');
+            
+            // Create gallery grid
+            const galleryGrid = document.createElement('div');
+            galleryGrid.className = 'archetypal-grid';
+            galleryGrid.style.cssText = `
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            `;
+            
+            container.appendChild(galleryGrid);
+            
+            // Add cultural images
+            Object.keys(culturalImages).forEach(culture => {
+                culturalImages[culture].forEach(image => {
+                    const imageCard = createImageCard(image, culture);
+                    galleryGrid.appendChild(imageCard);
+                });
+            });
+            
+            archetypalGallery = { container, galleryGrid };
+        }
+        
+        function createImageCard(image, culture) {
+            const card = document.createElement('div');
+            card.className = 'archetypal-card glass-card';
+            card.style.cssText = `
+                padding: 16px;
+                text-align: center;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+            `;
+            
+            const typeColor = {
+                'anima': '#EC4899',
+                'animus': '#F59E0B',
+                'syzygy': '#8B5CF6'
+            }[image.type] || '#6B7280';
+            
+            card.innerHTML = `
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    background: ${typeColor};
+                    border-radius: 50%;
+                    margin: 0 auto 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    color: white;
+                ">
+                    ${image.type === 'syzygy' ? '⚊' : image.type === 'anima' ? '♀' : '♂'}
+                </div>
+                <h4 style="margin-bottom: 8px; color: ${typeColor};">${image.name}</h4>
+                <p style="font-size: 12px; color: #9CA3AF;">${image.culture}</p>
+                <p style="font-size: 10px; color: #6B7280; margin-top: 4px;">${image.type.toUpperCase()}</p>
+            `;
+            
+            card.addEventListener('click', () => {
+                showImageDetails(image);
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+            
+            return card;
+        }
+        
+        function showImageDetails(image) {
+            const details = `
+                <div class="image-details-popup" style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.95);
+                    color: white;
+                    padding: 24px;
+                    border-radius: 12px;
+                    border: 2px solid #8B5CF6;
+                    z-index: 1000;
+                    max-width: 500px;
+                ">
+                    <h3>${image.name}</h3>
+                    <p><strong>Type:</strong> ${image.type.charAt(0).toUpperCase() + image.type.slice(1)}</p>
+                    <p><strong>Culture:</strong> ${image.culture}</p>
+                    <p style="margin-top: 12px;">This archetypal figure represents the ${image.type} aspect across cultures, showing how these universal patterns manifest in different mythological and spiritual traditions.</p>
+                    <button onclick="this.parentElement.remove()" style="
+                        margin-top: 16px;
+                        padding: 8px 16px;
+                        background: #8B5CF6;
+                        border: none;
+                        border-radius: 6px;
+                        color: white;
+                        cursor: pointer;
+                    ">Close</button>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', details);
+        }
+        
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', () => {
+            initSyzygyConstellation();
+            initRelationshipDynamics();
+            initArchetypalGallery();
+        });
+        
+        // Dialogue system for contrasexual work
+        let contrasexualDialogue = [];
+        
+        document.getElementById('send-to-contrasexual').addEventListener('click', () => {
+            const message = document.getElementById('ego-to-contrasexual').value;
+            if (message.trim()) {
+                addContrasexualMessage('ego', message);
+                generateContrasexualResponse(message);
+                document.getElementById('ego-to-contrasexual').value = '';
+            }
+        });
+        
+        function addContrasexualMessage(speaker, message) {
+            const historyDiv = document.getElementById('contrasexual-dialogue-history');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `dialogue-message ${speaker}`;
+            messageDiv.innerHTML = `<strong>${speaker === 'ego' ? 'You' : 'Anima/Animus'}:</strong> ${message}`;
+            historyDiv.appendChild(messageDiv);
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+            
+            contrasexualDialogue.push({ speaker, message, timestamp: Date.now() });
+        }
+        
+        function generateContrasexualResponse(egoMessage) {
+            const contrasexualResponses = [
+                "You seek wholeness, but fear my mysteries.",
+                "I am the bridge between your conscious mind and the depths.",
+                "In your relationships, you seek me in others instead of finding me within.",
+                "I hold the creativity you have not yet claimed.",
+                "Your projections onto others are really longing for union with me.",
+                "I am both your inspiration and your challenge.",
+                "Embrace my contradictions, for I am the union of opposites."
+            ];
+            
+            const response = contrasexualResponses[Math.floor(Math.random() * contrasexualResponses.length)];
+            
+            setTimeout(() => {
+                addContrasexualMessage('contrasexual', response);
+            }, 1000 + Math.random() * 2000);
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (syzygyConstellation && syzygyConstellation.animationId) {
+                cancelAnimationFrame(syzygyConstellation.animationId);
+            }
+            if (contextManager) {
+                contextManager.cleanup();
+            }
+        });
+    </script>
+    
+    <!-- Phase 3 Scripts -->
+    <script src="js/advanced-animations.js"></script>
+    <script src="js/gesture-controller.js"></script>
+    <script src="js/contextual-help.js"></script>
+    <script src="js/keyboard-shortcuts.js"></script>
+    <script src="js/smart-asset-loader.js"></script>
+    <script src="js/adaptive-quality.js"></script>
+    <script src="js/learning-analytics.js"></script>
+    <script src="js/production-error-handler.js"></script>
+    
+    <script>
+    // Initialize Phase 3 features
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initialize production error handler
+        window.errorHandler = new ProductionErrorHandler();
+        
+        // Initialize adaptive quality
+        window.adaptiveQuality = new AdaptiveQuality();
+        
+        // Initialize gesture controller for touch devices
+        if ('ontouchstart' in window) {
+            window.gestureController = new GestureController(document.body);
+        }
+        
+        // Initialize keyboard shortcuts
+        window.keyboardShortcuts = new KeyboardShortcuts();
+        
+        // Initialize contextual help
+        window.contextualHelp = new ContextualHelp();
+        
+        // Initialize advanced animations
+        window.advancedAnimations = new AdvancedAnimations();
+        
+        // Initialize smart asset loader
+        window.assetLoader = new SmartAssetLoader();
+        
+        // Initialize learning analytics
+        window.learningAnalytics = new LearningAnalytics();
+        
+        // Track page view
+        if (window.learningAnalytics) {
+            window.learningAnalytics.trackPageView();
+        }
+    });
+    </script>
+</body>
+</html>

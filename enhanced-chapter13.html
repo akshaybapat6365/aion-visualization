@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 13: Ambivalence of the Fish Symbol - Jung's Aion</title>
+    <link rel="stylesheet" href="css/phase3-styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chapter-container {
+            background: linear-gradient(135deg, #1a0a0a 0%, #2a1010 50%, #3a1515 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #ffffff;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chapter-title {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .chapter-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dual-viz-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .visualization-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            min-height: 600px;
+        }
+
+        .visualization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        #dual-fish-container {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: radial-gradient(circle, #1a0a0a, #000000);
+            position: relative;
+        }
+
+        #ambivalence-explorer {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #2a1010, #3a1515);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #paradox-resolver {
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle, #3a1515, #2a1010);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            border-radius: 25px;
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .control-button:hover {
+            background: rgba(255, 107, 107, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .control-button.active {
+            background: rgba(255, 107, 107, 0.6);
+            color: #1a0a0a;
+        }
+
+        .ambivalence-scale {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .ambivalence-scale input[type="range"] {
+            flex: 1;
+            accent-color: #ff6b6b;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .paradox-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .paradox-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 5px;
+            color: #ffffff;
+        }
+
+        .paradox-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .dual-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .aspect-panel {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .light-aspect {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark-aspect {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .aspect-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tension-indicator {
+            height: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd700, #4ecdc4);
+            border-radius: 5px;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .tension-marker {
+            position: absolute;
+            top: -5px;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            border: 2px solid #ff6b6b;
+            transition: all 0.3s ease;
+        }
+
+        .synthesis-result {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .ambivalence-meter {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .meter-bar {
+            flex: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #ffd700, #ff6b6b);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .meditation-guide {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .guide-step {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guide-step:hover {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .guide-step.active {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: #ff6b6b;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 2rem;
+            }
+            
+            .dual-viz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dual-display {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter-container">
+        <div class="chapter-header">
+            <h1 class="chapter-title">⚡ Ambivalence of the Fish Symbol</h1>
+            <p class="chapter-subtitle">The dual nature of the Christ symbol: exploring the tension between light and shadow, good and evil</p>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🐟⚡🐟 Dual Fish Dynamics
+                </h2>
+                <p class="card-description">
+                    Witness the eternal dance of opposing fish representing Christ and Antichrist forces. Explore how these opposing energies create the tension necessary for psychological growth and integration.
+                </p>
+                <div id="dual-fish-container"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="startOpposition()">Show Opposition</button>
+                    <button class="control-button" onclick="increaseSpeed()">Increase Speed</button>
+                    <button class="control-button" onclick="showBalance()">Find Balance</button>
+                    <button class="control-button" onclick="resetDynamics()">Reset</button>
+                </div>
+                <div class="tension-indicator">
+                    <div class="tension-marker" id="tension-marker"></div>
+                </div>
+                <div class="scale-labels">
+                    <span>Dissolution</span>
+                    <span>Balance</span>
+                    <span>Tension</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dual-viz-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🔍 Symbol Ambivalence Explorer
+                </h2>
+                <p class="card-description">
+                    Map your personal ambivalence toward symbols and archetypes. Discover the light and shadow aspects of your relationship with spiritual symbols.
+                </p>
+                <div id="ambivalence-explorer"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="explorePersonalAmbivalence()">Personal Mapping</button>
+                    <button class="control-button" onclick="showProgressTracking()">Track Progress</button>
+                    <button class="control-button" onclick="generateInsights()">Generate Insights</button>
+                </div>
+                <div class="dual-display">
+                    <div class="aspect-panel light-aspect">
+                        <div class="aspect-title">Light Aspects</div>
+                        <div id="light-aspects">Hope, Salvation, Love, Compassion</div>
+                    </div>
+                    <div class="aspect-panel dark-aspect">
+                        <div class="aspect-title">Shadow Aspects</div>
+                        <div id="dark-aspects">Judgment, Exclusion, Dogma, Control</div>
+                    </div>
+                </div>
+                <div class="ambivalence-meter">
+                    <span>Low</span>
+                    <div class="meter-bar">
+                        <div class="meter-fill" id="ambivalence-fill" style="width: 50%"></div>
+                    </div>
+                    <span>High</span>
+                </div>
+            </div>
+
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    ⚖️ Paradox Resolution Tool
+                </h2>
+                <p class="card-description">
+                    Work with personal paradoxes and opposing forces in your life. Find the third position that transcends duality and creates synthesis.
+                </p>
+                <div id="paradox-resolver"></div>
+                <div class="controls">
+                    <button class="control-button" onclick="identifyParadox()">Identify Paradox</button>
+                    <button class="control-button" onclick="analyzeTension()">Analyze Tension</button>
+                    <button class="control-button" onclick="findThirdPosition()">Third Position</button>
+                    <button class="control-button" onclick="createSynthesis()">Create Synthesis</button>
+                </div>
+                <div class="paradox-form">
+                    <h4 style="color: #ff6b6b; margin-bottom: 1rem;">Personal Paradox Work</h4>
+                    <input type="text" class="paradox-input" id="paradox-a" placeholder="First opposing force (e.g., 'I want freedom')">
+                    <input type="text" class="paradox-input" id="paradox-b" placeholder="Second opposing force (e.g., 'I need security')">
+                    <textarea class="paradox-input" id="paradox-context" rows="3" placeholder="Describe the context and how this paradox manifests in your life..."></textarea>
+                    <button class="control-button" onclick="processParadox()">Process Paradox</button>
+                </div>
+                <div class="synthesis-result" id="synthesis-result" style="display: none;">
+                    <h4>Synthesis Result</h4>
+                    <div id="synthesis-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="visualization-grid">
+            <div class="visualization-card">
+                <h2 class="card-title">
+                    🧘 Ambivalence Acceptance Practice
+                </h2>
+                <p class="card-description">
+                    Guided meditation practice for accepting and integrating ambivalence. Learn to hold paradox without needing to resolve it immediately.
+                </p>
+                <div class="meditation-guide">
+                    <h4 style="color: #ff6b6b; margin-bottom: 1rem;">Integration Steps</h4>
+                    <div class="guide-step" onclick="activateStep(0)">
+                        <strong>1. Recognition:</strong> Acknowledge the opposing forces without judgment
+                    </div>
+                    <div class="guide-step" onclick="activateStep(1)">
+                        <strong>2. Acceptance:</strong> Allow both sides to exist simultaneously
+                    </div>
+                    <div class="guide-step" onclick="activateStep(2)">
+                        <strong>3. Dialogue:</strong> Let the opposites speak to each other
+                    </div>
+                    <div class="guide-step" onclick="activateStep(3)">
+                        <strong>4. Integration:</strong> Find the larger truth that holds both
+                    </div>
+                    <div class="guide-step" onclick="activateStep(4)">
+                        <strong>5. Synthesis:</strong> Embody the transcendent third position
+                    </div>
+                </div>
+                <div class="ambivalence-scale">
+                    <span>Resistance</span>
+                    <input type="range" id="acceptance-level" min="0" max="100" value="50" onchange="updateAcceptance()">
+                    <span>Full Acceptance</span>
+                </div>
+                <div class="controls">
+                    <button class="control-button" onclick="startGuidedPractice()">Start Guided Practice</button>
+                    <button class="control-button" onclick="recordInsights()">Record Insights</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <script>
+        // Global variables
+        let dualFishScene, dualFishCamera, dualFishRenderer;
+        let fish1, fish2, oppositionForce = 0;
+        let currentParadox = null;
+        let acceptanceLevel = 50;
+        let meditationStep = 0;
+
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', function() {
+            initDualFishDynamics();
+            initAmbivalenceExplorer();
+            initParadoxResolver();
+        });
+
+        // 1. Dual Fish Dynamics Implementation
+        function initDualFishDynamics() {
+            const container = document.getElementById('dual-fish-container');
+            
+            // Scene setup
+            dualFishScene = new THREE.Scene();
+            dualFishCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            dualFishRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            dualFishRenderer.setSize(container.clientWidth, container.clientHeight);
+            dualFishRenderer.setClearColor(0x000000, 0.1);
+            container.appendChild(dualFishRenderer.domElement);
+
+            // Create fish geometry
+            const fishGeometry = new THREE.ConeGeometry(0.3, 1.5, 8);
+            
+            // Fish 1 (Christ/Light)
+            const fish1Material = new THREE.MeshPhongMaterial({
+                color: 0x87ceeb,
+                emissive: 0x4169e1,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.8
+            });
+            fish1 = new THREE.Mesh(fishGeometry, fish1Material);
+            fish1.position.set(-2, 1, 0);
+            fish1.rotation.z = Math.PI;
+            dualFishScene.add(fish1);
+
+            // Fish 2 (Antichrist/Shadow)
+            const fish2Material = new THREE.MeshPhongMaterial({
+                color: 0xff6b6b,
+                emissive: 0xdc143c,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.8
+            });
+            fish2 = new THREE.Mesh(fishGeometry, fish2Material);
+            fish2.position.set(2, -1, 0);
+            dualFishScene.add(fish2);
+
+            // Central tension point
+            const tensionGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const tensionMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffd700,
+                transparent: true,
+                opacity: 0.7
+            });
+            const tensionPoint = new THREE.Mesh(tensionGeometry, tensionMaterial);
+            dualFishScene.add(tensionPoint);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+            dualFishScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            dualFishScene.add(directionalLight);
+
+            // Position camera
+            dualFishCamera.position.set(0, 0, 8);
+
+            // Start animation
+            animateDualFish();
+        }
+
+        function animateDualFish() {
+            requestAnimationFrame(animateDualFish);
+
+            // Update fish positions based on opposition force
+            const time = Date.now() * 0.001;
+            const radius = 2 + oppositionForce * 0.5;
+            
+            // Fish swimming in opposition
+            fish1.position.x = Math.cos(time + Math.PI) * radius;
+            fish1.position.y = Math.sin(time + Math.PI) * radius * 0.5 + 0.5;
+            fish1.rotation.z = time + Math.PI;
+
+            fish2.position.x = Math.cos(time) * radius;
+            fish2.position.y = Math.sin(time) * radius * 0.5 - 0.5;
+            fish2.rotation.z = time;
+
+            // Update tension marker
+            updateTensionMarker();
+
+            dualFishRenderer.render(dualFishScene, dualFishCamera);
+        }
+
+        function startOpposition() {
+            oppositionForce = Math.min(oppositionForce + 0.2, 1.0);
+            
+            // Increase emissive intensity
+            fish1.material.emissiveIntensity = 0.3 + oppositionForce * 0.4;
+            fish2.material.emissiveIntensity = 0.3 + oppositionForce * 0.4;
+        }
+
+        function increaseSpeed() {
+            // Increase rotation speed by modifying time multiplier
+            // This would require more complex timing system for proper implementation
+            alert("Speed increased! The opposition intensifies as the fish move faster in their eternal dance.");
+        }
+
+        function showBalance() {
+            oppositionForce = 0.5;
+            fish1.material.emissiveIntensity = 0.5;
+            fish2.material.emissiveIntensity = 0.5;
+            alert("Balance achieved. The opposing forces find their equilibrium point.");
+        }
+
+        function resetDynamics() {
+            oppositionForce = 0;
+            fish1.material.emissiveIntensity = 0.3;
+            fish2.material.emissiveIntensity = 0.3;
+        }
+
+        function updateTensionMarker() {
+            const marker = document.getElementById('tension-marker');
+            const position = (oppositionForce * 100) + '%';
+            marker.style.left = position;
+        }
+
+        // 2. Symbol Ambivalence Explorer Implementation
+        function initAmbivalenceExplorer() {
+            const container = document.getElementById('ambivalence-explorer');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create ambivalence visualization
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Central symbol (fish)
+            svg.append('circle')
+                .attr('cx', centerX)
+                .attr('cy', centerY)
+                .attr('r', 50)
+                .attr('fill', 'rgba(255, 107, 107, 0.3)')
+                .attr('stroke', '#ff6b6b')
+                .attr('stroke-width', 2);
+
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY)
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .attr('font-size', '32px')
+                .text('🐟');
+
+            // Ambivalence vectors
+            const aspects = [
+                { name: 'Hope', angle: 0, color: '#87ceeb', intensity: 0.8 },
+                { name: 'Judgment', angle: Math.PI, color: '#ff6b6b', intensity: 0.6 },
+                { name: 'Love', angle: Math.PI / 2, color: '#98fb98', intensity: 0.9 },
+                { name: 'Control', angle: 3 * Math.PI / 2, color: '#ffa500', intensity: 0.7 }
+            ];
+
+            aspects.forEach(aspect => {
+                const length = aspect.intensity * 100;
+                const endX = centerX + Math.cos(aspect.angle) * length;
+                const endY = centerY + Math.sin(aspect.angle) * length;
+
+                // Draw vector
+                svg.append('line')
+                    .attr('x1', centerX)
+                    .attr('y1', centerY)
+                    .attr('x2', endX)
+                    .attr('y2', endY)
+                    .attr('stroke', aspect.color)
+                    .attr('stroke-width', 3)
+                    .attr('opacity', 0.7);
+
+                // Add label
+                svg.append('text')
+                    .attr('x', endX + Math.cos(aspect.angle) * 20)
+                    .attr('y', endY + Math.sin(aspect.angle) * 20)
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', aspect.color)
+                    .attr('font-size', '12px')
+                    .attr('font-weight', 'bold')
+                    .text(aspect.name);
+            });
+        }
+
+        function explorePersonalAmbivalence() {
+            const lightAspects = prompt("Enter positive aspects you associate with religious/spiritual symbols (comma separated):");
+            const darkAspects = prompt("Enter negative aspects you associate with religious/spiritual symbols (comma separated):");
+            
+            if (lightAspects) {
+                document.getElementById('light-aspects').textContent = lightAspects;
+            }
+            
+            if (darkAspects) {
+                document.getElementById('dark-aspects').textContent = darkAspects;
+            }
+
+            // Update ambivalence meter
+            const lightCount = lightAspects ? lightAspects.split(',').length : 0;
+            const darkCount = darkAspects ? darkAspects.split(',').length : 0;
+            const total = lightCount + darkCount;
+            const ambivalenceLevel = total > 0 ? Math.min((Math.abs(lightCount - darkCount) / total) * 100, 100) : 50;
+            
+            document.getElementById('ambivalence-fill').style.width = ambivalenceLevel + '%';
+        }
+
+        function showProgressTracking() {
+            const sessions = JSON.parse(localStorage.getItem('ambivalenceSessions') || '[]');
+            if (sessions.length === 0) {
+                alert("No progress data yet. Complete some ambivalence exercises to see your tracking.");
+                return;
+            }
+            
+            let progressReport = "Your Ambivalence Integration Progress:\n\n";
+            sessions.forEach((session, i) => {
+                progressReport += `Session ${i + 1}: ${session.date}\n`;
+                progressReport += `Acceptance Level: ${session.acceptanceLevel}%\n`;
+                progressReport += `Integration Step: ${session.step}\n\n`;
+            });
+            
+            alert(progressReport);
+        }
+
+        function generateInsights() {
+            const lightText = document.getElementById('light-aspects').textContent;
+            const darkText = document.getElementById('dark-aspects').textContent;
+            
+            let insights = "Ambivalence Integration Insights:\n\n";
+            
+            if (lightText.length > darkText.length) {
+                insights += "• You tend to focus more on positive aspects - consider exploring shadow elements for balance.\n";
+            } else if (darkText.length > lightText.length) {
+                insights += "• You're very aware of shadow aspects - practice appreciating the light side.\n";
+            } else {
+                insights += "• You have a balanced awareness of both light and shadow aspects.\n";
+            }
+            
+            insights += "• Remember: Ambivalence is natural and healthy - it shows psychological sophistication.\n";
+            insights += "• Integration doesn't mean choosing one side, but holding both in creative tension.\n";
+            
+            alert(insights);
+        }
+
+        // 3. Paradox Resolution Tool Implementation
+        function initParadoxResolver() {
+            const container = document.getElementById('paradox-resolver');
+            const width = container.offsetWidth;
+            const height = 400;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create paradox visualization template
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Draw triangle of paradox resolution
+            const points = [
+                [centerX, centerY - 100], // Top (synthesis)
+                [centerX - 100, centerY + 50], // Bottom left (thesis)
+                [centerX + 100, centerY + 50]  // Bottom right (antithesis)
+            ];
+
+            svg.append('polygon')
+                .attr('points', points.map(p => p.join(',')).join(' '))
+                .attr('fill', 'rgba(255, 107, 107, 0.1)')
+                .attr('stroke', '#ff6b6b')
+                .attr('stroke-width', 2);
+
+            // Add labels
+            svg.append('text')
+                .attr('x', centerX)
+                .attr('y', centerY - 110)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ffd700')
+                .attr('font-size', '14px')
+                .attr('font-weight', 'bold')
+                .text('SYNTHESIS');
+
+            svg.append('text')
+                .attr('x', centerX - 100)
+                .attr('y', centerY + 70)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#87ceeb')
+                .attr('font-size', '12px')
+                .text('Position A');
+
+            svg.append('text')
+                .attr('x', centerX + 100)
+                .attr('y', centerY + 70)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ff6b6b')
+                .attr('font-size', '12px')
+                .text('Position B');
+
+            // Central tension point
+            svg.append('circle')
+                .attr('cx', centerX)
+                .attr('cy', centerY + 20)
+                .attr('r', 8)
+                .attr('fill', '#ffd700')
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2);
+        }
+
+        function identifyParadox() {
+            alert("Paradox Identification Guide:\n\n" +
+                  "Look for situations where you feel pulled in opposite directions:\n" +
+                  "• 'I want X but I also want Y (which conflicts with X)'\n" +
+                  "• Both desires/needs feel equally valid and important\n" +
+                  "• Choosing one seems to require sacrificing the other\n\n" +
+                  "Examples: Freedom vs Security, Independence vs Connection, " +
+                  "Success vs Authenticity, Control vs Surrender");
+        }
+
+        function analyzeTension() {
+            const paradoxA = document.getElementById('paradox-a').value;
+            const paradoxB = document.getElementById('paradox-b').value;
+            
+            if (!paradoxA || !paradoxB) {
+                alert("Please enter both opposing forces first.");
+                return;
+            }
+            
+            alert(`Tension Analysis:\n\n` +
+                  `Position A: "${paradoxA}"\n` +
+                  `Position B: "${paradoxB}"\n\n` +
+                  `Notice:\n` +
+                  `• How does each position serve you?\n` +
+                  `• What fear underlies each need?\n` +
+                  `• What happens when you try to choose one over the other?\n` +
+                  `• Where do you feel this tension in your body?`);
+        }
+
+        function findThirdPosition() {
+            const paradoxA = document.getElementById('paradox-a').value;
+            const paradoxB = document.getElementById('paradox-b').value;
+            
+            if (!paradoxA || !paradoxB) {
+                alert("Please enter both opposing forces first.");
+                return;
+            }
+            
+            alert(`Finding the Third Position:\n\n` +
+                  `Instead of choosing between "${paradoxA}" and "${paradoxB}",\n` +
+                  `ask yourself:\n\n` +
+                  `• What larger value or need includes both?\n` +
+                  `• How might both be true at different times or levels?\n` +
+                  `• What would someone who embodies both look like?\n` +
+                  `• What creative solution honors both needs?\n\n` +
+                  `The third position transcends either/or thinking.`);
+        }
+
+        function createSynthesis() {
+            const paradoxA = document.getElementById('paradox-a').value;
+            const paradoxB = document.getElementById('paradox-b').value;
+            const context = document.getElementById('paradox-context').value;
+            
+            if (!paradoxA || !paradoxB || !context) {
+                alert("Please fill in all fields first.");
+                return;
+            }
+            
+            currentParadox = { a: paradoxA, b: paradoxB, context: context };
+            
+            // Generate synthesis suggestions
+            const syntheses = [
+                `Dynamic Balance: Honor both "${paradoxA}" and "${paradoxB}" at different times and contexts.`,
+                `Higher Integration: Both serve a deeper need for wholeness and authentic living.`,
+                `Cyclical Flow: Move between "${paradoxA}" and "${paradoxB}" as life circumstances require.`,
+                `Paradoxical Unity: Hold both as complementary aspects of a larger truth.`,
+                `Creative Transcendence: Find new ways of being that include both perspectives.`
+            ];
+            
+            const randomSynthesis = syntheses[Math.floor(Math.random() * syntheses.length)];
+            
+            document.getElementById('synthesis-result').style.display = 'block';
+            document.getElementById('synthesis-content').innerHTML = `
+                <p><strong>Your Paradox:</strong> "${paradoxA}" ⟷ "${paradoxB}"</p>
+                <p><strong>Synthesis Suggestion:</strong> ${randomSynthesis}</p>
+                <p><strong>Integration Practice:</strong> For the next week, notice when each side of this paradox serves you. 
+                   Practice holding both as valid without needing to choose.</p>
+            `;
+        }
+
+        function processParadox() {
+            createSynthesis();
+            
+            // Save to localStorage
+            const session = {
+                date: new Date().toISOString(),
+                paradox: currentParadox,
+                acceptanceLevel: acceptanceLevel,
+                step: meditationStep
+            };
+            
+            const sessions = JSON.parse(localStorage.getItem('ambivalenceSessions') || '[]');
+            sessions.push(session);
+            localStorage.setItem('ambivalenceSessions', JSON.stringify(sessions));
+        }
+
+        // 4. Meditation and Practice Functions
+        function activateStep(stepIndex) {
+            // Remove active class from all steps
+            document.querySelectorAll('.guide-step').forEach(step => step.classList.remove('active'));
+            
+            // Add active class to clicked step
+            document.querySelectorAll('.guide-step')[stepIndex].classList.add('active');
+            
+            meditationStep = stepIndex;
+            
+            const practices = [
+                "Recognition Practice: Simply notice the opposing forces without trying to resolve them. Name them clearly.",
+                "Acceptance Practice: Breathe into the discomfort of not knowing. Let both sides exist.",
+                "Dialogue Practice: Let each side speak. What does each need? What does each fear?",
+                "Integration Practice: Ask what larger wisdom holds both. What wants to emerge?",
+                "Synthesis Practice: Embody the transcendent position. How does it feel to hold both?"
+            ];
+            
+            alert(`Step ${stepIndex + 1}: ${practices[stepIndex]}`);
+        }
+
+        function updateAcceptance() {
+            acceptanceLevel = document.getElementById('acceptance-level').value;
+            
+            // Update visual feedback based on acceptance level
+            if (acceptanceLevel < 30) {
+                document.body.style.background = 'linear-gradient(135deg, #2a0505 0%, #4a0a0a 100%)';
+            } else if (acceptanceLevel > 70) {
+                document.body.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #2a1010 50%, #1a0a0a 100%)';
+            } else {
+                document.body.style.background = 'linear-gradient(135deg, #1a0a0a 0%, #2a1010 50%, #3a1515 100%)';
+            }
+        }
+
+        function startGuidedPractice() {
+            alert("Guided Ambivalence Practice Starting...\n\n" +
+                  "1. Find a comfortable position\n" +
+                  "2. Bring to mind a current paradox in your life\n" +
+                  "3. Follow the integration steps\n" +
+                  "4. Take your time with each step\n" +
+                  "5. Remember: The goal is not resolution but integration\n\n" +
+                  "Click on each step when you're ready to proceed.");
+        }
+
+        function recordInsights() {
+            const insights = prompt("What insights arose during your ambivalence practice?");
+            if (insights) {
+                const entry = {
+                    date: new Date().toISOString(),
+                    insights: insights,
+                    acceptanceLevel: acceptanceLevel,
+                    currentStep: meditationStep
+                };
+                
+                const entries = JSON.parse(localStorage.getItem('ambivalenceInsights') || '[]');
+                entries.push(entry);
+                localStorage.setItem('ambivalenceInsights', JSON.stringify(entries));
+                
+                alert("Insights recorded! Your integration journey is being tracked.");
+            }
+        }
+
+        // Tooltip functions
+        function showTooltip(event, text) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            tooltip.style.left = event.pageX + 10 + 'px';
+            tooltip.style.top = event.pageY - 10 + 'px';
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (dualFishRenderer) {
+                const container = document.getElementById('dual-fish-container');
+                dualFishCamera.aspect = container.clientWidth / container.clientHeight;
+                dualFishCamera.updateProjectionMatrix();
+                dualFishRenderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+
+        // Cleanup WebGL context on page unload
+        window.addEventListener('beforeunload', function() {
+            if (dualFishRenderer) {
+                dualFishRenderer.dispose();
+            }
+        });
+    </script>
+</body>
+</html>

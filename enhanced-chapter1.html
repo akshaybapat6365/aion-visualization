@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: The Ego - Enhanced Consciousness Exploration</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="css/styles-v3.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="webgl-context-manager.js"></script>
+    <script src="error-boundaries.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters-v2.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline-v2.html" class="nav-link">Timeline</a>
+            <a href="symbols-v2.html" class="nav-link">Symbols</a>
+            <a href="about-v2.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter I</div>
+            <h1 class="chapter-title">The Ego</h1>
+            <p class="chapter-subtitle">Interactive Exploration of Consciousness Center</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung defines the ego as the center of consciousness—the organizing principle of our aware experience. It emerges from the Self but represents only the conscious portion of our total psyche. Explore the dynamic relationship between ego and Self, and understand how healthy ego development supports individuation.</p>
+        </section>
+
+        <!-- 3D Ego-Self Axis Visualization -->
+        <section class="visualization-section">
+            <h2>3D Ego-Self Axis</h2>
+            <div class="visualization-intro">
+                <p>Visualize the ego as a luminous sphere orbiting the greater Self mandala. Adjust the orbital distance to explore ego inflation and deflation dynamics.</p>
+            </div>
+            <div id="ego-self-axis" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="ego-distance">Ego Distance from Self:</label>
+                    <input type="range" id="ego-distance" min="0.5" max="4" value="2" step="0.1">
+                    <span id="ego-state">Balanced</span>
+                </div>
+                <div class="control-group">
+                    <button id="show-ego-inflation" class="glass-button">Show Ego Inflation</button>
+                    <button id="show-ego-deflation" class="glass-button">Show Ego Deflation</button>
+                    <button id="reset-ego" class="glass-button">Reset to Center</button>
+                </div>
+                <div class="control-group">
+                    <button id="animate-orbit" class="glass-button">Animate Orbit</button>
+                    <button id="show-consciousness-field" class="glass-button">Show Consciousness Field</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consciousness Field Mapper -->
+        <section class="visualization-section">
+            <h2>Consciousness Field Mapper</h2>
+            <div class="visualization-intro">
+                <p>Interactive radar chart showing the four psychological functions: Thinking, Feeling, Sensation, and Intuition. Discover your psychological type and how these functions organize your conscious experience.</p>
+            </div>
+            <div id="consciousness-mapper" class="visualization-container artifact-display"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label>Adjust Your Function Strengths:</label>
+                    <div class="function-sliders">
+                        <div class="slider-group">
+                            <label for="thinking-strength">Thinking:</label>
+                            <input type="range" id="thinking-strength" min="0" max="100" value="50">
+                            <span id="thinking-value">50</span>
+                        </div>
+                        <div class="slider-group">
+                            <label for="feeling-strength">Feeling:</label>
+                            <input type="range" id="feeling-strength" min="0" max="100" value="50">
+                            <span id="feeling-value">50</span>
+                        </div>
+                        <div class="slider-group">
+                            <label for="sensation-strength">Sensation:</label>
+                            <input type="range" id="sensation-strength" min="0" max="100" value="50">
+                            <span id="sensation-value">50</span>
+                        </div>
+                        <div class="slider-group">
+                            <label for="intuition-strength">Intuition:</label>
+                            <input type="range" id="intuition-strength" min="0" max="100" value="50">
+                            <span id="intuition-value">50</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="save-type-profile" class="glass-button">Save Type Profile</button>
+                    <button id="analyze-type" class="glass-button">Analyze My Type</button>
+                    <div id="type-analysis" class="type-result"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ego Development Timeline -->
+        <section class="visualization-section">
+            <h2>Ego Development Timeline</h2>
+            <div class="visualization-intro">
+                <p>Create an interactive timeline of ego formation from birth to present. Mark key individuation moments and understand how your ego developed through life stages.</p>
+            </div>
+            <div id="ego-timeline" class="visualization-container artifact-display"></div>
+            <div class="timeline-controls">
+                <div class="control-group">
+                    <button id="add-milestone" class="glass-button">Add Life Milestone</button>
+                    <button id="show-development-stages" class="glass-button">Show Development Stages</button>
+                    <button id="ego-strength-test" class="glass-button">Ego Strength Assessment</button>
+                </div>
+                <div class="control-group">
+                    <label for="timeline-age">Focus on Age:</label>
+                    <input type="range" id="timeline-age" min="0" max="80" value="25">
+                    <span id="current-age">25 years</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Content -->
+        <section class="content-section">
+            <h2>Understanding the Ego</h2>
+            <div class="concept-grid">
+                <div class="concept-card glass-card">
+                    <h3>Ego vs. Self</h3>
+                    <p>The ego is the center of consciousness, while the Self is the center of the total psyche including both conscious and unconscious elements. The ego emerges from the Self but remains only a part of the greater whole.</p>
+                    <ul>
+                        <li>Ego: Conscious organizing principle</li>
+                        <li>Self: Total psychic system</li>
+                        <li>Healthy ego serves the Self</li>
+                        <li>Ego inflation disrupts balance</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Ego Functions</h3>
+                    <p>The ego organizes conscious experience through the four psychological functions, each providing a different way of perceiving and understanding reality.</p>
+                    <ul>
+                        <li><strong>Thinking:</strong> Logical analysis and reasoning</li>
+                        <li><strong>Feeling:</strong> Value judgments and emotional evaluation</li>
+                        <li><strong>Sensation:</strong> Concrete perception of facts</li>
+                        <li><strong>Intuition:</strong> Perception of possibilities</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Healthy Ego Development</h3>
+                    <p>A healthy ego is strong enough to maintain conscious functioning while flexible enough to serve the individuation process guided by the Self.</p>
+                    <ul>
+                        <li>Stable sense of identity</li>
+                        <li>Reality testing ability</li>
+                        <li>Emotional regulation</li>
+                        <li>Openness to unconscious contents</li>
+                    </ul>
+                </div>
+                
+                <div class="concept-card glass-card">
+                    <h3>Ego Pathologies</h3>
+                    <p>When the ego becomes too inflated or deflated, psychological problems arise that interfere with healthy development and relationships.</p>
+                    <ul>
+                        <li><strong>Inflation:</strong> Ego identifies with archetypal contents</li>
+                        <li><strong>Deflation:</strong> Ego overwhelmed by unconscious</li>
+                        <li><strong>Rigidity:</strong> Inability to adapt or grow</li>
+                        <li><strong>Fragmentation:</strong> Loss of cohesive identity</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Exercises -->
+        <section class="exercise-section">
+            <h2>Ego Exploration Exercises</h2>
+            
+            <div class="exercise-card glass-card">
+                <h3>Ego Boundary Exercise</h3>
+                <p>Explore the boundaries of your ego consciousness by identifying what you consider "me" vs. "not me".</p>
+                <div class="exercise-controls">
+                    <textarea id="ego-boundary-reflection" placeholder="Write about what you consider part of your conscious identity..."></textarea>
+                    <button id="analyze-boundaries" class="glass-button">Analyze Boundaries</button>
+                </div>
+            </div>
+            
+            <div class="exercise-card glass-card">
+                <h3>Daily Ego Observation</h3>
+                <p>Keep a journal of moments when you notice your ego responding to challenges, praise, or criticism.</p>
+                <div class="exercise-controls">
+                    <input type="text" id="ego-observation" placeholder="Describe an ego response you noticed today...">
+                    <button id="add-observation" class="glass-button">Add Observation</button>
+                    <div id="observation-list" class="observation-history"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <section class="chapter-navigation">
+            <a href="enhanced-chapter2.html" class="nav-button glass-button">
+                Next: Chapter 2 - The Shadow →
+            </a>
+        </section>
+    </main>
+
+    <script>
+        // Enhanced Chapter 1: The Ego Implementation
+        
+        // Initialize WebGL context manager
+        const contextManager = new WebGLContextManager();
+        let egoSelfScene, consciousnessMapper, egoTimeline;
+        
+        // ========== 3D Ego-Self Axis Visualization ==========
+        function initEgoSelfAxis() {
+            const container = document.getElementById('ego-self-axis');
+            const canvas = document.createElement('canvas');
+            canvas.id = 'ego-self-canvas';
+            canvas.style.width = '100%';
+            canvas.style.height = '500px';
+            
+            container.appendChild(canvas);
+            
+            // Get WebGL context through manager
+            const context = contextManager.getContext(canvas, {
+                alpha: true,
+                antialias: true,
+                preserveDrawingBuffer: false
+            });
+            
+            if (!context) {
+                container.innerHTML = '<div class="fallback-message">WebGL not supported. Please use a modern browser.</div>';
+                return;
+            }
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / 500, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, context, alpha: true });
+            
+            renderer.setSize(container.offsetWidth, 500);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
+            
+            // Create Self mandala (larger, central)
+            const selfGroup = new THREE.Group();
+            
+            // Self center - golden sphere
+            const selfGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const selfMaterial = new THREE.MeshBasicMaterial({
+                color: 0xFFD700,
+                transparent: true,
+                opacity: 0.8
+            });
+            const selfSphere = new THREE.Mesh(selfGeometry, selfMaterial);
+            selfGroup.add(selfSphere);
+            
+            // Self mandala rings
+            for (let i = 1; i <= 3; i++) {
+                const ringGeometry = new THREE.TorusGeometry(i * 0.7, 0.03, 16, 100);
+                const ringMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x6B46C1,
+                    transparent: true,
+                    opacity: 0.4 / i
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = Math.PI / 2;
+                selfGroup.add(ring);
+            }
+            
+            scene.add(selfGroup);
+            
+            // Create Ego sphere (smaller, orbiting)
+            const egoGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+            const egoMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00BFFF,
+                transparent: true,
+                opacity: 0.9
+            });
+            const egoSphere = new THREE.Mesh(egoGeometry, egoMaterial);
+            
+            // Ego orbit path
+            const orbitRadius = 2;
+            let orbitAngle = 0;
+            egoSphere.position.set(orbitRadius, 0, 0);
+            scene.add(egoSphere);
+            
+            // Add consciousness field particles
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 200;
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 10;     // x
+                positions[i + 1] = (Math.random() - 0.5) * 10; // y
+                positions[i + 2] = (Math.random() - 0.5) * 10; // z
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x888888,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            camera.position.set(0, 2, 5);
+            camera.lookAt(0, 0, 0);
+            
+            // Animation loop
+            let animationId;
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                // Rotate Self mandala
+                selfGroup.rotation.y += 0.005;
+                
+                // Orbit ego around Self
+                orbitAngle += 0.02;
+                const currentRadius = parseFloat(document.getElementById('ego-distance').value);
+                egoSphere.position.x = Math.cos(orbitAngle) * currentRadius;
+                egoSphere.position.z = Math.sin(orbitAngle) * currentRadius;
+                
+                // Subtle particle movement
+                particles.rotation.y += 0.001;
+                
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // Store references for cleanup
+            egoSelfScene = { renderer, scene, camera, animationId, canvas };
+            
+            // Control handlers
+            setupEgoControls(egoSphere, orbitRadius);
+            
+            // Responsive resize
+            window.addEventListener('resize', () => {
+                const newWidth = container.offsetWidth;
+                camera.aspect = newWidth / 500;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, 500);
+            });
+        }
+        
+        function setupEgoControls(egoSphere, orbitRadius) {
+            const distanceSlider = document.getElementById('ego-distance');
+            const egoStateSpan = document.getElementById('ego-state');
+            
+            distanceSlider.addEventListener('input', (e) => {
+                const distance = parseFloat(e.target.value);
+                
+                if (distance < 1.5) {
+                    egoStateSpan.textContent = 'Ego Deflation';
+                    egoStateSpan.style.color = '#EF4444';
+                } else if (distance > 3) {
+                    egoStateSpan.textContent = 'Ego Inflation';
+                    egoStateSpan.style.color = '#F59E0B';
+                } else {
+                    egoStateSpan.textContent = 'Balanced';
+                    egoStateSpan.style.color = '#10B981';
+                }
+            });
+            
+            document.getElementById('show-ego-inflation').addEventListener('click', () => {
+                distanceSlider.value = 4;
+                distanceSlider.dispatchEvent(new Event('input'));
+            });
+            
+            document.getElementById('show-ego-deflation').addEventListener('click', () => {
+                distanceSlider.value = 0.5;
+                distanceSlider.dispatchEvent(new Event('input'));
+            });
+            
+            document.getElementById('reset-ego').addEventListener('click', () => {
+                distanceSlider.value = 2;
+                distanceSlider.dispatchEvent(new Event('input'));
+            });
+        }
+        
+        // ========== Consciousness Field Mapper ==========
+        function initConsciousnessMapper() {
+            const container = document.getElementById('consciousness-mapper');
+            const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+            const radius = Math.min(width, height) / 2 - 20;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${width/2 + margin.left}, ${height/2 + margin.top})`);
+            
+            // Define the four functions
+            const functions = [
+                { name: 'Thinking', angle: 0, color: '#3B82F6', value: 50 },
+                { name: 'Feeling', angle: Math.PI, color: '#EF4444', value: 50 },
+                { name: 'Sensation', angle: Math.PI/2, color: '#10B981', value: 50 },
+                { name: 'Intuition', angle: -Math.PI/2, color: '#8B5CF6', value: 50 }
+            ];
+            
+            // Create radar grid
+            const levels = 5;
+            for (let i = 1; i <= levels; i++) {
+                const levelRadius = (radius / levels) * i;
+                
+                g.append('circle')
+                    .attr('r', levelRadius)
+                    .attr('fill', 'none')
+                    .attr('stroke', '#374151')
+                    .attr('stroke-width', 1)
+                    .attr('opacity', 0.3);
+            }
+            
+            // Create axis lines
+            functions.forEach(func => {
+                g.append('line')
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', Math.cos(func.angle) * radius)
+                    .attr('y2', Math.sin(func.angle) * radius)
+                    .attr('stroke', '#6B7280')
+                    .attr('stroke-width', 1);
+                
+                // Add labels
+                const labelDistance = radius + 25;
+                g.append('text')
+                    .attr('x', Math.cos(func.angle) * labelDistance)
+                    .attr('y', Math.sin(func.angle) * labelDistance)
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', func.color)
+                    .attr('font-weight', 'bold')
+                    .text(func.name);
+            });
+            
+            // Create data polygon
+            const line = d3.line()
+                .x(d => Math.cos(d.angle) * (radius * d.value / 100))
+                .y(d => Math.sin(d.angle) * (radius * d.value / 100))
+                .curve(d3.curveCardinalClosed);
+            
+            const polygon = g.append('path')
+                .datum(functions)
+                .attr('d', line)
+                .attr('fill', '#F59E0B')
+                .attr('fill-opacity', 0.3)
+                .attr('stroke', '#F59E0B')
+                .attr('stroke-width', 2);
+            
+            // Add interactive points
+            const points = g.selectAll('.function-point')
+                .data(functions)
+                .enter()
+                .append('circle')
+                .attr('class', 'function-point')
+                .attr('cx', d => Math.cos(d.angle) * (radius * d.value / 100))
+                .attr('cy', d => Math.sin(d.angle) * (radius * d.value / 100))
+                .attr('r', 6)
+                .attr('fill', d => d.color)
+                .style('cursor', 'pointer');
+            
+            // Update function
+            function updateRadarChart() {
+                functions[0].value = parseInt(document.getElementById('thinking-strength').value);
+                functions[1].value = parseInt(document.getElementById('feeling-strength').value);
+                functions[2].value = parseInt(document.getElementById('sensation-strength').value);
+                functions[3].value = parseInt(document.getElementById('intuition-strength').value);
+                
+                polygon.datum(functions).attr('d', line);
+                
+                points.data(functions)
+                    .attr('cx', d => Math.cos(d.angle) * (radius * d.value / 100))
+                    .attr('cy', d => Math.sin(d.angle) * (radius * d.value / 100));
+            }
+            
+            // Connect sliders
+            ['thinking', 'feeling', 'sensation', 'intuition'].forEach(func => {
+                const slider = document.getElementById(`${func}-strength`);
+                const valueSpan = document.getElementById(`${func}-value`);
+                
+                slider.addEventListener('input', (e) => {
+                    valueSpan.textContent = e.target.value;
+                    updateRadarChart();
+                });
+            });
+            
+            // Save to localStorage
+            document.getElementById('save-type-profile').addEventListener('click', () => {
+                const profile = {
+                    thinking: functions[0].value,
+                    feeling: functions[1].value,
+                    sensation: functions[2].value,
+                    intuition: functions[3].value,
+                    timestamp: Date.now()
+                };
+                
+                localStorage.setItem('jungian-type-profile', JSON.stringify(profile));
+                alert('Your psychological type profile has been saved!');
+            });
+            
+            // Type analysis
+            document.getElementById('analyze-type').addEventListener('click', () => {
+                analyzePersonalityType(functions);
+            });
+            
+            consciousnessMapper = { svg, updateRadarChart };
+        }
+        
+        function analyzePersonalityType(functions) {
+            const thinking = functions[0].value;
+            const feeling = functions[1].value;
+            const sensation = functions[2].value;
+            const intuition = functions[3].value;
+            
+            // Determine dominant function
+            const max = Math.max(thinking, feeling, sensation, intuition);
+            let dominant = '';
+            
+            if (thinking === max) dominant = 'Thinking';
+            else if (feeling === max) dominant = 'Feeling';
+            else if (sensation === max) dominant = 'Sensation';
+            else if (intuition === max) dominant = 'Intuition';
+            
+            // Determine attitude (simplified)
+            const rational = thinking + feeling;
+            const irrational = sensation + intuition;
+            
+            const analysis = `
+                <h4>Your Psychological Type Analysis</h4>
+                <p><strong>Dominant Function:</strong> ${dominant}</p>
+                <p><strong>Rational vs. Irrational:</strong> ${rational > irrational ? 'More rational (Thinking/Feeling dominant)' : 'More irrational (Sensation/Intuition dominant)'}</p>
+                <p><strong>Function Scores:</strong></p>
+                <ul>
+                    <li>Thinking: ${thinking}/100</li>
+                    <li>Feeling: ${feeling}/100</li>
+                    <li>Sensation: ${sensation}/100</li>
+                    <li>Intuition: ${intuition}/100</li>
+                </ul>
+                <p class="body-small">This is a simplified analysis. Jung's typology is more complex and includes attitude types (introversion/extraversion) and auxiliary functions.</p>
+            `;
+            
+            document.getElementById('type-analysis').innerHTML = analysis;
+        }
+        
+        // ========== Ego Timeline ==========
+        function initEgoTimeline() {
+            const container = document.getElementById('ego-timeline');
+            const margin = { top: 20, right: 40, bottom: 40, left: 60 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 300 - margin.top - margin.bottom;
+            
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            // Sample timeline data
+            let timelineData = [
+                { age: 0, event: 'Birth - Unconscious Unity', type: 'birth', egoStrength: 0 },
+                { age: 2, event: 'First Ego Emergence', type: 'development', egoStrength: 20 },
+                { age: 6, event: 'School - Social Ego', type: 'social', egoStrength: 40 },
+                { age: 16, event: 'Adolescent Identity Crisis', type: 'crisis', egoStrength: 30 },
+                { age: 25, event: 'Adult Responsibility', type: 'development', egoStrength: 70 },
+                { age: 35, event: 'Midlife Questioning', type: 'crisis', egoStrength: 60 },
+                { age: 50, event: 'Individuation Focus', type: 'development', egoStrength: 80 }
+            ];
+            
+            // Create scales
+            const xScale = d3.scaleLinear()
+                .domain([0, 80])
+                .range([0, width]);
+            
+            const yScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+            
+            // Create axes
+            g.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(xScale))
+                .append('text')
+                .attr('x', width / 2)
+                .attr('y', 35)
+                .attr('fill', '#D1D5DB')
+                .style('text-anchor', 'middle')
+                .text('Age (years)');
+            
+            g.append('g')
+                .call(d3.axisLeft(yScale))
+                .append('text')
+                .attr('transform', 'rotate(-90)')
+                .attr('y', -40)
+                .attr('x', -height / 2)
+                .attr('fill', '#D1D5DB')
+                .style('text-anchor', 'middle')
+                .text('Ego Strength');
+            
+            // Create line
+            const line = d3.line()
+                .x(d => xScale(d.age))
+                .y(d => yScale(d.egoStrength))
+                .curve(d3.curveMonotoneX);
+            
+            g.append('path')
+                .datum(timelineData)
+                .attr('fill', 'none')
+                .attr('stroke', '#F59E0B')
+                .attr('stroke-width', 3)
+                .attr('d', line);
+            
+            // Add milestone points
+            const milestones = g.selectAll('.milestone')
+                .data(timelineData)
+                .enter()
+                .append('g')
+                .attr('class', 'milestone')
+                .attr('transform', d => `translate(${xScale(d.age)}, ${yScale(d.egoStrength)})`);
+            
+            milestones.append('circle')
+                .attr('r', 6)
+                .attr('fill', d => {
+                    const colors = {
+                        birth: '#10B981',
+                        development: '#3B82F6',
+                        social: '#8B5CF6',
+                        crisis: '#EF4444'
+                    };
+                    return colors[d.type] || '#F59E0B';
+                });
+            
+            milestones.append('text')
+                .attr('x', 0)
+                .attr('y', -10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#D1D5DB')
+                .attr('font-size', '12px')
+                .text(d => `${d.age}y`);
+            
+            // Tooltip
+            const tooltip = d3.select('body').append('div')
+                .attr('class', 'tooltip')
+                .style('position', 'absolute')
+                .style('visibility', 'hidden')
+                .style('background', 'rgba(0,0,0,0.8)')
+                .style('color', 'white')
+                .style('padding', '8px')
+                .style('border-radius', '4px')
+                .style('font-size', '12px');
+            
+            milestones
+                .on('mouseover', function(event, d) {
+                    tooltip.style('visibility', 'visible')
+                        .text(`${d.event} (Age ${d.age})`);
+                })
+                .on('mousemove', function(event) {
+                    tooltip.style('top', (event.pageY - 10) + 'px')
+                        .style('left', (event.pageX + 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    tooltip.style('visibility', 'hidden');
+                });
+            
+            egoTimeline = { svg, timelineData, xScale, yScale };
+        }
+        
+        // Initialize all visualizations
+        document.addEventListener('DOMContentLoaded', () => {
+            initEgoSelfAxis();
+            initConsciousnessMapper();
+            initEgoTimeline();
+            
+            // Load saved profile if exists
+            const savedProfile = localStorage.getItem('jungian-type-profile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                document.getElementById('thinking-strength').value = profile.thinking;
+                document.getElementById('feeling-strength').value = profile.feeling;
+                document.getElementById('sensation-strength').value = profile.sensation;
+                document.getElementById('intuition-strength').value = profile.intuition;
+                
+                // Update displays
+                ['thinking', 'feeling', 'sensation', 'intuition'].forEach(func => {
+                    const slider = document.getElementById(`${func}-strength`);
+                    const valueSpan = document.getElementById(`${func}-value`);
+                    valueSpan.textContent = slider.value;
+                });
+                
+                if (consciousnessMapper) {
+                    consciousnessMapper.updateRadarChart();
+                }
+            }
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (egoSelfScene && egoSelfScene.animationId) {
+                cancelAnimationFrame(egoSelfScene.animationId);
+            }
+            if (contextManager) {
+                contextManager.cleanup();
+            }
+        });
+    </script>
+    
+    <!-- Phase 3 Scripts -->
+    <script src="js/advanced-animations.js"></script>
+    <script src="js/gesture-controller.js"></script>
+    <script src="js/contextual-help.js"></script>
+    <script src="js/keyboard-shortcuts.js"></script>
+    <script src="js/smart-asset-loader.js"></script>
+    <script src="js/adaptive-quality.js"></script>
+    <script src="js/learning-analytics.js"></script>
+    <script src="js/production-error-handler.js"></script>
+    
+    <script>
+    // Initialize Phase 3 features
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initialize production error handler
+        window.errorHandler = new ProductionErrorHandler();
+        
+        // Initialize adaptive quality
+        window.adaptiveQuality = new AdaptiveQuality();
+        
+        // Initialize gesture controller for touch devices
+        if ('ontouchstart' in window) {
+            window.gestureController = new GestureController(document.body);
+        }
+        
+        // Initialize keyboard shortcuts
+        window.keyboardShortcuts = new KeyboardShortcuts();
+        
+        // Initialize contextual help
+        window.contextualHelp = new ContextualHelp();
+        
+        // Initialize advanced animations
+        window.advancedAnimations = new AdvancedAnimations();
+        
+        // Initialize smart asset loader
+        window.assetLoader = new SmartAssetLoader();
+        
+        // Initialize learning analytics
+        window.learningAnalytics = new LearningAnalytics();
+        
+        // Track page view
+        if (window.learningAnalytics) {
+            window.learningAnalytics.trackPageView();
+        }
+    });
+    </script>
+</body>
+</html>
