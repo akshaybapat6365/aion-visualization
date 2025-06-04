@@ -34,22 +34,19 @@
     --space-8: calc(var(--space-7) * var(--space-scale));
     
     /* Sophisticated Color Palette */
-    --bg-primary: hsl(220, 15%, 8%);      /* Deep space black */
-    --bg-secondary: hsl(220, 12%, 12%);   /* Card backgrounds */
-    --bg-tertiary: hsl(220, 10%, 18%);    /* Elevated surfaces */
-    --bg-elevated: hsl(220, 11%, 15%);    /* Modal/popup backgrounds */
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-tertiary: #111111;
+    --bg-elevated: #0d0d0d;
     
     /* Text Colors */
-    --text-primary: hsl(220, 10%, 92%);
-    --text-secondary: hsl(220, 10%, 70%);
-    --text-tertiary: hsl(220, 10%, 50%);
-    --text-inverse: hsl(220, 15%, 8%);
+    --text-primary: #ffffff;
+    --text-secondary: #666666;
+    --text-tertiary: #444444;
+    --text-inverse: #000000;
     
     /* Accent Colors */
-    --accent-primary: hsl(45, 85%, 65%);   /* Warm gold */
-    --accent-secondary: hsl(200, 75%, 55%); /* Cool blue */
-    --accent-tertiary: hsl(320, 60%, 65%);  /* Mystical purple */
-    --accent-quaternary: hsl(160, 50%, 55%); /* Emerald green */
+    --accent-primary: #6B46C1;
     
     /* Semantic Colors */
     --success: hsl(142, 71%, 45%);
