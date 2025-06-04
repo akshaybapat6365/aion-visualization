@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: The Lapis - Aion by Carl Jung</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-home">Aion</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+            <a href="chapters.html">Chapters</a>
+            <a href="timeline.html">Timeline</a>
+            <a href="symbols.html">Symbols</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter X</div>
+            <h1 class="chapter-title">The Lapis</h1>
+            <p class="chapter-subtitle">The Philosopher's Stone and Alchemical Transformation</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung examines the lapis philosophorum as the ultimate symbol of the Self—the goal of alchemical transformation representing the integration of consciousness and unconscious through the stages of nigredo, albedo, and rubedo.</p>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Alchemical Transformation Stages</h2>
+            <div id="alchemy-stages" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="animate-transformation">Animate Transformation</button>
+                <button id="show-process">Show Process</button>
+                <button id="reset-alchemy">Reset</button>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Three Primary Stages</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Nigredo (Blackening)</h3>
+                    <p>Death, putrefaction, confronting the shadow. The prima materia dissolves.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Albedo (Whitening)</h3>
+                    <p>Purification, separation, emergence of consciousness from unconscious.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Rubedo (Reddening)</h3>
+                    <p>Integration, the marriage of opposites, birth of the philosophical gold.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <h2>The Opus Magnum</h2>
+            <div id="opus-circle" class="visualization-container"></div>
+        </section>
+
+        <div class="chapter-nav">
+            <a href="chapter9.html" class="prev-chapter">← Chapter 9: The Naassenes</a>
+            <a href="chapter11.html" class="next-chapter">Chapter 11: Mercurius →</a>
+        </div>
+    </main>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <script>
+        // Background shader
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                
+                // Alchemical transformation pattern
+                float transform = sin(uv.x * 4.0 + time) * 
+                                 cos(uv.y * 4.0 - time * 0.7) * 
+                                 sin(time * 0.5);
+                
+                // Alchemical colors - black, white, red, gold
+                vec3 nigredo = vec3(0.1, 0.1, 0.1);
+                vec3 albedo = vec3(0.9, 0.9, 0.9);
+                vec3 rubedo = vec3(0.8, 0.2, 0.2);
+                vec3 gold = vec3(1.0, 0.8, 0.2);
+                
+                float stage = (transform + 1.0) * 0.5;
+                vec3 color;
+                if (stage < 0.33) {
+                    color = mix(nigredo, albedo, stage * 3.0);
+                } else if (stage < 0.66) {
+                    color = mix(albedo, rubedo, (stage - 0.33) * 3.0);
+                } else {
+                    color = mix(rubedo, gold, (stage - 0.66) * 3.0);
+                }
+                
+                gl_FragColor = vec4(color * 0.3, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+        const timeLocation = gl.getUniformLocation(program, 'time');
+
+        function animate(time) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+        }
+        animate(0);
+
+        // Alchemy Stages Visualization
+        const stagesWidth = 1000;
+        const stagesHeight = 400;
+
+        const stagesSvg = d3.select("#alchemy-stages")
+            .append("svg")
+            .attr("viewBox", `0 0 ${stagesWidth} ${stagesHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const stages = [
+            { x: 100, y: stagesHeight / 2, color: "#1a1a1a", label: "Prima Materia", description: "Raw material" },
+            { x: 250, y: stagesHeight / 2, color: "#000000", label: "Nigredo", description: "Blackening/Death" },
+            { x: 400, y: stagesHeight / 2, color: "#FFFFFF", label: "Albedo", description: "Whitening/Purification" },
+            { x: 550, y: stagesHeight / 2, color: "#DC143C", label: "Rubedo", description: "Reddening/Integration" },
+            { x: 700, y: stagesHeight / 2, color: "#FFD700", label: "Aurum", description: "Philosophical Gold" },
+            { x: 850, y: stagesHeight / 2, color: "#9370DB", label: "Lapis", description: "Philosopher's Stone" }
+        ];
+
+        // Draw transformation path
+        const line = d3.line()
+            .x(d => d.x)
+            .y(d => d.y)
+            .curve(d3.curveBasis);
+
+        stagesSvg.append("path")
+            .datum(stages)
+            .attr("d", line)
+            .attr("fill", "none")
+            .attr("stroke", "#9370DB")
+            .attr("stroke-width", 3)
+            .attr("stroke-dasharray", "10,5")
+            .attr("opacity", 0.6);
+
+        // Add stage circles
+        stages.forEach((stage, i) => {
+            const stageGroup = stagesSvg.append("g");
+            
+            stageGroup.append("circle")
+                .attr("cx", stage.x)
+                .attr("cy", stage.y)
+                .attr("r", 40)
+                .attr("fill", stage.color)
+                .attr("stroke", stage.color === "#FFFFFF" ? "#000" : "#FFF")
+                .attr("stroke-width", 3);
+            
+            stageGroup.append("text")
+                .attr("x", stage.x)
+                .attr("y", stage.y - 60)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#FFF")
+                .attr("font-size", "14px")
+                .attr("font-weight", "bold")
+                .text(stage.label);
+            
+            stageGroup.append("text")
+                .attr("x", stage.x)
+                .attr("y", stage.y + 70)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#CCC")
+                .attr("font-size", "12px")
+                .text(stage.description);
+            
+            // Add arrows between stages
+            if (i < stages.length - 1) {
+                stagesSvg.append("path")
+                    .attr("d", `M ${stage.x + 40} ${stage.y} L ${stages[i + 1].x - 40} ${stages[i + 1].y}`)
+                    .attr("stroke", "#9370DB")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrowhead)");
+            }
+        });
+
+        // Add arrowhead marker
+        const defs = stagesSvg.append("defs");
+        defs.append("marker")
+            .attr("id", "arrowhead")
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 7)
+            .attr("refX", 9)
+            .attr("refY", 3.5)
+            .attr("orient", "auto")
+            .append("polygon")
+            .attr("points", "0 0, 10 3.5, 0 7")
+            .attr("fill", "#9370DB");
+
+        // Opus Circle Visualization
+        const opusWidth = 600;
+        const opusHeight = 600;
+        const opusCenter = { x: opusWidth / 2, y: opusHeight / 2 };
+
+        const opusSvg = d3.select("#opus-circle")
+            .append("svg")
+            .attr("viewBox", `0 0 ${opusWidth} ${opusHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // Create circular mandala of alchemical symbols
+        const symbols = [
+            { angle: 0, symbol: "☿", name: "Mercury", color: "#C0C0C0" },
+            { angle: 60, symbol: "♄", name: "Saturn", color: "#000000" },
+            { angle: 120, symbol: "♃", name: "Jupiter", color: "#4169E1" },
+            { angle: 180, symbol: "♂", name: "Mars", color: "#DC143C" },
+            { angle: 240, symbol: "♀", name: "Venus", color: "#32CD32" },
+            { angle: 300, symbol: "☉", name: "Sol", color: "#FFD700" }
+        ];
+
+        const radius = 200;
+        symbols.forEach(symbol => {
+            const x = opusCenter.x + Math.cos(symbol.angle * Math.PI / 180) * radius;
+            const y = opusCenter.y + Math.sin(symbol.angle * Math.PI / 180) * radius;
+            
+            opusSvg.append("circle")
+                .attr("cx", x)
+                .attr("cy", y)
+                .attr("r", 30)
+                .attr("fill", symbol.color)
+                .attr("fill-opacity", 0.8)
+                .attr("stroke", "#FFF")
+                .attr("stroke-width", 2);
+            
+            opusSvg.append("text")
+                .attr("x", x)
+                .attr("y", y)
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("fill", symbol.color === "#FFD700" ? "#000" : "#FFF")
+                .attr("font-size", "24px")
+                .text(symbol.symbol);
+            
+            opusSvg.append("text")
+                .attr("x", x)
+                .attr("y", y + 45)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#FFF")
+                .attr("font-size", "12px")
+                .text(symbol.name);
+        });
+
+        // Central lapis
+        opusSvg.append("circle")
+            .attr("cx", opusCenter.x)
+            .attr("cy", opusCenter.y)
+            .attr("r", 50)
+            .attr("fill", "#9370DB")
+            .attr("stroke", "#FFD700")
+            .attr("stroke-width", 4);
+
+        opusSvg.append("text")
+            .attr("x", opusCenter.x)
+            .attr("y", opusCenter.y)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#FFF")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .text("LAPIS");
+
+        // Animation controls
+        let transforming = false;
+        document.getElementById("animate-transformation").addEventListener("click", function() {
+            if (!transforming) {
+                transforming = true;
+                this.textContent = "Stop Transformation";
+                animateTransformation();
+            } else {
+                transforming = false;
+                this.textContent = "Animate Transformation";
+            }
+        });
+
+        function animateTransformation() {
+            if (!transforming) return;
+            
+            stagesSvg.selectAll("circle")
+                .transition()
+                .duration(1000)
+                .attr("r", d => 50)
+                .transition()
+                .duration(1000)
+                .attr("r", d => 40);
+            
+            setTimeout(animateTransformation, 2000);
+        }
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

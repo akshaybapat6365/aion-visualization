@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbol Encyclopedia - Aion Visualization</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline.html" class="nav-link">Timeline</a>
+            <a href="symbols.html" class="nav-link active">Symbols</a>
+            <a href="about.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-small">
+        <h1 class="hero-title">Jungian Symbol Encyclopedia</h1>
+        <p class="hero-subtitle">Explore the archetypal language of the psyche</p>
+    </section>
+
+    <!-- Symbol Categories -->
+    <div class="symbol-categories">
+        <button class="category-btn active" data-category="all">All Symbols</button>
+        <button class="category-btn" data-category="self">The Self</button>
+        <button class="category-btn" data-category="shadow">Shadow</button>
+        <button class="category-btn" data-category="anima">Anima/Animus</button>
+        <button class="category-btn" data-category="archetype">Archetypes</button>
+        <button class="category-btn" data-category="alchemical">Alchemical</button>
+        <button class="category-btn" data-category="religious">Religious</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="symbol-search">
+        <input type="text" id="symbol-search" placeholder="Search symbols..." />
+    </div>
+
+    <!-- Symbol Grid -->
+    <div class="symbol-grid" id="symbol-grid">
+        <!-- Symbols will be dynamically inserted here -->
+    </div>
+
+    <!-- Symbol Detail Modal -->
+    <div id="symbol-modal" class="symbol-modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="symbol-3d-view"></div>
+            <h2 id="modal-symbol-name"></h2>
+            <div id="modal-symbol-glyph"></div>
+            <p id="modal-symbol-description"></p>
+            <div class="symbol-attributes">
+                <h3>Attributes</h3>
+                <ul id="modal-attributes"></ul>
+            </div>
+            <div class="symbol-connections">
+                <h3>Related Symbols</h3>
+                <div id="modal-connections"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .hero-small {
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(107, 70, 193, 0.1) 0%, transparent 100%);
+        }
+
+        .symbol-categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .category-btn:hover {
+            background: var(--surface-glass-hover);
+            border-color: var(--accent);
+        }
+
+        .category-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .symbol-search {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .symbol-search input {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            border-radius: 2rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .symbol-search input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface-glass-hover);
+        }
+
+        .symbol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .symbol-card {
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .symbol-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            background: var(--surface-glass-hover);
+        }
+
+        .symbol-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .symbol-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .symbol-glyph {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .symbol-name {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .symbol-category {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .symbol-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .symbol-modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 1rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        #symbol-3d-view {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        #modal-symbol-glyph {
+            font-size: 6rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .symbol-attributes,
+        .symbol-connections {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .symbol-attributes ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0;
+        }
+
+        .symbol-attributes li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .symbol-connections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .related-symbol {
+            padding: 0.5rem 1rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .related-symbol:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .symbol-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .symbol-glyph {
+                font-size: 3rem;
+            }
+        }
+    </style>
+
+    <script>
+        // Symbol database
+        const symbols = [
+            // The Self
+            {
+                name: "Mandala",
+                glyph: "◉",
+                category: "self",
+                description: "The mandala represents the Self - the totality of the psyche, including both conscious and unconscious elements. It symbolizes wholeness, integration, and the cosmos.",
+                attributes: ["Wholeness", "Integration", "Cosmos", "Center", "Quaternity"],
+                connections: ["Circle", "Square", "Cross"]
+            },
+            {
+                name: "Circle",
+                glyph: "○",
+                category: "self",
+                description: "The circle is a symbol of the Self, representing perfection, eternity, and the infinite. It has no beginning or end, symbolizing the timeless nature of the psyche.",
+                attributes: ["Eternity", "Perfection", "Unity", "Infinity", "Protection"],
+                connections: ["Mandala", "Ouroboros", "Sun"]
+            },
+            {
+                name: "Square",
+                glyph: "□",
+                category: "self",
+                description: "The square represents the earthly, material aspect of the Self. It symbolizes stability, order, and the four-fold nature of psychic wholeness.",
+                attributes: ["Stability", "Matter", "Earth", "Order", "Foundation"],
+                connections: ["Mandala", "Cross", "Quaternity"]
+            },
+            
+            // Shadow
+            {
+                name: "Shadow Figure",
+                glyph: "👤",
+                category: "shadow",
+                description: "The shadow represents the repressed, unknown, or rejected aspects of the personality. It contains both negative and positive potentials.",
+                attributes: ["Repression", "Hidden Self", "Potential", "Darkness", "Integration Work"],
+                connections: ["Devil", "Dark Mirror", "Monster"]
+            },
+            {
+                name: "Dark Mirror",
+                glyph: "🪞",
+                category: "shadow",
+                description: "The mirror that reflects our hidden face, showing us what we refuse to see about ourselves.",
+                attributes: ["Reflection", "Truth", "Self-Confrontation", "Revelation"],
+                connections: ["Shadow Figure", "Double", "Mask"]
+            },
+            
+            // Anima/Animus
+            {
+                name: "Anima",
+                glyph: "♀",
+                category: "anima",
+                description: "The feminine aspect of the male psyche, serving as a bridge to the unconscious. She appears in dreams as various female figures.",
+                attributes: ["Feminine", "Soul", "Emotion", "Intuition", "Eros"],
+                connections: ["Animus", "Mother", "Sophia"]
+            },
+            {
+                name: "Animus",
+                glyph: "♂",
+                category: "anima",
+                description: "The masculine aspect of the female psyche, representing logos and spiritual meaning. He often appears as multiple male figures.",
+                attributes: ["Masculine", "Spirit", "Logos", "Meaning", "Action"],
+                connections: ["Anima", "Father", "Wise Old Man"]
+            },
+            
+            // Archetypes
+            {
+                name: "Mother",
+                glyph: "🤱",
+                category: "archetype",
+                description: "The Mother archetype represents nurturing, creation, and the source of life. She can manifest as both the nurturing and the devouring mother.",
+                attributes: ["Nurturing", "Creation", "Protection", "Nature", "Fertility"],
+                connections: ["Great Mother", "Earth", "Anima"]
+            },
+            {
+                name: "Father",
+                glyph: "👨",
+                category: "archetype",
+                description: "The Father archetype represents authority, order, and the principle of logos. He embodies law, structure, and spiritual guidance.",
+                attributes: ["Authority", "Order", "Law", "Protection", "Guidance"],
+                connections: ["Wise Old Man", "King", "Animus"]
+            },
+            {
+                name: "Child",
+                glyph: "👶",
+                category: "archetype",
+                description: "The Divine Child represents new beginnings, potential, and the future. It symbolizes the nascent Self emerging from the union of opposites.",
+                attributes: ["Innocence", "Potential", "Future", "Renewal", "Wonder"],
+                connections: ["Hero", "Puer Aeternus", "Self"]
+            },
+            {
+                name: "Wise Old Man",
+                glyph: "🧙",
+                category: "archetype",
+                description: "The archetype of wisdom and meaning, often appearing as a guide or teacher. He represents the spiritual principle and higher consciousness.",
+                attributes: ["Wisdom", "Knowledge", "Guidance", "Spirit", "Meaning"],
+                connections: ["Father", "Sage", "Magician"]
+            },
+            {
+                name: "Trickster",
+                glyph: "🃏",
+                category: "archetype",
+                description: "The Trickster disrupts the established order, bringing change through chaos. He represents the transformative power of humor and mischief.",
+                attributes: ["Chaos", "Change", "Humor", "Transformation", "Boundary-Breaking"],
+                connections: ["Shadow", "Fool", "Mercury"]
+            },
+            
+            // Alchemical
+            {
+                name: "Ouroboros",
+                glyph: "🐍",
+                category: "alchemical",
+                description: "The serpent eating its tail represents the eternal cycle of destruction and creation, the prima materia, and the unity of opposites.",
+                attributes: ["Cycles", "Eternity", "Self-Reflexivity", "Unity", "Transformation"],
+                connections: ["Circle", "Dragon", "Mercurius"]
+            },
+            {
+                name: "Philosopher's Stone",
+                glyph: "💎",
+                category: "alchemical",
+                description: "The goal of the alchemical work, representing the Self, enlightenment, and the union of opposites into a transcendent whole.",
+                attributes: ["Perfection", "Transformation", "Unity", "Goal", "Transcendence"],
+                connections: ["Lapis", "Ruby", "Self"]
+            },
+            {
+                name: "Mercury",
+                glyph: "☿",
+                category: "alchemical",
+                description: "Mercurius represents the fluid, transformative principle in alchemy and psychology. He is the mediator between opposites.",
+                attributes: ["Fluidity", "Transformation", "Mediation", "Spirit", "Quicksilver"],
+                connections: ["Hermes", "Trickster", "Anima"]
+            },
+            {
+                name: "Sun",
+                glyph: "☉",
+                category: "alchemical",
+                description: "The Sun represents consciousness, the masculine principle, gold, and the king in alchemical symbolism.",
+                attributes: ["Consciousness", "Masculine", "Gold", "Day", "King"],
+                connections: ["Moon", "Lion", "Father"]
+            },
+            {
+                name: "Moon",
+                glyph: "☽",
+                category: "alchemical",
+                description: "The Moon represents the unconscious, the feminine principle, silver, and the queen in alchemical symbolism.",
+                attributes: ["Unconscious", "Feminine", "Silver", "Night", "Queen"],
+                connections: ["Sun", "Water", "Mother"]
+            },
+            
+            // Religious
+            {
+                name: "Cross",
+                glyph: "✚",
+                category: "religious",
+                description: "The cross represents the intersection of opposites, suffering and transcendence, and the quaternity of psychic wholeness.",
+                attributes: ["Intersection", "Sacrifice", "Transcendence", "Quaternity", "Center"],
+                connections: ["Mandala", "Christ", "Tree of Life"]
+            },
+            {
+                name: "Fish (Ichthys)",
+                glyph: "🐟",
+                category: "religious",
+                description: "The fish symbolizes Christ, the Christian aeon, and the contents rising from the unconscious depths.",
+                attributes: ["Christ", "Christianity", "Pisces Age", "Unconscious", "Fertility"],
+                connections: ["Water", "Christ", "Pisces"]
+            },
+            {
+                name: "Tree of Life",
+                glyph: "🌳",
+                category: "religious",
+                description: "The Tree of Life represents growth, connection between heaven and earth, and the process of individuation.",
+                attributes: ["Growth", "Connection", "Life", "Wisdom", "Axis Mundi"],
+                connections: ["Cross", "Serpent", "Paradise"]
+            },
+            {
+                name: "Star of David",
+                glyph: "✡",
+                category: "religious",
+                description: "The hexagram represents the union of opposites, with the upward and downward triangles symbolizing the masculine and feminine principles.",
+                attributes: ["Union", "Balance", "Above and Below", "Masculine/Feminine", "Harmony"],
+                connections: ["Triangle", "Solomon's Seal", "Mandala"]
+            }
+        ];
+
+        // Initialize the symbol grid
+        function initializeSymbols() {
+            displaySymbols(symbols);
+        }
+
+        // Display symbols in the grid
+        function displaySymbols(symbolsToDisplay) {
+            const grid = document.getElementById('symbol-grid');
+            grid.innerHTML = '';
+            
+            symbolsToDisplay.forEach(symbol => {
+                const card = document.createElement('div');
+                card.className = 'symbol-card';
+                card.innerHTML = `
+                    <div class="symbol-glyph">${symbol.glyph}</div>
+                    <h3 class="symbol-name">${symbol.name}</h3>
+                    <p class="symbol-category">${symbol.category}</p>
+                `;
+                card.addEventListener('click', () => showSymbolDetail(symbol));
+                grid.appendChild(card);
+            });
+        }
+
+        // Category filtering
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                if (category === 'all') {
+                    displaySymbols(symbols);
+                } else {
+                    displaySymbols(symbols.filter(s => s.category === category));
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('symbol-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = symbols.filter(symbol => 
+                symbol.name.toLowerCase().includes(searchTerm) ||
+                symbol.description.toLowerCase().includes(searchTerm) ||
+                symbol.attributes.some(attr => attr.toLowerCase().includes(searchTerm))
+            );
+            displaySymbols(filtered);
+        });
+
+        // Show symbol detail modal
+        function showSymbolDetail(symbol) {
+            const modal = document.getElementById('symbol-modal');
+            document.getElementById('modal-symbol-name').textContent = symbol.name;
+            document.getElementById('modal-symbol-glyph').textContent = symbol.glyph;
+            document.getElementById('modal-symbol-description').textContent = symbol.description;
+            
+            // Display attributes
+            const attributesList = document.getElementById('modal-attributes');
+            attributesList.innerHTML = symbol.attributes.map(attr => `<li>• ${attr}</li>`).join('');
+            
+            // Display connections
+            const connectionsDiv = document.getElementById('modal-connections');
+            connectionsDiv.innerHTML = symbol.connections.map(conn => 
+                `<span class="related-symbol">${conn}</span>`
+            ).join('');
+            
+            // Initialize 3D view
+            init3DSymbol(symbol);
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Close modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('symbol-modal').classList.add('hidden');
+        });
+
+        // Close modal on outside click
+        document.getElementById('symbol-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+
+        // Initialize 3D symbol visualization
+        function init3DSymbol(symbol) {
+            const container = document.getElementById('symbol-3d-view');
+            container.innerHTML = ''; // Clear previous content
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+            
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            // Create 3D representation based on symbol
+            let geometry, material, mesh;
+            
+            switch(symbol.name) {
+                case 'Mandala':
+                    geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
+                    material = new THREE.MeshPhongMaterial({ 
+                        color: 0x6B46C1,
+                        emissive: 0x6B46C1,
+                        emissiveIntensity: 0.2
+                    });
+                    break;
+                case 'Circle':
+                    geometry = new THREE.RingGeometry(0.8, 1, 32);
+                    material = new THREE.MeshPhongMaterial({ 
+                        color: 0xFFD700,
+                        side: THREE.DoubleSide
+                    });
+                    break;
+                case 'Square':
+                    geometry = new THREE.BoxGeometry(1.5, 1.5, 0.1);
+                    material = new THREE.MeshPhongMaterial({ color: 0x4A90E2 });
+                    break;
+                default:
+                    geometry = new THREE.IcosahedronGeometry(1, 0);
+                    material = new THREE.MeshPhongMaterial({ 
+                        color: 0x6B46C1,
+                        wireframe: true
+                    });
+            }
+            
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            
+            camera.position.z = 3;
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.x += 0.005;
+                mesh.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        // Initialize on load
+        initializeSymbols();
+    </script>
+</body>
+</html>

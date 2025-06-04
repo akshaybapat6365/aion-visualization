@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: The Lapis - Enhanced Alchemical Laboratory</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="responsive-utils.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="chapters.html" class="nav-link">Chapters</a>
+            <a href="timeline.html" class="nav-link">Timeline</a>
+            <a href="symbols.html" class="nav-link">Symbols</a>
+            <a href="about.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter X</div>
+            <h1 class="chapter-title">The Lapis</h1>
+            <p class="chapter-subtitle">Interactive Alchemical Laboratory</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>The Philosopher's Stone (Lapis) represents the goal of the alchemical work - the union of opposites and the creation of something transcendent. Jung saw this as a symbol of psychological wholeness and the Self.</p>
+        </section>
+
+        <!-- Interactive Alchemical Laboratory -->
+        <section class="visualization-section">
+            <h2>Interactive Alchemical Laboratory</h2>
+            <div class="visualization-intro">
+                <p>Experience the Great Work by combining elements, applying heat, and watching transformations. Each stage represents a step in psychological individuation.</p>
+            </div>
+            <div id="alchemical-lab" class="visualization-container">
+                <!-- Lab workspace -->
+                <div class="lab-workspace">
+                    <div class="ingredient-shelf">
+                        <h3>Prima Materia</h3>
+                        <div class="ingredient" data-element="lead" draggable="true">🟫 Lead</div>
+                        <div class="ingredient" data-element="mercury" draggable="true">☿ Mercury</div>
+                        <div class="ingredient" data-element="sulfur" draggable="true">🟡 Sulfur</div>
+                        <div class="ingredient" data-element="salt" draggable="true">⚪ Salt</div>
+                        <div class="ingredient" data-element="antimony" draggable="true">🔘 Antimony</div>
+                    </div>
+                    
+                    <div class="lab-equipment">
+                        <div class="vessel-area">
+                            <div id="main-vessel" class="vessel" data-drop="true">
+                                <div class="vessel-content"></div>
+                                <div class="vessel-label">Alchemical Vessel</div>
+                            </div>
+                            <div class="heat-control">
+                                <label for="heat-slider">🔥 Heat:</label>
+                                <input type="range" id="heat-slider" min="0" max="100" value="0">
+                                <span id="heat-level">Cold</span>
+                            </div>
+                        </div>
+                        
+                        <div class="operation-buttons">
+                            <button id="calcinate">Calcinate</button>
+                            <button id="dissolve">Dissolve</button>
+                            <button id="separate">Separate</button>
+                            <button id="conjoin">Conjoin</button>
+                            <button id="putrefy">Putrefy</button>
+                            <button id="distill">Distill</button>
+                            <button id="coagulate">Coagulate</button>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-panel">
+                        <h3>Transformation Progress</h3>
+                        <div class="stage-indicator">
+                            <div class="stage" data-stage="nigredo">Nigredo</div>
+                            <div class="stage" data-stage="albedo">Albedo</div>
+                            <div class="stage" data-stage="citrinitas">Citrinitas</div>
+                            <div class="stage" data-stage="rubedo">Rubedo</div>
+                        </div>
+                        <div class="achievement-display">
+                            <h4>Achievements</h4>
+                            <div id="achievements-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lab-controls">
+                <button id="reset-lab">Reset Laboratory</button>
+                <button id="show-recipe">Show Recipe Book</button>
+                <button id="auto-process">Auto Process</button>
+                <button id="save-progress">Save Progress</button>
+            </div>
+        </section>
+
+        <!-- Opus Magnum Wheel -->
+        <section class="visualization-section">
+            <h2>The Opus Magnum Wheel</h2>
+            <div class="visualization-intro">
+                <p>The Great Work represented as a circular process with planetary associations. Each stage corresponds to both chemical and psychological transformations.</p>
+            </div>
+            <div id="opus-wheel" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="rotate-wheel">Rotate Wheel</button>
+                <button id="show-planets">Show Planetary Associations</button>
+                <button id="highlight-stage">Highlight Current Stage</button>
+                <button id="show-psychological">Show Psychological Meaning</button>
+            </div>
+        </section>
+
+        <!-- Transformation Timeline -->
+        <section class="visualization-section">
+            <h2>Alchemical Transformation Timeline</h2>
+            <div class="visualization-intro">
+                <p>Watch the complete transformation from base matter to the Philosopher's Stone, with each stage's symbolic meaning.</p>
+            </div>
+            <div id="transformation-timeline" class="visualization-container"></div>
+            <div class="timeline-controls">
+                <button id="play-transformation">Play Transformation</button>
+                <button id="pause-transformation">Pause</button>
+                <button id="step-forward">Step Forward</button>
+                <button id="step-backward">Step Backward</button>
+                <select id="speed-select">
+                    <option value="0.5">Slow</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="2">Fast</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Recipe Book Modal -->
+        <div id="recipe-modal" class="recipe-modal hidden">
+            <div class="recipe-content">
+                <span class="close-recipe">&times;</span>
+                <h2>Alchemical Recipe Book</h2>
+                <div class="recipe-tabs">
+                    <button class="recipe-tab active" data-recipe="basic">Basic Transformation</button>
+                    <button class="recipe-tab" data-recipe="advanced">Advanced Opus</button>
+                    <button class="recipe-tab" data-recipe="psychological">Psychological Parallel</button>
+                </div>
+                <div class="recipe-details">
+                    <div id="basic-recipe" class="recipe-page active">
+                        <h3>Basic Transformation to Lapis</h3>
+                        <ol>
+                            <li>Begin with Prima Materia (Lead + Mercury)</li>
+                            <li>Apply gentle heat (30-40%)</li>
+                            <li>Dissolve to enter Nigredo (blackening)</li>
+                            <li>Increase heat (60%) and Distill for Albedo (whitening)</li>
+                            <li>Add Sulfur and heat (80%) for Citrinitas (yellowing)</li>
+                            <li>Final Coagulation (100% heat) for Rubedo (reddening)</li>
+                            <li>Achieve the Lapis Philosophorum</li>
+                        </ol>
+                    </div>
+                    <div id="advanced-recipe" class="recipe-page">
+                        <h3>Advanced Opus Magnum</h3>
+                        <p>The complete process involves 12 operations corresponding to the zodiac...</p>
+                    </div>
+                    <div id="psychological-recipe" class="recipe-page">
+                        <h3>Psychological Interpretation</h3>
+                        <ul>
+                            <li><strong>Nigredo:</strong> Confronting the shadow, depression</li>
+                            <li><strong>Albedo:</strong> Purification, integration of anima/animus</li>
+                            <li><strong>Citrinitas:</strong> Illumination, conscious realization</li>
+                            <li><strong>Rubedo:</strong> Union of opposites, wholeness (Self)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Content -->
+        <section class="content-section">
+            <h2>The Psychological Opus</h2>
+            <div class="concept-grid">
+                <div class="concept-card nigredo">
+                    <h3>Nigredo (Blackening)</h3>
+                    <ul>
+                        <li>Confrontation with the shadow</li>
+                        <li>Dissolution of ego defenses</li>
+                        <li>Depression and despair</li>
+                        <li>Necessary death of old patterns</li>
+                    </ul>
+                </div>
+                <div class="concept-card albedo">
+                    <h3>Albedo (Whitening)</h3>
+                    <ul>
+                        <li>Purification and clarity</li>
+                        <li>Integration of anima/animus</li>
+                        <li>Spiritual insight emerges</li>
+                        <li>Washing away of impurities</li>
+                    </ul>
+                </div>
+                <div class="concept-card citrinitas">
+                    <h3>Citrinitas (Yellowing)</h3>
+                    <ul>
+                        <li>Dawn of consciousness</li>
+                        <li>Solar illumination</li>
+                        <li>Wisdom and understanding</li>
+                        <li>Connection to higher Self</li>
+                    </ul>
+                </div>
+                <div class="concept-card rubedo">
+                    <h3>Rubedo (Reddening)</h3>
+                    <ul>
+                        <li>Marriage of opposites</li>
+                        <li>Completion of the Work</li>
+                        <li>Embodied wholeness</li>
+                        <li>The realized Self</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="chapter-nav">
+            <a href="chapter9.html" class="prev-chapter">← Chapter 9: The Naassenes</a>
+            <a href="chapter11.html" class="next-chapter">Chapter 11: Mercurius →</a>
+        </div>
+    </main>
+
+    <style>
+        .lab-workspace {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            gap: 2rem;
+            padding: 2rem;
+            height: 600px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 1rem;
+        }
+
+        .ingredient-shelf {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 2px solid var(--border-default);
+        }
+
+        .ingredient-shelf h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .ingredient {
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .ingredient:hover {
+            background: var(--surface-glass-hover);
+            transform: scale(1.05);
+        }
+
+        .ingredient:active {
+            cursor: grabbing;
+        }
+
+        .lab-equipment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vessel {
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+            border: 3px solid #8B4513;
+            border-radius: 50% 50% 10% 10%;
+            position: relative;
+            margin: 2rem auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .vessel:hover {
+            box-shadow: 0 0 20px rgba(107, 70, 193, 0.5);
+        }
+
+        .vessel[data-drop="true"] {
+            border-color: var(--accent);
+        }
+
+        .vessel-content {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            right: 10px;
+            height: 60%;
+            background: transparent;
+            border-radius: 50% 50% 5% 5%;
+            transition: all 1s ease;
+        }
+
+        .vessel-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .heat-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .heat-control input {
+            flex: 1;
+        }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .operation-buttons button {
+            padding: 0.5rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .operation-buttons button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .progress-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 2px solid var(--border-default);
+        }
+
+        .stage-indicator {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .stage {
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .stage[data-stage="nigredo"] { background: #333; color: white; }
+        .stage[data-stage="albedo"] { background: #fff; color: black; }
+        .stage[data-stage="citrinitas"] { background: #ffd700; color: black; }
+        .stage[data-stage="rubedo"] { background: #dc143c; color: white; }
+
+        .stage.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .recipe-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .recipe-modal.hidden {
+            display: none;
+        }
+
+        .recipe-content {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-recipe {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .recipe-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .recipe-tab {
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .recipe-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .recipe-page {
+            display: none;
+        }
+
+        .recipe-page.active {
+            display: block;
+        }
+
+        .concept-card.nigredo { border-left: 4px solid #333; }
+        .concept-card.albedo { border-left: 4px solid #fff; }
+        .concept-card.citrinitas { border-left: 4px solid #ffd700; }
+        .concept-card.rubedo { border-left: 4px solid #dc143c; }
+
+        @media (max-width: 768px) {
+            .lab-workspace {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 1rem;
+            }
+
+            .vessel {
+                width: 150px;
+                height: 200px;
+            }
+
+            .operation-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+
+    <script>
+        // Initialize visualization loader
+        const vizLoader = new VisualizationLoader();
+        
+        // Laboratory state
+        let labState = {
+            ingredients: [],
+            heat: 0,
+            stage: 'prima-materia',
+            achievements: [],
+            operations: []
+        };
+
+        // Initialize Interactive Laboratory
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLaboratory();
+            initializeOpusWheel();
+            initializeTransformationTimeline();
+        });
+
+        function initializeLaboratory() {
+            // Drag and drop functionality
+            const ingredients = document.querySelectorAll('.ingredient');
+            const vessel = document.getElementById('main-vessel');
+            const vesselContent = document.querySelector('.vessel-content');
+
+            ingredients.forEach(ingredient => {
+                ingredient.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', ingredient.dataset.element);
+                });
+            });
+
+            vessel.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                vessel.style.borderColor = '#FFD700';
+            });
+
+            vessel.addEventListener('dragleave', () => {
+                vessel.style.borderColor = 'var(--accent)';
+            });
+
+            vessel.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const element = e.dataTransfer.getData('text/plain');
+                addIngredient(element);
+                vessel.style.borderColor = 'var(--accent)';
+            });
+
+            // Heat control
+            const heatSlider = document.getElementById('heat-slider');
+            const heatLevel = document.getElementById('heat-level');
+
+            heatSlider.addEventListener('input', (e) => {
+                labState.heat = parseInt(e.target.value);
+                updateHeatLevel();
+                updateVesselAppearance();
+            });
+
+            function updateHeatLevel() {
+                const levels = ['Cold', 'Warm', 'Hot', 'Very Hot', 'Incandescent'];
+                const levelIndex = Math.floor(labState.heat / 20);
+                heatLevel.textContent = levels[Math.min(levelIndex, levels.length - 1)];
+            }
+
+            // Operation buttons
+            document.querySelectorAll('.operation-buttons button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    performOperation(btn.id);
+                });
+            });
+
+            // Lab controls
+            document.getElementById('reset-lab').addEventListener('click', resetLaboratory);
+            document.getElementById('show-recipe').addEventListener('click', showRecipeBook);
+            document.getElementById('auto-process').addEventListener('click', autoProcess);
+
+            // Recipe modal
+            const modal = document.getElementById('recipe-modal');
+            const closeBtn = document.querySelector('.close-recipe');
+            
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Recipe tabs
+            document.querySelectorAll('.recipe-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.recipe-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.recipe-page').forEach(p => p.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.recipe + '-recipe').classList.add('active');
+                });
+            });
+        }
+
+        function addIngredient(element) {
+            labState.ingredients.push(element);
+            updateVesselContent();
+            checkForReactions();
+            announceChange(`Added ${element} to vessel`);
+        }
+
+        function updateVesselContent() {
+            const vesselContent = document.querySelector('.vessel-content');
+            const colors = {
+                lead: '#708090',
+                mercury: '#C0C0C0',
+                sulfur: '#FFFF00',
+                salt: '#FFFFFF',
+                antimony: '#4A4A4A'
+            };
+
+            if (labState.ingredients.length > 0) {
+                // Mix colors based on ingredients
+                let mixedColor = '#333333';
+                if (labState.ingredients.includes('lead') && labState.ingredients.includes('mercury')) {
+                    mixedColor = '#2F4F2F'; // Dark green for prima materia
+                }
+                vesselContent.style.background = `linear-gradient(to top, ${mixedColor}, transparent)`;
+                vesselContent.style.height = Math.min(60 + labState.ingredients.length * 10, 80) + '%';
+            } else {
+                vesselContent.style.background = 'transparent';
+                vesselContent.style.height = '0%';
+            }
+        }
+
+        function updateVesselAppearance() {
+            const vesselContent = document.querySelector('.vessel-content');
+            
+            // Add heat effects
+            if (labState.heat > 50) {
+                vesselContent.style.boxShadow = `0 0 ${labState.heat/5}px rgba(255, 100, 0, 0.8)`;
+            } else {
+                vesselContent.style.boxShadow = 'none';
+            }
+
+            // Stage-based colors
+            const stageColors = {
+                'nigredo': '#000000',
+                'albedo': '#FFFFFF',
+                'citrinitas': '#FFD700',
+                'rubedo': '#DC143C'
+            };
+
+            if (stageColors[labState.stage]) {
+                vesselContent.style.background = `linear-gradient(to top, ${stageColors[labState.stage]}, transparent)`;
+            }
+        }
+
+        function performOperation(operation) {
+            labState.operations.push(operation);
+            
+            const operationEffects = {
+                'calcinate': () => {
+                    if (labState.heat > 80) {
+                        changeStage('nigredo');
+                        announceChange('Calcination complete - entered Nigredo phase');
+                    } else {
+                        announceChange('Need more heat for calcination');
+                    }
+                },
+                'dissolve': () => {
+                    if (labState.ingredients.length > 0) {
+                        changeStage('nigredo');
+                        announceChange('Dissolution begins - matter breaks down');
+                    }
+                },
+                'distill': () => {
+                    if (labState.stage === 'nigredo' && labState.heat > 60) {
+                        changeStage('albedo');
+                        announceChange('Distillation successful - achieved Albedo');
+                    }
+                },
+                'coagulate': () => {
+                    if (labState.stage === 'citrinitas' && labState.heat === 100) {
+                        changeStage('rubedo');
+                        announceChange('Coagulation complete - the Lapis is born!');
+                        addAchievement('Created the Philosopher\'s Stone');
+                    }
+                }
+            };
+
+            if (operationEffects[operation]) {
+                operationEffects[operation]();
+            }
+
+            updateVesselAppearance();
+        }
+
+        function changeStage(newStage) {
+            labState.stage = newStage;
+            
+            // Update stage indicators
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+            });
+            document.querySelector(`[data-stage="${newStage}"]`).classList.add('active');
+            
+            // Award achievement for reaching new stage
+            const stageNames = {
+                'nigredo': 'Entered the Dark Night',
+                'albedo': 'Achieved Purification',
+                'citrinitas': 'Gained Illumination',
+                'rubedo': 'Completed the Great Work'
+            };
+            
+            if (stageNames[newStage]) {
+                addAchievement(stageNames[newStage]);
+            }
+        }
+
+        function addAchievement(achievement) {
+            if (!labState.achievements.includes(achievement)) {
+                labState.achievements.push(achievement);
+                updateAchievements();
+                announceChange(`Achievement unlocked: ${achievement}`);
+            }
+        }
+
+        function updateAchievements() {
+            const achievementsList = document.getElementById('achievements-list');
+            achievementsList.innerHTML = labState.achievements
+                .map(achievement => `<div class="achievement">🏆 ${achievement}</div>`)
+                .join('');
+        }
+
+        function checkForReactions() {
+            const { ingredients, heat } = labState;
+            
+            // Check for basic prima materia
+            if (ingredients.includes('lead') && ingredients.includes('mercury') && !labState.operations.includes('dissolve')) {
+                setTimeout(() => {
+                    announceChange('Prima materia detected - ready for dissolution');
+                }, 1000);
+            }
+            
+            // Check for stage progressions
+            if (ingredients.length >= 2 && heat > 30 && labState.stage === 'prima-materia') {
+                changeStage('nigredo');
+            }
+        }
+
+        function resetLaboratory() {
+            labState = {
+                ingredients: [],
+                heat: 0,
+                stage: 'prima-materia',
+                achievements: [],
+                operations: []
+            };
+            
+            document.getElementById('heat-slider').value = 0;
+            document.getElementById('heat-level').textContent = 'Cold';
+            document.querySelector('.vessel-content').style.background = 'transparent';
+            document.querySelector('.vessel-content').style.height = '0%';
+            document.querySelectorAll('.stage').forEach(stage => stage.classList.remove('active'));
+            updateAchievements();
+            announceChange('Laboratory reset');
+        }
+
+        function showRecipeBook() {
+            document.getElementById('recipe-modal').classList.remove('hidden');
+        }
+
+        function autoProcess() {
+            // Automated sequence to create the Lapis
+            const sequence = [
+                () => { addIngredient('lead'); addIngredient('mercury'); },
+                () => { labState.heat = 40; document.getElementById('heat-slider').value = 40; updateHeatLevel(); },
+                () => performOperation('dissolve'),
+                () => { labState.heat = 60; document.getElementById('heat-slider').value = 60; updateHeatLevel(); },
+                () => performOperation('distill'),
+                () => { addIngredient('sulfur'); },
+                () => { labState.heat = 80; document.getElementById('heat-slider').value = 80; updateHeatLevel(); },
+                () => changeStage('citrinitas'),
+                () => { labState.heat = 100; document.getElementById('heat-slider').value = 100; updateHeatLevel(); },
+                () => performOperation('coagulate')
+            ];
+
+            let step = 0;
+            const interval = setInterval(() => {
+                if (step < sequence.length) {
+                    sequence[step]();
+                    updateVesselAppearance();
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    announceChange('Automatic process complete!');
+                }
+            }, 2000);
+        }
+
+        function announceChange(message) {
+            console.log(message);
+            // You could add a notification system here
+        }
+
+        // Opus Wheel visualization
+        function initializeOpusWheel() {
+            vizLoader.lazyLoad('opus-wheel', function(container) {
+                const width = container.offsetWidth;
+                const height = container.offsetHeight;
+                
+                const svg = d3.select(container)
+                    .append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) / 3;
+
+                // Opus stages with planetary associations
+                const stages = [
+                    { name: 'Calcination', planet: '♂ Mars', color: '#DC143C', angle: 0 },
+                    { name: 'Dissolution', planet: '☽ Luna', color: '#C0C0C0', angle: 30 },
+                    { name: 'Separation', planet: '☿ Mercury', color: '#4A4A4A', angle: 60 },
+                    { name: 'Conjunction', planet: '♀ Venus', color: '#32CD32', angle: 90 },
+                    { name: 'Fermentation', planet: '♃ Jupiter', color: '#4169E1', angle: 120 },
+                    { name: 'Distillation', planet: '♄ Saturn', color: '#2F4F4F', angle: 150 },
+                    { name: 'Coagulation', planet: '☉ Sol', color: '#FFD700', angle: 180 }
+                ];
+
+                const wheel = svg.append('g')
+                    .attr('transform', `translate(${centerX}, ${centerY})`);
+
+                // Draw wheel segments
+                stages.forEach((stage, index) => {
+                    const startAngle = (stage.angle - 15) * Math.PI / 180;
+                    const endAngle = (stage.angle + 15) * Math.PI / 180;
+                    
+                    const arc = d3.arc()
+                        .innerRadius(radius * 0.5)
+                        .outerRadius(radius)
+                        .startAngle(startAngle)
+                        .endAngle(endAngle);
+
+                    wheel.append('path')
+                        .attr('d', arc)
+                        .attr('fill', stage.color)
+                        .attr('opacity', 0.7)
+                        .attr('stroke', '#fff')
+                        .attr('stroke-width', 2);
+
+                    // Add labels
+                    const labelAngle = stage.angle * Math.PI / 180;
+                    const labelRadius = radius * 0.75;
+                    
+                    wheel.append('text')
+                        .attr('x', Math.cos(labelAngle) * labelRadius)
+                        .attr('y', Math.sin(labelAngle) * labelRadius)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', '#fff')
+                        .attr('font-size', '12px')
+                        .text(stage.name);
+                });
+
+                // Add center
+                wheel.append('circle')
+                    .attr('r', radius * 0.4)
+                    .attr('fill', 'url(#centerGradient)')
+                    .attr('stroke', '#FFD700')
+                    .attr('stroke-width', 3);
+
+                // Add center text
+                wheel.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', '#FFD700')
+                    .attr('font-size', '16px')
+                    .attr('font-weight', 'bold')
+                    .text('LAPIS');
+
+                // Add gradient definition
+                const defs = svg.append('defs');
+                const gradient = defs.append('radialGradient')
+                    .attr('id', 'centerGradient');
+                gradient.append('stop')
+                    .attr('offset', '0%')
+                    .attr('stop-color', '#FFD700');
+                gradient.append('stop')
+                    .attr('offset', '100%')
+                    .attr('stop-color', '#8B7355');
+            });
+        }
+
+        // Transformation Timeline
+        function initializeTransformationTimeline() {
+            vizLoader.lazyLoad('transformation-timeline', function(container) {
+                const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+                const width = container.offsetWidth - margin.left - margin.right;
+                const height = 400 - margin.top - margin.bottom;
+
+                const svg = d3.select(container)
+                    .append('svg')
+                    .attr('width', container.offsetWidth)
+                    .attr('height', 400);
+
+                const g = svg.append('g')
+                    .attr('transform', `translate(${margin.left},${margin.top})`);
+
+                // Timeline data
+                const timelineData = [
+                    { stage: 'Prima Materia', time: 0, color: '#8B7355', description: 'The raw, unprocessed material' },
+                    { stage: 'Nigredo', time: 1, color: '#000000', description: 'The blackening - decomposition' },
+                    { stage: 'Albedo', time: 2, color: '#FFFFFF', description: 'The whitening - purification' },
+                    { stage: 'Citrinitas', time: 3, color: '#FFD700', description: 'The yellowing - illumination' },
+                    { stage: 'Rubedo', time: 4, color: '#DC143C', description: 'The reddening - completion' },
+                    { stage: 'Lapis', time: 5, color: '#9370DB', description: 'The Philosopher\'s Stone' }
+                ];
+
+                const xScale = d3.scaleLinear()
+                    .domain([0, 5])
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([height, 0]);
+
+                // Draw timeline
+                const line = d3.line()
+                    .x(d => xScale(d.time))
+                    .y(d => yScale(0.5))
+                    .curve(d3.curveCardinal);
+
+                g.append('path')
+                    .datum(timelineData)
+                    .attr('fill', 'none')
+                    .attr('stroke', '#fff')
+                    .attr('stroke-width', 3)
+                    .attr('d', line);
+
+                // Add stage points
+                const stages = g.selectAll('.stage-point')
+                    .data(timelineData)
+                    .enter().append('g')
+                    .attr('class', 'stage-point')
+                    .attr('transform', d => `translate(${xScale(d.time)}, ${yScale(0.5)})`);
+
+                stages.append('circle')
+                    .attr('r', 15)
+                    .attr('fill', d => d.color)
+                    .attr('stroke', '#fff')
+                    .attr('stroke-width', 3);
+
+                stages.append('text')
+                    .attr('y', -25)
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', '#fff')
+                    .attr('font-size', '12px')
+                    .text(d => d.stage);
+
+                // Add descriptions
+                stages.append('text')
+                    .attr('y', 35)
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', '#ccc')
+                    .attr('font-size', '10px')
+                    .text(d => d.description);
+            });
+        }
+
+    </script>
+</body>
+</html>

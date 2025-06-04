@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11: Mercurius - Aion by Carl Jung</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-home">Aion</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+            <a href="chapters.html">Chapters</a>
+            <a href="timeline.html">Timeline</a>
+            <a href="symbols.html">Symbols</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter XI</div>
+            <h1 class="chapter-title">Mercurius</h1>
+            <p class="chapter-subtitle">The Transformative Spirit Between Opposites</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung explores Mercurius as the spirit of transformation—the dynamic force that mediates between opposites, enabling the union of conscious and unconscious, spirit and matter, creating the possibility for psychological integration.</p>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Dynamic Flow Between Polarities</h2>
+            <div id="mercurius-flow" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="animate-flow">Animate Flow</button>
+                <button id="show-unity">Show Unity</button>
+                <button id="reset-mercurius">Reset</button>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Dual Nature of Mercurius</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Mercurius Senex</h3>
+                    <p>The wise old man, representing traditional wisdom and established knowledge.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Mercurius Puer</h3>
+                    <p>The eternal youth, representing renewal, spontaneity, and creative transformation.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Psychopomp</h3>
+                    <p>Guide between worlds, facilitating passage between conscious and unconscious realms.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Transformer</h3>
+                    <p>The agent of change, dissolving fixed forms to create new possibilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <h2>The Caduceus: Symbol of Integration</h2>
+            <div id="caduceus-viz" class="visualization-container"></div>
+        </section>
+
+        <div class="chapter-nav">
+            <a href="chapter10.html" class="prev-chapter">← Chapter 10: The Lapis</a>
+            <a href="chapter12.html" class="next-chapter">Chapter 12: The Coniunctio →</a>
+        </div>
+    </main>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <script>
+        // Background shader with mercury flow
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                
+                // Mercury flow pattern
+                float flow = sin(uv.x * 6.0 + time * 2.0) * 
+                            cos(uv.y * 4.0 - time * 1.5) * 
+                            sin(length(uv - 0.5) * 8.0 + time);
+                
+                // Mercury colors - silver and blue
+                vec3 mercury = vec3(0.7, 0.7, 0.9);
+                vec3 blue = vec3(0.2, 0.4, 0.8);
+                vec3 dark = vec3(0.05, 0.05, 0.15);
+                vec3 color = mix(dark, mix(mercury, blue, flow * 0.5 + 0.5) * 0.4, abs(flow));
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+        const timeLocation = gl.getUniformLocation(program, 'time');
+
+        function animate(time) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+        }
+        animate(0);
+
+        // Mercurius Flow Visualization
+        const flowWidth = 800;
+        const flowHeight = 600;
+
+        const flowSvg = d3.select("#mercurius-flow")
+            .append("svg")
+            .attr("viewBox", `0 0 ${flowWidth} ${flowHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const centerX = flowWidth / 2;
+        const centerY = flowHeight / 2;
+
+        // Create opposing forces
+        const leftForce = { x: centerX - 200, y: centerY, color: "#FFD700", label: "Sol (Consciousness)" };
+        const rightForce = { x: centerX + 200, y: centerY, color: "#C0C0C0", label: "Luna (Unconscious)" };
+
+        // Draw opposing forces
+        flowSvg.append("circle")
+            .attr("cx", leftForce.x)
+            .attr("cy", leftForce.y)
+            .attr("r", 60)
+            .attr("fill", leftForce.color)
+            .attr("fill-opacity", 0.8)
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 3);
+
+        flowSvg.append("text")
+            .attr("x", leftForce.x)
+            .attr("y", leftForce.y)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#000")
+            .attr("font-size", "24px")
+            .text("☉");
+
+        flowSvg.append("circle")
+            .attr("cx", rightForce.x)
+            .attr("cy", rightForce.y)
+            .attr("r", 60)
+            .attr("fill", rightForce.color)
+            .attr("fill-opacity", 0.8)
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 3);
+
+        flowSvg.append("text")
+            .attr("x", rightForce.x)
+            .attr("y", rightForce.y)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#000")
+            .attr("font-size", "24px")
+            .text("☽");
+
+        // Central Mercurius
+        const mercuriusGroup = flowSvg.append("g").attr("class", "mercurius-center");
+
+        mercuriusGroup.append("circle")
+            .attr("cx", centerX)
+            .attr("cy", centerY)
+            .attr("r", 40)
+            .attr("fill", "#9370DB")
+            .attr("stroke", "#FFD700")
+            .attr("stroke-width", 4);
+
+        mercuriusGroup.append("text")
+            .attr("x", centerX)
+            .attr("y", centerY)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#FFF")
+            .attr("font-size", "20px")
+            .text("☿");
+
+        // Dynamic flow lines
+        const flowLines = flowSvg.append("g").attr("class", "flow-lines");
+
+        function createFlowLines() {
+            flowLines.selectAll("*").remove();
+            
+            const time = Date.now() * 0.002;
+            const numLines = 8;
+            
+            for (let i = 0; i < numLines; i++) {
+                const offset = (i / numLines) * 2 * Math.PI;
+                const amplitude = 30;
+                const frequency = 0.05;
+                
+                const pathData = [];
+                for (let x = leftForce.x + 60; x <= rightForce.x - 60; x += 5) {
+                    const progress = (x - leftForce.x - 60) / (rightForce.x - leftForce.x - 120);
+                    const y = centerY + Math.sin(progress * Math.PI * 4 + time + offset) * amplitude * Math.sin(progress * Math.PI);
+                    pathData.push({ x, y });
+                }
+                
+                const line = d3.line()
+                    .x(d => d.x)
+                    .y(d => d.y)
+                    .curve(d3.curveBasis);
+                
+                flowLines.append("path")
+                    .datum(pathData)
+                    .attr("d", line)
+                    .attr("fill", "none")
+                    .attr("stroke", "#9370DB")
+                    .attr("stroke-width", 2)
+                    .attr("stroke-opacity", 0.6 + Math.sin(time + offset) * 0.4);
+            }
+        }
+
+        // Animate flow lines
+        function animateFlow() {
+            createFlowLines();
+            requestAnimationFrame(animateFlow);
+        }
+        animateFlow();
+
+        // Labels
+        flowSvg.append("text")
+            .attr("x", leftForce.x)
+            .attr("y", leftForce.y + 90)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#FFD700")
+            .attr("font-size", "14px")
+            .text("Sol (Consciousness)");
+
+        flowSvg.append("text")
+            .attr("x", rightForce.x)
+            .attr("y", rightForce.y + 90)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#C0C0C0")
+            .attr("font-size", "14px")
+            .text("Luna (Unconscious)");
+
+        flowSvg.append("text")
+            .attr("x", centerX)
+            .attr("y", centerY - 70)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#9370DB")
+            .attr("font-size", "16px")
+            .attr("font-weight", "bold")
+            .text("Mercurius");
+
+        // Caduceus Visualization
+        const caduceusWidth = 400;
+        const caduceusHeight = 600;
+
+        const caduceusSvg = d3.select("#caduceus-viz")
+            .append("svg")
+            .attr("viewBox", `0 0 ${caduceusWidth} ${caduceusHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const caduceusCenter = caduceusWidth / 2;
+        const staffTop = 50;
+        const staffBottom = caduceusHeight - 50;
+
+        // Central staff
+        caduceusSvg.append("line")
+            .attr("x1", caduceusCenter)
+            .attr("y1", staffTop)
+            .attr("x2", caduceusCenter)
+            .attr("y2", staffBottom)
+            .attr("stroke", "#FFD700")
+            .attr("stroke-width", 8);
+
+        // Intertwining serpents
+        const serpentPath1 = [];
+        const serpentPath2 = [];
+        const turns = 4;
+        
+        for (let i = 0; i <= 100; i++) {
+            const y = staffTop + (staffBottom - staffTop) * (i / 100);
+            const angle = (i / 100) * turns * 2 * Math.PI;
+            const radius = 40;
+            
+            serpentPath1.push({
+                x: caduceusCenter + Math.cos(angle) * radius,
+                y: y
+            });
+            
+            serpentPath2.push({
+                x: caduceusCenter + Math.cos(angle + Math.PI) * radius,
+                y: y
+            });
+        }
+
+        const serpentLine = d3.line()
+            .x(d => d.x)
+            .y(d => d.y)
+            .curve(d3.curveBasis);
+
+        // Draw serpents
+        caduceusSvg.append("path")
+            .datum(serpentPath1)
+            .attr("d", serpentLine)
+            .attr("fill", "none")
+            .attr("stroke", "#228B22")
+            .attr("stroke-width", 12)
+            .attr("stroke-linecap", "round");
+
+        caduceusSvg.append("path")
+            .datum(serpentPath2)
+            .attr("d", serpentLine)
+            .attr("fill", "none")
+            .attr("stroke", "#DC143C")
+            .attr("stroke-width", 12)
+            .attr("stroke-linecap", "round");
+
+        // Wings at top
+        const wingSpan = 60;
+        caduceusSvg.append("ellipse")
+            .attr("cx", caduceusCenter - 30)
+            .attr("cy", staffTop + 20)
+            .attr("rx", wingSpan)
+            .attr("ry", 20)
+            .attr("fill", "#E6E6FA")
+            .attr("stroke", "#9370DB")
+            .attr("stroke-width", 2)
+            .attr("transform", `rotate(-20 ${caduceusCenter - 30} ${staffTop + 20})`);
+
+        caduceusSvg.append("ellipse")
+            .attr("cx", caduceusCenter + 30)
+            .attr("cy", staffTop + 20)
+            .attr("rx", wingSpan)
+            .attr("ry", 20)
+            .attr("fill", "#E6E6FA")
+            .attr("stroke", "#9370DB")
+            .attr("stroke-width", 2)
+            .attr("transform", `rotate(20 ${caduceusCenter + 30} ${staffTop + 20})`);
+
+        // Animation controls
+        let flowAnimating = true;
+        document.getElementById("animate-flow").addEventListener("click", function() {
+            flowAnimating = !flowAnimating;
+            this.textContent = flowAnimating ? "Stop Flow" : "Animate Flow";
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
