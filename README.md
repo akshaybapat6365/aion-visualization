@@ -54,6 +54,10 @@ To make this visualization publicly available, enable GitHub Pages in your repos
 
 This project is released under the [MIT License](LICENSE).
 
+## Contributing
+
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) and [Contributing Guide](CONTRIBUTING.md) before getting started.
+
 
 ## 🎨 New Minimalist Design (2024)
 
