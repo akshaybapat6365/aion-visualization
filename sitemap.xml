@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- Home Page -->
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Chapters Index -->
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Enhanced Chapters -->
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/1/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/2/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/3/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/4/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/5/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/6/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/7/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/8/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/9/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/10/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/11/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/12/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/13/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/enhanced/14/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Standard Chapters -->
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/1/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/2/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/3/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/4/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/5/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/6/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/7/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/8/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/9/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/10/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/11/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/12/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/13/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/chapters/standard/14/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Additional Pages -->
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/timeline/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/symbols/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
+        <loc>https://akshaybapat6365.github.io/aion-visualization/about/</loc>
+        <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+</urlset>
