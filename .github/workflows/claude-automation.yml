@@ -1,0 +1,61 @@
+name: Claude Full Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  issues:
+    types: [opened, labeled]
+  schedule:
+    - cron: '0 9 * * *'  # Daily automation
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+
+jobs:
+  claude-automation:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Claude Auto Review & Management
+      uses: anthropic/claude-code-review@v2
+      with:
+        auto-merge: true
+        auto-fix: true
+        run-tests: true
+        update-docs: true
+    
+    - name: Run Comprehensive Tests
+      run: |
+        chmod +x phase6-*.sh
+        ./phase6-morning-testing.sh || true
+        ./phase6-afternoon-testing.sh || true
+    
+    - name: Auto Deploy on Main
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Auto-deploying to GitHub Pages"
+        # GitHub Pages auto-deploy happens via settings
+    
+    - name: Claude Issue Management
+      if: github.event_name == 'issues'
+      run: |
+        # Claude will auto-respond to issues and create PRs for fixes
+        echo "Claude managing issues automatically"

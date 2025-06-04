@@ -1,0 +1,26 @@
+{
+  "name": "Aion Visualization - Auto Dev",
+  "image": "ghcr.io/akshaybapat6365/aion-visualization-dev:latest",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": {"version": "18"}
+  },
+  "postCreateCommand": "npm install && ./claude-auto-manager.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-dev",
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 3001, 3002, 3003],
+  "portsAttributes": {
+    "3000": {"label": "Dev Server"},
+    "3001": {"label": "GitHub MCP"},
+    "3002": {"label": "FS MCP"},
+    "3003": {"label": "Automation MCP"}
+  }
+}
