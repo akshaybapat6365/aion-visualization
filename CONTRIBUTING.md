@@ -15,9 +15,9 @@ Thank you for your interest in contributing! This project is a collection of sta
    cd src
    python3 -m http.server
    # or using Node
-   npx http-server
+   npx http-server -p 8080
    ```
-   Then visit `http://localhost:8000` in your browser.
+   Then visit `http://localhost:8080` in your browser.
 
 ## Previewing the Visualizations
 
