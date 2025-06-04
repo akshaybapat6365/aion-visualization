@@ -2,236 +2,236 @@
 // Provides VS Code-style command palette and power user features
 
 class KeyboardShortcuts {
-    constructor(options = {}) {
-        this.options = {
-            enabled: true,
-            showHints: true,
-            commandPaletteKey: '/',
-            helpKey: '?',
-            ...options
-        };
+  constructor(options = {}) {
+    this.options = {
+      enabled: true,
+      showHints: true,
+      commandPaletteKey: '/',
+      helpKey: '?',
+      ...options
+    };
         
-        this.shortcuts = new Map();
-        this.sequences = new Map();
-        this.activeSequence = '';
-        this.sequenceTimer = null;
-        this.commandPalette = null;
-        this.helpModal = null;
+    this.shortcuts = new Map();
+    this.sequences = new Map();
+    this.activeSequence = '';
+    this.sequenceTimer = null;
+    this.commandPalette = null;
+    this.helpModal = null;
         
-        this.init();
-    }
+    this.init();
+  }
     
-    init() {
-        this.setupDefaultShortcuts();
-        this.setupEventListeners();
-        this.injectStyles();
-        this.setupCommandPalette();
-        this.setupNavigationHints();
-    }
+  init() {
+    this.setupDefaultShortcuts();
+    this.setupEventListeners();
+    this.injectStyles();
+    this.setupCommandPalette();
+    this.setupNavigationHints();
+  }
     
-    setupDefaultShortcuts() {
-        // Basic navigation
-        this.register(['/', 'ctrl+k'], () => this.openCommandPalette(), 'Open command palette');
-        this.register(['?'], () => this.showShortcutHelp(), 'Show keyboard shortcuts');
-        this.register(['Escape'], () => this.exitCurrentMode(), 'Exit current mode');
-        this.register(['Space'], () => this.pauseResumeAnimation(), 'Pause/resume animations');
+  setupDefaultShortcuts() {
+    // Basic navigation
+    this.register(['/', 'ctrl+k'], () => this.openCommandPalette(), 'Open command palette');
+    this.register(['?'], () => this.showShortcutHelp(), 'Show keyboard shortcuts');
+    this.register(['Escape'], () => this.exitCurrentMode(), 'Exit current mode');
+    this.register(['Space'], () => this.pauseResumeAnimation(), 'Pause/resume animations');
         
-        // Visualization controls
-        this.register(['r'], () => this.resetCurrentVisualization(), 'Reset visualization');
-        this.register(['f'], () => this.toggleFullscreen(), 'Toggle fullscreen');
-        this.register(['m'], () => this.toggleMute(), 'Toggle audio');
-        this.register(['ctrl+plus', 'ctrl+equal'], () => this.zoomIn(), 'Zoom in');
-        this.register(['ctrl+minus'], () => this.zoomOut(), 'Zoom out');
-        this.register(['ctrl+0'], () => this.resetZoom(), 'Reset zoom');
+    // Visualization controls
+    this.register(['r'], () => this.resetCurrentVisualization(), 'Reset visualization');
+    this.register(['f'], () => this.toggleFullscreen(), 'Toggle fullscreen');
+    this.register(['m'], () => this.toggleMute(), 'Toggle audio');
+    this.register(['ctrl+plus', 'ctrl+equal'], () => this.zoomIn(), 'Zoom in');
+    this.register(['ctrl+minus'], () => this.zoomOut(), 'Zoom out');
+    this.register(['ctrl+0'], () => this.resetZoom(), 'Reset zoom');
         
-        // Chapter navigation
-        this.register(['ArrowLeft', 'h'], () => this.previousChapter(), 'Previous chapter');
-        this.register(['ArrowRight', 'l'], () => this.nextChapter(), 'Next chapter');
-        this.register(['Home', 'g g'], () => this.goHome(), 'Go to home');
-        this.register(['End'], () => this.goToEnd(), 'Go to last chapter');
+    // Chapter navigation
+    this.register(['ArrowLeft', 'h'], () => this.previousChapter(), 'Previous chapter');
+    this.register(['ArrowRight', 'l'], () => this.nextChapter(), 'Next chapter');
+    this.register(['Home', 'g g'], () => this.goHome(), 'Go to home');
+    this.register(['End'], () => this.goToEnd(), 'Go to last chapter');
         
-        // Quick chapter access
-        for (let i = 1; i <= 9; i++) {
-            this.register([i.toString()], () => this.jumpToChapter(i), `Jump to chapter ${i}`);
-        }
-        
-        // Accessibility
-        this.register(['alt+1'], () => this.focusMainContent(), 'Focus main content');
-        this.register(['alt+2'], () => this.focusNavigation(), 'Focus navigation');
-        this.register(['alt+3'], () => this.focusVisualization(), 'Focus visualization');
-        this.register(['tab'], () => this.enhancedTabNavigation(), 'Enhanced tab navigation');
-        
-        // Advanced features
-        this.register(['ctrl+shift+d'], () => this.toggleDebugMode(), 'Toggle debug mode');
-        this.register(['ctrl+shift+p'], () => this.togglePerformanceMonitor(), 'Toggle performance monitor');
-        this.register(['ctrl+shift+a'], () => this.toggleAccessibilityMode(), 'Toggle accessibility mode');
-        this.register(['ctrl+shift+s'], () => this.saveProgress(), 'Save progress');
-        this.register(['ctrl+shift+r'], () => this.resetProgress(), 'Reset progress');
-        
-        // Search and filter
-        this.register(['ctrl+f'], () => this.openSearch(), 'Search content');
-        this.register(['ctrl+shift+f'], () => this.openAdvancedSearch(), 'Advanced search');
-        
-        // Sequences (vim-style)
-        this.registerSequence('g h', () => this.goHome(), 'Go home');
-        this.registerSequence('g t', () => this.openTimeline(), 'Open timeline');
-        this.registerSequence('g s', () => this.openSymbols(), 'Open symbols');
-        this.registerSequence('g a', () => this.openAbout(), 'Open about');
+    // Quick chapter access
+    for (let i = 1; i <= 9; i++) {
+      this.register([i.toString()], () => this.jumpToChapter(i), `Jump to chapter ${i}`);
     }
+        
+    // Accessibility
+    this.register(['alt+1'], () => this.focusMainContent(), 'Focus main content');
+    this.register(['alt+2'], () => this.focusNavigation(), 'Focus navigation');
+    this.register(['alt+3'], () => this.focusVisualization(), 'Focus visualization');
+    this.register(['tab'], () => this.enhancedTabNavigation(), 'Enhanced tab navigation');
+        
+    // Advanced features
+    this.register(['ctrl+shift+d'], () => this.toggleDebugMode(), 'Toggle debug mode');
+    this.register(['ctrl+shift+p'], () => this.togglePerformanceMonitor(), 'Toggle performance monitor');
+    this.register(['ctrl+shift+a'], () => this.toggleAccessibilityMode(), 'Toggle accessibility mode');
+    this.register(['ctrl+shift+s'], () => this.saveProgress(), 'Save progress');
+    this.register(['ctrl+shift+r'], () => this.resetProgress(), 'Reset progress');
+        
+    // Search and filter
+    this.register(['ctrl+f'], () => this.openSearch(), 'Search content');
+    this.register(['ctrl+shift+f'], () => this.openAdvancedSearch(), 'Advanced search');
+        
+    // Sequences (vim-style)
+    this.registerSequence('g h', () => this.goHome(), 'Go home');
+    this.registerSequence('g t', () => this.openTimeline(), 'Open timeline');
+    this.registerSequence('g s', () => this.openSymbols(), 'Open symbols');
+    this.registerSequence('g a', () => this.openAbout(), 'Open about');
+  }
     
-    setupEventListeners() {
-        document.addEventListener('keydown', this.handleKeyDown.bind(this));
-        document.addEventListener('keyup', this.handleKeyUp.bind(this));
+  setupEventListeners() {
+    document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    document.addEventListener('keyup', this.handleKeyUp.bind(this));
         
-        // Prevent default shortcuts that might interfere
-        document.addEventListener('keydown', (e) => {
-            if (this.hasRegisteredShortcut(e)) {
-                e.preventDefault();
-            }
-        });
+    // Prevent default shortcuts that might interfere
+    document.addEventListener('keydown', (e) => {
+      if (this.hasRegisteredShortcut(e)) {
+        e.preventDefault();
+      }
+    });
         
-        // Handle sequence timeout
-        document.addEventListener('keydown', () => {
-            clearTimeout(this.sequenceTimer);
-            this.sequenceTimer = setTimeout(() => {
-                this.activeSequence = '';
-                this.hideSequenceHint();
-            }, 1000);
-        });
-    }
-    
-    handleKeyDown(e) {
-        if (!this.options.enabled) return;
-        
-        // Don't handle shortcuts in input fields (unless specifically allowed)
-        if (this.isInputFocused() && !this.isAllowedInInput(e)) {
-            return;
-        }
-        
-        const key = this.getKeyString(e);
-        const sequence = this.activeSequence + (this.activeSequence ? ' ' : '') + key;
-        
-        // Check for sequence shortcuts first
-        if (this.sequences.has(sequence)) {
-            e.preventDefault();
-            const action = this.sequences.get(sequence);
-            action.callback();
-            this.activeSequence = '';
-            this.hideSequenceHint();
-            return;
-        }
-        
-        // Check for partial sequences
-        const partialMatches = Array.from(this.sequences.keys()).filter(seq => 
-            seq.startsWith(sequence));
-        
-        if (partialMatches.length > 0) {
-            this.activeSequence = sequence;
-            this.showSequenceHint(partialMatches);
-            return;
-        }
-        
-        // Check for direct shortcuts
-        if (this.shortcuts.has(key)) {
-            e.preventDefault();
-            const action = this.shortcuts.get(key);
-            action.callback();
-            return;
-        }
-        
-        // Reset sequence if no matches
+    // Handle sequence timeout
+    document.addEventListener('keydown', () => {
+      clearTimeout(this.sequenceTimer);
+      this.sequenceTimer = setTimeout(() => {
         this.activeSequence = '';
         this.hideSequenceHint();
-    }
+      }, 1000);
+    });
+  }
     
-    handleKeyUp(e) {
-        // Handle key up events if needed
+  handleKeyDown(e) {
+    if (!this.options.enabled) return;
+        
+    // Don't handle shortcuts in input fields (unless specifically allowed)
+    if (this.isInputFocused() && !this.isAllowedInInput(e)) {
+      return;
     }
-    
-    register(keys, callback, description = '') {
-        if (typeof keys === 'string') {
-            keys = [keys];
-        }
         
-        keys.forEach(key => {
-            this.shortcuts.set(key, {
-                callback,
-                description,
-                keys: keys
-            });
-        });
+    const key = this.getKeyString(e);
+    const sequence = this.activeSequence + (this.activeSequence ? ' ' : '') + key;
+        
+    // Check for sequence shortcuts first
+    if (this.sequences.has(sequence)) {
+      e.preventDefault();
+      const action = this.sequences.get(sequence);
+      action.callback();
+      this.activeSequence = '';
+      this.hideSequenceHint();
+      return;
     }
-    
-    registerSequence(sequence, callback, description = '') {
-        this.sequences.set(sequence, {
-            callback,
-            description,
-            sequence
-        });
+        
+    // Check for partial sequences
+    const partialMatches = Array.from(this.sequences.keys()).filter(seq => 
+      seq.startsWith(sequence));
+        
+    if (partialMatches.length > 0) {
+      this.activeSequence = sequence;
+      this.showSequenceHint(partialMatches);
+      return;
     }
-    
-    getKeyString(e) {
-        const parts = [];
         
-        if (e.ctrlKey) parts.push('ctrl');
-        if (e.altKey) parts.push('alt');
-        if (e.shiftKey) parts.push('shift');
-        if (e.metaKey) parts.push('cmd');
-        
-        let key = e.key;
-        
-        // Normalize key names
-        const keyMap = {
-            ' ': 'Space',
-            'ArrowUp': 'ArrowUp',
-            'ArrowDown': 'ArrowDown',
-            'ArrowLeft': 'ArrowLeft',
-            'ArrowRight': 'ArrowRight',
-            'Enter': 'Enter',
-            'Escape': 'Escape',
-            'Tab': 'Tab',
-            'Backspace': 'Backspace',
-            'Delete': 'Delete',
-            '+': 'plus',
-            '=': 'equal',
-            '-': 'minus'
-        };
-        
-        key = keyMap[key] || key;
-        parts.push(key);
-        
-        return parts.join('+');
+    // Check for direct shortcuts
+    if (this.shortcuts.has(key)) {
+      e.preventDefault();
+      const action = this.shortcuts.get(key);
+      action.callback();
+      return;
     }
+        
+    // Reset sequence if no matches
+    this.activeSequence = '';
+    this.hideSequenceHint();
+  }
     
-    hasRegisteredShortcut(e) {
-        const key = this.getKeyString(e);
-        return this.shortcuts.has(key) || 
+  handleKeyUp(e) {
+    // Handle key up events if needed
+  }
+    
+  register(keys, callback, description = '') {
+    if (typeof keys === 'string') {
+      keys = [keys];
+    }
+        
+    keys.forEach(key => {
+      this.shortcuts.set(key, {
+        callback,
+        description,
+        keys: keys
+      });
+    });
+  }
+    
+  registerSequence(sequence, callback, description = '') {
+    this.sequences.set(sequence, {
+      callback,
+      description,
+      sequence
+    });
+  }
+    
+  getKeyString(e) {
+    const parts = [];
+        
+    if (e.ctrlKey) parts.push('ctrl');
+    if (e.altKey) parts.push('alt');
+    if (e.shiftKey) parts.push('shift');
+    if (e.metaKey) parts.push('cmd');
+        
+    let key = e.key;
+        
+    // Normalize key names
+    const keyMap = {
+      ' ': 'Space',
+      'ArrowUp': 'ArrowUp',
+      'ArrowDown': 'ArrowDown',
+      'ArrowLeft': 'ArrowLeft',
+      'ArrowRight': 'ArrowRight',
+      'Enter': 'Enter',
+      'Escape': 'Escape',
+      'Tab': 'Tab',
+      'Backspace': 'Backspace',
+      'Delete': 'Delete',
+      '+': 'plus',
+      '=': 'equal',
+      '-': 'minus'
+    };
+        
+    key = keyMap[key] || key;
+    parts.push(key);
+        
+    return parts.join('+');
+  }
+    
+  hasRegisteredShortcut(e) {
+    const key = this.getKeyString(e);
+    return this.shortcuts.has(key) || 
                Array.from(this.sequences.keys()).some(seq => 
-                   seq.split(' ').includes(key));
-    }
+                 seq.split(' ').includes(key));
+  }
     
-    isInputFocused() {
-        const active = document.activeElement;
-        return active && (
-            active.tagName === 'INPUT' ||
+  isInputFocused() {
+    const active = document.activeElement;
+    return active && (
+      active.tagName === 'INPUT' ||
             active.tagName === 'TEXTAREA' ||
             active.contentEditable === 'true' ||
             active.isContentEditable
-        );
-    }
+    );
+  }
     
-    isAllowedInInput(e) {
-        // Allow certain shortcuts even in input fields
-        const allowedKeys = ['Escape', 'Tab', 'F1', 'F2', 'F3', 'F4', 'F5'];
-        return allowedKeys.includes(e.key) || 
+  isAllowedInInput(e) {
+    // Allow certain shortcuts even in input fields
+    const allowedKeys = ['Escape', 'Tab', 'F1', 'F2', 'F3', 'F4', 'F5'];
+    return allowedKeys.includes(e.key) || 
                (e.ctrlKey && ['k', 'f'].includes(e.key));
-    }
+  }
     
-    // Command Palette
-    setupCommandPalette() {
-        this.commandPalette = document.createElement('div');
-        this.commandPalette.className = 'command-palette';
-        this.commandPalette.innerHTML = `
+  // Command Palette
+  setupCommandPalette() {
+    this.commandPalette = document.createElement('div');
+    this.commandPalette.className = 'command-palette';
+    this.commandPalette.innerHTML = `
             <div class="command-palette-backdrop"></div>
             <div class="command-palette-content">
                 <div class="command-search">
@@ -241,360 +241,360 @@ class KeyboardShortcuts {
             </div>
         `;
         
-        document.body.appendChild(this.commandPalette);
+    document.body.appendChild(this.commandPalette);
         
-        // Setup command palette events
-        const input = this.commandPalette.querySelector('.command-input');
-        const results = this.commandPalette.querySelector('.command-results');
-        const backdrop = this.commandPalette.querySelector('.command-palette-backdrop');
+    // Setup command palette events
+    const input = this.commandPalette.querySelector('.command-input');
+    const results = this.commandPalette.querySelector('.command-results');
+    const backdrop = this.commandPalette.querySelector('.command-palette-backdrop');
         
-        input.addEventListener('input', (e) => {
-            this.updateCommandResults(e.target.value);
-        });
+    input.addEventListener('input', (e) => {
+      this.updateCommandResults(e.target.value);
+    });
         
-        input.addEventListener('keydown', (e) => {
-            this.handleCommandPaletteKey(e);
-        });
+    input.addEventListener('keydown', (e) => {
+      this.handleCommandPaletteKey(e);
+    });
         
-        backdrop.addEventListener('click', () => {
-            this.closeCommandPalette();
-        });
-    }
+    backdrop.addEventListener('click', () => {
+      this.closeCommandPalette();
+    });
+  }
     
-    openCommandPalette() {
-        this.commandPalette.classList.add('active');
-        const input = this.commandPalette.querySelector('.command-input');
-        input.focus();
-        input.select();
-        this.updateCommandResults('');
-    }
+  openCommandPalette() {
+    this.commandPalette.classList.add('active');
+    const input = this.commandPalette.querySelector('.command-input');
+    input.focus();
+    input.select();
+    this.updateCommandResults('');
+  }
     
-    closeCommandPalette() {
-        this.commandPalette.classList.remove('active');
-        this.commandPalette.querySelector('.command-input').value = '';
-    }
+  closeCommandPalette() {
+    this.commandPalette.classList.remove('active');
+    this.commandPalette.querySelector('.command-input').value = '';
+  }
     
-    updateCommandResults(query) {
-        const results = this.commandPalette.querySelector('.command-results');
-        const commands = this.getAllCommands();
+  updateCommandResults(query) {
+    const results = this.commandPalette.querySelector('.command-results');
+    const commands = this.getAllCommands();
         
-        const filtered = commands.filter(cmd => 
-            cmd.description.toLowerCase().includes(query.toLowerCase()) ||
+    const filtered = commands.filter(cmd => 
+      cmd.description.toLowerCase().includes(query.toLowerCase()) ||
             cmd.keys.some(key => key.toLowerCase().includes(query.toLowerCase()))
-        );
+    );
         
-        results.innerHTML = filtered.map((cmd, index) => `
+    results.innerHTML = filtered.map((cmd, index) => `
             <div class="command-item ${index === 0 ? 'selected' : ''}" data-index="${index}">
                 <div class="command-title">${cmd.description}</div>
                 <div class="command-keys">${cmd.keys.join(', ')}</div>
             </div>
         `).join('');
         
-        // Add click handlers
-        results.querySelectorAll('.command-item').forEach((item, index) => {
-            item.addEventListener('click', () => {
-                this.executeCommand(filtered[index]);
-                this.closeCommandPalette();
-            });
-        });
-    }
-    
-    handleCommandPaletteKey(e) {
-        const results = this.commandPalette.querySelector('.command-results');
-        const items = results.querySelectorAll('.command-item');
-        const selected = results.querySelector('.selected');
-        
-        switch (e.key) {
-            case 'ArrowDown':
-                e.preventDefault();
-                const nextIndex = selected ? 
-                    Math.min(selected.dataset.index * 1 + 1, items.length - 1) : 0;
-                this.selectCommandItem(nextIndex);
-                break;
-                
-            case 'ArrowUp':
-                e.preventDefault();
-                const prevIndex = selected ? 
-                    Math.max(selected.dataset.index * 1 - 1, 0) : items.length - 1;
-                this.selectCommandItem(prevIndex);
-                break;
-                
-            case 'Enter':
-                e.preventDefault();
-                if (selected) {
-                    const commands = this.getFilteredCommands(e.target.value);
-                    this.executeCommand(commands[selected.dataset.index]);
-                    this.closeCommandPalette();
-                }
-                break;
-                
-            case 'Escape':
-                e.preventDefault();
-                this.closeCommandPalette();
-                break;
-        }
-    }
-    
-    selectCommandItem(index) {
-        const results = this.commandPalette.querySelector('.command-results');
-        const items = results.querySelectorAll('.command-item');
-        
-        items.forEach(item => item.classList.remove('selected'));
-        if (items[index]) {
-            items[index].classList.add('selected');
-            items[index].scrollIntoView({ block: 'nearest' });
-        }
-    }
-    
-    getAllCommands() {
-        const commands = [];
-        
-        // Add shortcuts
-        this.shortcuts.forEach((action, key) => {
-            commands.push({
-                description: action.description,
-                keys: action.keys || [key],
-                callback: action.callback,
-                type: 'shortcut'
-            });
-        });
-        
-        // Add sequences
-        this.sequences.forEach((action, sequence) => {
-            commands.push({
-                description: action.description,
-                keys: [sequence],
-                callback: action.callback,
-                type: 'sequence'
-            });
-        });
-        
-        // Add navigation commands
-        commands.push(
-            { description: 'Go to Home', keys: ['Home'], callback: () => this.goHome() },
-            { description: 'Go to Chapters', keys: ['Chapters'], callback: () => this.goToChapters() },
-            { description: 'Go to Timeline', keys: ['Timeline'], callback: () => this.openTimeline() },
-            { description: 'Go to Symbols', keys: ['Symbols'], callback: () => this.openSymbols() }
-        );
-        
-        return commands.filter(cmd => cmd.description);
-    }
-    
-    getFilteredCommands(query) {
-        return this.getAllCommands().filter(cmd => 
-            cmd.description.toLowerCase().includes(query.toLowerCase()));
-    }
-    
-    executeCommand(command) {
-        if (command && command.callback) {
-            command.callback();
-        }
-    }
-    
-    // Shortcut Actions Implementation
-    exitCurrentMode() {
-        // Close any open modals, palettes, etc.
+    // Add click handlers
+    results.querySelectorAll('.command-item').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        this.executeCommand(filtered[index]);
         this.closeCommandPalette();
-        if (this.helpModal) {
-            this.closeShortcutHelp();
-        }
+      });
+    });
+  }
+    
+  handleCommandPaletteKey(e) {
+    const results = this.commandPalette.querySelector('.command-results');
+    const items = results.querySelectorAll('.command-item');
+    const selected = results.querySelector('.selected');
         
-        // Exit fullscreen
-        if (document.fullscreenElement) {
-            document.exitFullscreen();
-        }
+    switch (e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      const nextIndex = selected ? 
+        Math.min(selected.dataset.index * 1 + 1, items.length - 1) : 0;
+      this.selectCommandItem(nextIndex);
+      break;
+                
+    case 'ArrowUp':
+      e.preventDefault();
+      const prevIndex = selected ? 
+        Math.max(selected.dataset.index * 1 - 1, 0) : items.length - 1;
+      this.selectCommandItem(prevIndex);
+      break;
+                
+    case 'Enter':
+      e.preventDefault();
+      if (selected) {
+        const commands = this.getFilteredCommands(e.target.value);
+        this.executeCommand(commands[selected.dataset.index]);
+        this.closeCommandPalette();
+      }
+      break;
+                
+    case 'Escape':
+      e.preventDefault();
+      this.closeCommandPalette();
+      break;
+    }
+  }
+    
+  selectCommandItem(index) {
+    const results = this.commandPalette.querySelector('.command-results');
+    const items = results.querySelectorAll('.command-item');
         
-        // Clear selections
-        window.getSelection().removeAllRanges();
+    items.forEach(item => item.classList.remove('selected'));
+    if (items[index]) {
+      items[index].classList.add('selected');
+      items[index].scrollIntoView({ block: 'nearest' });
+    }
+  }
+    
+  getAllCommands() {
+    const commands = [];
         
-        // Blur active element
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
-    }
-    
-    pauseResumeAnimation() {
-        const animations = document.querySelectorAll('[data-animation]');
-        animations.forEach(el => {
-            if (el.style.animationPlayState === 'paused') {
-                el.style.animationPlayState = 'running';
-            } else {
-                el.style.animationPlayState = 'paused';
-            }
-        });
+    // Add shortcuts
+    this.shortcuts.forEach((action, key) => {
+      commands.push({
+        description: action.description,
+        keys: action.keys || [key],
+        callback: action.callback,
+        type: 'shortcut'
+      });
+    });
         
-        // Also pause WebGL animations
-        window.dispatchEvent(new CustomEvent('toggle-animation'));
-    }
+    // Add sequences
+    this.sequences.forEach((action, sequence) => {
+      commands.push({
+        description: action.description,
+        keys: [sequence],
+        callback: action.callback,
+        type: 'sequence'
+      });
+    });
+        
+    // Add navigation commands
+    commands.push(
+      { description: 'Go to Home', keys: ['Home'], callback: () => this.goHome() },
+      { description: 'Go to Chapters', keys: ['Chapters'], callback: () => this.goToChapters() },
+      { description: 'Go to Timeline', keys: ['Timeline'], callback: () => this.openTimeline() },
+      { description: 'Go to Symbols', keys: ['Symbols'], callback: () => this.openSymbols() }
+    );
+        
+    return commands.filter(cmd => cmd.description);
+  }
     
-    resetCurrentVisualization() {
-        window.dispatchEvent(new CustomEvent('reset-visualization'));
-    }
+  getFilteredCommands(query) {
+    return this.getAllCommands().filter(cmd => 
+      cmd.description.toLowerCase().includes(query.toLowerCase()));
+  }
     
-    toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log(`Error attempting to enable fullscreen: ${err.message}`);
-            });
-        } else {
-            document.exitFullscreen();
-        }
+  executeCommand(command) {
+    if (command && command.callback) {
+      command.callback();
     }
+  }
     
-    toggleMute() {
-        // Toggle audio if implemented
-        window.dispatchEvent(new CustomEvent('toggle-audio'));
+  // Shortcut Actions Implementation
+  exitCurrentMode() {
+    // Close any open modals, palettes, etc.
+    this.closeCommandPalette();
+    if (this.helpModal) {
+      this.closeShortcutHelp();
     }
-    
-    zoomIn() {
-        document.body.style.zoom = (parseFloat(document.body.style.zoom || 1) + 0.1).toString();
+        
+    // Exit fullscreen
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
     }
-    
-    zoomOut() {
-        document.body.style.zoom = Math.max(0.5, parseFloat(document.body.style.zoom || 1) - 0.1).toString();
+        
+    // Clear selections
+    window.getSelection().removeAllRanges();
+        
+    // Blur active element
+    if (document.activeElement) {
+      document.activeElement.blur();
     }
+  }
     
-    resetZoom() {
-        document.body.style.zoom = '1';
+  pauseResumeAnimation() {
+    const animations = document.querySelectorAll('[data-animation]');
+    animations.forEach(el => {
+      if (el.style.animationPlayState === 'paused') {
+        el.style.animationPlayState = 'running';
+      } else {
+        el.style.animationPlayState = 'paused';
+      }
+    });
+        
+    // Also pause WebGL animations
+    window.dispatchEvent(new CustomEvent('toggle-animation'));
+  }
+    
+  resetCurrentVisualization() {
+    window.dispatchEvent(new CustomEvent('reset-visualization'));
+  }
+    
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
     }
+  }
     
-    previousChapter() {
-        const currentChapter = this.getCurrentChapter();
-        if (currentChapter > 1) {
-            this.navigateToChapter(currentChapter - 1);
-        }
+  toggleMute() {
+    // Toggle audio if implemented
+    window.dispatchEvent(new CustomEvent('toggle-audio'));
+  }
+    
+  zoomIn() {
+    document.body.style.zoom = (parseFloat(document.body.style.zoom || 1) + 0.1).toString();
+  }
+    
+  zoomOut() {
+    document.body.style.zoom = Math.max(0.5, parseFloat(document.body.style.zoom || 1) - 0.1).toString();
+  }
+    
+  resetZoom() {
+    document.body.style.zoom = '1';
+  }
+    
+  previousChapter() {
+    const currentChapter = this.getCurrentChapter();
+    if (currentChapter > 1) {
+      this.navigateToChapter(currentChapter - 1);
     }
+  }
     
-    nextChapter() {
-        const currentChapter = this.getCurrentChapter();
-        if (currentChapter < 14) {
-            this.navigateToChapter(currentChapter + 1);
-        }
+  nextChapter() {
+    const currentChapter = this.getCurrentChapter();
+    if (currentChapter < 14) {
+      this.navigateToChapter(currentChapter + 1);
     }
+  }
     
-    jumpToChapter(number) {
-        if (number >= 1 && number <= 14) {
-            this.navigateToChapter(number);
-        }
+  jumpToChapter(number) {
+    if (number >= 1 && number <= 14) {
+      this.navigateToChapter(number);
     }
+  }
     
-    getCurrentChapter() {
-        const path = window.location.pathname;
-        const match = path.match(/chapter(\d+)/);
-        return match ? parseInt(match[1]) : 1;
+  getCurrentChapter() {
+    const path = window.location.pathname;
+    const match = path.match(/chapter(\d+)/);
+    return match ? parseInt(match[1]) : 1;
+  }
+    
+  navigateToChapter(number) {
+    window.location.href = `chapter${number}.html`;
+  }
+    
+  goHome() {
+    window.location.href = 'index.html';
+  }
+    
+  goToEnd() {
+    this.navigateToChapter(14);
+  }
+    
+  goToChapters() {
+    window.location.href = 'chapters.html';
+  }
+    
+  openTimeline() {
+    window.location.href = 'timeline.html';
+  }
+    
+  openSymbols() {
+    window.location.href = 'symbols.html';
+  }
+    
+  openAbout() {
+    window.location.href = 'about.html';
+  }
+    
+  // Accessibility features
+  focusMainContent() {
+    const main = document.querySelector('main, .main-content, .chapter-content');
+    if (main) {
+      main.focus();
+      main.scrollIntoView({ behavior: 'smooth' });
     }
+  }
     
-    navigateToChapter(number) {
-        window.location.href = `chapter${number}.html`;
+  focusNavigation() {
+    const nav = document.querySelector('nav, .nav');
+    if (nav) {
+      const firstLink = nav.querySelector('a, button');
+      if (firstLink) firstLink.focus();
     }
+  }
     
-    goHome() {
-        window.location.href = 'index.html';
+  focusVisualization() {
+    const viz = document.querySelector('.visualization-container, canvas');
+    if (viz) {
+      viz.focus();
+      viz.scrollIntoView({ behavior: 'smooth' });
     }
+  }
     
-    goToEnd() {
-        this.navigateToChapter(14);
-    }
+  enhancedTabNavigation() {
+    // Enhanced tab navigation that skips hidden elements
+    // This would be implemented with more sophisticated logic
+  }
     
-    goToChapters() {
-        window.location.href = 'chapters.html';
-    }
-    
-    openTimeline() {
-        window.location.href = 'timeline.html';
-    }
-    
-    openSymbols() {
-        window.location.href = 'symbols.html';
-    }
-    
-    openAbout() {
-        window.location.href = 'about.html';
-    }
-    
-    // Accessibility features
-    focusMainContent() {
-        const main = document.querySelector('main, .main-content, .chapter-content');
-        if (main) {
-            main.focus();
-            main.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-    
-    focusNavigation() {
-        const nav = document.querySelector('nav, .nav');
-        if (nav) {
-            const firstLink = nav.querySelector('a, button');
-            if (firstLink) firstLink.focus();
-        }
-    }
-    
-    focusVisualization() {
-        const viz = document.querySelector('.visualization-container, canvas');
-        if (viz) {
-            viz.focus();
-            viz.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-    
-    enhancedTabNavigation() {
-        // Enhanced tab navigation that skips hidden elements
-        // This would be implemented with more sophisticated logic
-    }
-    
-    // Advanced features
-    toggleDebugMode() {
-        document.body.classList.toggle('debug-mode');
-        this.showNotification('Debug mode ' + 
+  // Advanced features
+  toggleDebugMode() {
+    document.body.classList.toggle('debug-mode');
+    this.showNotification('Debug mode ' + 
             (document.body.classList.contains('debug-mode') ? 'enabled' : 'disabled'));
-    }
+  }
     
-    togglePerformanceMonitor() {
-        window.dispatchEvent(new CustomEvent('toggle-performance-monitor'));
-    }
+  togglePerformanceMonitor() {
+    window.dispatchEvent(new CustomEvent('toggle-performance-monitor'));
+  }
     
-    toggleAccessibilityMode() {
-        document.body.classList.toggle('accessibility-mode');
-        this.showNotification('Accessibility mode ' + 
+  toggleAccessibilityMode() {
+    document.body.classList.toggle('accessibility-mode');
+    this.showNotification('Accessibility mode ' + 
             (document.body.classList.contains('accessibility-mode') ? 'enabled' : 'disabled'));
-    }
+  }
     
-    saveProgress() {
-        const progress = {
-            currentChapter: this.getCurrentChapter(),
-            timestamp: Date.now(),
-            completedSections: this.getCompletedSections()
-        };
+  saveProgress() {
+    const progress = {
+      currentChapter: this.getCurrentChapter(),
+      timestamp: Date.now(),
+      completedSections: this.getCompletedSections()
+    };
         
-        localStorage.setItem('aion-progress', JSON.stringify(progress));
-        this.showNotification('Progress saved');
-    }
+    localStorage.setItem('aion-progress', JSON.stringify(progress));
+    this.showNotification('Progress saved');
+  }
     
-    resetProgress() {
-        localStorage.removeItem('aion-progress');
-        this.showNotification('Progress reset');
-    }
+  resetProgress() {
+    localStorage.removeItem('aion-progress');
+    this.showNotification('Progress reset');
+  }
     
-    getCompletedSections() {
-        // This would track which sections the user has completed
-        return [];
-    }
+  getCompletedSections() {
+    // This would track which sections the user has completed
+    return [];
+  }
     
-    openSearch() {
-        // Open search interface
-        this.showNotification('Search functionality coming soon');
-    }
+  openSearch() {
+    // Open search interface
+    this.showNotification('Search functionality coming soon');
+  }
     
-    openAdvancedSearch() {
-        // Open advanced search
-        this.showNotification('Advanced search functionality coming soon');
-    }
+  openAdvancedSearch() {
+    // Open advanced search
+    this.showNotification('Advanced search functionality coming soon');
+  }
     
-    // Help system
-    showShortcutHelp() {
-        this.helpModal = document.createElement('div');
-        this.helpModal.className = 'shortcuts-modal';
-        this.helpModal.innerHTML = `
+  // Help system
+  showShortcutHelp() {
+    this.helpModal = document.createElement('div');
+    this.helpModal.className = 'shortcuts-modal';
+    this.helpModal.innerHTML = `
             <div class="shortcuts-modal-backdrop"></div>
             <div class="shortcuts-modal-content">
                 <div class="shortcuts-header">
@@ -607,56 +607,56 @@ class KeyboardShortcuts {
             </div>
         `;
         
-        document.body.appendChild(this.helpModal);
+    document.body.appendChild(this.helpModal);
         
-        // Event handlers
-        this.helpModal.querySelector('.shortcuts-close').onclick = () => this.closeShortcutHelp();
-        this.helpModal.querySelector('.shortcuts-modal-backdrop').onclick = () => this.closeShortcutHelp();
+    // Event handlers
+    this.helpModal.querySelector('.shortcuts-close').onclick = () => this.closeShortcutHelp();
+    this.helpModal.querySelector('.shortcuts-modal-backdrop').onclick = () => this.closeShortcutHelp();
         
-        // Focus trap
-        this.trapFocus(this.helpModal);
-    }
+    // Focus trap
+    this.trapFocus(this.helpModal);
+  }
     
-    closeShortcutHelp() {
-        if (this.helpModal) {
-            this.helpModal.remove();
-            this.helpModal = null;
-        }
+  closeShortcutHelp() {
+    if (this.helpModal) {
+      this.helpModal.remove();
+      this.helpModal = null;
     }
+  }
     
-    generateShortcutsHTML() {
-        const categories = {
-            'Navigation': [
-                { keys: ['/', 'Ctrl+K'], description: 'Open command palette' },
-                { keys: ['?'], description: 'Show this help' },
-                { keys: ['←', 'H'], description: 'Previous chapter' },
-                { keys: ['→', 'L'], description: 'Next chapter' },
-                { keys: ['1-9'], description: 'Jump to chapter' },
-                { keys: ['Home', 'G G'], description: 'Go to home' }
-            ],
-            'Visualization': [
-                { keys: ['Space'], description: 'Pause/resume animations' },
-                { keys: ['R'], description: 'Reset visualization' },
-                { keys: ['F'], description: 'Toggle fullscreen' },
-                { keys: ['Ctrl++'], description: 'Zoom in' },
-                { keys: ['Ctrl+-'], description: 'Zoom out' },
-                { keys: ['Ctrl+0'], description: 'Reset zoom' }
-            ],
-            'Accessibility': [
-                { keys: ['Alt+1'], description: 'Focus main content' },
-                { keys: ['Alt+2'], description: 'Focus navigation' },
-                { keys: ['Alt+3'], description: 'Focus visualization' },
-                { keys: ['Escape'], description: 'Exit current mode' }
-            ],
-            'Advanced': [
-                { keys: ['Ctrl+Shift+D'], description: 'Toggle debug mode' },
-                { keys: ['Ctrl+Shift+A'], description: 'Accessibility mode' },
-                { keys: ['Ctrl+Shift+S'], description: 'Save progress' },
-                { keys: ['Ctrl+F'], description: 'Search content' }
-            ]
-        };
+  generateShortcutsHTML() {
+    const categories = {
+      'Navigation': [
+        { keys: ['/', 'Ctrl+K'], description: 'Open command palette' },
+        { keys: ['?'], description: 'Show this help' },
+        { keys: ['←', 'H'], description: 'Previous chapter' },
+        { keys: ['→', 'L'], description: 'Next chapter' },
+        { keys: ['1-9'], description: 'Jump to chapter' },
+        { keys: ['Home', 'G G'], description: 'Go to home' }
+      ],
+      'Visualization': [
+        { keys: ['Space'], description: 'Pause/resume animations' },
+        { keys: ['R'], description: 'Reset visualization' },
+        { keys: ['F'], description: 'Toggle fullscreen' },
+        { keys: ['Ctrl++'], description: 'Zoom in' },
+        { keys: ['Ctrl+-'], description: 'Zoom out' },
+        { keys: ['Ctrl+0'], description: 'Reset zoom' }
+      ],
+      'Accessibility': [
+        { keys: ['Alt+1'], description: 'Focus main content' },
+        { keys: ['Alt+2'], description: 'Focus navigation' },
+        { keys: ['Alt+3'], description: 'Focus visualization' },
+        { keys: ['Escape'], description: 'Exit current mode' }
+      ],
+      'Advanced': [
+        { keys: ['Ctrl+Shift+D'], description: 'Toggle debug mode' },
+        { keys: ['Ctrl+Shift+A'], description: 'Accessibility mode' },
+        { keys: ['Ctrl+Shift+S'], description: 'Save progress' },
+        { keys: ['Ctrl+F'], description: 'Search content' }
+      ]
+    };
         
-        return Object.entries(categories).map(([category, shortcuts]) => `
+    return Object.entries(categories).map(([category, shortcuts]) => `
             <div class="shortcut-category">
                 <h3>${category}</h3>
                 <div class="shortcut-list">
@@ -671,17 +671,17 @@ class KeyboardShortcuts {
                 </div>
             </div>
         `).join('');
-    }
+  }
     
-    showSequenceHint(matches) {
-        let hint = document.querySelector('.sequence-hint');
-        if (!hint) {
-            hint = document.createElement('div');
-            hint.className = 'sequence-hint';
-            document.body.appendChild(hint);
-        }
+  showSequenceHint(matches) {
+    let hint = document.querySelector('.sequence-hint');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'sequence-hint';
+      document.body.appendChild(hint);
+    }
         
-        hint.innerHTML = `
+    hint.innerHTML = `
             <div class="sequence-current">${this.activeSequence}</div>
             <div class="sequence-matches">
                 ${matches.slice(0, 5).map(match => `
@@ -690,78 +690,78 @@ class KeyboardShortcuts {
             </div>
         `;
         
-        hint.classList.add('visible');
-    }
+    hint.classList.add('visible');
+  }
     
-    hideSequenceHint() {
-        const hint = document.querySelector('.sequence-hint');
-        if (hint) {
-            hint.classList.remove('visible');
+  hideSequenceHint() {
+    const hint = document.querySelector('.sequence-hint');
+    if (hint) {
+      hint.classList.remove('visible');
+    }
+  }
+    
+  setupNavigationHints() {
+    if (!this.options.showHints) return;
+        
+    // Add hint indicators to interactive elements
+    document.querySelectorAll('[data-shortcut]').forEach(el => {
+      const shortcut = el.dataset.shortcut;
+      if (shortcut) {
+        const hint = document.createElement('span');
+        hint.className = 'keyboard-hint';
+        hint.textContent = shortcut;
+        el.appendChild(hint);
+      }
+    });
+  }
+    
+  trapFocus(element) {
+    const focusableElements = element.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+        
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+        
+    element.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
         }
-    }
+      }
+    });
+        
+    firstElement?.focus();
+  }
     
-    setupNavigationHints() {
-        if (!this.options.showHints) return;
+  showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'keyboard-notification';
+    notification.textContent = message;
         
-        // Add hint indicators to interactive elements
-        document.querySelectorAll('[data-shortcut]').forEach(el => {
-            const shortcut = el.dataset.shortcut;
-            if (shortcut) {
-                const hint = document.createElement('span');
-                hint.className = 'keyboard-hint';
-                hint.textContent = shortcut;
-                el.appendChild(hint);
-            }
-        });
-    }
+    document.body.appendChild(notification);
+        
+    setTimeout(() => notification.classList.add('visible'), 10);
+    setTimeout(() => {
+      notification.classList.remove('visible');
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
+  }
     
-    trapFocus(element) {
-        const focusableElements = element.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
+  injectStyles() {
+    if (document.getElementById('keyboard-shortcuts-styles')) return;
         
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        
-        element.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                if (e.shiftKey) {
-                    if (document.activeElement === firstElement) {
-                        e.preventDefault();
-                        lastElement.focus();
-                    }
-                } else {
-                    if (document.activeElement === lastElement) {
-                        e.preventDefault();
-                        firstElement.focus();
-                    }
-                }
-            }
-        });
-        
-        firstElement?.focus();
-    }
-    
-    showNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'keyboard-notification';
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => notification.classList.add('visible'), 10);
-        setTimeout(() => {
-            notification.classList.remove('visible');
-            setTimeout(() => notification.remove(), 300);
-        }, 2000);
-    }
-    
-    injectStyles() {
-        if (document.getElementById('keyboard-shortcuts-styles')) return;
-        
-        const styles = document.createElement('style');
-        styles.id = 'keyboard-shortcuts-styles';
-        styles.textContent = `
+    const styles = document.createElement('style');
+    styles.id = 'keyboard-shortcuts-styles';
+    styles.textContent = `
             .command-palette {
                 position: fixed;
                 inset: 0;
@@ -1032,56 +1032,56 @@ class KeyboardShortcuts {
             }
         `;
         
-        document.head.appendChild(styles);
-    }
+    document.head.appendChild(styles);
+  }
     
-    // Public API
-    enable() {
-        this.options.enabled = true;
-    }
+  // Public API
+  enable() {
+    this.options.enabled = true;
+  }
     
-    disable() {
-        this.options.enabled = false;
-    }
+  disable() {
+    this.options.enabled = false;
+  }
     
-    addShortcut(keys, callback, description) {
-        this.register(keys, callback, description);
-    }
+  addShortcut(keys, callback, description) {
+    this.register(keys, callback, description);
+  }
     
-    removeShortcut(key) {
-        this.shortcuts.delete(key);
-    }
+  removeShortcut(key) {
+    this.shortcuts.delete(key);
+  }
     
-    showHelp() {
-        this.showShortcutHelp();
-    }
+  showHelp() {
+    this.showShortcutHelp();
+  }
     
-    destroy() {
-        document.removeEventListener('keydown', this.handleKeyDown);
-        document.removeEventListener('keyup', this.handleKeyUp);
+  destroy() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
         
-        if (this.commandPalette) {
-            this.commandPalette.remove();
-        }
-        
-        if (this.helpModal) {
-            this.helpModal.remove();
-        }
-        
-        clearTimeout(this.sequenceTimer);
+    if (this.commandPalette) {
+      this.commandPalette.remove();
     }
+        
+    if (this.helpModal) {
+      this.helpModal.remove();
+    }
+        
+    clearTimeout(this.sequenceTimer);
+  }
 }
 
 // Initialize keyboard shortcuts when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.keyboardShortcuts = new KeyboardShortcuts();
-    });
-} else {
+  document.addEventListener('DOMContentLoaded', () => {
     window.keyboardShortcuts = new KeyboardShortcuts();
+  });
+} else {
+  window.keyboardShortcuts = new KeyboardShortcuts();
 }
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = KeyboardShortcuts;
+  module.exports = KeyboardShortcuts;
 }

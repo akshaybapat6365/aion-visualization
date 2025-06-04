@@ -2,121 +2,121 @@
 // Provides fallbacks and graceful degradation for WebGL failures
 
 class WebGLUtils {
-    constructor() {
-        this.contexts = new Map();
-        // Lower the default context limit to minimize memory usage
-        this.maxContexts = 4;
-        this.fallbackMode = false;
+  constructor() {
+    this.contexts = new Map();
+    // Lower the default context limit to minimize memory usage
+    this.maxContexts = 4;
+    this.fallbackMode = false;
+  }
+
+  // Check WebGL support
+  static isWebGLSupported() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      return !!gl;
+    } catch (e) {
+      return false;
     }
+  }
 
-    // Check WebGL support
-    static isWebGLSupported() {
-        try {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            return !!gl;
-        } catch (e) {
-            return false;
-        }
+  // Check WebGL2 support
+  static isWebGL2Supported() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl2 = canvas.getContext('webgl2');
+      return !!gl2;
+    } catch (e) {
+      return false;
     }
+  }
 
-    // Check WebGL2 support
-    static isWebGL2Supported() {
-        try {
-            const canvas = document.createElement('canvas');
-            const gl2 = canvas.getContext('webgl2');
-            return !!gl2;
-        } catch (e) {
-            return false;
-        }
-    }
+  // Create WebGL context with error handling
+  createContext(canvas, options = {}) {
+    const contextAttributes = {
+      alpha: options.alpha !== false,
+      antialias: options.antialias !== false,
+      depth: options.depth !== false,
+      preserveDrawingBuffer: options.preserveDrawingBuffer || false,
+      powerPreference: options.powerPreference || 'high-performance',
+      failIfMajorPerformanceCaveat: false
+    };
 
-    // Create WebGL context with error handling
-    createContext(canvas, options = {}) {
-        const contextAttributes = {
-            alpha: options.alpha !== false,
-            antialias: options.antialias !== false,
-            depth: options.depth !== false,
-            preserveDrawingBuffer: options.preserveDrawingBuffer || false,
-            powerPreference: options.powerPreference || 'high-performance',
-            failIfMajorPerformanceCaveat: false
-        };
-
-        let gl = null;
+    let gl = null;
         
-        try {
-            // Try WebGL2 first
-            if (options.preferWebGL2 !== false) {
-                gl = canvas.getContext('webgl2', contextAttributes);
-            }
+    try {
+      // Try WebGL2 first
+      if (options.preferWebGL2 !== false) {
+        gl = canvas.getContext('webgl2', contextAttributes);
+      }
             
-            // Fall back to WebGL1
-            if (!gl) {
-                gl = canvas.getContext('webgl', contextAttributes) ||
+      // Fall back to WebGL1
+      if (!gl) {
+        gl = canvas.getContext('webgl', contextAttributes) ||
                      canvas.getContext('experimental-webgl', contextAttributes);
-            }
+      }
 
-            if (!gl) {
-                throw new Error('WebGL not supported');
-            }
+      if (!gl) {
+        throw new Error('WebGL not supported');
+      }
 
-            // Check for context loss
-            canvas.addEventListener('webglcontextlost', (event) => {
-                event.preventDefault();
-                this.handleContextLoss(canvas, event);
-            });
+      // Check for context loss
+      canvas.addEventListener('webglcontextlost', (event) => {
+        event.preventDefault();
+        this.handleContextLoss(canvas, event);
+      });
 
-            canvas.addEventListener('webglcontextrestored', (event) => {
-                this.handleContextRestore(canvas, event);
-            });
+      canvas.addEventListener('webglcontextrestored', (event) => {
+        this.handleContextRestore(canvas, event);
+      });
 
-            // Manage context count
-            this.manageContextCount(canvas, gl);
+      // Manage context count
+      this.manageContextCount(canvas, gl);
 
-            return gl;
+      return gl;
 
-        } catch (error) {
-            console.error('WebGL context creation failed:', error);
-            this.showFallback(canvas, error);
-            return null;
+    } catch (error) {
+      console.error('WebGL context creation failed:', error);
+      this.showFallback(canvas, error);
+      return null;
+    }
+  }
+
+  // Manage WebGL context count to prevent too many contexts
+  manageContextCount(canvas, gl) {
+    const canvasId = canvas.id || `canvas-${Date.now()}`;
+        
+    if (this.contexts.size >= this.maxContexts) {
+      // Remove oldest context
+      const oldestKey = this.contexts.keys().next().value;
+      const oldestData = this.contexts.get(oldestKey);
+            
+      if (oldestData && oldestData.canvas) {
+        // Clear the old canvas
+        oldestData.canvas.width = 1;
+        oldestData.canvas.height = 1;
+        const parent = oldestData.canvas.parentNode;
+        if (parent) {
+          const placeholder = this.createStaticFallback(oldestData.canvas);
+          parent.replaceChild(placeholder, oldestData.canvas);
         }
+      }
+            
+      this.contexts.delete(oldestKey);
     }
 
-    // Manage WebGL context count to prevent too many contexts
-    manageContextCount(canvas, gl) {
-        const canvasId = canvas.id || `canvas-${Date.now()}`;
-        
-        if (this.contexts.size >= this.maxContexts) {
-            // Remove oldest context
-            const oldestKey = this.contexts.keys().next().value;
-            const oldestData = this.contexts.get(oldestKey);
-            
-            if (oldestData && oldestData.canvas) {
-                // Clear the old canvas
-                oldestData.canvas.width = 1;
-                oldestData.canvas.height = 1;
-                const parent = oldestData.canvas.parentNode;
-                if (parent) {
-                    const placeholder = this.createStaticFallback(oldestData.canvas);
-                    parent.replaceChild(placeholder, oldestData.canvas);
-                }
-            }
-            
-            this.contexts.delete(oldestKey);
-        }
+    this.contexts.set(canvasId, { canvas, gl, timestamp: Date.now() });
+  }
 
-        this.contexts.set(canvasId, { canvas, gl, timestamp: Date.now() });
-    }
-
-    // Handle WebGL context loss
-    handleContextLoss(canvas, event) {
-        console.warn('WebGL context lost:', canvas.id);
+  // Handle WebGL context loss
+  handleContextLoss(canvas, event) {
+    console.warn('WebGL context lost:', canvas.id);
         
-        const container = canvas.parentElement;
-        if (container) {
-            const lossMessage = document.createElement('div');
-            lossMessage.className = 'webgl-context-lost';
-            lossMessage.innerHTML = `
+    const container = canvas.parentElement;
+    if (container) {
+      const lossMessage = document.createElement('div');
+      lossMessage.className = 'webgl-context-lost';
+      lossMessage.innerHTML = `
                 <div class="context-lost-message">
                     <svg width="50" height="50" viewBox="0 0 50 50">
                         <circle cx="25" cy="25" r="20" fill="none" stroke="#FFA500" stroke-width="2"/>
@@ -126,54 +126,54 @@ class WebGLUtils {
                     <button onclick="location.reload()" class="reload-button">Reload Page</button>
                 </div>
             `;
-            container.appendChild(lossMessage);
-        }
+      container.appendChild(lossMessage);
     }
+  }
 
-    // Handle WebGL context restore
-    handleContextRestore(canvas, event) {
-        console.log('WebGL context restored:', canvas.id);
+  // Handle WebGL context restore
+  handleContextRestore(canvas, event) {
+    console.log('WebGL context restored:', canvas.id);
         
-        // Remove context lost message
-        const container = canvas.parentElement;
-        const lossMessage = container.querySelector('.webgl-context-lost');
-        if (lossMessage) {
-            lossMessage.remove();
-        }
-
-        // Trigger re-initialization if callback provided
-        if (canvas.restoreCallback) {
-            canvas.restoreCallback();
-        }
+    // Remove context lost message
+    const container = canvas.parentElement;
+    const lossMessage = container.querySelector('.webgl-context-lost');
+    if (lossMessage) {
+      lossMessage.remove();
     }
 
-    // Show fallback for WebGL failure
-    showFallback(canvas, error) {
-        const container = canvas.parentElement;
-        if (!container) return;
-
-        const fallback = this.createInteractiveFallback(canvas);
-        container.replaceChild(fallback, canvas);
+    // Trigger re-initialization if callback provided
+    if (canvas.restoreCallback) {
+      canvas.restoreCallback();
     }
+  }
 
-    // Create static fallback image
-    createStaticFallback(canvas) {
-        const fallback = document.createElement('div');
-        fallback.className = 'webgl-fallback-static';
-        fallback.innerHTML = `
+  // Show fallback for WebGL failure
+  showFallback(canvas, error) {
+    const container = canvas.parentElement;
+    if (!container) return;
+
+    const fallback = this.createInteractiveFallback(canvas);
+    container.replaceChild(fallback, canvas);
+  }
+
+  // Create static fallback image
+  createStaticFallback(canvas) {
+    const fallback = document.createElement('div');
+    fallback.className = 'webgl-fallback-static';
+    fallback.innerHTML = `
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23000' width='400' height='300'/%3E%3Ccircle cx='200' cy='150' r='50' fill='none' stroke='%236B46C1' stroke-width='2' opacity='0.5'/%3E%3Ccircle cx='200' cy='150' r='30' fill='none' stroke='%236B46C1' stroke-width='2' opacity='0.7'/%3E%3Ccircle cx='200' cy='150' r='10' fill='%236B46C1'/%3E%3C/svg%3E" 
                  alt="Visualization placeholder" 
                  style="width: 100%; height: 100%; object-fit: contain;">
             <p class="fallback-caption">Interactive visualization requires WebGL</p>
         `;
-        return fallback;
-    }
+    return fallback;
+  }
 
-    // Create interactive CSS fallback
-    createInteractiveFallback(canvas) {
-        const fallback = document.createElement('div');
-        fallback.className = 'webgl-fallback-interactive';
-        fallback.innerHTML = `
+  // Create interactive CSS fallback
+  createInteractiveFallback(canvas) {
+    const fallback = document.createElement('div');
+    fallback.className = 'webgl-fallback-interactive';
+    fallback.innerHTML = `
             <div class="fallback-visualization">
                 <div class="fallback-mandala">
                     <div class="mandala-ring ring-1"></div>
@@ -193,114 +193,114 @@ class WebGLUtils {
                 </div>
             </div>
         `;
-        return fallback;
+    return fallback;
+  }
+
+  // Create shader with error handling
+  createShader(gl, type, source) {
+    try {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const info = gl.getShaderInfoLog(shader);
+        console.error('Shader compilation error:', info);
+        gl.deleteShader(shader);
+        return null;
+      }
+
+      return shader;
+    } catch (error) {
+      console.error('Shader creation failed:', error);
+      return null;
     }
+  }
 
-    // Create shader with error handling
-    createShader(gl, type, source) {
-        try {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
+  // Create program with error handling
+  createProgram(gl, vertexShader, fragmentShader) {
+    try {
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
 
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                const info = gl.getShaderInfoLog(shader);
-                console.error('Shader compilation error:', info);
-                gl.deleteShader(shader);
-                return null;
-            }
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        const info = gl.getProgramInfoLog(program);
+        console.error('Program linking error:', info);
+        gl.deleteProgram(program);
+        return null;
+      }
 
-            return shader;
-        } catch (error) {
-            console.error('Shader creation failed:', error);
-            return null;
-        }
+      return program;
+    } catch (error) {
+      console.error('Program creation failed:', error);
+      return null;
     }
+  }
 
-    // Create program with error handling
-    createProgram(gl, vertexShader, fragmentShader) {
-        try {
-            const program = gl.createProgram();
-            gl.attachShader(program, vertexShader);
-            gl.attachShader(program, fragmentShader);
-            gl.linkProgram(program);
-
-            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                const info = gl.getProgramInfoLog(program);
-                console.error('Program linking error:', info);
-                gl.deleteProgram(program);
-                return null;
-            }
-
-            return program;
-        } catch (error) {
-            console.error('Program creation failed:', error);
-            return null;
-        }
-    }
-
-    // Check for required extensions
-    checkExtensions(gl, required = []) {
-        const missing = [];
+  // Check for required extensions
+  checkExtensions(gl, required = []) {
+    const missing = [];
         
-        for (const ext of required) {
-            if (!gl.getExtension(ext)) {
-                missing.push(ext);
-            }
-        }
-
-        if (missing.length > 0) {
-            console.warn('Missing WebGL extensions:', missing);
-        }
-
-        return missing.length === 0;
+    for (const ext of required) {
+      if (!gl.getExtension(ext)) {
+        missing.push(ext);
+      }
     }
 
-    // Get WebGL capabilities
-    getCapabilities(gl) {
-        return {
-            maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
-            maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
-            maxTextureUnits: gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
-            maxRenderBufferSize: gl.getParameter(gl.MAX_RENDERBUFFER_SIZE),
-            vendor: gl.getParameter(gl.VENDOR),
-            renderer: gl.getParameter(gl.RENDERER),
-            version: gl.getParameter(gl.VERSION),
-            shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
-            extensions: gl.getSupportedExtensions()
-        };
+    if (missing.length > 0) {
+      console.warn('Missing WebGL extensions:', missing);
     }
 
-    // Performance monitoring
-    createPerformanceMonitor(gl) {
-        const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2') ||
+    return missing.length === 0;
+  }
+
+  // Get WebGL capabilities
+  getCapabilities(gl) {
+    return {
+      maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
+      maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
+      maxTextureUnits: gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
+      maxRenderBufferSize: gl.getParameter(gl.MAX_RENDERBUFFER_SIZE),
+      vendor: gl.getParameter(gl.VENDOR),
+      renderer: gl.getParameter(gl.RENDERER),
+      version: gl.getParameter(gl.VERSION),
+      shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
+      extensions: gl.getSupportedExtensions()
+    };
+  }
+
+  // Performance monitoring
+  createPerformanceMonitor(gl) {
+    const ext = gl.getExtension('EXT_disjoint_timer_query_webgl2') ||
                    gl.getExtension('EXT_disjoint_timer_query');
         
-        if (!ext) {
-            return null;
-        }
-
-        return {
-            startQuery: () => {
-                const query = gl.createQuery();
-                gl.beginQuery(ext.TIME_ELAPSED_EXT, query);
-                return query;
-            },
-            endQuery: (query) => {
-                gl.endQuery(ext.TIME_ELAPSED_EXT);
-                return query;
-            },
-            getQueryResult: (query) => {
-                const available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
-                if (available) {
-                    const timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
-                    gl.deleteQuery(query);
-                    return timeElapsed / 1000000; // Convert to milliseconds
-                }
-                return null;
-            }
-        };
+    if (!ext) {
+      return null;
     }
+
+    return {
+      startQuery: () => {
+        const query = gl.createQuery();
+        gl.beginQuery(ext.TIME_ELAPSED_EXT, query);
+        return query;
+      },
+      endQuery: (query) => {
+        gl.endQuery(ext.TIME_ELAPSED_EXT);
+        return query;
+      },
+      getQueryResult: (query) => {
+        const available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
+        if (available) {
+          const timeElapsed = gl.getQueryParameter(query, gl.QUERY_RESULT);
+          gl.deleteQuery(query);
+          return timeElapsed / 1000000; // Convert to milliseconds
+        }
+        return null;
+      }
+    };
+  }
 }
 
 // CSS for fallbacks
@@ -441,10 +441,10 @@ const fallbackStyles = `
 
 // Inject styles
 if (!document.getElementById('webgl-utils-styles')) {
-    const styleElement = document.createElement('div');
-    styleElement.id = 'webgl-utils-styles';
-    styleElement.innerHTML = fallbackStyles;
-    document.head.appendChild(styleElement.firstElementChild);
+  const styleElement = document.createElement('div');
+  styleElement.id = 'webgl-utils-styles';
+  styleElement.innerHTML = fallbackStyles;
+  document.head.appendChild(styleElement.firstElementChild);
 }
 
 // Export as global

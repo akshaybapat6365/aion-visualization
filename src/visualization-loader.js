@@ -2,15 +2,15 @@
 // Provides lazy loading, loading states, and error handling
 
 class VisualizationLoader {
-    constructor() {
-        this.loadedVisualizations = new Set();
-        this.observers = new Map();
-        this.loadingStates = new Map();
-    }
+  constructor() {
+    this.loadedVisualizations = new Set();
+    this.observers = new Map();
+    this.loadingStates = new Map();
+  }
 
-    // Create loading state UI
-    createLoadingState(container) {
-        const loadingHTML = `
+  // Create loading state UI
+  createLoadingState(container) {
+    const loadingHTML = `
             <div class="visualization-loading">
                 <div class="loading-spinner">
                     <svg width="50" height="50" viewBox="0 0 50 50">
@@ -21,17 +21,17 @@ class VisualizationLoader {
             </div>
         `;
         
-        const loadingDiv = document.createElement('div');
-        loadingDiv.innerHTML = loadingHTML;
-        loadingDiv.className = 'loading-container';
-        container.appendChild(loadingDiv);
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = loadingHTML;
+    loadingDiv.className = 'loading-container';
+    container.appendChild(loadingDiv);
         
-        return loadingDiv;
-    }
+    return loadingDiv;
+  }
 
-    // Create error state UI
-    createErrorState(container, error) {
-        const errorHTML = `
+  // Create error state UI
+  createErrorState(container, error) {
+    const errorHTML = `
             <div class="visualization-error">
                 <svg width="50" height="50" viewBox="0 0 50 50">
                     <circle cx="25" cy="25" r="20" fill="none" stroke="#DC143C" stroke-width="2"/>
@@ -43,168 +43,168 @@ class VisualizationLoader {
             </div>
         `;
         
-        container.innerHTML = errorHTML;
+    container.innerHTML = errorHTML;
+  }
+
+  // Lazy load visualization when it comes into view
+  lazyLoad(containerId, loadFunction, options = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container ${containerId} not found`);
+      return;
     }
 
-    // Lazy load visualization when it comes into view
-    lazyLoad(containerId, loadFunction, options = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) {
-            console.error(`Container ${containerId} not found`);
-            return;
-        }
-
-        // Check if already loaded
-        if (this.loadedVisualizations.has(containerId)) {
-            return;
-        }
-
-        // Create intersection observer
-        const observerOptions = {
-            root: null,
-            rootMargin: options.rootMargin || '50px',
-            threshold: options.threshold || 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !this.loadedVisualizations.has(containerId)) {
-                    this.loadVisualization(container, containerId, loadFunction);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        observer.observe(container);
-        this.observers.set(containerId, observer);
+    // Check if already loaded
+    if (this.loadedVisualizations.has(containerId)) {
+      return;
     }
 
-    // Load visualization with loading state
-    async loadVisualization(container, containerId, loadFunction) {
-        // Mark as loading
-        this.loadingStates.set(containerId, 'loading');
+    // Create intersection observer
+    const observerOptions = {
+      root: null,
+      rootMargin: options.rootMargin || '50px',
+      threshold: options.threshold || 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.loadedVisualizations.has(containerId)) {
+          this.loadVisualization(container, containerId, loadFunction);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(container);
+    this.observers.set(containerId, observer);
+  }
+
+  // Load visualization with loading state
+  async loadVisualization(container, containerId, loadFunction) {
+    // Mark as loading
+    this.loadingStates.set(containerId, 'loading');
         
-        // Show loading state
-        const loadingElement = this.createLoadingState(container);
+    // Show loading state
+    const loadingElement = this.createLoadingState(container);
         
-        try {
-            // Add delay for smooth transition
-            await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      // Add delay for smooth transition
+      await new Promise(resolve => setTimeout(resolve, 500));
             
-            // Load the visualization
-            await loadFunction(container);
+      // Load the visualization
+      await loadFunction(container);
             
-            // Remove loading state
-            if (loadingElement && loadingElement.parentNode) {
-                loadingElement.remove();
-            }
+      // Remove loading state
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.remove();
+      }
             
-            // Mark as loaded
-            this.loadedVisualizations.add(containerId);
-            this.loadingStates.set(containerId, 'loaded');
+      // Mark as loaded
+      this.loadedVisualizations.add(containerId);
+      this.loadingStates.set(containerId, 'loaded');
             
-            // Animate in
-            container.style.opacity = '0';
-            container.style.transform = 'translateY(20px)';
-            requestAnimationFrame(() => {
-                container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                container.style.opacity = '1';
-                container.style.transform = 'translateY(0)';
-            });
+      // Animate in
+      container.style.opacity = '0';
+      container.style.transform = 'translateY(20px)';
+      requestAnimationFrame(() => {
+        container.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+      });
             
-        } catch (error) {
-            console.error(`Error loading visualization ${containerId}:`, error);
-            this.loadingStates.set(containerId, 'error');
-            this.createErrorState(container, error);
-        }
+    } catch (error) {
+      console.error(`Error loading visualization ${containerId}:`, error);
+      this.loadingStates.set(containerId, 'error');
+      this.createErrorState(container, error);
+    }
+  }
+
+  // Preload visualization (load before it comes into view)
+  preload(containerId, loadFunction) {
+    const container = document.getElementById(containerId);
+    if (!container || this.loadedVisualizations.has(containerId)) {
+      return;
     }
 
-    // Preload visualization (load before it comes into view)
-    preload(containerId, loadFunction) {
-        const container = document.getElementById(containerId);
-        if (!container || this.loadedVisualizations.has(containerId)) {
-            return;
-        }
+    this.loadVisualization(container, containerId, loadFunction);
+  }
 
-        this.loadVisualization(container, containerId, loadFunction);
-    }
+  // Check if visualization is loaded
+  isLoaded(containerId) {
+    return this.loadedVisualizations.has(containerId);
+  }
 
-    // Check if visualization is loaded
-    isLoaded(containerId) {
-        return this.loadedVisualizations.has(containerId);
-    }
+  // Get loading state
+  getLoadingState(containerId) {
+    return this.loadingStates.get(containerId) || 'not-loaded';
+  }
 
-    // Get loading state
-    getLoadingState(containerId) {
-        return this.loadingStates.get(containerId) || 'not-loaded';
-    }
+  // Cleanup observers
+  cleanup() {
+    this.observers.forEach(observer => observer.disconnect());
+    this.observers.clear();
+  }
 
-    // Cleanup observers
-    cleanup() {
-        this.observers.forEach(observer => observer.disconnect());
-        this.observers.clear();
-    }
-
-    // Performance monitoring
-    measurePerformance(containerId, callback) {
-        const startTime = performance.now();
+  // Performance monitoring
+  measurePerformance(containerId, callback) {
+    const startTime = performance.now();
         
-        const originalCallback = callback;
-        const wrappedCallback = async (container) => {
-            await originalCallback(container);
+    const originalCallback = callback;
+    const wrappedCallback = async (container) => {
+      await originalCallback(container);
             
-            const endTime = performance.now();
-            const loadTime = endTime - startTime;
+      const endTime = performance.now();
+      const loadTime = endTime - startTime;
             
-            console.log(`Visualization ${containerId} loaded in ${loadTime.toFixed(2)}ms`);
+      console.log(`Visualization ${containerId} loaded in ${loadTime.toFixed(2)}ms`);
             
-            // Send to analytics if available
-            if (window.gtag) {
-                window.gtag('event', 'visualization_load', {
-                    visualization_id: containerId,
-                    load_time: loadTime
-                });
-            }
-        };
-        
-        return wrappedCallback;
-    }
-
-    // WebGL context management
-    manageWebGLContext(canvas) {
-        // Store WebGL contexts to prevent too many being created
-        if (!window.webglContexts) {
-            window.webglContexts = new Map();
-        }
-
-        // Limit active contexts to reduce memory footprint
-        const maxContexts = 4;
-        
-        if (window.webglContexts.size >= maxContexts) {
-            // Destroy oldest context
-            const oldestKey = window.webglContexts.keys().next().value;
-            const oldestContext = window.webglContexts.get(oldestKey);
-            if (oldestContext && oldestContext.canvas) {
-                oldestContext.canvas.width = 1;
-                oldestContext.canvas.height = 1;
-                oldestContext.canvas.remove();
-            }
-            window.webglContexts.delete(oldestKey);
-        }
-
-        const gl = canvas.getContext('webgl', {
-            preserveDrawingBuffer: false,
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance'
+      // Send to analytics if available
+      if (window.gtag) {
+        window.gtag('event', 'visualization_load', {
+          visualization_id: containerId,
+          load_time: loadTime
         });
+      }
+    };
+        
+    return wrappedCallback;
+  }
 
-        if (gl) {
-            window.webglContexts.set(canvas.id || Date.now(), gl);
-        }
-
-        return gl;
+  // WebGL context management
+  manageWebGLContext(canvas) {
+    // Store WebGL contexts to prevent too many being created
+    if (!window.webglContexts) {
+      window.webglContexts = new Map();
     }
+
+    // Limit active contexts to reduce memory footprint
+    const maxContexts = 4;
+        
+    if (window.webglContexts.size >= maxContexts) {
+      // Destroy oldest context
+      const oldestKey = window.webglContexts.keys().next().value;
+      const oldestContext = window.webglContexts.get(oldestKey);
+      if (oldestContext && oldestContext.canvas) {
+        oldestContext.canvas.width = 1;
+        oldestContext.canvas.height = 1;
+        oldestContext.canvas.remove();
+      }
+      window.webglContexts.delete(oldestKey);
+    }
+
+    const gl = canvas.getContext('webgl', {
+      preserveDrawingBuffer: false,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+
+    if (gl) {
+      window.webglContexts.set(canvas.id || Date.now(), gl);
+    }
+
+    return gl;
+  }
 }
 
 // CSS for loading states
@@ -317,10 +317,10 @@ const loaderStyles = `
 
 // Inject styles if not already present
 if (!document.getElementById('visualization-loader-styles')) {
-    const styleElement = document.createElement('div');
-    styleElement.id = 'visualization-loader-styles';
-    styleElement.innerHTML = loaderStyles;
-    document.head.appendChild(styleElement.firstElementChild);
+  const styleElement = document.createElement('div');
+  styleElement.id = 'visualization-loader-styles';
+  styleElement.innerHTML = loaderStyles;
+  document.head.appendChild(styleElement.firstElementChild);
 }
 
 // Export as global for use in HTML files

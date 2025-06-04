@@ -2,294 +2,294 @@
 // Provides screen reader support, keyboard navigation, and ARIA enhancements
 
 class AccessibilityUtils {
-    constructor() {
-        this.announcer = this.createAnnouncer();
-        this.focusTrap = null;
-        this.skipLinks = this.createSkipLinks();
-    }
+  constructor() {
+    this.announcer = this.createAnnouncer();
+    this.focusTrap = null;
+    this.skipLinks = this.createSkipLinks();
+  }
 
-    // Create screen reader announcer
-    createAnnouncer() {
-        const announcer = document.createElement('div');
-        announcer.id = 'aria-announcer';
-        announcer.className = 'sr-only';
-        announcer.setAttribute('aria-live', 'polite');
-        announcer.setAttribute('aria-atomic', 'true');
-        document.body.appendChild(announcer);
-        return announcer;
-    }
+  // Create screen reader announcer
+  createAnnouncer() {
+    const announcer = document.createElement('div');
+    announcer.id = 'aria-announcer';
+    announcer.className = 'sr-only';
+    announcer.setAttribute('aria-live', 'polite');
+    announcer.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(announcer);
+    return announcer;
+  }
 
-    // Announce message to screen readers
-    announce(message, priority = 'polite') {
-        this.announcer.setAttribute('aria-live', priority);
-        this.announcer.textContent = message;
+  // Announce message to screen readers
+  announce(message, priority = 'polite') {
+    this.announcer.setAttribute('aria-live', priority);
+    this.announcer.textContent = message;
         
-        // Clear after announcement
-        setTimeout(() => {
-            this.announcer.textContent = '';
-        }, 1000);
-    }
+    // Clear after announcement
+    setTimeout(() => {
+      this.announcer.textContent = '';
+    }, 1000);
+  }
 
-    // Create skip navigation links
-    createSkipLinks() {
-        const skipNav = document.createElement('div');
-        skipNav.className = 'skip-links';
-        skipNav.innerHTML = `
+  // Create skip navigation links
+  createSkipLinks() {
+    const skipNav = document.createElement('div');
+    skipNav.className = 'skip-links';
+    skipNav.innerHTML = `
             <a href="#main-content" class="skip-link">Skip to main content</a>
             <a href="#navigation" class="skip-link">Skip to navigation</a>
             <a href="#visualization" class="skip-link">Skip to visualization</a>
         `;
-        document.body.insertBefore(skipNav, document.body.firstChild);
-        return skipNav;
-    }
+    document.body.insertBefore(skipNav, document.body.firstChild);
+    return skipNav;
+  }
 
-    // Add ARIA labels to visualizations
-    enhanceVisualization(container, description) {
-        container.setAttribute('role', 'img');
-        container.setAttribute('aria-label', description);
+  // Add ARIA labels to visualizations
+  enhanceVisualization(container, description) {
+    container.setAttribute('role', 'img');
+    container.setAttribute('aria-label', description);
         
-        // Add describedby for detailed description
-        const descId = `desc-${Date.now()}`;
-        const descElement = document.createElement('div');
-        descElement.id = descId;
-        descElement.className = 'sr-only';
-        descElement.textContent = description;
-        container.appendChild(descElement);
-        container.setAttribute('aria-describedby', descId);
-    }
+    // Add describedby for detailed description
+    const descId = `desc-${Date.now()}`;
+    const descElement = document.createElement('div');
+    descElement.id = descId;
+    descElement.className = 'sr-only';
+    descElement.textContent = description;
+    container.appendChild(descElement);
+    container.setAttribute('aria-describedby', descId);
+  }
 
-    // Make visualization data accessible as table
-    createAccessibleDataTable(data, container) {
-        const table = document.createElement('table');
-        table.className = 'sr-only accessible-data-table';
-        table.setAttribute('role', 'table');
-        table.setAttribute('aria-label', 'Visualization data in table format');
+  // Make visualization data accessible as table
+  createAccessibleDataTable(data, container) {
+    const table = document.createElement('table');
+    table.className = 'sr-only accessible-data-table';
+    table.setAttribute('role', 'table');
+    table.setAttribute('aria-label', 'Visualization data in table format');
         
-        // Create table content based on data structure
-        const tableHTML = this.generateTableHTML(data);
-        table.innerHTML = tableHTML;
+    // Create table content based on data structure
+    const tableHTML = this.generateTableHTML(data);
+    table.innerHTML = tableHTML;
         
-        container.appendChild(table);
-        return table;
-    }
+    container.appendChild(table);
+    return table;
+  }
 
-    // Generate table HTML from data
-    generateTableHTML(data) {
-        if (Array.isArray(data) && data.length > 0) {
-            const headers = Object.keys(data[0]);
-            let html = '<thead><tr>';
+  // Generate table HTML from data
+  generateTableHTML(data) {
+    if (Array.isArray(data) && data.length > 0) {
+      const headers = Object.keys(data[0]);
+      let html = '<thead><tr>';
             
-            headers.forEach(header => {
-                html += `<th scope="col">${this.humanizeLabel(header)}</th>`;
-            });
+      headers.forEach(header => {
+        html += `<th scope="col">${this.humanizeLabel(header)}</th>`;
+      });
             
-            html += '</tr></thead><tbody>';
+      html += '</tr></thead><tbody>';
             
-            data.forEach(row => {
-                html += '<tr>';
-                headers.forEach(header => {
-                    html += `<td>${row[header]}</td>`;
-                });
-                html += '</tr>';
-            });
-            
-            html += '</tbody>';
-            return html;
-        }
-        
-        return '<tr><td>No data available</td></tr>';
-    }
-
-    // Convert camelCase to human readable
-    humanizeLabel(str) {
-        return str
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, str => str.toUpperCase())
-            .trim();
-    }
-
-    // Keyboard navigation handler
-    enableKeyboardNavigation(container, elements, options = {}) {
-        const navigableElements = Array.from(elements);
-        let currentIndex = 0;
-
-        container.addEventListener('keydown', (e) => {
-            switch(e.key) {
-                case 'ArrowRight':
-                case 'ArrowDown':
-                    e.preventDefault();
-                    currentIndex = (currentIndex + 1) % navigableElements.length;
-                    navigableElements[currentIndex].focus();
-                    break;
-                    
-                case 'ArrowLeft':
-                case 'ArrowUp':
-                    e.preventDefault();
-                    currentIndex = (currentIndex - 1 + navigableElements.length) % navigableElements.length;
-                    navigableElements[currentIndex].focus();
-                    break;
-                    
-                case 'Home':
-                    e.preventDefault();
-                    currentIndex = 0;
-                    navigableElements[currentIndex].focus();
-                    break;
-                    
-                case 'End':
-                    e.preventDefault();
-                    currentIndex = navigableElements.length - 1;
-                    navigableElements[currentIndex].focus();
-                    break;
-                    
-                case 'Enter':
-                case ' ':
-                    e.preventDefault();
-                    if (options.onActivate) {
-                        options.onActivate(navigableElements[currentIndex]);
-                    }
-                    break;
-            }
+      data.forEach(row => {
+        html += '<tr>';
+        headers.forEach(header => {
+          html += `<td>${row[header]}</td>`;
         });
-
-        // Set up ARIA attributes
-        navigableElements.forEach((el, index) => {
-            el.setAttribute('tabindex', index === 0 ? '0' : '-1');
-            el.setAttribute('role', options.role || 'button');
+        html += '</tr>';
+      });
             
-            el.addEventListener('focus', () => {
-                currentIndex = index;
-                navigableElements.forEach((otherEl, otherIndex) => {
-                    otherEl.setAttribute('tabindex', otherIndex === index ? '0' : '-1');
-                });
-            });
+      html += '</tbody>';
+      return html;
+    }
+        
+    return '<tr><td>No data available</td></tr>';
+  }
+
+  // Convert camelCase to human readable
+  humanizeLabel(str) {
+    return str
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
+  }
+
+  // Keyboard navigation handler
+  enableKeyboardNavigation(container, elements, options = {}) {
+    const navigableElements = Array.from(elements);
+    let currentIndex = 0;
+
+    container.addEventListener('keydown', (e) => {
+      switch(e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault();
+        currentIndex = (currentIndex + 1) % navigableElements.length;
+        navigableElements[currentIndex].focus();
+        break;
+                    
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + navigableElements.length) % navigableElements.length;
+        navigableElements[currentIndex].focus();
+        break;
+                    
+      case 'Home':
+        e.preventDefault();
+        currentIndex = 0;
+        navigableElements[currentIndex].focus();
+        break;
+                    
+      case 'End':
+        e.preventDefault();
+        currentIndex = navigableElements.length - 1;
+        navigableElements[currentIndex].focus();
+        break;
+                    
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        if (options.onActivate) {
+          options.onActivate(navigableElements[currentIndex]);
+        }
+        break;
+      }
+    });
+
+    // Set up ARIA attributes
+    navigableElements.forEach((el, index) => {
+      el.setAttribute('tabindex', index === 0 ? '0' : '-1');
+      el.setAttribute('role', options.role || 'button');
+            
+      el.addEventListener('focus', () => {
+        currentIndex = index;
+        navigableElements.forEach((otherEl, otherIndex) => {
+          otherEl.setAttribute('tabindex', otherIndex === index ? '0' : '-1');
         });
-    }
+      });
+    });
+  }
 
-    // Focus trap for modals
-    createFocusTrap(container) {
-        const focusableElements = container.querySelectorAll(
-            'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex]:not([tabindex="-1"])'
-        );
+  // Focus trap for modals
+  createFocusTrap(container) {
+    const focusableElements = container.querySelectorAll(
+      'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex]:not([tabindex="-1"])'
+    );
         
-        const firstFocusable = focusableElements[0];
-        const lastFocusable = focusableElements[focusableElements.length - 1];
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
 
-        container.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                if (e.shiftKey) {
-                    if (document.activeElement === firstFocusable) {
-                        e.preventDefault();
-                        lastFocusable.focus();
-                    }
-                } else {
-                    if (document.activeElement === lastFocusable) {
-                        e.preventDefault();
-                        firstFocusable.focus();
-                    }
-                }
-            }
+    container.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      }
             
-            if (e.key === 'Escape') {
-                this.releaseFocusTrap();
-            }
-        });
+      if (e.key === 'Escape') {
+        this.releaseFocusTrap();
+      }
+    });
 
-        this.focusTrap = { container, firstFocusable };
-        firstFocusable.focus();
+    this.focusTrap = { container, firstFocusable };
+    firstFocusable.focus();
+  }
+
+  // Release focus trap
+  releaseFocusTrap() {
+    if (this.focusTrap) {
+      this.focusTrap = null;
     }
+  }
 
-    // Release focus trap
-    releaseFocusTrap() {
-        if (this.focusTrap) {
-            this.focusTrap = null;
-        }
+  // Add visualization summary for screen readers
+  addVisualizationSummary(container, summaryData) {
+    const summary = document.createElement('div');
+    summary.className = 'visualization-summary sr-only';
+    summary.setAttribute('role', 'region');
+    summary.setAttribute('aria-label', 'Visualization summary');
+        
+    let summaryHTML = '<h3>Visualization Summary</h3>';
+        
+    if (summaryData.type) {
+      summaryHTML += `<p>Type: ${summaryData.type}</p>`;
     }
-
-    // Add visualization summary for screen readers
-    addVisualizationSummary(container, summaryData) {
-        const summary = document.createElement('div');
-        summary.className = 'visualization-summary sr-only';
-        summary.setAttribute('role', 'region');
-        summary.setAttribute('aria-label', 'Visualization summary');
         
-        let summaryHTML = '<h3>Visualization Summary</h3>';
-        
-        if (summaryData.type) {
-            summaryHTML += `<p>Type: ${summaryData.type}</p>`;
-        }
-        
-        if (summaryData.dataPoints) {
-            summaryHTML += `<p>Data points: ${summaryData.dataPoints}</p>`;
-        }
-        
-        if (summaryData.trends) {
-            summaryHTML += '<h4>Key Trends:</h4><ul>';
-            summaryData.trends.forEach(trend => {
-                summaryHTML += `<li>${trend}</li>`;
-            });
-            summaryHTML += '</ul>';
-        }
-        
-        if (summaryData.insights) {
-            summaryHTML += '<h4>Insights:</h4><ul>';
-            summaryData.insights.forEach(insight => {
-                summaryHTML += `<li>${insight}</li>`;
-            });
-            summaryHTML += '</ul>';
-        }
-        
-        summary.innerHTML = summaryHTML;
-        container.appendChild(summary);
+    if (summaryData.dataPoints) {
+      summaryHTML += `<p>Data points: ${summaryData.dataPoints}</p>`;
     }
-
-    // High contrast mode detector
-    detectHighContrast() {
-        const testElement = document.createElement('div');
-        testElement.style.backgroundColor = 'rgb(255, 255, 255)';
-        testElement.style.display = 'none';
-        document.body.appendChild(testElement);
         
-        const computedStyle = window.getComputedStyle(testElement);
-        const isHighContrast = computedStyle.backgroundColor !== 'rgb(255, 255, 255)';
-        
-        document.body.removeChild(testElement);
-        
-        if (isHighContrast) {
-            document.body.classList.add('high-contrast-mode');
-        }
-        
-        return isHighContrast;
+    if (summaryData.trends) {
+      summaryHTML += '<h4>Key Trends:</h4><ul>';
+      summaryData.trends.forEach(trend => {
+        summaryHTML += `<li>${trend}</li>`;
+      });
+      summaryHTML += '</ul>';
     }
+        
+    if (summaryData.insights) {
+      summaryHTML += '<h4>Insights:</h4><ul>';
+      summaryData.insights.forEach(insight => {
+        summaryHTML += `<li>${insight}</li>`;
+      });
+      summaryHTML += '</ul>';
+    }
+        
+    summary.innerHTML = summaryHTML;
+    container.appendChild(summary);
+  }
 
-    // Provide alternative text descriptions for complex visualizations
-    describeVisualization(vizType, data) {
-        const descriptions = {
-            'mandala': `A circular mandala visualization with ${data.rings || 4} concentric rings representing ${data.concept || 'psychological wholeness'}. The center represents ${data.center || 'the Self'}.`,
+  // High contrast mode detector
+  detectHighContrast() {
+    const testElement = document.createElement('div');
+    testElement.style.backgroundColor = 'rgb(255, 255, 255)';
+    testElement.style.display = 'none';
+    document.body.appendChild(testElement);
+        
+    const computedStyle = window.getComputedStyle(testElement);
+    const isHighContrast = computedStyle.backgroundColor !== 'rgb(255, 255, 255)';
+        
+    document.body.removeChild(testElement);
+        
+    if (isHighContrast) {
+      document.body.classList.add('high-contrast-mode');
+    }
+        
+    return isHighContrast;
+  }
+
+  // Provide alternative text descriptions for complex visualizations
+  describeVisualization(vizType, data) {
+    const descriptions = {
+      'mandala': `A circular mandala visualization with ${data.rings || 4} concentric rings representing ${data.concept || 'psychological wholeness'}. The center represents ${data.center || 'the Self'}.`,
             
-            'timeline': `An interactive timeline spanning from ${data.startYear || 'start'} to ${data.endYear || 'end'}, showing ${data.eventCount || 'multiple'} significant events in ${data.subject || 'Jung\'s life'}.`,
+      'timeline': `An interactive timeline spanning from ${data.startYear || 'start'} to ${data.endYear || 'end'}, showing ${data.eventCount || 'multiple'} significant events in ${data.subject || 'Jung\'s life'}.`,
             
-            'network': `A network diagram showing ${data.nodeCount || 'multiple'} interconnected concepts. Central node represents ${data.centralConcept || 'the main concept'} with ${data.connectionCount || 'various'} connections.`,
+      'network': `A network diagram showing ${data.nodeCount || 'multiple'} interconnected concepts. Central node represents ${data.centralConcept || 'the main concept'} with ${data.connectionCount || 'various'} connections.`,
             
-            'flow': `A flow visualization depicting the movement from ${data.source || 'source'} to ${data.target || 'target'}, representing ${data.process || 'transformation'}.`,
+      'flow': `A flow visualization depicting the movement from ${data.source || 'source'} to ${data.target || 'target'}, representing ${data.process || 'transformation'}.`,
             
-            'duality': `A split visualization showing the contrast between ${data.light || 'light'} and ${data.dark || 'shadow'} aspects, illustrating ${data.concept || 'psychological duality'}.`
-        };
+      'duality': `A split visualization showing the contrast between ${data.light || 'light'} and ${data.dark || 'shadow'} aspects, illustrating ${data.concept || 'psychological duality'}.`
+    };
         
-        return descriptions[vizType] || `A ${vizType} visualization representing ${data.concept || 'Jungian concepts'}.`;
-    }
+    return descriptions[vizType] || `A ${vizType} visualization representing ${data.concept || 'Jungian concepts'}.`;
+  }
 
-    // Add keyboard shortcuts help
-    addKeyboardHelp(container) {
-        const helpButton = document.createElement('button');
-        helpButton.className = 'keyboard-help-button';
-        helpButton.setAttribute('aria-label', 'Keyboard shortcuts help');
-        helpButton.innerHTML = '⌨️';
+  // Add keyboard shortcuts help
+  addKeyboardHelp(container) {
+    const helpButton = document.createElement('button');
+    helpButton.className = 'keyboard-help-button';
+    helpButton.setAttribute('aria-label', 'Keyboard shortcuts help');
+    helpButton.innerHTML = '⌨️';
         
-        const helpPanel = document.createElement('div');
-        helpPanel.className = 'keyboard-help-panel hidden';
-        helpPanel.setAttribute('role', 'dialog');
-        helpPanel.setAttribute('aria-label', 'Keyboard shortcuts');
-        helpPanel.innerHTML = `
+    const helpPanel = document.createElement('div');
+    helpPanel.className = 'keyboard-help-panel hidden';
+    helpPanel.setAttribute('role', 'dialog');
+    helpPanel.setAttribute('aria-label', 'Keyboard shortcuts');
+    helpPanel.innerHTML = `
             <h3>Keyboard Shortcuts</h3>
             <dl>
                 <dt>Tab</dt>
@@ -308,29 +308,29 @@ class AccessibilityUtils {
             <button class="close-help">Close</button>
         `;
         
-        helpButton.addEventListener('click', () => {
-            helpPanel.classList.toggle('hidden');
-            if (!helpPanel.classList.contains('hidden')) {
-                this.createFocusTrap(helpPanel);
-            }
-        });
+    helpButton.addEventListener('click', () => {
+      helpPanel.classList.toggle('hidden');
+      if (!helpPanel.classList.contains('hidden')) {
+        this.createFocusTrap(helpPanel);
+      }
+    });
         
-        helpPanel.querySelector('.close-help').addEventListener('click', () => {
-            helpPanel.classList.add('hidden');
-            this.releaseFocusTrap();
-            helpButton.focus();
-        });
+    helpPanel.querySelector('.close-help').addEventListener('click', () => {
+      helpPanel.classList.add('hidden');
+      this.releaseFocusTrap();
+      helpButton.focus();
+    });
         
-        container.appendChild(helpButton);
-        container.appendChild(helpPanel);
+    container.appendChild(helpButton);
+    container.appendChild(helpPanel);
         
-        // Global keyboard shortcut
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '?' && !e.target.matches('input, textarea')) {
-                helpButton.click();
-            }
-        });
-    }
+    // Global keyboard shortcut
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '?' && !e.target.matches('input, textarea')) {
+        helpButton.click();
+      }
+    });
+  }
 }
 
 // CSS for accessibility features
@@ -483,10 +483,10 @@ const accessibilityStyles = `
 
 // Inject styles
 if (!document.getElementById('accessibility-utils-styles')) {
-    const styleElement = document.createElement('div');
-    styleElement.id = 'accessibility-utils-styles';
-    styleElement.innerHTML = accessibilityStyles;
-    document.head.appendChild(styleElement.firstElementChild);
+  const styleElement = document.createElement('div');
+  styleElement.id = 'accessibility-utils-styles';
+  styleElement.innerHTML = accessibilityStyles;
+  document.head.appendChild(styleElement.firstElementChild);
 }
 
 // Export as global
