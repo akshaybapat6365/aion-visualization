@@ -38,7 +38,7 @@ export function observeVisualization(element, fnName) {
 
 
 window.observeVisualization = observeVisualization;
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("[data-load-fn]").forEach(el => observeVisualization(el, el.dataset.loadFn));
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-load-fn]').forEach(el => observeVisualization(el, el.dataset.loadFn));
 });
 

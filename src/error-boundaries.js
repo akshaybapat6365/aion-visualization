@@ -2,102 +2,102 @@
 // Provides graceful degradation when visualizations fail
 
 class VisualizationErrorBoundary {
-    constructor(container) {
-        this.container = container;
-        this.originalContent = container.innerHTML;
-        this.setupErrorHandling();
-    }
+  constructor(container) {
+    this.container = container;
+    this.originalContent = container.innerHTML;
+    this.setupErrorHandling();
+  }
     
-    setupErrorHandling() {
-        // Global error handler
-        window.addEventListener('error', this.handleError.bind(this));
-        window.addEventListener('unhandledrejection', this.handleRejection.bind(this));
+  setupErrorHandling() {
+    // Global error handler
+    window.addEventListener('error', this.handleError.bind(this));
+    window.addEventListener('unhandledrejection', this.handleRejection.bind(this));
         
-        // WebGL context lost handler
-        if (this.container.querySelector('canvas')) {
-            const canvas = this.container.querySelector('canvas');
-            canvas.addEventListener('webglcontextlost', this.handleWebGLLoss.bind(this));
-        }
+    // WebGL context lost handler
+    if (this.container.querySelector('canvas')) {
+      const canvas = this.container.querySelector('canvas');
+      canvas.addEventListener('webglcontextlost', this.handleWebGLLoss.bind(this));
     }
+  }
     
-    handleError(event) {
-        const error = event.error;
-        const severity = this.categorizeError(error);
+  handleError(event) {
+    const error = event.error;
+    const severity = this.categorizeError(error);
         
-        this.logError(error, 'window_error', severity);
+    this.logError(error, 'window_error', severity);
         
-        if (severity === 'critical' || severity === 'high') {
-            this.showFallbackUI(error);
-        }
+    if (severity === 'critical' || severity === 'high') {
+      this.showFallbackUI(error);
     }
+  }
     
-    handleRejection(event) {
-        const error = event.reason;
-        const severity = this.categorizeError(error);
+  handleRejection(event) {
+    const error = event.reason;
+    const severity = this.categorizeError(error);
         
-        this.logError(error, 'unhandled_rejection', severity);
+    this.logError(error, 'unhandled_rejection', severity);
         
-        if (severity === 'critical') {
-            this.showFallbackUI(error);
-        }
+    if (severity === 'critical') {
+      this.showFallbackUI(error);
     }
+  }
     
-    handleWebGLLoss(event) {
-        event.preventDefault();
-        this.showWebGLFallback();
-    }
+  handleWebGLLoss(event) {
+    event.preventDefault();
+    this.showWebGLFallback();
+  }
     
-    categorizeError(error) {
-        if (!error) return 'low';
+  categorizeError(error) {
+    if (!error) return 'low';
         
-        const errorString = error.toString().toLowerCase();
+    const errorString = error.toString().toLowerCase();
         
-        // Critical errors that break the visualization
-        if (errorString.includes('webgl') || 
+    // Critical errors that break the visualization
+    if (errorString.includes('webgl') || 
             errorString.includes('three') ||
             errorString.includes('shader') ||
             errorString.includes('context')) {
-            return 'critical';
-        }
+      return 'critical';
+    }
         
-        // High priority errors that affect functionality
-        if (errorString.includes('network') ||
+    // High priority errors that affect functionality
+    if (errorString.includes('network') ||
             errorString.includes('fetch') ||
             errorString.includes('timeout')) {
-            return 'high';
-        }
+      return 'high';
+    }
         
-        // Medium priority errors
-        if (errorString.includes('reference') ||
+    // Medium priority errors
+    if (errorString.includes('reference') ||
             errorString.includes('undefined')) {
-            return 'medium';
-        }
-        
-        return 'low';
+      return 'medium';
     }
+        
+    return 'low';
+  }
     
-    logError(error, context, severity) {
-        const errorInfo = {
-            message: error.message || 'Unknown error',
-            stack: error.stack || 'No stack trace',
-            context: context,
-            severity: severity,
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            url: window.location.href
-        };
+  logError(error, context, severity) {
+    const errorInfo = {
+      message: error.message || 'Unknown error',
+      stack: error.stack || 'No stack trace',
+      context: context,
+      severity: severity,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    };
         
-        // Only log to console in development
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            console.error('Aion Visualization Error:', errorInfo);
-        }
-        
-        // In production, could send to error tracking service
-        // this.sendToErrorService(errorInfo);
+    // Only log to console in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.error('Aion Visualization Error:', errorInfo);
     }
+        
+    // In production, could send to error tracking service
+    // this.sendToErrorService(errorInfo);
+  }
     
-    showFallbackUI(error) {
-        const fallbackHTML = `
+  showFallbackUI(error) {
+    const fallbackHTML = `
             <div class="visualization-error">
                 <div class="error-icon">⚠️</div>
                 <h3>Visualization Unavailable</h3>
@@ -122,12 +122,12 @@ class VisualizationErrorBoundary {
             </div>
         `;
         
-        this.container.innerHTML = fallbackHTML;
-        this.addErrorStyles();
-    }
+    this.container.innerHTML = fallbackHTML;
+    this.addErrorStyles();
+  }
     
-    showWebGLFallback() {
-        const fallbackHTML = `
+  showWebGLFallback() {
+    const fallbackHTML = `
             <div class="webgl-fallback">
                 <div class="fallback-icon">🎨</div>
                 <h3>3D Visualization Not Supported</h3>
@@ -149,16 +149,16 @@ class VisualizationErrorBoundary {
             </div>
         `;
         
-        this.container.innerHTML = fallbackHTML;
-        this.addErrorStyles();
-    }
+    this.container.innerHTML = fallbackHTML;
+    this.addErrorStyles();
+  }
     
-    addErrorStyles() {
-        if (document.getElementById('error-boundary-styles')) return;
+  addErrorStyles() {
+    if (document.getElementById('error-boundary-styles')) return;
         
-        const styles = document.createElement('style');
-        styles.id = 'error-boundary-styles';
-        styles.textContent = `
+    const styles = document.createElement('style');
+    styles.id = 'error-boundary-styles';
+    styles.textContent = `
             .visualization-error,
             .webgl-fallback {
                 background: var(--surface-secondary, #1a1a1a);
@@ -313,60 +313,60 @@ class VisualizationErrorBoundary {
             }
         `;
         
-        document.head.appendChild(styles);
-    }
+    document.head.appendChild(styles);
+  }
     
-    // Method to wrap initialization code with error handling
-    static wrapVisualization(containerSelector, initFunction) {
-        const container = document.querySelector(containerSelector);
-        if (!container) {
-            console.warn(`Container ${containerSelector} not found`);
-            return;
-        }
+  // Method to wrap initialization code with error handling
+  static wrapVisualization(containerSelector, initFunction) {
+    const container = document.querySelector(containerSelector);
+    if (!container) {
+      console.warn(`Container ${containerSelector} not found`);
+      return;
+    }
         
+    const errorBoundary = new VisualizationErrorBoundary(container);
+        
+    try {
+      initFunction();
+    } catch (error) {
+      errorBoundary.handleError({ error });
+    }
+        
+    return errorBoundary;
+  }
+    
+  // Method to check WebGL support before initializing
+  static checkWebGLSupport() {
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      return !!gl;
+    } catch (e) {
+      return false;
+    }
+  }
+    
+  // Method to initialize fallbacks for all visualizations on page load
+  static initializePageFallbacks() {
+    // Check WebGL support
+    if (!VisualizationErrorBoundary.checkWebGLSupport()) {
+      document.querySelectorAll('.visualization-container').forEach(container => {
         const errorBoundary = new VisualizationErrorBoundary(container);
-        
-        try {
-            initFunction();
-        } catch (error) {
-            errorBoundary.handleError({ error });
-        }
-        
-        return errorBoundary;
+        errorBoundary.showWebGLFallback();
+      });
+      return;
     }
-    
-    // Method to check WebGL support before initializing
-    static checkWebGLSupport() {
-        try {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            return !!gl;
-        } catch (e) {
-            return false;
-        }
-    }
-    
-    // Method to initialize fallbacks for all visualizations on page load
-    static initializePageFallbacks() {
-        // Check WebGL support
-        if (!VisualizationErrorBoundary.checkWebGLSupport()) {
-            document.querySelectorAll('.visualization-container').forEach(container => {
-                const errorBoundary = new VisualizationErrorBoundary(container);
-                errorBoundary.showWebGLFallback();
-            });
-            return;
-        }
         
-        // Set up error boundaries for all visualization containers
-        document.querySelectorAll('.visualization-container').forEach(container => {
-            new VisualizationErrorBoundary(container);
-        });
-    }
+    // Set up error boundaries for all visualization containers
+    document.querySelectorAll('.visualization-container').forEach(container => {
+      new VisualizationErrorBoundary(container);
+    });
+  }
 }
 
 // Auto-initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    VisualizationErrorBoundary.initializePageFallbacks();
+  VisualizationErrorBoundary.initializePageFallbacks();
 });
 
 // Export for use in other scripts

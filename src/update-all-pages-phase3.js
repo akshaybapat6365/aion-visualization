@@ -5,28 +5,28 @@ const fs = require('fs').promises;
 const path = require('path');
 
 async function updateAllPages() {
-    console.log('📄 Updating all HTML pages with Phase 3 enhancements...');
+  console.log('📄 Updating all HTML pages with Phase 3 enhancements...');
     
-    // Phase 3 scripts to add
-    const phase3Scripts = [
-        '<script src="advanced-animations.js"></script>',
-        '<script src="gesture-controller.js"></script>',
-        '<script src="contextual-help.js"></script>',
-        '<script src="keyboard-shortcuts.js"></script>',
-        '<script src="smart-asset-loader.js"></script>',
-        '<script src="adaptive-quality.js"></script>',
-        '<script src="learning-analytics.js"></script>',
-        '<script src="production-error-handler.js"></script>',
-        '<script src="apply-visual-polish.js"></script>'
-    ];
+  // Phase 3 scripts to add
+  const phase3Scripts = [
+    '<script src="advanced-animations.js"></script>',
+    '<script src="gesture-controller.js"></script>',
+    '<script src="contextual-help.js"></script>',
+    '<script src="keyboard-shortcuts.js"></script>',
+    '<script src="smart-asset-loader.js"></script>',
+    '<script src="adaptive-quality.js"></script>',
+    '<script src="learning-analytics.js"></script>',
+    '<script src="production-error-handler.js"></script>',
+    '<script src="apply-visual-polish.js"></script>'
+  ];
     
-    // Phase 3 styles to add
-    const phase3Styles = [
-        '<link rel="stylesheet" href="styles-v3.css">'
-    ];
+  // Phase 3 styles to add
+  const phase3Styles = [
+    '<link rel="stylesheet" href="styles-v3.css">'
+  ];
     
-    // Initialization script
-    const initScript = `
+  // Initialization script
+  const initScript = `
     <script>
         // Initialize Phase 3 systems
         document.addEventListener('DOMContentLoaded', function() {
@@ -76,67 +76,67 @@ async function updateAllPages() {
     </script>
 `;
     
-    // HTML files to update
-    const htmlFiles = [
-        'chapters.html',
-        'enhanced-chapters.html',
-        'timeline.html',
-        'symbols.html',
-        'about.html',
-        // Regular chapters
-        ...Array.from({ length: 14 }, (_, i) => `chapter${i + 1}.html`),
-        // Enhanced chapters
-        ...Array.from({ length: 8 }, (_, i) => `enhanced-chapter${i + 4}.html`)
-    ];
+  // HTML files to update
+  const htmlFiles = [
+    'chapters.html',
+    'enhanced-chapters.html',
+    'timeline.html',
+    'symbols.html',
+    'about.html',
+    // Regular chapters
+    ...Array.from({ length: 14 }, (_, i) => `chapter${i + 1}.html`),
+    // Enhanced chapters
+    ...Array.from({ length: 8 }, (_, i) => `enhanced-chapter${i + 4}.html`)
+  ];
     
-    let updatedCount = 0;
+  let updatedCount = 0;
     
-    for (const file of htmlFiles) {
-        try {
-            const filePath = path.join('/Users/akshaybapat/aion-visualization', file);
-            let content = await fs.readFile(filePath, 'utf8');
-            let updated = false;
+  for (const file of htmlFiles) {
+    try {
+      const filePath = path.join('/Users/akshaybapat/aion-visualization', file);
+      let content = await fs.readFile(filePath, 'utf8');
+      let updated = false;
             
-            // Check if styles-v3.css is already included
-            if (!content.includes('styles-v3.css')) {
-                // Add after styles-v2.css
-                content = content.replace(
-                    '<link rel="stylesheet" href="styles-v2.css">',
-                    '<link rel="stylesheet" href="styles-v2.css">\n    ' + phase3Styles[0]
-                );
-                updated = true;
-            }
+      // Check if styles-v3.css is already included
+      if (!content.includes('styles-v3.css')) {
+        // Add after styles-v2.css
+        content = content.replace(
+          '<link rel="stylesheet" href="styles-v2.css">',
+          '<link rel="stylesheet" href="styles-v2.css">\n    ' + phase3Styles[0]
+        );
+        updated = true;
+      }
             
-            // Check if Phase 3 scripts are included
-            const missingScripts = phase3Scripts.filter(script => 
-                !content.includes(script.match(/src="([^"]+)"/)[1])
-            );
+      // Check if Phase 3 scripts are included
+      const missingScripts = phase3Scripts.filter(script => 
+        !content.includes(script.match(/src="([^"]+)"/)[1])
+      );
             
-            if (missingScripts.length > 0) {
-                // Add before closing body tag
-                const scriptsToAdd = missingScripts.join('\n    ');
-                content = content.replace(
-                    '</body>',
-                    `    ${scriptsToAdd}\n    ${initScript}\n</body>`
-                );
-                updated = true;
-            }
+      if (missingScripts.length > 0) {
+        // Add before closing body tag
+        const scriptsToAdd = missingScripts.join('\n    ');
+        content = content.replace(
+          '</body>',
+          `    ${scriptsToAdd}\n    ${initScript}\n</body>`
+        );
+        updated = true;
+      }
             
-            // Save updated file
-            if (updated) {
-                await fs.writeFile(filePath, content);
-                updatedCount++;
-                console.log(`✅ Updated ${file}`);
-            } else {
-                console.log(`⏭️  ${file} already up to date`);
-            }
+      // Save updated file
+      if (updated) {
+        await fs.writeFile(filePath, content);
+        updatedCount++;
+        console.log(`✅ Updated ${file}`);
+      } else {
+        console.log(`⏭️  ${file} already up to date`);
+      }
             
-        } catch (error) {
-            console.error(`❌ Error updating ${file}:`, error.message);
-        }
+    } catch (error) {
+      console.error(`❌ Error updating ${file}:`, error.message);
     }
+  }
     
-    console.log(`\n✨ Updated ${updatedCount} files with Phase 3 enhancements`);
+  console.log(`\n✨ Updated ${updatedCount} files with Phase 3 enhancements`);
 }
 
 // Run the update
