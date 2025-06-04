@@ -1,0 +1,13 @@
+{
+  "name": "aion-visualization",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src",
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0"
+  }
+}
