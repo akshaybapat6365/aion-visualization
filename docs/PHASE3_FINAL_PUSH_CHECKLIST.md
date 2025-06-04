@@ -23,7 +23,7 @@ All Phase 3 development is complete. This checklist ensures all changes are prop
 
 ### Documentation Files
 - [x] `PHASE3_COMPLETION_REPORT.md` - Phase 3 completion summary
-- [x] `push-phase3.sh` - Git push script
+- [x] `scripts/push-phase3.sh` - Git push script
 - [x] `GITHUB_PHASE3_PUSH_GUIDE.md` - Detailed push instructions
 - [x] `update-all-pages-phase3.js` - Page update script
 - [x] `verify-phase3-integration.html` - Testing page
@@ -49,7 +49,7 @@ git add js/production-error-handler.js
 git add js/build-optimization.js
 git add verify-phase3-integration.html
 git add PHASE3_COMPLETION_REPORT.md
-git add push-phase3.sh
+git add scripts/push-phase3.sh
 git add GITHUB_PHASE3_PUSH_GUIDE.md
 git add update-all-pages-phase3.js
 git add PHASE3_FINAL_PUSH_CHECKLIST.md

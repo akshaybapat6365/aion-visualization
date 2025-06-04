@@ -101,8 +101,8 @@ vizLoader.lazyLoad('ego-self-axis', function(container) {
 - DETAILED_BUG_REPORT.md
 - VISUAL_CONCEPTS.md
 - PHASE1_SUMMARY.md
-- fix-navigation.sh
-- commit-phase1.sh
+- scripts/fix-navigation.sh
+- scripts/commit-phase1.sh
 
 ### Modified Files
 - chapter1-v2.html (lazy loading added)

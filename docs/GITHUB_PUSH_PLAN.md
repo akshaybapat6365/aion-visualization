@@ -10,7 +10,7 @@
 
 **Documentation:**
 - `PHASE3_SUMMARY.md` - Complete implementation summary
-- `commit-phase3.sh` - Automated commit script
+- `scripts/commit-phase3.sh` - Automated commit script
 - `GITHUB_PUSH_PLAN.md` - This planning document
 
 ### 2. Integration Strategy

@@ -65,7 +65,7 @@ Files Created:
 - progress-tracker.js
 - responsive-utils.css
 - apply-fixes.js
-- update-chapters.sh
+- scripts/update-chapters.sh
 - BUG_FIXES_SUMMARY.md
 
 Files Modified:
@@ -79,8 +79,8 @@ and major bugs identified in the detailed bug report."
    git push origin main
 
 6. Apply fixes to all chapter files:
-   chmod +x update-chapters.sh
-   ./update-chapters.sh
+   chmod +x scripts/update-chapters.sh
+   ./scripts/update-chapters.sh
 
 7. If chapter files were updated, commit those changes:
    git add -A
@@ -95,10 +95,10 @@ New files:
 - progress-tracker.js
 - responsive-utils.css
 - apply-fixes.js
-- update-chapters.sh
+- scripts/update-chapters.sh
 - BUG_FIXES_SUMMARY.md
 - PHASE2_PUSH_COMMANDS.txt
-- commit-phase2.sh
+- scripts/commit-phase2.sh
 
 Modified files:
 - index.html

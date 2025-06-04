@@ -9,10 +9,10 @@ Please run these commands in your terminal:
    cd /Users/akshaybapat/aion-visualization
 
 3. Make the push script executable:
-   chmod +x push-to-github.sh
+   chmod +x scripts/push-to-github.sh
 
 4. Run the push script:
-   ./push-to-github.sh
+   ./scripts/push-to-github.sh
 
 OR manually run these commands:
 

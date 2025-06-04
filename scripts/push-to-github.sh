@@ -7,7 +7,7 @@ echo "=== Pushing Aion Visualization Phase 1 Updates to GitHub ==="
 echo ""
 
 # Change to the project directory
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 echo "Current directory: $(pwd)"
 echo ""

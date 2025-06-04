@@ -20,7 +20,7 @@ All Phase 3 development and integration is complete. The repository is ready for
 - GITHUB_PUSH_READY.md (this file)
 
 ### 3. Update Scripts Created ✅
-- push-phase3.sh (Git commands)
+- scripts/push-phase3.sh (Git commands)
 - update-all-pages-phase3.js (Page updater)
 - update-remaining-chapters.js (Batch updater)
 
@@ -103,7 +103,7 @@ git push origin main
 
 ## If You Encounter Issues
 
-1. **Shell/Git Issues**: Use the manual commands in push-phase3.sh
+1. **Shell/Git Issues**: Use the manual commands in scripts/push-phase3.sh
 2. **Update Issues**: Use the manual instructions in MANUAL_UPDATE_PHASE3.md
 3. **Verification**: Use verify-phase3-integration.html to test
 

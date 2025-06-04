@@ -2,14 +2,15 @@
 
 # Git commit script for Phase 2 bug fixes
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "=== Committing Phase 2: Bug Fixes and Improvements ==="
 echo ""
 
 # First, make sure all scripts are executable
-chmod +x update-chapters.sh
-chmod +x fix-navigation.sh
-chmod +x commit-phase1.sh
-chmod +x push-to-github.sh
+chmod +x "$SCRIPT_DIR/update-chapters.sh"
+chmod +x "$SCRIPT_DIR/fix-navigation.sh"
+chmod +x "$SCRIPT_DIR/commit-phase1.sh"
+chmod +x "$SCRIPT_DIR/push-to-github.sh"
 
 echo "Adding all new and modified files..."
 git add -A
@@ -98,7 +99,7 @@ if [ $? -eq 0 ]; then
     echo "  ✓ Progress tracking system"
     echo "  ✓ Performance optimizations"
     echo ""
-    echo "Note: Run ./update-chapters.sh to apply fixes to all chapter files"
+    echo "Note: Run ./scripts/update-chapters.sh to apply fixes to all chapter files"
 else
     echo ""
     echo "Push failed. Please check your connection and try:"

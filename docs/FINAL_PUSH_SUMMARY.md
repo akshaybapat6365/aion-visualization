@@ -21,7 +21,7 @@ This document summarizes all work completed across Phases 1-3 and prepares for t
 - `responsive-utils.css` - Mobile-first responsive design
 - `apply-fixes.js` - Automatic fix application
 - `BUG_FIXES_SUMMARY.md` - Phase 2 documentation
-- `update-chapters.sh` - Script to update all chapters
+- `scripts/update-chapters.sh` - Script to update all chapters
 
 ### Phase 3 Files (Enhanced Visualizations)
 - `enhanced-chapter4.html` - Astrological Clock & Fish Duality
@@ -38,7 +38,7 @@ This document summarizes all work completed across Phases 1-3 and prepares for t
 ### Documentation & Scripts
 - `EXECUTE_PHASE3_PUSH.md` - Push instructions
 - `FINAL_PUSH_SUMMARY.md` - This document
-- `commit-phase1.sh`, `commit-phase2.sh`, `commit-phase3.sh` - Commit scripts
+- `scripts/commit-phase1.sh`, `scripts/commit-phase2.sh`, `scripts/commit-phase3.sh` - Commit scripts
 - `VERIFICATION_CHECKLIST.md` - Testing checklist
 
 ## GitHub Pages Site Structure

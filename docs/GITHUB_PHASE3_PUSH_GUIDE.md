@@ -54,7 +54,7 @@ git add *.html
 git add *.md
 
 # Shell scripts
-git add *.sh
+git add scripts/*.sh
 ```
 
 ## 📝 Detailed Commit Message
