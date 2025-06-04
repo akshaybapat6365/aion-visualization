@@ -26,13 +26,15 @@ function createNavigation() {
   const currentPath = window.location.pathname;
   const isIndex = currentPath.endsWith('index.html') || currentPath.endsWith('/');
   const isChapters = currentPath.includes('chapters.html');
-  const isJourney = currentPath.includes('journey.html');
+  const isTimeline = currentPath.includes('timeline.html');
+  const isSymbols = currentPath.includes('symbols.html');
   const isAbout = currentPath.includes('about.html');
   
   nav.innerHTML = `
     <a href="index.html" class="nav-item ${isIndex ? 'active' : ''}">Home</a>
     <a href="chapters.html" class="nav-item ${isChapters ? 'active' : ''}">Chapters</a>
-    <a href="journey.html" class="nav-item ${isJourney ? 'active' : ''}">My Journey</a>
+    <a href="timeline.html" class="nav-item ${isTimeline ? 'active' : ''}">Timeline</a>
+    <a href="symbols.html" class="nav-item ${isSymbols ? 'active' : ''}">Symbols</a>
     <a href="about.html" class="nav-item ${isAbout ? 'active' : ''}">About</a>
   `;
   
