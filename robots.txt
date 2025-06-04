@@ -1,0 +1,45 @@
+# Robots.txt for Aion Visualization
+# https://akshaybapat6365.github.io/aion-visualization/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://akshaybapat6365.github.io/aion-visualization/sitemap.xml
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow crawling of backup and development files
+Disallow: /PHASE*
+Disallow: /*.backup
+Disallow: /*.tmp
+Disallow: /*.log
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /*.sh
+Disallow: /*.md
+
+# Allow access to assets
+Allow: /assets/
+Allow: /chapters/
+Allow: /src/
+
+# Crawl delay (optional, for courtesy)
+Crawl-delay: 1
