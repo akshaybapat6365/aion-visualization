@@ -14,12 +14,12 @@ I've created a script to push all Phase 3 changes to GitHub. Due to shell enviro
 
 3. Make the script executable:
    ```bash
-   chmod +x execute-phase3-push.sh
+   chmod +x scripts/execute-phase3-push.sh
    ```
 
 4. Run the script:
    ```bash
-   ./execute-phase3-push.sh
+   ./scripts/execute-phase3-push.sh
    ```
 
 The script will:
@@ -45,7 +45,7 @@ git add .
 # 4. Create commit
 git commit -m "Phase 3 Complete: Museum-Quality Polish & Optimization
 
-See commit message in execute-phase3-push.sh for full details"
+See commit message in scripts/execute-phase3-push.sh for full details"
 
 # 5. Push to GitHub
 git push origin main

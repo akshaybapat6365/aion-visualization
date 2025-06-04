@@ -13,7 +13,7 @@ The personal access token you shared earlier should be revoked immediately:
 1. **Run the setup script**:
    ```bash
    cd /Users/akshaybapat/aion-visualization
-   ./setup-github-auth.sh
+   ./scripts/setup-github-auth.sh
    ```
 
 2. **Follow the prompts** to authenticate with GitHub using your browser

@@ -130,7 +130,7 @@ This document summarizes all bug fixes implemented in Phase 2, addressing issues
 3. **progress-tracker.js** - User progress tracking system
 4. **responsive-utils.css** - Mobile and responsive fixes
 5. **apply-fixes.js** - Automatic fix application
-6. **update-chapters.sh** - Script to update all chapter files
+6. **scripts/update-chapters.sh** - Script to update all chapter files
 
 ### Files Modified
 1. **index.html** - Added all fix scripts and updated navigation
@@ -186,8 +186,8 @@ This document summarizes all bug fixes implemented in Phase 2, addressing issues
 
 1. Run update script to apply fixes to all chapters:
    ```bash
-   chmod +x update-chapters.sh
-   ./update-chapters.sh
+   chmod +x scripts/update-chapters.sh
+   ./scripts/update-chapters.sh
    ```
 
 2. Commit and push all changes:

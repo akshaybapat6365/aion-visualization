@@ -42,9 +42,9 @@ Phase 1:
 - DETAILED_BUG_REPORT.md
 - VISUAL_CONCEPTS.md
 - PHASE1_SUMMARY.md
-- fix-navigation.sh
-- commit-phase1.sh
-- push-to-github.sh
+- scripts/fix-navigation.sh
+- scripts/commit-phase1.sh
+- scripts/push-to-github.sh
 - PUSH_INSTRUCTIONS.txt
 
 Phase 2:
@@ -53,9 +53,9 @@ Phase 2:
 - progress-tracker.js
 - responsive-utils.css
 - apply-fixes.js
-- update-chapters.sh
+- scripts/update-chapters.sh
 - BUG_FIXES_SUMMARY.md
-- commit-phase2.sh
+- scripts/commit-phase2.sh
 - PHASE2_PUSH_COMMANDS.txt
 - VERIFICATION_CHECKLIST.md
 - COMPLETE_UPDATE_SUMMARY.md
@@ -121,8 +121,8 @@ See COMPLETE_UPDATE_SUMMARY.md for full details."
 git push origin main
 
 # 5. Apply fixes to all chapters
-chmod +x update-chapters.sh
-./update-chapters.sh
+chmod +x scripts/update-chapters.sh
+./scripts/update-chapters.sh
 
 # 6. If chapter updates made changes, push again
 git add -A

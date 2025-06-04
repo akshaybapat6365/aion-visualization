@@ -22,7 +22,7 @@ git add enhanced-chapter10.html
 git add enhanced-chapters.html
 git add PHASE3_SUMMARY.md
 git add GITHUB_PUSH_PLAN.md
-git add commit-phase3.sh
+git add scripts/commit-phase3.sh
 git add index.html
 git add EXECUTE_PHASE3_PUSH.md
 ```
