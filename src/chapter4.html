@@ -5,107 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 4: The Sign of the Fishes - Aion Visualization</title>
     <link rel="stylesheet" href="styles-v2.css">
-    <style>
-        .chapter-hero {
-            height: 70vh;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(180deg, rgba(107, 70, 193, 0.05) 0%, transparent 50%);
-        }
-        
-        .chapter-hero-content {
-            text-align: center;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeInUp 1.2s ease-out 0.5s forwards;
-        }
-        
-        .chapter-content {
-            padding: var(--space-16) 0;
-        }
-        
-        .content-block {
-            max-width: 800px;
-            margin: 0 auto var(--space-16);
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        
-        .content-block.visible {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        
-        .visualization-container {
-            max-width: 1200px;
-            margin: var(--space-8) auto;
-            padding: var(--space-4);
-            background: var(--surface-glass);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-        }
-        
-        .timeline-container {
-            height: 500px;
-            position: relative;
-        }
-        
-        .quote {
-            font-size: var(--text-2xl);
-            font-weight: 300;
-            font-style: italic;
-            color: var(--text-secondary);
-            text-align: center;
-            margin: var(--space-8) auto;
-            max-width: 800px;
-            opacity: 0.8;
-        }
-        
-        .author {
-            display: block;
-            font-size: var(--text-base);
-            font-style: normal;
-            margin-top: var(--space-2);
-            color: var(--text-tertiary);
-        }
-        
-        .fish-symbol {
-            display: inline-block;
-            width: 100px;
-            height: 60px;
-            margin: var(--space-4);
-        }
-        
-        .age-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--space-4);
-            margin-top: var(--space-6);
-        }
-        
-        .age-card {
-            padding: var(--space-4);
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-        
-        .tooltip {
-            position: absolute;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1000;
-        }
-    </style>
+    <link rel="stylesheet" href="responsive-utils.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="error-boundaries.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -118,425 +26,634 @@
             <a href="about.html" class="nav-link">About</a>
         </div>
     </nav>
-    
-    <!-- Chapter Hero -->
-    <section class="chapter-hero">
-        <div class="chapter-hero-content">
-            <span class="chapter-number">Chapter 04</span>
-            <h1 style="font-size: var(--text-6xl); font-weight: 200; margin: var(--space-4) 0;">
-                The Sign of the Fishes
-            </h1>
-            <p style="font-size: var(--text-xl); color: var(--text-secondary);">
-                The astrological symbolism of the Piscean Age
-            </p>
-            <!-- Fish Symbol -->
-            <svg class="fish-symbol" viewBox="0 0 100 60">
-                <path d="M20 30 Q35 10, 50 30 Q35 50, 20 30" fill="none" stroke="var(--primary)" stroke-width="2"/>
-                <path d="M80 30 Q65 10, 50 30 Q65 50, 80 30" fill="none" stroke="var(--secondary)" stroke-width="2"/>
-                <circle cx="30" cy="30" r="2" fill="var(--primary)"/>
-                <circle cx="70" cy="30" r="2" fill="var(--secondary)"/>
-            </svg>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter IV</div>
+            <h1 class="chapter-title">The Sign of the Fishes</h1>
+            <p class="chapter-subtitle">Astrological Symbolism of the Pisces Age</p>
         </div>
-    </section>
-    
-    <!-- Content -->
-    <section class="chapter-content">
-        <div class="container">
-            <div class="content-block">
-                <p class="quote">
-                    "With the coming of Christ, a new aeon begins: the age of the Fishes, the Pisces, which as we have seen is characterized by the symbol of the two fishes swimming in opposite directions."
-                    <span class="author">— C.G. Jung</span>
-                </p>
+
+        <section class="chapter-intro">
+            <p>Jung explores the astrological significance of the Pisces constellation, whose two fish swimming in opposite directions symbolize the fundamental duality of the Christian aeon. This chapter examines the 2,160-year transition from the Age of Aries to Pisces, and the approaching shift to Aquarius.</p>
+        </section>
+
+        <!-- Enhanced Astrological Clock -->
+        <section class="visualization-section">
+            <h2>The Great Astrological Clock</h2>
+            <div class="visualization-intro">
+                <p>Experience the 26,000-year cycle of precession. Each astrological age lasts approximately 2,160 years. Watch the transition from Aries (Ram) to Pisces (Fish) to Aquarius (Water Bearer).</p>
             </div>
-            
-            <div class="content-block">
-                <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
-                    The Precession of the Equinoxes
-                </h2>
-                <p>
-                    Jung correlates the development of Western consciousness with the astronomical phenomenon 
-                    of the precession of the equinoxes. Each astrological age lasts approximately 2,160 years, 
-                    and the symbolism of each age profoundly influences the collective psyche.
-                </p>
-                <p style="margin-top: var(--space-3);">
-                    The Piscean Age, beginning around the time of Christ, is characterized by the dual fish 
-                    swimming in opposite directions—a perfect symbol for the Christian split between good and evil, 
-                    spirit and matter, Christ and Antichrist.
-                </p>
-            </div>
-            
-            <!-- Astrological Timeline Visualization -->
-            <div class="visualization-container">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4); text-align: center;">
-                    The Great Year: Astrological Ages Timeline
-                </h3>
-                <div class="timeline-container" id="astrological-timeline"></div>
-                <div class="tooltip" id="timeline-tooltip"></div>
-            </div>
-            
-            <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
-                    The Three Astrological Ages
-                </h3>
-                <div class="age-cards">
-                    <div class="age-card">
-                        <h4 style="color: var(--accent);">Age of Aries (2000 BCE - 0 CE)</h4>
-                        <p style="margin-top: var(--space-2);">
-                            The Ram/Lamb symbolism dominates. Moses descends from the mountain to find 
-                            the people worshipping the golden calf (Taurus, the previous age). 
-                            The sacrificial lamb becomes central to Hebrew tradition.
-                        </p>
-                    </div>
-                    <div class="age-card">
-                        <h4 style="color: var(--primary);">Age of Pisces (0 - 2000 CE)</h4>
-                        <p style="margin-top: var(--space-2);">
-                            Christ as the "Fisher of Men." Early Christians used the fish symbol (Ichthys). 
-                            The dual nature of Pisces reflects the Christ/Antichrist split and the 
-                            problem of opposites in Christian consciousness.
-                        </p>
-                    </div>
-                    <div class="age-card">
-                        <h4 style="color: var(--secondary);">Age of Aquarius (2000 - 4000 CE)</h4>
-                        <p style="margin-top: var(--space-2);">
-                            The Water Bearer suggests a new form of consciousness. Jung saw this as 
-                            potentially bringing the union of opposites that Pisces kept separate. 
-                            The challenge: integrating the shadow rejected by Christianity.
-                        </p>
-                    </div>
+            <div id="astrological-clock" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="time-slider">Time Span:</label>
+                    <input type="range" id="time-slider" min="-4000" max="4000" value="0" step="50">
+                    <span id="current-year">0 CE</span>
+                </div>
+                <div class="control-group">
+                    <button id="play-precession">Play Precession</button>
+                    <button id="pause-precession">Pause</button>
+                    <button id="reset-precession">Reset</button>
+                </div>
+                <div class="control-group">
+                    <label for="speed-control">Speed:</label>
+                    <select id="speed-control">
+                        <option value="0.5">Slow</option>
+                        <option value="1" selected>Normal</option>
+                        <option value="2">Fast</option>
+                        <option value="5">Very Fast</option>
+                    </select>
                 </div>
             </div>
-            
-            <!-- Fish Symbolism Visualization -->
-            <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
-                    The Dual Fish: Christ and Antichrist
-                </h3>
-                <div class="visualization-container">
-                    <div id="fish-dynamics" style="height: 400px;"></div>
+        </section>
+
+        <!-- Fish Duality Visualization -->
+        <section class="visualization-section">
+            <h2>The Dual Fish: Opposition in Unity</h2>
+            <div class="visualization-intro">
+                <p>The two fish of Pisces swim in opposite directions, representing the eternal tension between spirit and matter, Christ and Antichrist, conscious and unconscious.</p>
+            </div>
+            <div id="fish-duality" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="toggle-fish-animation">Toggle Animation</button>
+                <button id="show-symbolic-meaning">Show Symbolic Meaning</button>
+                <button id="highlight-opposition">Highlight Opposition</button>
+            </div>
+        </section>
+
+        <!-- Constellation Viewer -->
+        <section class="visualization-section">
+            <h2>Interactive Constellation Viewer</h2>
+            <div class="visualization-intro">
+                <p>Explore the actual constellations and their mythological significance. See how the stars appear to move due to Earth's axial precession.</p>
+            </div>
+            <div id="constellation-viewer" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="show-constellation-lines">Toggle Constellation Lines</button>
+                <button id="show-mythology">Show Mythology</button>
+                <button id="toggle-precession-motion">Toggle Precession Motion</button>
+                <select id="constellation-select">
+                    <option value="pisces">Pisces (Current)</option>
+                    <option value="aries">Aries (Previous)</option>
+                    <option value="aquarius">Aquarius (Next)</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Historical Timeline -->
+        <section class="visualization-section">
+            <h2>Historical Manifestations</h2>
+            <div class="visualization-intro">
+                <p>See how the transition between astrological ages manifests in historical events, religious movements, and cultural shifts.</p>
+            </div>
+            <div id="historical-timeline" class="visualization-container"></div>
+            <div class="timeline-controls">
+                <button id="filter-religious">Religious Events</button>
+                <button id="filter-cultural">Cultural Shifts</button>
+                <button id="filter-symbolic">Symbolic Changes</button>
+                <button id="show-all-events">Show All</button>
+            </div>
+        </section>
+
+        <!-- Educational Content -->
+        <section class="content-section">
+            <h2>The Psychological Significance</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Aries Age (2000 BCE - 0 CE)</h3>
+                    <ul>
+                        <li>Ram symbolism in Judaism</li>
+                        <li>Abraham's sacrifice</li>
+                        <li>Moses and the golden calf</li>
+                        <li>Warrior consciousness</li>
+                    </ul>
                 </div>
-                <p style="margin-top: var(--space-4);">
-                    The two fish of Pisces swim in opposite directions, representing the fundamental 
-                    split in Western consciousness. One fish swims toward spirit (Christ), the other 
-                    toward matter (Antichrist). Jung saw this as the core psychological problem of 
-                    the Christian aeon.
-                </p>
+                <div class="concept-card">
+                    <h3>Pisces Age (0 - 2000 CE)</h3>
+                    <ul>
+                        <li>Fish symbolism in Christianity</li>
+                        <li>Duality of Christ/Antichrist</li>
+                        <li>Oceanic consciousness</li>
+                        <li>Faith over knowledge</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3>Aquarius Age (2000+ CE)</h3>
+                    <ul>
+                        <li>Water bearer symbolism</li>
+                        <li>Consciousness transformation</li>
+                        <li>Integration of opposites</li>
+                        <li>Scientific spirituality</li>
+                    </ul>
+                </div>
             </div>
-            
-            <!-- Navigation -->
-            <div style="display: flex; justify-content: space-between; margin-top: var(--space-16);">
-                <a href="chapter3.html" class="button">← Chapter 3: The Syzygy</a>
-                <a href="chapter5.html" class="button">Chapter 5: Christ as Archetype →</a>
-            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="chapter-nav">
+            <a href="chapter3.html" class="prev-chapter">← Chapter 3: The Syzygy</a>
+            <a href="chapter5.html" class="next-chapter">Chapter 5: Christ as Archetype →</a>
         </div>
-    </section>
-    
-    <!-- Visualizations -->
+    </main>
+
+    <style>
+        .visualization-container {
+            position: relative;
+            height: 600px;
+            background: var(--surface-glass);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .visualization-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--surface-glass);
+            border-radius: 0.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .control-group input, .control-group select {
+            padding: 0.5rem;
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .control-group button {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-group button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        #current-year {
+            font-weight: bold;
+            color: var(--accent);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .timeline-controls button {
+            padding: 0.5rem 1rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-default);
+            color: var(--text-primary);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-controls button:hover,
+        .timeline-controls button.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .constellation-info {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 0.875rem;
+            max-width: 300px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .constellation-info.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .visualization-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-group {
+                justify-content: space-between;
+            }
+
+            .timeline-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+
     <script>
-        // Astrological Timeline Visualization
-        (function() {
-            const container = document.getElementById('astrological-timeline');
-            const tooltip = document.getElementById('timeline-tooltip');
+        // Initialize visualization loader
+        const vizLoader = new VisualizationLoader();
+        
+        // Enhanced Astrological Clock
+        vizLoader.lazyLoad('astrological-clock', function(container) {
             const width = container.offsetWidth;
-            const height = 500;
-            const margin = { top: 50, right: 50, bottom: 100, left: 50 };
+            const height = container.offsetHeight;
             
-            // Data for astrological ages
-            const ages = [
-                { name: "Taurus", start: -4000, end: -2000, symbol: "♉", color: "#8B4513" },
-                { name: "Aries", start: -2000, end: 0, symbol: "♈", color: "#DC143C" },
-                { name: "Pisces", start: 0, end: 2000, symbol: "♓", color: "#4169E1" },
-                { name: "Aquarius", start: 2000, end: 4000, symbol: "♒", color: "#00CED1" }
-            ];
-            
-            // Historical events
-            const events = [
-                { year: -2000, event: "Abraham leaves Ur", significance: "Ram replaces Bull sacrifice" },
-                { year: -1500, event: "Moses and the Golden Calf", significance: "Rejection of Taurus age" },
-                { year: -600, event: "Buddha's enlightenment", significance: "Eastern preparation" },
-                { year: -4, event: "Birth of Christ", significance: "Pisces age begins" },
-                { year: 33, event: "Crucifixion", significance: "Fish symbol adopted" },
-                { year: 325, event: "Council of Nicaea", significance: "Christianity codified" },
-                { year: 1000, event: "Expected apocalypse", significance: "Midpoint of Pisces" },
-                { year: 1517, event: "Protestant Reformation", significance: "Religious split" },
-                { year: 1900, event: "Depth psychology emerges", significance: "Unconscious discovered" },
-                { year: 1945, event: "Atomic bomb", significance: "Shadow erupts" },
-                { year: 2000, event: "Millennium", significance: "Aquarius transition begins" }
-            ];
-            
-            // Create SVG
+            // Create main SVG
             const svg = d3.select(container)
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height);
-            
-            // Scales
-            const xScale = d3.scaleLinear()
-                .domain([-4000, 4000])
-                .range([margin.left, width - margin.right]);
-            
-            const yScale = d3.scaleLinear()
-                .domain([0, 1])
-                .range([height - margin.bottom, margin.top]);
-            
-            // Draw age backgrounds
-            ages.forEach(age => {
-                svg.append('rect')
-                    .attr('x', xScale(age.start))
-                    .attr('y', margin.top)
-                    .attr('width', xScale(age.end) - xScale(age.start))
-                    .attr('height', height - margin.top - margin.bottom)
-                    .attr('fill', age.color)
-                    .attr('opacity', 0.1);
-                
-                // Age labels
-                svg.append('text')
-                    .attr('x', xScale((age.start + age.end) / 2))
-                    .attr('y', margin.top - 10)
-                    .attr('text-anchor', 'middle')
-                    .attr('fill', age.color)
-                    .style('font-size', '1.2rem')
-                    .style('font-weight', '500')
-                    .text(age.name);
-                
-                // Age symbols
-                svg.append('text')
-                    .attr('x', xScale((age.start + age.end) / 2))
-                    .attr('y', height - margin.bottom + 40)
-                    .attr('text-anchor', 'middle')
-                    .attr('fill', age.color)
-                    .style('font-size', '2rem')
-                    .text(age.symbol);
-            });
-            
-            // X-axis
-            const xAxis = d3.axisBottom(xScale)
-                .tickFormat(d => d === 0 ? "0 CE" : d < 0 ? `${Math.abs(d)} BCE` : `${d} CE`)
-                .tickValues([-4000, -3000, -2000, -1000, 0, 1000, 2000, 3000, 4000]);
-            
-            svg.append('g')
-                .attr('transform', `translate(0, ${height - margin.bottom})`)
-                .call(xAxis)
-                .style('color', 'var(--text-secondary)');
-            
-            // Draw Christ/Antichrist line
-            const christLine = d3.line()
-                .x(d => xScale(d.year))
-                .y(d => yScale(d.value))
-                .curve(d3.curveCatmullRom);
-            
-            const christData = [
-                { year: -500, value: 0.5 },
-                { year: 0, value: 0.9 },
-                { year: 500, value: 0.8 },
-                { year: 1000, value: 0.5 },
-                { year: 1500, value: 0.3 },
-                { year: 2000, value: 0.5 }
-            ];
-            
-            const antichristData = [
-                { year: -500, value: 0.5 },
-                { year: 0, value: 0.1 },
-                { year: 500, value: 0.2 },
-                { year: 1000, value: 0.5 },
-                { year: 1500, value: 0.7 },
-                { year: 2000, value: 0.5 }
-            ];
-            
-            // Christ line
-            svg.append('path')
-                .datum(christData)
-                .attr('fill', 'none')
-                .attr('stroke', 'var(--primary)')
-                .attr('stroke-width', 3)
-                .attr('d', christLine);
-            
-            // Antichrist line
-            svg.append('path')
-                .datum(antichristData)
-                .attr('fill', 'none')
-                .attr('stroke', 'var(--accent)')
-                .attr('stroke-width', 3)
-                .attr('d', christLine);
-            
-            // Event markers
-            events.forEach(event => {
-                const g = svg.append('g')
-                    .attr('transform', `translate(${xScale(event.year)}, ${height - margin.bottom})`);
-                
-                g.append('line')
-                    .attr('y1', 0)
-                    .attr('y2', -(height - margin.top - margin.bottom))
-                    .attr('stroke', 'var(--text-tertiary)')
-                    .attr('stroke-width', 1)
-                    .attr('stroke-dasharray', '3,3')
-                    .attr('opacity', 0.5);
-                
-                g.append('circle')
-                    .attr('cy', -(height - margin.top - margin.bottom) / 2)
-                    .attr('r', 5)
-                    .attr('fill', 'var(--accent)')
-                    .style('cursor', 'pointer')
-                    .on('mouseover', function(e) {
-                        tooltip.style.opacity = 1;
-                        tooltip.style.left = e.pageX + 10 + 'px';
-                        tooltip.style.top = e.pageY - 10 + 'px';
-                        tooltip.innerHTML = `<strong>${event.year} ${event.year < 0 ? 'BCE' : 'CE'}</strong><br/>
-                                           ${event.event}<br/>
-                                           <em>${event.significance}</em>`;
-                    })
-                    .on('mouseout', () => {
-                        tooltip.style.opacity = 0;
-                    });
-            });
-            
-            // Legend
-            const legend = svg.append('g')
-                .attr('transform', `translate(${width - 200}, ${margin.top})`);
-            
-            legend.append('line')
-                .attr('x1', 0)
-                .attr('x2', 30)
-                .attr('y1', 0)
-                .attr('y2', 0)
-                .attr('stroke', 'var(--primary)')
-                .attr('stroke-width', 3);
-            
-            legend.append('text')
-                .attr('x', 40)
-                .attr('y', 5)
-                .attr('fill', 'var(--text-primary)')
-                .text('Christ principle');
-            
-            legend.append('line')
-                .attr('x1', 0)
-                .attr('x2', 30)
-                .attr('y1', 20)
-                .attr('y2', 20)
-                .attr('stroke', 'var(--accent)')
-                .attr('stroke-width', 3);
-            
-            legend.append('text')
-                .attr('x', 40)
-                .attr('y', 25)
-                .attr('fill', 'var(--text-primary)')
-                .text('Shadow/Antichrist');
-        })();
-        
-        // Fish Dynamics Visualization
-        (function() {
-            const container = document.getElementById('fish-dynamics');
+
+            // Create Three.js scene for 3D clock
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(
-                50,
-                container.offsetWidth / container.offsetHeight,
-                0.1,
-                1000
-            );
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(width, height);
+            renderer.setClearColor(0x000000, 0);
+            
+            // Add accessibility attributes to canvas
+            renderer.domElement.setAttribute('role', 'img');
+            renderer.domElement.setAttribute('aria-label', 'Interactive 3D astrological clock showing the precession of equinoxes and zodiac ages');
+            renderer.domElement.setAttribute('tabindex', '0');
+            
+            container.appendChild(renderer.domElement);
+            
+            // Add detailed description for screen readers
+            const description = document.createElement('div');
+            description.id = 'astrological-clock-description';
+            description.className = 'sr-only';
+            description.innerHTML = `
+                <h3>Astrological Clock Description</h3>
+                <p>This visualization shows a 3D representation of the zodiac wheel and astrological ages caused by the precession of equinoxes. The Earth's axis slowly wobbles over approximately 26,000 years, causing the zodiac constellations to appear to shift backward through the seasons.</p>
+                <p>Current display shows the transition from the Pisces Age (Christianity, fish symbolism) to the Aquarius Age. Each zodiac sign corresponds to roughly 2,160 years of human history.</p>
+                <p>Use the controls below the visualization to adjust the timeline and see how different astrological ages correspond to major shifts in human consciousness and civilization.</p>
+            `;
+            container.appendChild(description);
+            renderer.domElement.setAttribute('aria-describedby', 'astrological-clock-description');
+
+            // Position camera
+            camera.position.set(0, 0, 10);
+
+            // Create zodiac wheel
+            const zodiacSigns = [
+                { name: 'Aries', symbol: '♈', angle: 0, color: 0xFF4444, age: { start: -2000, end: 0 } },
+                { name: 'Pisces', symbol: '♓', angle: 30, color: 0x4444FF, age: { start: 0, end: 2160 } },
+                { name: 'Aquarius', symbol: '♒', angle: 60, color: 0x44FFFF, age: { start: 2160, end: 4320 } },
+                { name: 'Capricorn', symbol: '♑', angle: 90, color: 0x44FF44, age: { start: 4320, end: 6480 } },
+                { name: 'Sagittarius', symbol: '♐', angle: 120, color: 0xFFFF44, age: { start: 6480, end: 8640 } },
+                { name: 'Scorpio', symbol: '♏', angle: 150, color: 0xFF44FF, age: { start: 8640, end: 10800 } },
+                { name: 'Libra', symbol: '♎', angle: 180, color: 0x44FFAA, age: { start: 10800, end: 12960 } },
+                { name: 'Virgo', symbol: '♍', angle: 210, color: 0xAA44FF, age: { start: 12960, end: 15120 } },
+                { name: 'Leo', symbol: '♌', angle: 240, color: 0xFFAA44, age: { start: 15120, end: 17280 } },
+                { name: 'Cancer', symbol: '♋', angle: 270, color: 0x44AAFF, age: { start: 17280, end: 19440 } },
+                { name: 'Gemini', symbol: '♊', angle: 300, color: 0xAAFF44, age: { start: 19440, end: 21600 } },
+                { name: 'Taurus', symbol: '♉', angle: 330, color: 0xFF44AA, age: { start: 21600, end: 23760 } }
+            ];
+
+            // Create zodiac wheel geometry
+            const wheelGroup = new THREE.Group();
+            const wheelRadius = 5;
+
+            // Create segments
+            zodiacSigns.forEach((sign, index) => {
+                const geometry = new THREE.RingGeometry(wheelRadius - 0.5, wheelRadius, 
+                    index * Math.PI / 6, Math.PI / 6, 32);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: sign.color, 
+                    transparent: true, 
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                const segment = new THREE.Mesh(geometry, material);
+                wheelGroup.add(segment);
+
+                // Add sign symbols
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 128;
+                canvas.height = 128;
+                context.fillStyle = `#${sign.color.toString(16).padStart(6, '0')}`;
+                context.font = '72px Arial';
+                context.textAlign = 'center';
+                context.fillText(sign.symbol, 64, 80);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                
+                const angle = (index * 30 - 90) * Math.PI / 180;
+                sprite.position.set(
+                    Math.cos(angle) * (wheelRadius - 0.25),
+                    Math.sin(angle) * (wheelRadius - 0.25),
+                    0.1
+                );
+                sprite.scale.set(0.8, 0.8, 1);
+                wheelGroup.add(sprite);
+            });
+
+            scene.add(wheelGroup);
+
+            // Create Earth pointer
+            const pointerGeometry = new THREE.ConeGeometry(0.1, 0.5, 8);
+            const pointerMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+            const pointer = new THREE.Mesh(pointerGeometry, pointerMaterial);
+            pointer.position.set(0, 0, 0.2);
+            pointer.rotation.z = Math.PI;
+            scene.add(pointer);
+
+            // Animation variables
+            let isPlaying = false;
+            let currentYear = 0;
+            let speed = 1;
+
+            function updateClock(year) {
+                currentYear = year;
+                
+                // Calculate precession angle (backwards due to precession)
+                const precessionAngle = -(year / 25920) * 2 * Math.PI;
+                wheelGroup.rotation.z = precessionAngle;
+
+                // Update year display
+                document.getElementById('current-year').textContent = 
+                    year < 0 ? `${Math.abs(year)} BCE` : `${year} CE`;
+
+                // Update time slider
+                document.getElementById('time-slider').value = year;
+
+                // Highlight current age
+                const currentAge = zodiacSigns.find(sign => 
+                    year >= sign.age.start && year < sign.age.end);
+                
+                if (currentAge) {
+                    // Update constellation info
+                    updateConstellationInfo(currentAge, year);
+                }
+            }
+
+            function updateConstellationInfo(currentAge, year) {
+                const progress = ((year - currentAge.age.start) / 
+                    (currentAge.age.end - currentAge.age.start)) * 100;
+                
+                // You could add an info panel here
+                console.log(`Current Age: ${currentAge.name} (${progress.toFixed(1)}% complete)`);
+            }
+
+            // Animation loop
+            function animate() {
+                if (isPlaying) {
+                    currentYear += speed * 10; // 10 years per frame
+                    if (currentYear > 4000) currentYear = -4000;
+                    updateClock(currentYear);
+                }
+                
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+
+            // Controls
+            document.getElementById('time-slider').addEventListener('input', (e) => {
+                updateClock(parseInt(e.target.value));
+            });
+
+            document.getElementById('play-precession').addEventListener('click', () => {
+                isPlaying = true;
+            });
+
+            document.getElementById('pause-precession').addEventListener('click', () => {
+                isPlaying = false;
+            });
+
+            document.getElementById('reset-precession').addEventListener('click', () => {
+                isPlaying = false;
+                updateClock(0);
+            });
+
+            document.getElementById('speed-control').addEventListener('change', (e) => {
+                speed = parseFloat(e.target.value);
+            });
+
+            // Handle resize
+            window.addEventListener('resize', () => {
+                const newWidth = container.offsetWidth;
+                const newHeight = container.offsetHeight;
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, newHeight);
+            });
+
+            // Initialize
+            updateClock(0);
+            animate();
+        });
+
+        // Fish Duality Visualization
+        vizLoader.lazyLoad('fish-duality', function(container) {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             
             renderer.setSize(container.offsetWidth, container.offsetHeight);
             renderer.setClearColor(0x000000, 0);
             container.appendChild(renderer.domElement);
-            
-            camera.position.set(0, 0, 5);
-            
-            // Create fish paths
-            const curve1 = new THREE.EllipseCurve(
-                0, 0,            // center
-                2, 1,            // xRadius, yRadius
-                0, 2 * Math.PI,  // startAngle, endAngle
-                false,           // clockwise
-                0                // rotation
-            );
-            
-            const curve2 = new THREE.EllipseCurve(
-                0, 0,
-                2, 1,
-                0, 2 * Math.PI,
-                true,            // counterclockwise
-                Math.PI          // rotated 180 degrees
-            );
-            
-            const points1 = curve1.getPoints(100);
-            const points2 = curve2.getPoints(100);
-            
-            const geometry1 = new THREE.BufferGeometry().setFromPoints(points1);
-            const geometry2 = new THREE.BufferGeometry().setFromPoints(points2);
-            
-            const material1 = new THREE.LineBasicMaterial({ color: 0x4169E1 });
-            const material2 = new THREE.LineBasicMaterial({ color: 0x8B5CF6 });
-            
-            const path1 = new THREE.Line(geometry1, material1);
-            const path2 = new THREE.Line(geometry2, material2);
-            
-            scene.add(path1);
-            scene.add(path2);
-            
-            // Create fish
-            const fishGeometry = new THREE.ConeGeometry(0.2, 0.5, 8);
-            const fishMaterial1 = new THREE.MeshBasicMaterial({ color: 0x4169E1 });
-            const fishMaterial2 = new THREE.MeshBasicMaterial({ color: 0x8B5CF6 });
-            
-            const fish1 = new THREE.Mesh(fishGeometry, fishMaterial1);
-            const fish2 = new THREE.Mesh(fishGeometry, fishMaterial2);
-            
+
+            camera.position.set(0, 0, 8);
+
+            // Create fish shapes using curves
+            function createFishCurve(direction = 1) {
+                const curve = new THREE.CatmullRomCurve3([
+                    new THREE.Vector3(-2 * direction, 0, 0),
+                    new THREE.Vector3(-1 * direction, 0.5 * direction, 0),
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(1 * direction, -0.5 * direction, 0),
+                    new THREE.Vector3(2 * direction, 0, 0),
+                ]);
+                return curve;
+            }
+
+            // Create first fish (Christ - upward)
+            const fish1Curve = createFishCurve(1);
+            const fish1Geometry = new THREE.TubeGeometry(fish1Curve, 64, 0.1, 8, false);
+            const fish1Material = new THREE.MeshBasicMaterial({ 
+                color: 0xFFD700, 
+                transparent: true, 
+                opacity: 0.8 
+            });
+            const fish1 = new THREE.Mesh(fish1Geometry, fish1Material);
+            fish1.position.set(0, 1, 0);
             scene.add(fish1);
+
+            // Create second fish (Antichrist - downward)
+            const fish2Curve = createFishCurve(-1);
+            const fish2Geometry = new THREE.TubeGeometry(fish2Curve, 64, 0.1, 8, false);
+            const fish2Material = new THREE.MeshBasicMaterial({ 
+                color: 0x6B46C1, 
+                transparent: true, 
+                opacity: 0.8 
+            });
+            const fish2 = new THREE.Mesh(fish2Geometry, fish2Material);
+            fish2.position.set(0, -1, 0);
+            fish2.rotation.z = Math.PI;
             scene.add(fish2);
-            
+
+            // Add connecting line
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 1, 0),
+                new THREE.Vector3(0, -1, 0)
+            ]);
+            const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0xFFFFFF, 
+                transparent: true, 
+                opacity: 0.5 
+            });
+            const line = new THREE.Line(lineGeometry, lineMaterial);
+            scene.add(line);
+
             // Animation
-            let t = 0;
+            let animationEnabled = true;
             function animate() {
-                requestAnimationFrame(animate);
-                t += 0.005;
-                
-                // Move fish along paths
-                const point1 = curve1.getPoint(t % 1);
-                const point2 = curve2.getPoint((t + 0.5) % 1);
-                
-                fish1.position.set(point1.x, point1.y, 0);
-                fish2.position.set(point2.x, point2.y, 0);
-                
-                // Orient fish
-                const tangent1 = curve1.getTangent(t % 1);
-                const tangent2 = curve2.getTangent((t + 0.5) % 1);
-                
-                fish1.rotation.z = Math.atan2(tangent1.y, tangent1.x) - Math.PI / 2;
-                fish2.rotation.z = Math.atan2(tangent2.y, tangent2.x) - Math.PI / 2;
+                if (animationEnabled) {
+                    const time = Date.now() * 0.001;
+                    fish1.rotation.y = time * 0.5;
+                    fish2.rotation.y = -time * 0.5;
+                }
                 
                 renderer.render(scene, camera);
+                requestAnimationFrame(animate);
             }
-            
-            animate();
-            
-            // Handle resize
-            window.addEventListener('resize', () => {
-                const width = container.offsetWidth;
-                const height = container.offsetHeight;
-                camera.aspect = width / height;
-                camera.updateProjectionMatrix();
-                renderer.setSize(width, height);
+
+            // Controls
+            document.getElementById('toggle-fish-animation').addEventListener('click', () => {
+                animationEnabled = !animationEnabled;
             });
-        })();
-        
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -10% 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+
+            document.getElementById('show-symbolic-meaning').addEventListener('click', () => {
+                // Toggle symbolic overlay
+                const overlay = document.querySelector('.symbolic-overlay');
+                if (overlay) {
+                    overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
                 }
             });
-        }, observerOptions);
-        
-        document.querySelectorAll('.content-block').forEach(block => {
-            observer.observe(block);
+
+            document.getElementById('highlight-opposition').addEventListener('click', () => {
+                // Highlight the opposition
+                fish1Material.color.setHex(0xFF0000);
+                fish2Material.color.setHex(0x0000FF);
+                setTimeout(() => {
+                    fish1Material.color.setHex(0xFFD700);
+                    fish2Material.color.setHex(0x6B46C1);
+                }, 2000);
+            });
+
+            animate();
         });
+
+        // Historical Timeline
+        vizLoader.lazyLoad('historical-timeline', function(container) {
+            const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', container.offsetWidth)
+                .attr('height', 400);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Historical events data
+            const events = [
+                { year: -2000, event: "Abraham's Journey", type: "religious", significance: "Transition from bull to ram worship" },
+                { year: -1500, event: "Moses & Golden Calf", type: "religious", significance: "Rejection of Taurus age symbols" },
+                { year: -600, event: "Buddha's Enlightenment", type: "religious", significance: "Eastern spiritual awakening" },
+                { year: 0, event: "Birth of Christ", type: "religious", significance: "Beginning of Pisces age" },
+                { year: 33, event: "Crucifixion", type: "religious", significance: "Fish symbol adopted by Christians" },
+                { year: 325, event: "Council of Nicaea", type: "religious", significance: "Christianity becomes institutional" },
+                { year: 1000, event: "Expected Apocalypse", type: "cultural", significance: "Midpoint millennium fears" },
+                { year: 1517, event: "Protestant Reformation", type: "religious", significance: "Religious authority questioned" },
+                { year: 1900, event: "Psychology Emerges", type: "cultural", significance: "Unconscious mind discovered" },
+                { year: 1945, event: "Atomic Age", type: "symbolic", significance: "Shadow projection reaches global scale" },
+                { year: 2000, event: "Millennium", type: "symbolic", significance: "Transition to Aquarius begins?" }
+            ];
+
+            // Scales
+            const xScale = d3.scaleLinear()
+                .domain([-2200, 2200])
+                .range([0, width]);
+
+            const colorScale = d3.scaleOrdinal()
+                .domain(['religious', 'cultural', 'symbolic'])
+                .range(['#FFD700', '#6B46C1', '#4A90E2']);
+
+            // Add axes
+            g.append('g')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale).tickFormat(d => d < 0 ? `${Math.abs(d)} BCE` : `${d} CE`));
+
+            // Add events
+            const eventGroups = g.selectAll('.event')
+                .data(events)
+                .enter().append('g')
+                .attr('class', 'event')
+                .attr('transform', d => `translate(${xScale(d.year)},${height/2})`);
+
+            eventGroups.append('circle')
+                .attr('r', 8)
+                .attr('fill', d => colorScale(d.type))
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+
+            eventGroups.append('text')
+                .attr('y', -15)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#fff')
+                .attr('font-size', '10px')
+                .text(d => d.event);
+
+            // Add timeline controls functionality
+            document.querySelectorAll('.timeline-controls button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.timeline-controls button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.id.replace('filter-', '').replace('show-all-events', 'all');
+                    
+                    eventGroups.style('opacity', d => {
+                        if (filter === 'all') return 1;
+                        return d.type === filter ? 1 : 0.3;
+                    });
+                });
+            });
+        });
+
     </script>
-    <script src="transitions.js"></script>
-    <script src="personalization.js"></script>
 </body>
 </html>
