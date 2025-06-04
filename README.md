@@ -66,7 +66,7 @@ This visualization suite explores several key concepts from Jung's Aion:
 
 ## Hosting on GitHub Pages
 
-This project uses GitHub Actions to publish the contents of the `src/` directory. Follow the instructions in [setup-github-pages.md](setup-github-pages.md) to enable Pages with the **GitHub Actions** source.
+This project uses GitHub Actions to publish the contents of the `src/` directory. Follow the instructions in [docs/setup-github-pages.md](docs/setup-github-pages.md) to enable Pages with the **GitHub Actions** source.
 
 ## License
 
