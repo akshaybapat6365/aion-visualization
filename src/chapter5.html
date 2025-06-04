@@ -90,9 +90,10 @@
         </div>
     </main>
 
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="bg-canvas" data-load-fn="initChapter5"></canvas>
 
     <script>
+        function initChapter5() {
         // Background shader
         const canvas = document.getElementById('bg-canvas');
         const gl = canvas.getContext('webgl');
@@ -477,6 +478,8 @@
         document.querySelector('.nav-toggle').addEventListener('click', function() {
             document.querySelector('.nav-links').classList.toggle('active');
         });
+    }
+    observeVisualization(document.getElementById("bg-canvas"), "initChapter5");
     </script>
 </body>
 </html>
