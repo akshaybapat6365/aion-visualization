@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: The Ego - Aion Visualization</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <!-- Phase 3 Enhancements -->
+    <style>
+        .chapter-hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chapter-hero-content {
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease-out 0.5s forwards;
+        }
+        
+        .chapter-content {
+            padding: var(--space-16) 0;
+        }
+        
+        .content-block {
+            max-width: 800px;
+            margin: 0 auto var(--space-16);
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        
+        .content-block.visible {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .visualization-container {
+            height: 60vh;
+            margin: var(--space-8) 0;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .quote {
+            font-size: var(--text-2xl);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-align: center;
+            margin: var(--space-8) auto;
+            max-width: 800px;
+            opacity: 0.8;
+        }
+        
+        .author {
+            display: block;
+            font-size: var(--text-base);
+            font-style: normal;
+            margin-top: var(--space-2);
+            color: var(--text-tertiary);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script type="module" src="lazy-visualizations.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-link">Home</a>
+            <a href="chapters.html" class="nav-link">Chapters</a>
+            <a href="timeline.html" class="nav-link">Timeline</a>
+            <a href="symbols.html" class="nav-link">Symbols</a>
+            <a href="about.html" class="nav-link">About</a>
+        </div>
+    </nav>
+    
+    <!-- Chapter Hero -->
+    <section class="chapter-hero" style="background: linear-gradient(180deg, rgba(107, 70, 193, 0.1) 0%, transparent 50%);">
+        <div class="chapter-hero-content">
+            <span class="chapter-number">Chapter 01</span>
+            <h1 style="font-size: var(--text-7xl); font-weight: 200; margin: var(--space-4) 0;">
+                The Ego
+            </h1>
+            <p style="font-size: var(--text-xl); color: var(--text-secondary);">
+                The center of consciousness
+            </p>
+        </div>
+    </section>
+    
+    <!-- Content -->
+    <section class="chapter-content">
+        <div class="container">
+            <div class="content-block">
+                <p class="quote">
+                    "The ego is the subject of all personal acts of consciousness."
+                    <span class="author">— C.G. Jung</span>
+                </p>
+            </div>
+            
+            <div class="content-block">
+                <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
+                    Understanding the Ego
+                </h2>
+                <p>
+                    In Jung's psychology, the ego represents the center of consciousness—the "I" 
+                    that we identify with in our daily lives. It is the organizing principle of 
+                    the conscious mind, responsible for our sense of identity and continuity.
+                </p>
+                <p style="margin-top: var(--space-3);">
+                    The ego emerges from the Self, serving as a necessary focal point for 
+                    consciousness, yet it represents only a small portion of the total psyche.
+                </p>
+            </div>
+            
+            <div class="content-block">
+                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                    The Ego-Self Axis
+                </h3>
+                <div class="visualization-container">
+                    <canvas id="ego-self-axis"></canvas>
+                </div>
+                <p style="margin-top: var(--space-4);">
+                    The relationship between ego and Self forms the central axis of psychological 
+                    development. While the ego provides necessary boundaries and identity, it must 
+                    remain connected to the greater Self to maintain psychological health.
+                </p>
+            </div>
+            
+            <div class="content-block">
+                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                    Functions of the Ego
+                </h3>
+                <div class="grid grid-cols-2" style="gap: var(--space-3); margin-top: var(--space-6);">
+                    <div class="card" style="padding: var(--space-6);">
+                        <h4 style="margin-bottom: var(--space-2);">Identity</h4>
+                        <p style="font-size: var(--text-base);">
+                            Maintains continuity of the self across time and experience
+                        </p>
+                    </div>
+                    <div class="card" style="padding: var(--space-6);">
+                        <h4 style="margin-bottom: var(--space-2);">Reality Testing</h4>
+                        <p style="font-size: var(--text-base);">
+                            Distinguishes between inner and outer reality
+                        </p>
+                    </div>
+                    <div class="card" style="padding: var(--space-6);">
+                        <h4 style="margin-bottom: var(--space-2);">Defense</h4>
+                        <p style="font-size: var(--text-base);">
+                            Protects consciousness from overwhelming content
+                        </p>
+                    </div>
+                    <div class="card" style="padding: var(--space-6);">
+                        <h4 style="margin-bottom: var(--space-2);">Executive Function</h4>
+                        <p style="font-size: var(--text-base);">
+                            Directs conscious will and decision-making
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div style="display: flex; justify-content: space-between; margin-top: var(--space-16);">
+                <a href="chapters.html" class="button">← Back to Chapters</a>
+                <a href="chapter2.html" class="button">Chapter 2: The Shadow →</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Ego Visualization Shader -->
+    <script>
+        // Initialize visualization loader
+        const vizLoader = new VisualizationLoader();
+        
+        // Ego-Self Axis Visualization
+        vizLoader.lazyLoad('ego-self-axis', function(container) {
+            const canvas = document.getElementById('ego-self-axis');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(
+                50, 
+                canvas.parentElement.offsetWidth / canvas.parentElement.offsetHeight, 
+                0.1, 
+                1000
+            );
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            
+            renderer.setSize(canvas.parentElement.offsetWidth, canvas.parentElement.offsetHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0x000000, 0);
+            camera.position.set(0, 0, 5);
+            
+            // Create ego sphere
+            const egoGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            const egoMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.8
+            });
+            const egoSphere = new THREE.Mesh(egoGeometry, egoMaterial);
+            egoSphere.position.x = -2;
+            scene.add(egoSphere);
+            
+            // Create Self mandala
+            const selfGroup = new THREE.Group();
+            
+            // Outer ring
+            const ringGeometry = new THREE.TorusGeometry(0.5, 0.02, 16, 100);
+            const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x6B46C1 });
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            selfGroup.add(ring);
+            
+            // Inner square
+            const squareGeometry = new THREE.PlaneGeometry(0.7, 0.7);
+            const squareEdges = new THREE.EdgesGeometry(squareGeometry);
+            const squareLine = new THREE.LineSegments(
+                squareEdges,
+                new THREE.LineBasicMaterial({ color: 0x6B46C1 })
+            );
+            squareLine.rotation.z = Math.PI / 4;
+            selfGroup.add(squareLine);
+            
+            // Center
+            const centerGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+            const centerMaterial = new THREE.MeshBasicMaterial({ color: 0x6B46C1 });
+            const center = new THREE.Mesh(centerGeometry, centerMaterial);
+            selfGroup.add(center);
+            
+            selfGroup.position.x = 2;
+            scene.add(selfGroup);
+            
+            // Connection line
+            const points = [];
+            for (let i = 0; i <= 100; i++) {
+                const x = -2 + (4 * i / 100);
+                const y = Math.sin(i * 0.1) * 0.1;
+                points.push(new THREE.Vector3(x, y, 0));
+            }
+            
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.3
+            });
+            const connectionLine = new THREE.Line(lineGeometry, lineMaterial);
+            scene.add(connectionLine);
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate Self mandala
+                selfGroup.rotation.z += 0.01;
+                
+                // Pulse ego
+                const scale = 1 + Math.sin(Date.now() * 0.002) * 0.1;
+                egoSphere.scale.set(scale, scale, scale);
+                
+                // Update connection line
+                const positions = connectionLine.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i + 1] = Math.sin((i / 3) * 0.1 + Date.now() * 0.001) * 0.1;
+                }
+                connectionLine.geometry.attributes.position.needsUpdate = true;
+                
+                renderer.render(scene, camera);
+            }
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                const width = canvas.parentElement.offsetWidth;
+                const height = canvas.parentElement.offsetHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            });
+            
+            animate();
+        });
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -10% 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.content-block').forEach(block => {
+            observer.observe(block);
+        });
+    </script>
+    <script src="../../assets/js/core/utilities.js"></script>
+    
+    <!-- Phase 3 Scripts -->
+    <script src="js/advanced-animations.js"></script>
+    <script src="js/gesture-controller.js"></script>
+    <script src="js/contextual-help.js"></script>
+    <script src="js/keyboard-shortcuts.js"></script>
+    <script src="js/smart-asset-loader.js"></script>
+    <script src="js/adaptive-quality.js"></script>
+    <script src="js/learning-analytics.js"></script>
+    <script src="js/production-error-handler.js"></script>
+    
+    <script>
+    // Initialize Phase 3 features
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initialize production error handler
+        window.errorHandler = new ProductionErrorHandler();
+        
+        // Initialize adaptive quality
+        window.adaptiveQuality = new AdaptiveQuality();
+        
+        // Initialize gesture controller for touch devices
+        if ('ontouchstart' in window) {
+            window.gestureController = new GestureController(document.body);
+        }
+        
+        // Initialize keyboard shortcuts
+        window.keyboardShortcuts = new KeyboardShortcuts();
+        
+        // Initialize contextual help
+        window.contextualHelp = new ContextualHelp();
+        
+        // Initialize advanced animations
+        window.advancedAnimations = new AdvancedAnimations();
+        
+        // Initialize smart asset loader
+        window.assetLoader = new SmartAssetLoader();
+        
+        // Initialize learning analytics
+        window.learningAnalytics = new LearningAnalytics();
+        
+        // Track page view
+        if (window.learningAnalytics) {
+            window.learningAnalytics.trackPageView();
+        }
+    });
+    </script>
+    <script src="personalization.js"></script>
+</body>
+</html>
