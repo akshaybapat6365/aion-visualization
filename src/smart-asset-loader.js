@@ -610,7 +610,7 @@ class SmartAssetLoader {
       assets: [
         {
           type: 'style',
-          url: 'styles-v2.css',
+          url: 'styles-v3.css',
           critical: true
         },
         {

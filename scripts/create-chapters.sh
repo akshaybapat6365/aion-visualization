@@ -8,7 +8,7 @@ cat > chapter10-v2.html << 'CHAPTER10'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 10: The Lapis - Aion by Carl Jung</title>
-    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
         .main-nav {
@@ -666,7 +666,7 @@ cat > chapter11-v2.html << 'CHAPTER11'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 11: Mercurius - Aion by Carl Jung</title>
-    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
         .main-nav {

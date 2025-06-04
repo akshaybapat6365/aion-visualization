@@ -24,7 +24,7 @@ cp styles.css styles-original.css
 # Copy v2 files to replace the originals
 echo "Updating to v2 design..."
 cp index-v2.html index.html
-cp styles-v2.css styles.css
+cp styles-v3.css styles.css
 cp chapters-v2.html chapters.html
 cp about-v2.html about.html
 cp journey-v2.html journey.html

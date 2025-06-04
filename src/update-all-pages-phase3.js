@@ -99,10 +99,10 @@ async function updateAllPages() {
             
       // Check if styles-v3.css is already included
       if (!content.includes('styles-v3.css')) {
-        // Add after styles-v2.css
+        // Add after styles-v3.css
         content = content.replace(
-          '<link rel="stylesheet" href="styles-v2.css">',
-          '<link rel="stylesheet" href="styles-v2.css">\n    ' + phase3Styles[0]
+          '<link rel="stylesheet" href="styles-v3.css">',
+          '<link rel="stylesheet" href="styles-v3.css">\n    ' + phase3Styles[0]
         );
         updated = true;
       }

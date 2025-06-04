@@ -249,7 +249,7 @@ if (!WebGLUtils.isWebGLSupported()) {
 ### Step 4.2: Add Screen Reader Styles
 **Time**: 10 minutes
 
-**Add to styles-v2.css**:
+**Add to styles-v3.css**:
 ```css
 /* Screen reader only content */
 .sr-only {
@@ -369,7 +369,7 @@ grep -r "href.*index-original" *.html
 UPDATED:
 - All 49 HTML files (navigation consistency)
 - webgl-utils.js (error detection)
-- styles-v2.css (accessibility styles)
+- styles-v3.css (accessibility styles)
 - accessibility-utils.js (enhanced)
 
 CREATED:

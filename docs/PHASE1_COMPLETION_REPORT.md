@@ -67,7 +67,7 @@ Phase 1 critical fixes have been successfully implemented, addressing the most u
 - ✅ Enhanced existing `accessibility-utils.js` functionality
 - ✅ Added ARIA labels to WebGL canvas elements (`role="img"`, `aria-label`, `tabindex="0"`)
 - ✅ Created detailed screen reader descriptions for complex visualizations
-- ✅ Added comprehensive accessibility styles to `styles-v2.css`:
+- ✅ Added comprehensive accessibility styles to `styles-v3.css`:
   - Screen reader only content (`.sr-only`)
   - Skip navigation links (`.skip-links`)
   - Focus indicators (`:focus-visible`)
@@ -93,7 +93,7 @@ Phase 1 critical fixes have been successfully implemented, addressing the most u
 - `chapter1-v2.html` - Navigation unification
 - `chapter2-v2.html` - Navigation unification
 - `chapter5-v2.html` - Navigation structure fix
-- `styles-v2.css` - Accessibility styles
+- `styles-v3.css` - Accessibility styles
 
 ### Documentation Files (1):
 - `PHASE1_COMPLETION_REPORT.md` - This report

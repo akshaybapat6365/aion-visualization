@@ -17,7 +17,7 @@ create_chapter() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter ${num}: ${title} - Aion Visualization</title>
-    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
@@ -144,7 +144,7 @@ cat > "chapter14-v2.html" << 'EOF'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 14: The Self - Aion Visualization</title>
-    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>

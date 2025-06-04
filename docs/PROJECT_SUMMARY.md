@@ -46,7 +46,7 @@ aion-visualization/
 ├── chapter1-v2.html       # Individual chapter pages (1-14)
 ├── ...
 ├── chapter14-v2.html
-├── styles-v2.css          # Unified stylesheet
+├── styles-v3.css          # Unified stylesheet
 ├── JUNG_AION_CONCEPTS.md  # Source material
 ├── BUG_REPORT.md         # Testing documentation
 ├── PROJECT_SUMMARY.md    # This file
