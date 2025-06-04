@@ -2,197 +2,206 @@
 // Tracks user progress through chapters and visualizations
 
 class ProgressTracker {
-    constructor() {
-        this.storageKey = 'aion-progress';
-        this.sessionKey = 'aion-session';
-        this.progress = this.loadProgress();
-        this.session = this.initSession();
-        this.initUI();
-    }
+  constructor() {
+    this.storageKey = 'aion-progress';
+    this.sessionKey = 'aion-session';
+    this.progress = this.loadProgress();
+    this.session = this.initSession();
+    this.initUI();
+  }
 
-    // Load progress from localStorage
-    loadProgress() {
-        try {
-            const saved = localStorage.getItem(this.storageKey);
-            return saved ? JSON.parse(saved) : this.getDefaultProgress();
-        } catch (error) {
-            console.error('Failed to load progress:', error);
-            return this.getDefaultProgress();
-        }
+  // Load progress from localStorage
+  loadProgress() {
+    try {
+      const saved = localStorage.getItem(this.storageKey);
+      return saved ? JSON.parse(saved) : this.getDefaultProgress();
+    } catch (error) {
+      console.error('Failed to load progress:', error);
+      return this.getDefaultProgress();
     }
+  }
 
-    // Get default progress structure
-    getDefaultProgress() {
-        return {
-            chapters: {},
-            totalChapters: 14,
-            startDate: new Date().toISOString(),
-            lastVisit: new Date().toISOString(),
-            achievements: [],
-            stats: {
-                totalTimeSpent: 0,
-                visualizationsInteracted: 0,
-                pagesVisited: 0
-            }
-        };
+  // Get default progress structure
+  getDefaultProgress() {
+    return {
+      chapters: {},
+      totalChapters: 14,
+      startDate: new Date().toISOString(),
+      lastVisit: new Date().toISOString(),
+      achievements: [],
+      stats: {
+        totalTimeSpent: 0,
+        visualizationsInteracted: 0,
+        pagesVisited: 0
+      }
+    };
+  }
+
+  // Initialize session tracking
+  initSession() {
+    const session = {
+      startTime: Date.now(),
+      pagesVisited: [],
+      interactions: []
+    };
+    sessionStorage.setItem(this.sessionKey, JSON.stringify(session));
+    return session;
+  }
+
+  // Save progress to localStorage
+  saveProgress() {
+    try {
+      this.progress.lastVisit = new Date().toISOString();
+      localStorage.setItem(this.storageKey, JSON.stringify(this.progress));
+      this.updateUI();
+    } catch (error) {
+      console.error('Failed to save progress:', error);
     }
+  }
 
-    // Initialize session tracking
-    initSession() {
-        const session = {
-            startTime: Date.now(),
-            pagesVisited: [],
-            interactions: []
-        };
-        sessionStorage.setItem(this.sessionKey, JSON.stringify(session));
-        return session;
+  // Mark chapter as started
+  startChapter(chapterNumber) {
+    if (!this.progress.chapters[chapterNumber]) {
+      this.progress.chapters[chapterNumber] = {
+        started: new Date().toISOString(),
+        completed: false,
+        timeSpent: 0,
+        visualizationsViewed: [],
+        notes: []
+      };
     }
-
-    // Save progress to localStorage
-    saveProgress() {
-        try {
-            this.progress.lastVisit = new Date().toISOString();
-            localStorage.setItem(this.storageKey, JSON.stringify(this.progress));
-            this.updateUI();
-        } catch (error) {
-            console.error('Failed to save progress:', error);
-        }
-    }
-
-    // Mark chapter as started
-    startChapter(chapterNumber) {
-        if (!this.progress.chapters[chapterNumber]) {
-            this.progress.chapters[chapterNumber] = {
-                started: new Date().toISOString(),
-                completed: false,
-                timeSpent: 0,
-                visualizationsViewed: [],
-                notes: []
-            };
-        }
         
-        this.session.pagesVisited.push({
-            chapter: chapterNumber,
-            timestamp: Date.now()
-        });
+    this.session.pagesVisited.push({
+      chapter: chapterNumber,
+      timestamp: Date.now()
+    });
         
-        this.saveProgress();
-        this.announce(`Started Chapter ${chapterNumber}`);
-    }
+    this.saveProgress();
+    this.announce(`Started Chapter ${chapterNumber}`);
+  }
 
-    // Mark chapter as completed
-    completeChapter(chapterNumber) {
-        if (this.progress.chapters[chapterNumber]) {
-            this.progress.chapters[chapterNumber].completed = true;
-            this.progress.chapters[chapterNumber].completedDate = new Date().toISOString();
-            
-            // Check for achievements
-            this.checkAchievements();
-            this.saveProgress();
-            this.announce(`Completed Chapter ${chapterNumber}!`);
-            
-            // Show completion animation
-            this.showCompletionAnimation();
-        }
-    }
+  // Mark chapter as completed
+  completeChapter(chapterNumber) {
+    if (this.progress.chapters[chapterNumber]) {
+      this.progress.chapters[chapterNumber].completed = true;
+      this.progress.chapters[chapterNumber].completedDate = new Date().toISOString();
 
-    // Track visualization interaction
-    trackVisualization(chapterNumber, visualizationId) {
-        if (this.progress.chapters[chapterNumber]) {
-            if (!this.progress.chapters[chapterNumber].visualizationsViewed.includes(visualizationId)) {
-                this.progress.chapters[chapterNumber].visualizationsViewed.push(visualizationId);
-                this.progress.stats.visualizationsInteracted++;
-            }
-        }
+      // Check for achievements
+      this.checkAchievements();
+      this.saveProgress();
+      this.announce(`Completed Chapter ${chapterNumber}!`);
+
+      // Show completion animation
+      this.showCompletionAnimation();
+
+      // Update leaderboard if available
+      if (window.leaderboard) {
+        const score = this.getCompletedChaptersCount();
+        window.leaderboard.updateScore('You', score);
+      }
+
+      // Dispatch event for other systems
+      window.dispatchEvent(new CustomEvent('chapterCompleted', { detail: { chapter: chapterNumber } }));
+    }
+  }
+
+  // Track visualization interaction
+  trackVisualization(chapterNumber, visualizationId) {
+    if (this.progress.chapters[chapterNumber]) {
+      if (!this.progress.chapters[chapterNumber].visualizationsViewed.includes(visualizationId)) {
+        this.progress.chapters[chapterNumber].visualizationsViewed.push(visualizationId);
+        this.progress.stats.visualizationsInteracted++;
+      }
+    }
         
-        this.session.interactions.push({
-            type: 'visualization',
-            id: visualizationId,
-            chapter: chapterNumber,
-            timestamp: Date.now()
-        });
+    this.session.interactions.push({
+      type: 'visualization',
+      id: visualizationId,
+      chapter: chapterNumber,
+      timestamp: Date.now()
+    });
         
-        this.saveProgress();
-    }
+    this.saveProgress();
+  }
 
-    // Calculate overall progress percentage
-    getProgressPercentage() {
-        const completedChapters = Object.values(this.progress.chapters)
-            .filter(chapter => chapter.completed).length;
-        return Math.round((completedChapters / this.progress.totalChapters) * 100);
-    }
+  // Calculate overall progress percentage
+  getProgressPercentage() {
+    const completedChapters = Object.values(this.progress.chapters)
+      .filter(chapter => chapter.completed).length;
+    return Math.round((completedChapters / this.progress.totalChapters) * 100);
+  }
 
-    // Get chapter progress
-    getChapterProgress(chapterNumber) {
-        return this.progress.chapters[chapterNumber] || null;
-    }
+  // Get chapter progress
+  getChapterProgress(chapterNumber) {
+    return this.progress.chapters[chapterNumber] || null;
+  }
 
-    // Check and award achievements
-    checkAchievements() {
-        const achievements = [];
+  // Check and award achievements
+  checkAchievements() {
+    const achievements = [];
         
-        // First chapter completed
-        if (this.getCompletedChaptersCount() === 1 && !this.hasAchievement('first-step')) {
-            achievements.push({
-                id: 'first-step',
-                name: 'First Step',
-                description: 'Complete your first chapter',
-                icon: '🌱',
-                date: new Date().toISOString()
-            });
-        }
-        
-        // Half way through
-        if (this.getCompletedChaptersCount() === 7 && !this.hasAchievement('halfway')) {
-            achievements.push({
-                id: 'halfway',
-                name: 'Halfway There',
-                description: 'Complete half of the chapters',
-                icon: '🌓',
-                date: new Date().toISOString()
-            });
-        }
-        
-        // All chapters completed
-        if (this.getCompletedChaptersCount() === 14 && !this.hasAchievement('individuated')) {
-            achievements.push({
-                id: 'individuated',
-                name: 'Individuated',
-                description: 'Complete all chapters',
-                icon: '🌟',
-                date: new Date().toISOString()
-            });
-        }
-        
-        // Add new achievements
-        achievements.forEach(achievement => {
-            this.progress.achievements.push(achievement);
-            this.showAchievementNotification(achievement);
-        });
-        
-        if (achievements.length > 0) {
-            this.saveProgress();
-        }
+    // First chapter completed
+    if (this.getCompletedChaptersCount() === 1 && !this.hasAchievement('first-step')) {
+      achievements.push({
+        id: 'first-step',
+        name: 'First Step',
+        description: 'Complete your first chapter',
+        icon: '🌱',
+        date: new Date().toISOString()
+      });
     }
-
-    // Check if user has achievement
-    hasAchievement(achievementId) {
-        return this.progress.achievements.some(a => a.id === achievementId);
+        
+    // Half way through
+    if (this.getCompletedChaptersCount() === 7 && !this.hasAchievement('halfway')) {
+      achievements.push({
+        id: 'halfway',
+        name: 'Halfway There',
+        description: 'Complete half of the chapters',
+        icon: '🌓',
+        date: new Date().toISOString()
+      });
     }
-
-    // Get completed chapters count
-    getCompletedChaptersCount() {
-        return Object.values(this.progress.chapters)
-            .filter(chapter => chapter.completed).length;
+        
+    // All chapters completed
+    if (this.getCompletedChaptersCount() === 14 && !this.hasAchievement('individuated')) {
+      achievements.push({
+        id: 'individuated',
+        name: 'Individuated',
+        description: 'Complete all chapters',
+        icon: '🌟',
+        date: new Date().toISOString()
+      });
     }
+        
+    // Add new achievements
+    achievements.forEach(achievement => {
+      this.progress.achievements.push(achievement);
+      this.showAchievementNotification(achievement);
+    });
+        
+    if (achievements.length > 0) {
+      this.saveProgress();
+    }
+  }
 
-    // Initialize progress UI
-    initUI() {
-        // Create progress bar container
-        const progressBar = document.createElement('div');
-        progressBar.id = 'progress-tracker';
-        progressBar.className = 'progress-tracker';
-        progressBar.innerHTML = `
+  // Check if user has achievement
+  hasAchievement(achievementId) {
+    return this.progress.achievements.some(a => a.id === achievementId);
+  }
+
+  // Get completed chapters count
+  getCompletedChaptersCount() {
+    return Object.values(this.progress.chapters)
+      .filter(chapter => chapter.completed).length;
+  }
+
+  // Initialize progress UI
+  initUI() {
+    // Create progress bar container
+    const progressBar = document.createElement('div');
+    progressBar.id = 'progress-tracker';
+    progressBar.className = 'progress-tracker';
+    progressBar.innerHTML = `
             <div class="progress-container">
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: ${this.getProgressPercentage()}%"></div>
@@ -202,35 +211,35 @@ class ProgressTracker {
             <button class="progress-details-btn" aria-label="View progress details">📊</button>
         `;
         
-        // Add to page if not in minimal mode
-        if (!document.body.classList.contains('minimal-ui')) {
-            document.body.appendChild(progressBar);
-        }
-        
-        // Add event listeners
-        const detailsBtn = progressBar.querySelector('.progress-details-btn');
-        if (detailsBtn) {
-            detailsBtn.addEventListener('click', () => this.showProgressDetails());
-        }
+    // Add to page if not in minimal mode
+    if (!document.body.classList.contains('minimal-ui')) {
+      document.body.appendChild(progressBar);
     }
-
-    // Update progress UI
-    updateUI() {
-        const progressFill = document.querySelector('.progress-fill');
-        const progressText = document.querySelector('.progress-text');
         
-        if (progressFill && progressText) {
-            const percentage = this.getProgressPercentage();
-            progressFill.style.width = `${percentage}%`;
-            progressText.textContent = `${percentage}% Complete`;
-        }
+    // Add event listeners
+    const detailsBtn = progressBar.querySelector('.progress-details-btn');
+    if (detailsBtn) {
+      detailsBtn.addEventListener('click', () => this.showProgressDetails());
     }
+  }
 
-    // Show detailed progress modal
-    showProgressDetails() {
-        const modal = document.createElement('div');
-        modal.className = 'progress-modal';
-        modal.innerHTML = `
+  // Update progress UI
+  updateUI() {
+    const progressFill = document.querySelector('.progress-fill');
+    const progressText = document.querySelector('.progress-text');
+        
+    if (progressFill && progressText) {
+      const percentage = this.getProgressPercentage();
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${percentage}% Complete`;
+    }
+  }
+
+  // Show detailed progress modal
+  showProgressDetails() {
+    const modal = document.createElement('div');
+    modal.className = 'progress-modal';
+    modal.innerHTML = `
             <div class="progress-modal-content">
                 <button class="close-modal">&times;</button>
                 <h2>Your Journey Through Aion</h2>
@@ -262,51 +271,51 @@ class ProgressTracker {
             </div>
         `;
         
-        document.body.appendChild(modal);
+    document.body.appendChild(modal);
         
-        // Close button
-        modal.querySelector('.close-modal').addEventListener('click', () => {
-            modal.remove();
-        });
+    // Close button
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+      modal.remove();
+    });
         
-        // Close on outside click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.remove();
-            }
-        });
-    }
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
+  }
 
-    // Generate chapter progress HTML
-    generateChapterProgressHTML() {
-        let html = '<div class="chapter-grid">';
+  // Generate chapter progress HTML
+  generateChapterProgressHTML() {
+    let html = '<div class="chapter-grid">';
         
-        for (let i = 1; i <= 14; i++) {
-            const chapter = this.progress.chapters[i];
-            const status = chapter ? (chapter.completed ? 'completed' : 'started') : 'not-started';
+    for (let i = 1; i <= 14; i++) {
+      const chapter = this.progress.chapters[i];
+      const status = chapter ? (chapter.completed ? 'completed' : 'started') : 'not-started';
             
-            html += `
+      html += `
                 <div class="chapter-status ${status}">
                     <span class="chapter-number">${i}</span>
                     ${status === 'completed' ? '✓' : status === 'started' ? '◐' : '○'}
                 </div>
             `;
-        }
-        
-        html += '</div>';
-        return html;
     }
+        
+    html += '</div>';
+    return html;
+  }
 
-    // Generate achievements HTML
-    generateAchievementsHTML() {
-        if (this.progress.achievements.length === 0) {
-            return '<p class="no-achievements">No achievements yet. Keep exploring!</p>';
-        }
+  // Generate achievements HTML
+  generateAchievementsHTML() {
+    if (this.progress.achievements.length === 0) {
+      return '<p class="no-achievements">No achievements yet. Keep exploring!</p>';
+    }
         
-        let html = '<div class="achievement-list">';
+    let html = '<div class="achievement-list">';
         
-        this.progress.achievements.forEach(achievement => {
-            html += `
+    this.progress.achievements.forEach(achievement => {
+      html += `
                 <div class="achievement-item">
                     <span class="achievement-icon">${achievement.icon}</span>
                     <div class="achievement-info">
@@ -315,30 +324,30 @@ class ProgressTracker {
                     </div>
                 </div>
             `;
-        });
+    });
         
-        html += '</div>';
-        return html;
-    }
+    html += '</div>';
+    return html;
+  }
 
-    // Calculate time spent
-    getTimeSpent() {
-        const totalMinutes = Math.round(this.progress.stats.totalTimeSpent / 60000);
+  // Calculate time spent
+  getTimeSpent() {
+    const totalMinutes = Math.round(this.progress.stats.totalTimeSpent / 60000);
         
-        if (totalMinutes < 60) {
-            return `${totalMinutes} min`;
-        } else {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            return `${hours}h ${minutes}m`;
-        }
+    if (totalMinutes < 60) {
+      return `${totalMinutes} min`;
+    } else {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return `${hours}h ${minutes}m`;
     }
+  }
 
-    // Show achievement notification
-    showAchievementNotification(achievement) {
-        const notification = document.createElement('div');
-        notification.className = 'achievement-notification';
-        notification.innerHTML = `
+  // Show achievement notification
+  showAchievementNotification(achievement) {
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
+    notification.innerHTML = `
             <div class="achievement-content">
                 <span class="achievement-icon">${achievement.icon}</span>
                 <div>
@@ -348,23 +357,23 @@ class ProgressTracker {
             </div>
         `;
         
-        document.body.appendChild(notification);
+    document.body.appendChild(notification);
         
-        // Animate in
-        setTimeout(() => notification.classList.add('show'), 100);
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 100);
         
-        // Remove after 5 seconds
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
-        }, 5000);
-    }
+    // Remove after 5 seconds
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
+    }, 5000);
+  }
 
-    // Show completion animation
-    showCompletionAnimation() {
-        const animation = document.createElement('div');
-        animation.className = 'completion-animation';
-        animation.innerHTML = `
+  // Show completion animation
+  showCompletionAnimation() {
+    const animation = document.createElement('div');
+    animation.className = 'completion-animation';
+    animation.innerHTML = `
             <div class="completion-circle">
                 <svg viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="283" stroke-dashoffset="283">
@@ -375,52 +384,52 @@ class ProgressTracker {
             </div>
         `;
         
-        document.body.appendChild(animation);
+    document.body.appendChild(animation);
         
-        setTimeout(() => {
-            animation.classList.add('fade-out');
-            setTimeout(() => animation.remove(), 500);
-        }, 2000);
-    }
+    setTimeout(() => {
+      animation.classList.add('fade-out');
+      setTimeout(() => animation.remove(), 500);
+    }, 2000);
+  }
 
-    // Announce to screen readers
-    announce(message) {
-        const announcer = document.getElementById('aria-announcer');
-        if (announcer) {
-            announcer.textContent = message;
-        }
+  // Announce to screen readers
+  announce(message) {
+    const announcer = document.getElementById('aria-announcer');
+    if (announcer) {
+      announcer.textContent = message;
     }
+  }
 
-    // Update time spent
-    updateTimeSpent() {
-        const sessionTime = Date.now() - this.session.startTime;
-        this.progress.stats.totalTimeSpent += sessionTime;
-        this.saveProgress();
-    }
+  // Update time spent
+  updateTimeSpent() {
+    const sessionTime = Date.now() - this.session.startTime;
+    this.progress.stats.totalTimeSpent += sessionTime;
+    this.saveProgress();
+  }
 
-    // Export progress data
-    exportProgress() {
-        const data = JSON.stringify(this.progress, null, 2);
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+  // Export progress data
+  exportProgress() {
+    const data = JSON.stringify(this.progress, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
         
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `aion-progress-${new Date().toISOString()}.json`;
-        a.click();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aion-progress-${new Date().toISOString()}.json`;
+    a.click();
         
-        URL.revokeObjectURL(url);
-    }
+    URL.revokeObjectURL(url);
+  }
 
-    // Reset progress
-    resetProgress() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-            localStorage.removeItem(this.storageKey);
-            this.progress = this.getDefaultProgress();
-            this.saveProgress();
-            location.reload();
-        }
+  // Reset progress
+  resetProgress() {
+    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+      localStorage.removeItem(this.storageKey);
+      this.progress = this.getDefaultProgress();
+      this.saveProgress();
+      location.reload();
     }
+  }
 }
 
 // CSS for progress tracker
@@ -697,22 +706,22 @@ const progressStyles = `
 
 // Inject styles
 if (!document.getElementById('progress-tracker-styles')) {
-    const styleElement = document.createElement('div');
-    styleElement.id = 'progress-tracker-styles';
-    styleElement.innerHTML = progressStyles;
-    document.head.appendChild(styleElement.firstElementChild);
+  const styleElement = document.createElement('div');
+  styleElement.id = 'progress-tracker-styles';
+  styleElement.innerHTML = progressStyles;
+  document.head.appendChild(styleElement.firstElementChild);
 }
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
-    window.progressTracker = new ProgressTracker();
+  window.progressTracker = new ProgressTracker();
 });
 
 // Update time spent on page unload
 window.addEventListener('beforeunload', () => {
-    if (window.progressTracker) {
-        window.progressTracker.updateTimeSpent();
-    }
+  if (window.progressTracker) {
+    window.progressTracker.updateTimeSpent();
+  }
 });
 
 // Export as global
