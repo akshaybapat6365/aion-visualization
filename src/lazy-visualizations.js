@@ -9,10 +9,22 @@ const visualizationObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       const fnName = entry.target.dataset.loadFn;
-      if (fnName && typeof window[fnName] === 'function') {
-        window[fnName](entry.target);
+      const modulePath = entry.target.dataset.module;
+
+      const invoke = fn => {
+        if (typeof fn === 'function') fn(entry.target);
+        visualizationObserver.unobserve(entry.target);
+      };
+
+      if (modulePath) {
+        import(modulePath).then(mod => {
+          invoke(mod[fnName] || mod.default);
+        }).catch(() => invoke(window[fnName]));
+      } else if (fnName && typeof window[fnName] === 'function') {
+        invoke(window[fnName]);
+      } else {
+        visualizationObserver.unobserve(entry.target);
       }
-      visualizationObserver.unobserve(entry.target);
     }
   });
 }, observerOptions);
