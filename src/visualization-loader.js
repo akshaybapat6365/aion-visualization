@@ -177,7 +177,8 @@ class VisualizationLoader {
             window.webglContexts = new Map();
         }
 
-        const maxContexts = 8; // Browser limit is usually 16
+        // Limit active contexts to reduce memory footprint
+        const maxContexts = 4;
         
         if (window.webglContexts.size >= maxContexts) {
             // Destroy oldest context

@@ -4,7 +4,8 @@
 class WebGLUtils {
     constructor() {
         this.contexts = new Map();
-        this.maxContexts = 8;
+        // Lower the default context limit to minimize memory usage
+        this.maxContexts = 4;
         this.fallbackMode = false;
     }
 

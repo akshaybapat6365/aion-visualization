@@ -5,7 +5,8 @@ class WebGLContextManager {
     constructor() {
         this.activeContexts = new Map();
         this.contextPool = [];
-        this.maxContexts = 6; // Reduced from 8 for safety
+        // Reduced context limit to further minimize resource usage
+        this.maxContexts = 4;
         this.memoryThreshold = 150 * 1024 * 1024; // 150MB
         this.performanceMonitor = new PerformanceMonitor();
         this.isLowMemoryDevice = this.detectLowMemoryDevice();

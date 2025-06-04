@@ -18,6 +18,8 @@ This folder collects plans, reports and helper files for the Aion Visualization 
 - **GITHUB_PUSH_READY.md** - Checklist indicating readiness to push changes.
 - **GITHUB_SETUP_GUIDE.md** - Steps to configure GitHub for the project.
 - **IMPROVEMENT_PLAN.md** - Proposed improvements and enhancements.
+- **performance-audit.md** - Bundle size statistics and optimization notes.
+- **accessibility-audit.md** - Summary of ARIA and keyboard navigation checks.
 - **JUNG_AION_CONCEPTS.md** - Key Jungian ideas used in the visualizations.
 - **MANUAL_PUSH_COMMANDS.txt** - Command list to manually push all updates.
 - **MANUAL_UPDATE_PHASE3.md** - Manual update instructions for Phase 3 integration.
