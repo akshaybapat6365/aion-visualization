@@ -2,6 +2,8 @@
 
 An interactive visualization suite exploring the core themes from C.G. Jung's *Aion: Researches into the Phenomenology of the Self* (CW9ii).
 
+All HTML, CSS and JavaScript files now live under `src/` while planning documents are organized in `docs/`.
+
 ## Live Demo
 
 **View the live visualization**: [https://akshaybapat6365.github.io/aion-visualization/](https://akshaybapat6365.github.io/aion-visualization/)

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8: Sophia - Aion by Carl Jung</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-home">Aion</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+            <a href="chapters.html">Chapters</a>
+            <a href="timeline.html">Timeline</a>
+            <a href="symbols.html">Symbols</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter VIII</div>
+            <h1 class="chapter-title">Sophia</h1>
+            <p class="chapter-subtitle">Divine Wisdom's Descent and Redemption</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung explores Sophia as divine wisdom that falls from the Pleroma into matter, representing consciousness descending into the material world to redeem and transform it through understanding.</p>
+        </section>
+
+        <section class="visualization-section">
+            <h2>The Descent and Ascent of Wisdom</h2>
+            <div id="sophia-journey" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="animate-descent">Animate Journey</button>
+                <button id="show-redemption">Show Redemption</button>
+                <button id="reset-sophia">Reset</button>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Three Aspects of Sophia</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Heavenly Sophia</h3>
+                    <p>Divine wisdom in the Pleroma, perfect and undifferentiated.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Fallen Sophia</h3>
+                    <p>Wisdom trapped in matter, creating the material world through desire.</p>
+                </div>
+                <div class="concept-card">
+                    <h3>Redeemed Sophia</h3>
+                    <p>Wisdom ascending with gnosis, transforming matter through consciousness.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Transformation Through Matter</h2>
+            <div id="matter-transformation" class="visualization-container"></div>
+        </section>
+
+        <div class="chapter-nav">
+            <a href="chapter7.html" class="prev-chapter">← Chapter 7: The Pleroma</a>
+            <a href="chapter9.html" class="next-chapter">Chapter 9: The Naassenes →</a>
+        </div>
+    </main>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <script>
+        // Background shader
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                
+                // Descent/ascent pattern
+                float journey = sin(uv.y * 8.0 + time) * 
+                               cos(uv.x * 6.0 - time * 0.5) * 
+                               sin(time * 0.3);
+                
+                // Wisdom colors - gold to deep blue
+                vec3 divine = vec3(1.0, 0.8, 0.4);
+                vec3 matter = vec3(0.2, 0.1, 0.4);
+                vec3 color = mix(matter, divine * 0.3, journey * 0.5 + 0.5);
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+        const timeLocation = gl.getUniformLocation(program, 'time');
+
+        function animate(time) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+        }
+        animate(0);
+
+        // Sophia Journey Visualization
+        const journeyWidth = 800;
+        const journeyHeight = 600;
+
+        const journeySvg = d3.select("#sophia-journey")
+            .append("svg")
+            .attr("viewBox", `0 0 ${journeyWidth} ${journeyHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // Create journey path
+        const pathData = [
+            { x: journeyWidth / 2, y: 50, stage: "divine", label: "Heavenly Sophia" },
+            { x: journeyWidth / 4, y: journeyHeight / 2, stage: "fallen", label: "Fall into Matter" },
+            { x: journeyWidth / 2, y: journeyHeight - 100, stage: "matter", label: "Trapped in Matter" },
+            { x: 3 * journeyWidth / 4, y: journeyHeight / 2, stage: "gnosis", label: "Awakening Gnosis" },
+            { x: journeyWidth / 2, y: 50, stage: "redeemed", label: "Redeemed Sophia" }
+        ];
+
+        // Create path
+        const line = d3.line()
+            .x(d => d.x)
+            .y(d => d.y)
+            .curve(d3.curveBasis);
+
+        journeySvg.append("path")
+            .datum(pathData)
+            .attr("d", line)
+            .attr("fill", "none")
+            .attr("stroke", "#FFD700")
+            .attr("stroke-width", 3)
+            .attr("stroke-dasharray", "10,5")
+            .attr("opacity", 0.6);
+
+        // Add journey points
+        const points = journeySvg.selectAll(".journey-point")
+            .data(pathData)
+            .enter()
+            .append("g")
+            .attr("class", "journey-point")
+            .attr("transform", d => `translate(${d.x}, ${d.y})`);
+
+        points.append("circle")
+            .attr("r", 15)
+            .attr("fill", d => {
+                switch(d.stage) {
+                    case "divine": return "#FFFFFF";
+                    case "fallen": return "#FFD700";
+                    case "matter": return "#4B0082";
+                    case "gnosis": return "#9370DB";
+                    case "redeemed": return "#E6E6FA";
+                    default: return "#FFF";
+                }
+            })
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 2);
+
+        points.append("text")
+            .attr("y", -25)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#FFF")
+            .attr("font-size", "12px")
+            .text(d => d.label);
+
+        // Matter Transformation Visualization
+        const matterWidth = 600;
+        const matterHeight = 400;
+
+        const matterSvg = d3.select("#matter-transformation")
+            .append("svg")
+            .attr("viewBox", `0 0 ${matterWidth} ${matterHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // Create transformation stages
+        const stages = [
+            { x: 100, y: matterHeight / 2, color: "#2E1065", label: "Raw Matter" },
+            { x: 250, y: matterHeight / 2, color: "#6B46C1", label: "Conscious Matter" },
+            { x: 400, y: matterHeight / 2, color: "#9370DB", label: "Spiritualized Matter" },
+            { x: 550, y: matterHeight / 2, color: "#E6E6FA", label: "Redeemed Matter" }
+        ];
+
+        stages.forEach((stage, i) => {
+            matterSvg.append("circle")
+                .attr("cx", stage.x)
+                .attr("cy", stage.y)
+                .attr("r", 40)
+                .attr("fill", stage.color)
+                .attr("fill-opacity", 0.8)
+                .attr("stroke", "#FFF")
+                .attr("stroke-width", 2);
+
+            matterSvg.append("text")
+                .attr("x", stage.x)
+                .attr("y", stage.y + 60)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#FFF")
+                .attr("font-size", "12px")
+                .text(stage.label);
+
+            // Add arrows between stages
+            if (i < stages.length - 1) {
+                matterSvg.append("path")
+                    .attr("d", `M ${stage.x + 40} ${stage.y} L ${stages[i + 1].x - 40} ${stages[i + 1].y}`)
+                    .attr("stroke", "#FFD700")
+                    .attr("stroke-width", 2)
+                    .attr("marker-end", "url(#arrowhead)");
+            }
+        });
+
+        // Add arrowhead marker
+        const defs = matterSvg.append("defs");
+        defs.append("marker")
+            .attr("id", "arrowhead")
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 7)
+            .attr("refX", 9)
+            .attr("refY", 3.5)
+            .attr("orient", "auto")
+            .append("polygon")
+            .attr("points", "0 0, 10 3.5, 0 7")
+            .attr("fill", "#FFD700");
+
+        // Animation controls
+        let journeyAnimating = false;
+        document.getElementById("animate-descent").addEventListener("click", function() {
+            if (!journeyAnimating) {
+                journeyAnimating = true;
+                this.textContent = "Stop Animation";
+                animateJourney();
+            } else {
+                journeyAnimating = false;
+                this.textContent = "Animate Journey";
+            }
+        });
+
+        function animateJourney() {
+            if (!journeyAnimating) return;
+            
+            points.transition()
+                .duration(2000)
+                .attr("transform", (d, i) => {
+                    const offset = Math.sin(Date.now() * 0.002 + i) * 10;
+                    return `translate(${d.x + offset}, ${d.y})`;
+                });
+            
+            setTimeout(animateJourney, 2000);
+        }
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

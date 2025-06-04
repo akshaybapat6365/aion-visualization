@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6: The Antichrist - Aion by Carl Jung</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html" class="nav-home">Aion</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <div class="nav-links">
+            <a href="chapters.html">Chapters</a>
+            <a href="timeline.html">Timeline</a>
+            <a href="symbols.html">Symbols</a>
+            <a href="about.html">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter VI</div>
+            <h1 class="chapter-title">The Antichrist</h1>
+            <p class="chapter-subtitle">The Shadow of the Christian Aeon</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>Jung explores how the repressed shadow of Christianity manifests throughout history as the "Antichrist"—not as a literal figure, but as the collective shadow projection of Western civilization's split between absolute good and evil.</p>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Shadow Manifestations Timeline</h2>
+            <div class="visualization-intro">
+                <p>This timeline shows how the Christian shadow has erupted throughout history in various forms: materialism, wars, persecution, and collective projections onto "enemies."</p>
+            </div>
+            <div id="shadow-timeline" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="play-timeline">Play Timeline</button>
+                <button id="show-projections">Show Projections</button>
+                <button id="reset-timeline">Reset</button>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Duality of the Christian Aeon</h2>
+            <div class="concept-grid">
+                <div class="concept-card light-side">
+                    <h3>Christ (Light)</h3>
+                    <ul>
+                        <li>Love and compassion</li>
+                        <li>Spiritual transcendence</li>
+                        <li>Moral perfection</li>
+                        <li>Sacrificial redemption</li>
+                    </ul>
+                </div>
+                <div class="concept-card shadow-side">
+                    <h3>Antichrist (Shadow)</h3>
+                    <ul>
+                        <li>Materialism and greed</li>
+                        <li>Power and domination</li>
+                        <li>Moral corruption</li>
+                        <li>Destructive impulses</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <h2>Collective Shadow Dynamics</h2>
+            <div id="shadow-dynamics" class="visualization-container"></div>
+        </section>
+
+        <section class="content-section">
+            <h2>Historical Shadow Eruptions</h2>
+            <p>The Antichrist manifests not as a person but as collective phenomena:</p>
+            <ul class="insight-list">
+                <li><strong>Crusades (1095-1291):</strong> Holy war projecting evil onto "infidels"</li>
+                <li><strong>Inquisition (1184-1834):</strong> Persecution in the name of purity</li>
+                <li><strong>Witch Hunts (1450-1750):</strong> Projection of shadow onto women and outsiders</li>
+                <li><strong>World Wars (1914-1945):</strong> Industrial-scale destruction and dehumanization</li>
+                <li><strong>Modern Fundamentalism:</strong> Rigid literalism compensating for spiritual emptiness</li>
+            </ul>
+        </section>
+
+        <section class="visualization-section">
+            <h2>The Fish Symbol Reversed</h2>
+            <div class="visualization-intro">
+                <p>The second fish in Pisces swims in the opposite direction, representing the Antichrist as the shadow compensation to Christ's one-sidedness.</p>
+            </div>
+            <div id="fish-reversal" class="visualization-container"></div>
+        </section>
+
+        <div class="chapter-nav">
+            <a href="chapter5.html" class="prev-chapter">← Chapter 5: Christ as Archetype</a>
+            <a href="chapter7.html" class="next-chapter">Chapter 7: The Pleroma →</a>
+        </div>
+    </main>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <script>
+        // Background shader
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
+            
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+                
+                // Duality pattern - light and shadow
+                float duality = sin(uv.x * 2.0 + time * 0.3) * 
+                               cos(uv.y * 2.0 - time * 0.2) * 
+                               sin(length(uv - 0.5) * 4.0 + time * 0.1);
+                
+                // Red and dark colors for shadow theme
+                vec3 light = vec3(0.9, 0.9, 0.9);
+                vec3 shadow = vec3(0.2, 0.0, 0.0);
+                vec3 color = mix(shadow, light * 0.3, duality * 0.5 + 0.5);
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+        const timeLocation = gl.getUniformLocation(program, 'time');
+
+        function animate(time) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+        }
+        animate(0);
+
+        // Shadow Timeline Data
+        const shadowEvents = [
+            { year: 1095, event: "First Crusade", description: "Holy war begins", intensity: 7 },
+            { year: 1184, event: "Inquisition Begins", description: "Persecution institutionalized", intensity: 8 },
+            { year: 1347, event: "Black Death", description: "Apocalyptic fear and scapegoating", intensity: 9 },
+            { year: 1478, event: "Spanish Inquisition", description: "Systematic persecution", intensity: 8 },
+            { year: 1487, event: "Malleus Maleficarum", description: "Witch hunt manual published", intensity: 6 },
+            { year: 1618, event: "Thirty Years War", description: "Religious conflict devastates Europe", intensity: 8 },
+            { year: 1789, event: "French Revolution", description: "Violent overthrow of Christian order", intensity: 7 },
+            { year: 1914, event: "World War I", description: "Industrial warfare and mass death", intensity: 10 },
+            { year: 1933, event: "Nazi Rise", description: "Secular apocalyptic movement", intensity: 10 },
+            { year: 1939, event: "World War II", description: "Total war and genocide", intensity: 10 },
+            { year: 2001, event: "9/11 Attacks", description: "Religious terrorism and response", intensity: 8 }
+        ];
+
+        // Shadow Timeline Visualization
+        const timelineWidth = 1000;
+        const timelineHeight = 400;
+
+        const timelineSvg = d3.select("#shadow-timeline")
+            .append("svg")
+            .attr("viewBox", `0 0 ${timelineWidth} ${timelineHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const xScale = d3.scaleLinear()
+            .domain([1000, 2020])
+            .range([50, timelineWidth - 50]);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, 10])
+            .range([timelineHeight - 50, 50]);
+
+        const intensityScale = d3.scaleLinear()
+            .domain([1, 10])
+            .range([3, 20]);
+
+        // Add axes
+        timelineSvg.append("g")
+            .attr("transform", `translate(0, ${timelineHeight - 50})`)
+            .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+            .append("text")
+            .attr("x", timelineWidth / 2)
+            .attr("y", 40)
+            .attr("fill", "#FFF")
+            .style("text-anchor", "middle")
+            .text("Year");
+
+        timelineSvg.append("g")
+            .attr("transform", "translate(50, 0)")
+            .call(d3.axisLeft(yScale))
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -35)
+            .attr("x", -timelineHeight / 2)
+            .attr("fill", "#FFF")
+            .style("text-anchor", "middle")
+            .text("Shadow Intensity");
+
+        // Create tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "absolute")
+            .style("background", "rgba(0,0,0,0.8)")
+            .style("color", "white")
+            .style("padding", "10px")
+            .style("border-radius", "5px")
+            .style("pointer-events", "none");
+
+        // Add events as circles
+        const eventCircles = timelineSvg.selectAll(".event-circle")
+            .data(shadowEvents)
+            .enter()
+            .append("circle")
+            .attr("class", "event-circle")
+            .attr("cx", d => xScale(d.year))
+            .attr("cy", d => yScale(d.intensity))
+            .attr("r", d => intensityScale(d.intensity))
+            .attr("fill", "#DC143C")
+            .attr("fill-opacity", 0.7)
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 1)
+            .on("mouseover", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", 0.9);
+                tooltip.html(`<strong>${d.event}</strong><br/>${d.year}<br/>${d.description}`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip.transition().duration(500).style("opacity", 0);
+            });
+
+        // Add connecting line
+        const line = d3.line()
+            .x(d => xScale(d.year))
+            .y(d => yScale(d.intensity))
+            .curve(d3.curveBasis);
+
+        timelineSvg.append("path")
+            .datum(shadowEvents)
+            .attr("fill", "none")
+            .attr("stroke", "#DC143C")
+            .attr("stroke-width", 2)
+            .attr("stroke-opacity", 0.5)
+            .attr("d", line);
+
+        // Timeline controls
+        let isPlaying = false;
+        let currentEventIndex = 0;
+
+        document.getElementById("play-timeline").addEventListener("click", function() {
+            if (!isPlaying) {
+                isPlaying = true;
+                this.textContent = "Pause Timeline";
+                playTimeline();
+            } else {
+                isPlaying = false;
+                this.textContent = "Play Timeline";
+            }
+        });
+
+        function playTimeline() {
+            if (!isPlaying || currentEventIndex >= shadowEvents.length) {
+                isPlaying = false;
+                document.getElementById("play-timeline").textContent = "Play Timeline";
+                currentEventIndex = 0;
+                return;
+            }
+
+            // Highlight current event
+            eventCircles.attr("fill-opacity", (d, i) => i <= currentEventIndex ? 0.9 : 0.3);
+            
+            currentEventIndex++;
+            setTimeout(playTimeline, 1000);
+        }
+
+        // Shadow Dynamics Visualization
+        const dynamicsWidth = 800;
+        const dynamicsHeight = 600;
+
+        const dynamicsSvg = d3.select("#shadow-dynamics")
+            .append("svg")
+            .attr("viewBox", `0 0 ${dynamicsWidth} ${dynamicsHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        const centerX = dynamicsWidth / 2;
+        const centerY = dynamicsHeight / 2;
+
+        // Create duality visualization
+        const dualityGroup = dynamicsSvg.append("g");
+
+        // Light side (Christ)
+        const lightGroup = dualityGroup.append("g");
+        lightGroup.append("circle")
+            .attr("cx", centerX - 150)
+            .attr("cy", centerY)
+            .attr("r", 80)
+            .attr("fill", "#FFD700")
+            .attr("fill-opacity", 0.8);
+
+        lightGroup.append("text")
+            .attr("x", centerX - 150)
+            .attr("y", centerY)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#000")
+            .attr("font-size", "20px")
+            .attr("font-weight", "bold")
+            .text("Christ");
+
+        // Shadow side (Antichrist)
+        const shadowGroup = dualityGroup.append("g");
+        shadowGroup.append("circle")
+            .attr("cx", centerX + 150)
+            .attr("cy", centerY)
+            .attr("r", 80)
+            .attr("fill", "#DC143C")
+            .attr("fill-opacity", 0.8);
+
+        shadowGroup.append("text")
+            .attr("x", centerX + 150)
+            .attr("y", centerY)
+            .attr("text-anchor", "middle")
+            .attr("dy", "0.35em")
+            .attr("fill", "#FFF")
+            .attr("font-size", "18px")
+            .attr("font-weight", "bold")
+            .text("Antichrist");
+
+        // Dynamic tension lines
+        const tensionLines = dualityGroup.append("g");
+        
+        function animateTension() {
+            const time = Date.now() * 0.002;
+            const amplitude = 20;
+            
+            // Clear previous lines
+            tensionLines.selectAll("*").remove();
+            
+            // Draw oscillating tension
+            for (let i = 0; i < 5; i++) {
+                const offset = Math.sin(time + i * 0.5) * amplitude;
+                tensionLines.append("line")
+                    .attr("x1", centerX - 70)
+                    .attr("y1", centerY + offset)
+                    .attr("x2", centerX + 70)
+                    .attr("y2", centerY - offset)
+                    .attr("stroke", "#9D4EDD")
+                    .attr("stroke-width", 2)
+                    .attr("stroke-opacity", 0.6);
+            }
+            
+            requestAnimationFrame(animateTension);
+        }
+        animateTension();
+
+        // Fish Reversal Visualization
+        const fishWidth = 600;
+        const fishHeight = 400;
+
+        const fishSvg = d3.select("#fish-reversal")
+            .append("svg")
+            .attr("viewBox", `0 0 ${fishWidth} ${fishHeight}`)
+            .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // Define fish path
+        const fishPath = "M50,0 C80,-20 120,-20 150,0 C120,20 80,20 50,0 M40,0 L20,-10 L20,10 Z";
+
+        // Christ fish (swimming right)
+        fishSvg.append("path")
+            .attr("d", fishPath)
+            .attr("transform", `translate(${fishWidth/2 - 200}, ${fishHeight/2 - 50})`)
+            .attr("fill", "#FFD700")
+            .attr("stroke", "#B8860B")
+            .attr("stroke-width", 2);
+
+        fishSvg.append("text")
+            .attr("x", fishWidth/2 - 100)
+            .attr("y", fishHeight/2 - 80)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#FFD700")
+            .attr("font-size", "16px")
+            .text("Christ Fish");
+
+        // Antichrist fish (swimming left)
+        fishSvg.append("path")
+            .attr("d", fishPath)
+            .attr("transform", `translate(${fishWidth/2 + 200}, ${fishHeight/2 + 50}) scale(-1, 1)`)
+            .attr("fill", "#DC143C")
+            .attr("stroke", "#8B0000")
+            .attr("stroke-width", 2);
+
+        fishSvg.append("text")
+            .attr("x", fishWidth/2 + 100)
+            .attr("y", fishHeight/2 + 80)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#DC143C")
+            .attr("font-size", "16px")
+            .text("Antichrist Fish");
+
+        // Connecting symbol
+        fishSvg.append("circle")
+            .attr("cx", fishWidth/2)
+            .attr("cy", fishHeight/2)
+            .attr("r", 5)
+            .attr("fill", "#9D4EDD");
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

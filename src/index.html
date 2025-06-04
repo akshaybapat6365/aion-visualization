@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion - A Visual Journey Through Jung's Masterwork</title>
+    <link rel="stylesheet" href="styles-v2.css">
+    <link rel="stylesheet" href="styles-v3.css">
+    <link rel="stylesheet" href="responsive-utils.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
+    <style>
+        .hero-announcement {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .announcement-badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .hero-announcement p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .button-secondary {
+            background: var(--surface-glass);
+            color: var(--text-primary);
+            border: 2px solid var(--accent);
+        }
+        
+        .button-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-buttons .button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- WebGL Background -->
+    <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link active">Home</a>
+            <a href="chapters.html" class="nav-link">Chapters</a>
+            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
+            <a href="timeline.html" class="nav-link">Timeline</a>
+            <a href="symbols.html" class="nav-link">Symbols</a>
+            <a href="about.html" class="nav-link">About</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Aion</h1>
+            <p class="hero-subtitle">A Visual Journey Through Jung's Masterwork</p>
+            <div class="hero-announcement">
+                <div class="announcement-badge">✨ NEW: Enhanced Visualizations</div>
+                <p>Experience museum-quality 3D interactions, alchemical laboratories, and cosmic journeys through Jung's psychological insights.</p>
+            </div>
+            <div class="mt-8 hero-buttons">
+                <a href="chapters.html" class="button button-primary">Begin Journey</a>
+                <a href="enhanced-chapters.html" class="button button-secondary">Try Enhanced</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Minimal Shader Background -->
+    <script>
+        // Three.js setup for minimal gradient background
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('webgl-canvas'),
+            antialias: true,
+            alpha: true
+        });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // Shader material for animated gradient
+        const gradientShader = {
+            uniforms: {
+                time: { value: 0 },
+                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+            },
+            vertexShader: `
+                void main() {
+                    gl_Position = vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float time;
+                uniform vec2 resolution;
+                
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / resolution.xy;
+                    
+                    // Create subtle animated gradient
+                    float gradient = uv.y * 0.5 + 0.5;
+                    gradient += sin(uv.x * 2.0 + time * 0.5) * 0.02;
+                    gradient += sin(uv.y * 3.0 - time * 0.3) * 0.01;
+                    
+                    // Deep purple to black gradient
+                    vec3 color1 = vec3(0.0, 0.0, 0.0); // Black
+                    vec3 color2 = vec3(0.1, 0.05, 0.15); // Very dark purple
+                    vec3 color = mix(color1, color2, gradient * 0.3);
+                    
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        };
+        
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const material = new THREE.ShaderMaterial(gradientShader);
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            material.uniforms.time.value += 0.01;
+            renderer.render(scene, camera);
+        }
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+        });
+        
+        animate();
+    </script>
+    <script src="transitions.js"></script>
+    <script src="advanced-animations.js"></script>
+    <script src="apply-visual-polish.js"></script>
+    <script src="contextual-help.js"></script>
+    <script src="keyboard-shortcuts.js"></script>
+    <script src="smart-asset-loader.js"></script>
+    <script src="adaptive-quality.js"></script>
+    <script src="learning-analytics.js"></script>
+    <script>
+        // Initialize advanced animations
+        const animations = new AdvancedAnimations();
+        
+        // Apply reveal animations to hero elements
+        animations.revealElements('.hero-content > *', {
+            stagger: 150,
+            duration: 800
+        });
+        
+        // Apply reveal animations to cards
+        animations.revealElements('.chapter-card', {
+            stagger: 100,
+            duration: 600,
+            threshold: 0.2
+        });
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) {
+                    animations.smoothScrollTo(target, { offset: -100 });
+                }
+            });
+        });
+        
+        // Add micro-interactions to buttons
+        document.querySelectorAll('.button').forEach(button => {
+            button.classList.add('interactive');
+            button.addEventListener('click', function(e) {
+                // Create particle burst on click
+                const rect = this.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                animations.createParticleBurst(x, y, {
+                    count: 20,
+                    colors: ['#ffd700', '#ffed4e', '#fff'],
+                    spread: 30
+                });
+            });
+        });
+        
+        // Initialize Phase 3 systems
+        // Initialize contextual help
+        const contextualHelp = new ContextualHelp({
+            enabled: true,
+            sensitivity: 'medium'
+        });
+        
+        // Initialize adaptive quality
+        const adaptiveQuality = new AdaptiveQuality({
+            enableAutoAdjust: true,
+            targetFPS: 60
+        });
+        
+        // Initialize learning analytics
+        const learningAnalytics = new LearningAnalytics({
+            enableTracking: true,
+            privacyLevel: 'balanced'
+        });
+        
+        // Initialize smart asset loader
+        const assetLoader = new SmartAssetLoader({
+            enablePrefetch: true,
+            enableServiceWorker: true
+        });
+        
+        // Log initialization
+        console.log('Aion Visualization Phase 3 systems initialized');
+    </script>
+</body>
+</html>
