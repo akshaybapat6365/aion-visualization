@@ -10,6 +10,8 @@
     <script src="webgl-utils.js"></script>
     <script src="accessibility-utils.js"></script>
     <script src="progress-tracker.js"></script>
+    <script src="leaderboard.js"></script>
+    <script src="voice-commands.js"></script>
     <script src="visualization-loader.js"></script>
     <script type="module" src="lazy-visualizations.js"></script>
     <script src="apply-fixes.js" defer></script>
@@ -56,6 +58,30 @@
             color: var(--text-primary);
             border: 2px solid var(--accent);
         }
+
+        .voice-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        #leaderboard {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface-glass);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
         
         .button-secondary:hover {
             background: var(--accent);
@@ -86,6 +112,7 @@
             <a href="chapters.html" class="nav-link">Chapters</a>
             <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
             <a href="timeline.html" class="nav-link">Timeline</a>
+            <a href="history.html" class="nav-link">History</a>
             <a href="symbols.html" class="nav-link">Symbols</a>
             <a href="about.html" class="nav-link">About</a>
         </div>
@@ -250,9 +277,34 @@
             enablePrefetch: true,
             enableServiceWorker: true
         });
-        
+
         // Log initialization
         console.log('Aion Visualization Phase 3 systems initialized');
+
+        // Example voice command setup
+        const voiceManager = new VoiceCommandManager({
+            'open chapters': () => window.location.href = 'chapters.html',
+            'show progress': () => window.progressTracker && window.progressTracker.showProgressDetails()
+        });
+        document.getElementById('start-voice').addEventListener('click', () => voiceManager.start());
+    </script>
+
+    <button id="start-voice" class="voice-btn">🎤 Voice</button>
+
+    <div id="comments" class="comments"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="giscus/giscus"
+        data-repo-id="MDEwOlJlcG9zaXRvcnkxNDU3NzMwNzc="
+        data-category="General"
+        data-category-id="DIC_kwDOCOOvOc4CSDHc"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark"
+        crossorigin="anonymous"
+        async>
     </script>
 </body>
 </html>
