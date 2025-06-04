@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion - Archetype Profiles</title>
+    <link rel="stylesheet" href="styles-v3.css">
+    <style>
+        .profile-charts-container {
+            display: flex;
+            justify-content: space-around; /* Space out charts */
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 30px; /* Add gap between charts */
+        }
+        .radar-chart-area {
+             /* Inherit background from .visualization-area */
+             padding: 15px;
+             border-radius: 8px;
+             /* box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); */
+             border: 1px solid var(--border); /* Use theme border */
+        }
+        .radar-chart-svg {
+            display: block;
+            margin: auto;
+        }
+        .radar-chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--foreground); /* Use theme foreground */
+            text-anchor: middle;
+            margin-bottom: 10px; /* Use margin in HTML/CSS */
+        }
+        .radar-axis-label {
+            font-size: 10px;
+            fill: var(--muted-foreground); /* Use theme muted foreground */
+        }
+        .radar-polygon {
+            stroke-width: 2px;
+            fill-opacity: 0.25;
+        }
+        .radar-dot {
+            stroke-width: 1px;
+            stroke: var(--background); /* Use theme background for stroke */
+        }
+        .grid-circle {
+            fill: var(--border); /* Use theme border for grid fill */
+            stroke: var(--border); /* Use theme border for grid stroke */
+            fill-opacity: 0.1;
+        }
+        .axis .line { /* Target axis lines specifically */
+             stroke: var(--muted-foreground); /* Use muted for axis lines */
+             stroke-width: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tooltip" style="opacity:0;"></div>
+    <div class="container">
+        <h1>Archetype Profiles (Radar Charts)</h1>
+        <p>Comparing the relative strength of archetypes at different points in time (2025 vs. 2200).</p>
+
+        <div class="visualization-area profile-charts-container">
+            <div class="radar-chart-area">
+                <h3 class="radar-chart-title">Profile: 2025</h3>
+                <svg id="radar-chart-2025" class="radar-chart-svg" width="400" height="400"></svg>
+            </div>
+            <div class="radar-chart-area">
+                 <h3 class="radar-chart-title">Profile: 2200</h3>
+                <svg id="radar-chart-2200" class="radar-chart-svg" width="400" height="400"></svg>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">Back to Hub</a>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const tooltip = d3.select("body").append("div").attr("class","tooltip").style("opacity",0);
+        // --- Data Generation (same as dynamics.html) ---
+        const generateData = () => {
+            const years = Array.from({ length: (2300 - 1900) / 5 + 1 }, (_, i) => 1900 + i * 5);
+            const data = years.map(year => {
+                const shadow_peak = 2050, shadow_sigma = 80;
+                const shadow = Math.exp(-0.5 * Math.pow((year - shadow_peak) / shadow_sigma, 2));
+                const self_mid = 2150, self_rate = 0.025;
+                const self_int = 1 / (1 + Math.exp(-self_rate * (year - self_mid)));
+                const anima_mid = 2100, anima_rate = 0.03;
+                const anima = 1 / (1 + Math.exp(-anima_rate * (year - anima_mid)));
+                const trickster1 = 0.6 * Math.exp(-0.5 * Math.pow((year - 1960) / 40, 2));
+                const trickster2 = 0.8 * Math.exp(-0.5 * Math.pow((year - 2050) / 30, 2));
+                let trickster = trickster1 + trickster2;
+                const maxTricksterApprox = 0.85;
+                trickster = Math.min(1, trickster / maxTricksterApprox);
+                return { Year: year, Shadow: shadow, Self_Integration: self_int, Anima_Animus: anima, Trickster: trickster };
+            });
+            return data;
+        };
+        const dataset = generateData();
+        const archetypeKeys = ["Shadow", "Anima_Animus", "Trickster", "Self_Integration"]; // Order for radar
+        const colors = { // Using direct CSS variables
+            Shadow: "var(--color-shadow-jung)",
+            Self_Integration: "var(--color-self-jung)",
+            Anima_Animus: "var(--color-anima-jung)",
+            Trickster: "var(--color-trickster-jung)"
+        };
+
+        // --- Radar Chart Function ---
+        function drawRadarChart(targetSvgId, year) {
+            const dataForYear = dataset.find(d => d.Year === year);
+            if (!dataForYear) {
+                console.error("Data for year", year, "not found");
+                return;
+            }
+
+            const values = archetypeKeys.map(key => dataForYear[key]);
+
+            const svg = d3.select(`#${targetSvgId}`);
+            const width = +svg.attr("width");
+            const height = +svg.attr("height");
+            const margin = { top: 40, right: 40, bottom: 40, left: 40 }; // Smaller margins for radar
+            const radius = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom) / 2;
+            const g = svg.append("g").attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+            const angleSlice = Math.PI * 2 / archetypeKeys.length;
+
+            // Scale for radius
+            const rScale = d3.scaleLinear()
+                .range([0, radius])
+                .domain([0, 1]); // Data is normalized 0-1
+
+            // Draw grid lines (circles)
+            const gridLevels = 5;
+            g.selectAll(".grid-circle")
+                .data(d3.range(1, gridLevels + 1).reverse())
+                .enter()
+                .append("circle")
+                .attr("class", "grid-circle") // Class added for styling
+                .attr("r", d => radius / gridLevels * d);
+                // Styles moved to CSS
+
+            // Draw axes (lines from center)
+            const axis = g.selectAll(".axis")
+                .data(archetypeKeys)
+                .enter().append("g")
+                .attr("class", "axis");
+
+            axis.append("line")
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("x2", (d, i) => rScale(1.1) * Math.cos(angleSlice * i - Math.PI / 2)) // Extend slightly beyond max
+                .attr("y2", (d, i) => rScale(1.1) * Math.sin(angleSlice * i - Math.PI / 2))
+                .attr("class", "line"); // Class added for styling
+                // Styles moved to CSS
+
+            // Append axis labels
+            axis.append("text")
+                .attr("class", "radar-axis-label")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("x", (d, i) => rScale(1.2) * Math.cos(angleSlice * i - Math.PI / 2)) // Position labels outside
+                .attr("y", (d, i) => rScale(1.2) * Math.sin(angleSlice * i - Math.PI / 2))
+                .text(d => d.replace('_', ' '));
+
+            // Path generator for radar shape
+            const radarLine = d3.lineRadial()
+                .radius(d => rScale(d))
+                .angle((d, i) => i * angleSlice);
+
+            // Plot the data polygon
+            const dataValues = values.map(v => v); // Create copy
+            dataValues.push(dataValues[0]); // Close the loop
+
+            g.append("path")
+                .datum(dataValues)
+                .attr("class", "radar-polygon")
+                .attr("d", radarLine.angle((d,i) => i * angleSlice - Math.PI/2)) // Adjust angle offset
+                .style("stroke", colors[archetypeKeys[0]]) // Use theme color from colors object
+                .style("fill", colors[archetypeKeys[0]]); // Use theme color from colors object
+
+             // Plot data points (optional)
+             g.selectAll(".radar-dot")
+                .data(values)
+                .enter().append("circle")
+                .attr("class", "radar-dot")
+                .attr("r", 4)
+                .attr("cx", (d,i) => rScale(d) * Math.cos(angleSlice*i - Math.PI/2))
+                .attr("cy", (d,i) => rScale(d) * Math.sin(angleSlice*i - Math.PI/2))
+                .style("fill", (d,i) => colors[archetypeKeys[i]]) // Use theme color from colors object
+                .on("mouseover", function(event, d) { // Corrected: Use datum 'd' and index 'i' from selection if needed, or find key
+                    // Find the key corresponding to the value 'd' for this specific dot
+                    const key = archetypeKeys.find(k => dataForYear[k] === d);
+                    if (key) {
+                         tooltip.html(`${key.replace('_',' ')}: ${d.toFixed(2)}`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px")
+                            .transition().duration(200).style("opacity", .9);
+                    }
+                })
+                .on("mouseout", function(event, d) {
+                    tooltip.transition().duration(200).style("opacity", 0);
+                });
+        }
+
+        // --- Draw the Charts ---
+        // Find nearest 10 year for data lookup
+        const year2025 = Math.round(2025 / 10) * 10;
+        const year2200 = Math.round(2200 / 10) * 10;
+
+        drawRadarChart("radar-chart-2025", year2025);
+        drawRadarChart("radar-chart-2200", year2200);
+
+    </script>
+    <script src="starfield.js"></script>
+    <script src="navigation.js"></script>
+</body>
+</html>
