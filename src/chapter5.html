@@ -5,17 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 5: Christ as Archetype - Aion by Carl Jung</title>
     <link rel="stylesheet" href="styles-v2.css">
-    <link rel="stylesheet" href="styles-v3.css">
+    <link rel="stylesheet" href="responsive-utils.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="webgl-utils.js"></script>
+    <script src="webgl-context-manager.js"></script>
+    <script src="error-boundaries.js"></script>
+    <script src="accessibility-utils.js"></script>
+    <script src="progress-tracker.js"></script>
+    <script src="visualization-loader.js"></script>
+    <script src="apply-fixes.js" defer></script>
 </head>
 <body>
-    <!-- WebGL Background -->
-    <canvas id="webgl-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></canvas>
+    <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="index.html" class="nav-link">Home</a>
             <a href="chapters.html" class="nav-link">Chapters</a>
-            <a href="enhanced-chapters.html" class="nav-link">Enhanced</a>
             <a href="timeline.html" class="nav-link">Timeline</a>
             <a href="symbols.html" class="nav-link">Symbols</a>
             <a href="about.html" class="nav-link">About</a>
@@ -23,464 +29,923 @@
     </nav>
 
     <main class="chapter-content">
-        <div class="chapter-header reveal">
+        <div class="chapter-header">
             <div class="chapter-number">Chapter V</div>
             <h1 class="chapter-title">Christ as Archetype</h1>
-            <p class="chapter-subtitle">The Incomplete Symbol of the Self</p>
+            <p class="chapter-subtitle">Interactive Trinity/Quaternity Mandala</p>
         </div>
 
         <section class="chapter-intro">
-            <p>Jung examines Christ as a psychological symbol representing the archetype of the Self—the totality of conscious and unconscious. However, Christ embodies only the light aspect, excluding the shadow, making it an incomplete representation of psychological wholeness.</p>
+            <p>Jung's analysis of Christ as an archetypal figure reveals the psychological significance of the Christian symbol system. The tension between the trinity (three) and quaternity (four) reflects the fundamental challenge of integrating the shadow into our understanding of wholeness.</p>
         </section>
 
+        <!-- Interactive Trinity/Quaternity Mandala -->
         <section class="visualization-section">
-            <h2>The Incomplete Mandala</h2>
+            <h2>Interactive Trinity/Quaternity Mandala</h2>
             <div class="visualization-intro">
-                <p>This mandala visualization shows Christ as a trinity (3) rather than a quaternity (4), representing the missing fourth element—the shadow or evil—necessary for psychological completeness.</p>
+                <p>Explore the psychological transformation from trinity to quaternity. Watch as the three-fold Christian symbol evolves to include the fourth element - the shadow - creating psychological wholeness.</p>
             </div>
-            <div id="mandala-viz" class="visualization-container"></div>
+            <div id="trinity-mandala" class="visualization-container"></div>
             <div class="visualization-controls">
-                <button id="toggle-shadow">Reveal Shadow</button>
-                <button id="toggle-rotation">Toggle Rotation</button>
-                <button id="reset-mandala">Reset</button>
+                <div class="control-group">
+                    <button id="show-trinity">Show Trinity</button>
+                    <button id="show-quaternity">Show Quaternity</button>
+                    <button id="morph-transformation">Animate Transformation</button>
+                </div>
+                <div class="control-group">
+                    <label for="shadow-intensity">Shadow Integration:</label>
+                    <input type="range" id="shadow-intensity" min="0" max="100" value="0">
+                    <span id="shadow-level">Repressed</span>
+                </div>
+                <div class="control-group">
+                    <button id="show-symbols">Toggle Symbol Labels</button>
+                    <button id="show-meaning">Show Psychological Meaning</button>
+                </div>
             </div>
         </section>
 
+        <!-- Christian Symbol Timeline -->
+        <section class="visualization-section">
+            <h2>Evolution of Christian Symbolism</h2>
+            <div class="visualization-intro">
+                <p>Trace the development of Christian symbols from early Christianity through medieval theology, showing how the trinity symbol evolved and what it left out.</p>
+            </div>
+            <div id="symbol-timeline" class="visualization-container"></div>
+            <div class="timeline-controls">
+                <button id="play-timeline">Play Evolution</button>
+                <button id="pause-timeline">Pause</button>
+                <button id="reset-timeline">Reset</button>
+                <div class="timeline-speed">
+                    <label for="speed-control">Speed:</label>
+                    <input type="range" id="speed-control" min="1" max="10" value="5">
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Content -->
         <section class="content-section">
-            <h2>The Trinity and the Missing Fourth</h2>
+            <h2>The Psychological Significance of Christ</h2>
             <div class="concept-grid">
                 <div class="concept-card">
-                    <h3>Father</h3>
-                    <p>The creative principle, representing consciousness and divine authority.</p>
+                    <h3>Christ as Self Symbol</h3>
+                    <p>Jung viewed Christ not as a historical figure but as an archetypal representation of the Self - the totality of the psyche including both conscious and unconscious elements.</p>
+                    <ul>
+                        <li>Bridge between human and divine</li>
+                        <li>Symbol of psychological wholeness</li>
+                        <li>Integration of opposites</li>
+                        <li>Individuation pathway</li>
+                    </ul>
                 </div>
+                
                 <div class="concept-card">
-                    <h3>Son</h3>
-                    <p>The incarnated principle, bridging divine and human nature.</p>
+                    <h3>The Missing Fourth</h3>
+                    <p>Traditional Christian trinity (Father, Son, Holy Spirit) excludes the shadow element - the dark, evil, or feminine principle that Jung saw as essential for psychological completeness.</p>
+                    <ul>
+                        <li>Devil as split-off shadow</li>
+                        <li>Mary as feminine fourth</li>
+                        <li>Evil as necessary opposite</li>
+                        <li>Psychological vs. theological truth</li>
+                    </ul>
                 </div>
+                
                 <div class="concept-card">
-                    <h3>Holy Spirit</h3>
-                    <p>The animating principle, representing divine presence in the world.</p>
+                    <h3>Trinity vs. Quaternity</h3>
+                    <p>The tension between three (spiritual perfection) and four (earthly completion) represents the challenge of integrating spiritual ideals with psychological reality.</p>
+                    <ul>
+                        <li>Three: Divine perfection, spirit</li>
+                        <li>Four: Earthly completion, matter</li>
+                        <li>Transformation through integration</li>
+                        <li>Mandala as wholeness symbol</li>
+                    </ul>
                 </div>
-                <div class="concept-card shadow-card">
-                    <h3>The Shadow</h3>
-                    <p>The rejected fourth element: evil, matter, the feminine, or the devil—necessary for wholeness.</p>
+                
+                <div class="concept-card">
+                    <h3>Modern Implications</h3>
+                    <p>Jung's analysis suggests that modern psychology must integrate what religion has split off - acknowledging the shadow to achieve genuine wholeness.</p>
+                    <ul>
+                        <li>Shadow work in therapy</li>
+                        <li>Integration over perfection</li>
+                        <li>Authentic self-realization</li>
+                        <li>Collective shadow projection</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
+        <!-- Interactive Symbol Placement -->
         <section class="visualization-section">
-            <h2>Light and Shadow Integration</h2>
-            <div id="integration-viz" class="visualization-container"></div>
+            <h2>Symbol Integration Exercise</h2>
+            <div class="visualization-intro">
+                <p>Drag and drop symbols to create your own mandala. Explore how different arrangements affect the psychological meaning and balance.</p>
+            </div>
+            <div id="symbol-exercise" class="visualization-container">
+                <div class="symbol-palette">
+                    <h3>Available Symbols</h3>
+                    <div class="symbol-items">
+                        <div class="symbol-item" data-symbol="cross" draggable="true">✝ Cross</div>
+                        <div class="symbol-item" data-symbol="circle" draggable="true">○ Circle</div>
+                        <div class="symbol-item" data-symbol="triangle" draggable="true">△ Trinity</div>
+                        <div class="symbol-item" data-symbol="square" draggable="true">□ Quaternity</div>
+                        <div class="symbol-item" data-symbol="shadow" draggable="true">● Shadow</div>
+                        <div class="symbol-item" data-symbol="light" draggable="true">☉ Light</div>
+                        <div class="symbol-item" data-symbol="feminine" draggable="true">☽ Feminine</div>
+                        <div class="symbol-item" data-symbol="masculine" draggable="true">☉ Masculine</div>
+                    </div>
+                </div>
+                <div class="mandala-workspace" id="mandala-drop-zone">
+                    <div class="workspace-guide">
+                        <p>Drop symbols here to create your mandala</p>
+                        <div class="guide-circles">
+                            <div class="inner-circle"></div>
+                            <div class="middle-circle"></div>
+                            <div class="outer-circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mandala-analysis">
+                    <h3>Psychological Analysis</h3>
+                    <div id="analysis-result">
+                        <p>Create a mandala to see psychological interpretation...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="exercise-controls">
+                <button id="clear-mandala">Clear Mandala</button>
+                <button id="save-mandala">Save Creation</button>
+                <button id="load-example">Load Example</button>
+                <button id="analyze-balance">Analyze Balance</button>
+            </div>
         </section>
 
+        <!-- Jung Quotes Section -->
         <section class="content-section">
-            <h2>Psychological Implications</h2>
-            <p>The exclusion of the shadow from the Christ symbol has profound psychological consequences:</p>
-            <ul class="insight-list">
-                <li>It creates a split between good and evil in the Western psyche</li>
-                <li>The repressed shadow manifests as projections onto others</li>
-                <li>True individuation requires integrating both light and dark aspects</li>
-                <li>The missing fourth appears symbolically as Mary, matter, or the devil</li>
-            </ul>
+            <h2>Jung on Christ and the Self</h2>
+            <div class="quotes-container">
+                <blockquote class="jung-quote">
+                    <p>"Christ is the still living myth of our culture. He is our culture hero, who, regardless of his historical existence, embodies the myth of the divine Primordial Man, the mystic Adam."</p>
+                    <cite>— Carl Jung, Aion</cite>
+                </blockquote>
+                
+                <blockquote class="jung-quote">
+                    <p>"The quaternio is an archetype of almost universal occurrence. It forms the logical basis for any whole judgment. If one wishes to pass such a judgment, it must have this fourfold aspect."</p>
+                    <cite>— Carl Jung, Psychology and Alchemy</cite>
+                </blockquote>
+                
+                <blockquote class="jung-quote">
+                    <p>"The Christ-symbol is of the greatest importance for psychology in so far as it is perhaps the most highly developed and differentiated symbol of the self."</p>
+                    <cite>— Carl Jung, Aion</cite>
+                </blockquote>
+            </div>
         </section>
-
-        <div class="chapter-nav">
-            <a href="chapter4.html" class="prev-chapter">← Chapter 4: The Sign of the Fishes</a>
-            <a href="chapter6.html" class="next-chapter">Chapter 6: The Shadow → (Coming Soon)</a>
-        </div>
     </main>
 
-    <canvas id="bg-canvas" data-load-fn="initChapter5"></canvas>
+    <style>
+        .trinity-mandala-container {
+            position: relative;
+            height: 500px;
+            background: radial-gradient(circle, rgba(107, 70, 193, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            margin: 2rem auto;
+        }
+
+        .symbol-timeline-container {
+            height: 300px;
+            background: linear-gradient(90deg, rgba(107, 70, 193, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: 120px;
+        }
+
+        .control-group input[type="range"] {
+            flex: 1;
+            min-width: 120px;
+            margin: 0 0.5rem;
+        }
+
+        .control-group button {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .control-group button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .timeline-speed {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .symbol-exercise {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            gap: 2rem;
+            min-height: 400px;
+            padding: 1rem;
+            background: var(--surface-glass);
+            border-radius: 1rem;
+        }
+
+        .symbol-palette {
+            background: var(--surface-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-default);
+        }
+
+        .symbol-palette h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .symbol-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .symbol-item {
+            padding: 0.75rem;
+            background: var(--surface-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: 0.25rem;
+            cursor: move;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .symbol-item:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .symbol-item[draggable="true"] {
+            user-select: none;
+        }
+
+        .mandala-workspace {
+            position: relative;
+            background: radial-gradient(circle, rgba(107, 70, 193, 0.05) 0%, transparent 70%);
+            border: 2px dashed var(--border-default);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        .workspace-guide {
+            text-align: center;
+            color: var(--text-tertiary);
+            position: relative;
+        }
+
+        .guide-circles {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 280px;
+        }
+
+        .guide-circles > div {
+            position: absolute;
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .inner-circle {
+            width: 80px;
+            height: 80px;
+        }
+
+        .middle-circle {
+            width: 160px;
+            height: 160px;
+        }
+
+        .outer-circle {
+            width: 280px;
+            height: 280px;
+        }
+
+        .mandala-analysis {
+            background: var(--surface-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-default);
+        }
+
+        .mandala-analysis h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .exercise-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .exercise-controls button {
+            padding: 0.75rem 1.5rem;
+            background: var(--surface-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-controls button:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .quotes-container {
+            display: grid;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .jung-quote {
+            background: var(--surface-glass);
+            padding: 2rem;
+            border-radius: 1rem;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            position: relative;
+        }
+
+        .jung-quote p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .jung-quote cite {
+            font-style: normal;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .symbol-exercise {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .control-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .timeline-controls {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .guide-circles {
+                width: 200px;
+                height: 200px;
+            }
+
+            .inner-circle {
+                width: 60px;
+                height: 60px;
+            }
+
+            .middle-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            .outer-circle {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
 
     <script>
-        function initChapter5() {
-        // Background shader
-        const canvas = document.getElementById('bg-canvas');
-        const gl = canvas.getContext('webgl');
+        // Enhanced Chapter 5: Trinity/Quaternity Mandala Implementation
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTrinityMandala();
+            initializeSymbolTimeline();
+            initializeSymbolExercise();
+        });
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            gl.viewport(0, 0, canvas.width, canvas.height);
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        function initializeTrinityMandala() {
+            const container = document.getElementById('trinity-mandala');
+            if (!container) return;
 
-        const vertexShaderSource = `
-            attribute vec2 position;
-            void main() {
-                gl_Position = vec4(position, 0.0, 1.0);
+            const width = container.offsetWidth;
+            const height = 500;
+
+            // Create Three.js scene with optimized WebGL context
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            
+            // Use optimized context manager
+            const canvas = document.createElement('canvas');
+            const gl = window.createOptimizedWebGLContext(canvas, { 
+                alpha: true, 
+                antialias: !window.webglContextManager.isLowMemoryDevice,
+                powerPreference: 'default'
+            });
+            
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas,
+                context: gl,
+                alpha: true, 
+                antialias: !window.webglContextManager.isLowMemoryDevice 
+            });
+            renderer.setSize(width, height);
+            renderer.setClearColor(0x000000, 0);
+
+            // Add accessibility attributes
+            renderer.domElement.setAttribute('role', 'img');
+            renderer.domElement.setAttribute('aria-label', 'Interactive 3D mandala showing transformation from Christian trinity to psychological quaternity');
+            renderer.domElement.setAttribute('tabindex', '0');
+
+            container.appendChild(renderer.domElement);
+
+            // Add screen reader description
+            const description = document.createElement('div');
+            description.id = 'trinity-mandala-description';
+            description.className = 'sr-only';
+            description.innerHTML = `
+                <h3>Trinity/Quaternity Mandala Description</h3>
+                <p>This visualization shows the transformation from the Christian trinity (three-fold symbol) to a psychological quaternity (four-fold symbol). The trinity represents Father, Son, and Holy Spirit, while the quaternity adds the shadow or feminine element for psychological completeness.</p>
+                <p>Use the controls to animate the transformation and see how integrating the shadow creates a more complete symbol of the Self.</p>
+            `;
+            container.appendChild(description);
+            renderer.domElement.setAttribute('aria-describedby', 'trinity-mandala-description');
+
+            camera.position.set(0, 0, 8);
+
+            // Mandala state
+            let currentState = 'trinity';
+            let morphProgress = 0;
+            let shadowIntensity = 0;
+
+            // Create geometry groups
+            const trinityGroup = new THREE.Group();
+            const quaternityGroup = new THREE.Group();
+            scene.add(trinityGroup);
+            scene.add(quaternityGroup);
+
+            // Create Trinity (triangle-based)
+            function createTrinity() {
+                trinityGroup.clear();
+
+                // Central circle
+                const centerGeometry = new THREE.CircleGeometry(0.3, 32);
+                const centerMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xFFD700, 
+                    transparent: true,
+                    opacity: 0.8 
+                });
+                const center = new THREE.Mesh(centerGeometry, centerMaterial);
+                trinityGroup.add(center);
+
+                // Trinity points
+                const points = [
+                    { angle: -Math.PI/2, label: 'Father', color: 0x6B46C1 },
+                    { angle: Math.PI/6, label: 'Son', color: 0x7C3AED },
+                    { angle: 5*Math.PI/6, label: 'Holy Spirit', color: 0x5B21B6 }
+                ];
+
+                points.forEach((point, index) => {
+                    const radius = 2.5;
+                    const x = Math.cos(point.angle) * radius;
+                    const y = Math.sin(point.angle) * radius;
+
+                    // Point circle
+                    const pointGeometry = new THREE.CircleGeometry(0.4, 32);
+                    const pointMaterial = new THREE.MeshBasicMaterial({ 
+                        color: point.color,
+                        transparent: true,
+                        opacity: 0.9 
+                    });
+                    const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh.position.set(x, y, 0);
+                    trinityGroup.add(pointMesh);
+
+                    // Connecting lines
+                    const nextIndex = (index + 1) % points.length;
+                    const nextPoint = points[nextIndex];
+                    const nextX = Math.cos(nextPoint.angle) * radius;
+                    const nextY = Math.sin(nextPoint.angle) * radius;
+
+                    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                        new THREE.Vector3(x, y, 0),
+                        new THREE.Vector3(nextX, nextY, 0)
+                    ]);
+                    const lineMaterial = new THREE.LineBasicMaterial({ 
+                        color: 0xFFFFFF, 
+                        transparent: true, 
+                        opacity: 0.6 
+                    });
+                    const line = new THREE.Line(lineGeometry, lineMaterial);
+                    trinityGroup.add(line);
+                });
             }
-        `;
 
-        const fragmentShaderSource = `
-            precision mediump float;
-            uniform vec2 resolution;
-            uniform float time;
-            
-            void main() {
-                vec2 uv = gl_FragCoord.xy / resolution.xy;
-                
-                // Trinity-based pattern
-                float pattern = sin(uv.x * 3.0 + time * 0.2) * 
-                               sin(uv.y * 3.0 - time * 0.15) * 
-                               sin(length(uv - 0.5) * 6.0 + time * 0.1);
-                
-                // Gold and shadow colors
-                vec3 gold = vec3(0.8, 0.6, 0.2);
-                vec3 shadow = vec3(0.05, 0.05, 0.1);
-                vec3 color = mix(shadow, gold * 0.2, pattern * 0.5 + 0.5);
-                
-                gl_FragColor = vec4(color, 1.0);
+            // Create Quaternity (square-based)
+            function createQuaternity() {
+                quaternityGroup.clear();
+
+                // Central circle
+                const centerGeometry = new THREE.CircleGeometry(0.3, 32);
+                const centerMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xFFD700, 
+                    transparent: true,
+                    opacity: 0.8 
+                });
+                const center = new THREE.Mesh(centerGeometry, centerMaterial);
+                quaternityGroup.add(center);
+
+                // Quaternity points
+                const points = [
+                    { angle: -Math.PI/2, label: 'Spirit', color: 0x6B46C1 },
+                    { angle: 0, label: 'Matter', color: 0x7C3AED },
+                    { angle: Math.PI/2, label: 'Light', color: 0x5B21B6 },
+                    { angle: Math.PI, label: 'Shadow', color: 0x1F1F1F }
+                ];
+
+                points.forEach((point, index) => {
+                    const radius = 2.5;
+                    const x = Math.cos(point.angle) * radius;
+                    const y = Math.sin(point.angle) * radius;
+
+                    // Point circle
+                    const pointGeometry = new THREE.CircleGeometry(0.4, 32);
+                    const pointMaterial = new THREE.MeshBasicMaterial({ 
+                        color: point.color,
+                        transparent: true,
+                        opacity: point.label === 'Shadow' ? shadowIntensity : 0.9 
+                    });
+                    const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
+                    pointMesh.position.set(x, y, 0);
+                    quaternityGroup.add(pointMesh);
+
+                    // Connecting lines to form square
+                    const nextIndex = (index + 1) % points.length;
+                    const nextPoint = points[nextIndex];
+                    const nextX = Math.cos(nextPoint.angle) * radius;
+                    const nextY = Math.sin(nextPoint.angle) * radius;
+
+                    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                        new THREE.Vector3(x, y, 0),
+                        new THREE.Vector3(nextX, nextY, 0)
+                    ]);
+                    const lineMaterial = new THREE.LineBasicMaterial({ 
+                        color: 0xFFFFFF, 
+                        transparent: true, 
+                        opacity: 0.6 
+                    });
+                    const line = new THREE.Line(lineGeometry, lineMaterial);
+                    quaternityGroup.add(line);
+                });
             }
-        `;
 
-        function createShader(gl, type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            return shader;
-        }
+            // Initialize with trinity
+            createTrinity();
+            createQuaternity();
+            quaternityGroup.visible = false;
 
-        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-        const program = gl.createProgram();
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
-        gl.linkProgram(program);
-        gl.useProgram(program);
-
-        const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
-        const buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-        const positionLocation = gl.getAttribLocation(program, 'position');
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        const resolutionLocation = gl.getUniformLocation(program, 'resolution');
-        const timeLocation = gl.getUniformLocation(program, 'time');
-
-        function animate(time) {
-            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-            gl.uniform1f(timeLocation, time * 0.001);
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-            requestAnimationFrame(animate);
-        }
-        animate(0);
-
-        // Mandala Visualization
-        const mandalaWidth = 600;
-        const mandalaHeight = 600;
-        const centerX = mandalaWidth / 2;
-        const centerY = mandalaHeight / 2;
-
-        const mandalaSvg = d3.select("#mandala-viz")
-            .append("svg")
-            .attr("viewBox", `0 0 ${mandalaWidth} ${mandalaHeight}`)
-            .attr("preserveAspectRatio", "xMidYMid meet");
-
-        // Add definitions for gradients
-        const defs = mandalaSvg.append("defs");
-
-        const goldGradient = defs.append("radialGradient")
-            .attr("id", "goldGradient");
-        goldGradient.append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", "#FFD700");
-        goldGradient.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "#B8860B");
-
-        const shadowGradient = defs.append("radialGradient")
-            .attr("id", "shadowGradient");
-        shadowGradient.append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", "#4B0082");
-        shadowGradient.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "#000000");
-
-        // Create mandala layers
-        const bgGroup = mandalaSvg.append("g").attr("class", "bg-layer");
-        const mandalaGroup = mandalaSvg.append("g")
-            .attr("transform", `translate(${centerX}, ${centerY})`);
-
-        // Background circles
-        for (let i = 5; i > 0; i--) {
-            bgGroup.append("circle")
-                .attr("cx", centerX)
-                .attr("cy", centerY)
-                .attr("r", i * 50)
-                .attr("fill", "none")
-                .attr("stroke", "#6B46C1")
-                .attr("stroke-width", 0.5)
-                .attr("opacity", 0.2);
-        }
-
-        // Trinity triangle
-        const triangleRadius = 150;
-        const trianglePoints = [];
-        for (let i = 0; i < 3; i++) {
-            const angle = (i * 120 - 90) * Math.PI / 180;
-            trianglePoints.push([
-                Math.cos(angle) * triangleRadius,
-                Math.sin(angle) * triangleRadius
-            ]);
-        }
-
-        const trinity = mandalaGroup.append("g").attr("class", "trinity");
-
-        // Trinity triangle
-        trinity.append("polygon")
-            .attr("points", trianglePoints.map(p => p.join(",")).join(" "))
-            .attr("fill", "none")
-            .attr("stroke", "url(#goldGradient)")
-            .attr("stroke-width", 3);
-
-        // Trinity circles at vertices
-        trianglePoints.forEach((point, i) => {
-            const circleGroup = trinity.append("g")
-                .attr("transform", `translate(${point[0]}, ${point[1]})`);
-            
-            circleGroup.append("circle")
-                .attr("r", 40)
-                .attr("fill", "url(#goldGradient)")
-                .attr("fill-opacity", 0.8);
-            
-            circleGroup.append("text")
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.35em")
-                .attr("fill", "#000")
-                .attr("font-size", "16px")
-                .attr("font-weight", "bold")
-                .text(["Father", "Son", "Spirit"][i]);
-        });
-
-        // Center symbol
-        trinity.append("circle")
-            .attr("r", 30)
-            .attr("fill", "url(#goldGradient)")
-            .attr("fill-opacity", 0.9);
-
-        trinity.append("text")
-            .attr("text-anchor", "middle")
-            .attr("dy", "0.35em")
-            .attr("fill", "#000")
-            .attr("font-size", "24px")
-            .attr("font-weight", "bold")
-            .text("✝");
-
-        // Shadow element (initially hidden)
-        const shadowGroup = mandalaGroup.append("g")
-            .attr("class", "shadow-element")
-            .attr("opacity", 0);
-
-        const shadowAngle = 90 * Math.PI / 180;
-        const shadowX = Math.cos(shadowAngle) * triangleRadius;
-        const shadowY = Math.sin(shadowAngle) * triangleRadius;
-
-        shadowGroup.append("circle")
-            .attr("cx", shadowX)
-            .attr("cy", shadowY)
-            .attr("r", 40)
-            .attr("fill", "url(#shadowGradient)")
-            .attr("fill-opacity", 0.8);
-
-        shadowGroup.append("text")
-            .attr("x", shadowX)
-            .attr("y", shadowY)
-            .attr("text-anchor", "middle")
-            .attr("dy", "0.35em")
-            .attr("fill", "#FFF")
-            .attr("font-size", "16px")
-            .attr("font-weight", "bold")
-            .text("Shadow");
-
-        // Complete square (initially hidden)
-        const squareGroup = mandalaGroup.append("g")
-            .attr("class", "complete-square")
-            .attr("opacity", 0);
-
-        const completePoints = [...trianglePoints, [shadowX, shadowY]];
-        squareGroup.append("polygon")
-            .attr("points", completePoints.map(p => p.join(",")).join(" "))
-            .attr("fill", "none")
-            .attr("stroke", "#9D4EDD")
-            .attr("stroke-width", 2)
-            .attr("stroke-dasharray", "5,5");
-
-        // Controls
-        let showingShadow = false;
-        let rotating = false;
-        let rotationAngle = 0;
-
-        document.getElementById("toggle-shadow").addEventListener("click", function() {
-            showingShadow = !showingShadow;
-            
-            shadowGroup.transition()
-                .duration(1000)
-                .attr("opacity", showingShadow ? 1 : 0);
-            
-            squareGroup.transition()
-                .duration(1000)
-                .attr("opacity", showingShadow ? 1 : 0);
-            
-            this.textContent = showingShadow ? "Hide Shadow" : "Reveal Shadow";
-        });
-
-        document.getElementById("toggle-rotation").addEventListener("click", function() {
-            rotating = !rotating;
-            this.textContent = rotating ? "Stop Rotation" : "Toggle Rotation";
-        });
-
-        document.getElementById("reset-mandala").addEventListener("click", function() {
-            showingShadow = false;
-            rotating = false;
-            rotationAngle = 0;
-            
-            shadowGroup.attr("opacity", 0);
-            squareGroup.attr("opacity", 0);
-            mandalaGroup.attr("transform", `translate(${centerX}, ${centerY})`);
-            
-            document.getElementById("toggle-shadow").textContent = "Reveal Shadow";
-            document.getElementById("toggle-rotation").textContent = "Toggle Rotation";
-        });
-
-        // Rotation animation
-        function animateMandala() {
-            if (rotating) {
-                rotationAngle += 0.5;
-                mandalaGroup.attr("transform", 
-                    `translate(${centerX}, ${centerY}) rotate(${rotationAngle})`);
+            // Animation loop
+            function animate() {
+                trinityGroup.rotation.z += 0.005;
+                quaternityGroup.rotation.z += 0.003;
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
             }
-            requestAnimationFrame(animateMandala);
+            animate();
+
+            // Control handlers
+            document.getElementById('show-trinity').addEventListener('click', () => {
+                trinityGroup.visible = true;
+                quaternityGroup.visible = false;
+                currentState = 'trinity';
+            });
+
+            document.getElementById('show-quaternity').addEventListener('click', () => {
+                trinityGroup.visible = false;
+                quaternityGroup.visible = true;
+                currentState = 'quaternity';
+            });
+
+            document.getElementById('morph-transformation').addEventListener('click', () => {
+                // Animated transformation between trinity and quaternity
+                const duration = 3000;
+                const startTime = Date.now();
+                
+                function morphAnimation() {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    if (currentState === 'trinity') {
+                        trinityGroup.visible = true;
+                        quaternityGroup.visible = true;
+                        trinityGroup.material?.forEach(mat => {
+                            if (mat.opacity !== undefined) mat.opacity = 1 - progress;
+                        });
+                        quaternityGroup.material?.forEach(mat => {
+                            if (mat.opacity !== undefined) mat.opacity = progress;
+                        });
+                    }
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(morphAnimation);
+                    } else {
+                        currentState = currentState === 'trinity' ? 'quaternity' : 'trinity';
+                    }
+                }
+                morphAnimation();
+            });
+
+            // Shadow intensity control
+            document.getElementById('shadow-intensity').addEventListener('input', (e) => {
+                shadowIntensity = e.target.value / 100;
+                document.getElementById('shadow-level').textContent = 
+                    shadowIntensity < 0.3 ? 'Repressed' :
+                    shadowIntensity < 0.7 ? 'Acknowledged' : 'Integrated';
+                
+                createQuaternity(); // Recreate with new shadow intensity
+            });
         }
-        animateMandala();
 
-        // Integration Visualization
-        const integrationWidth = 800;
-        const integrationHeight = 400;
+        function initializeSymbolTimeline() {
+            const container = document.getElementById('symbol-timeline');
+            if (!container) return;
 
-        const integrationSvg = d3.select("#integration-viz")
-            .append("svg")
-            .attr("viewBox", `0 0 ${integrationWidth} ${integrationHeight}`)
-            .attr("preserveAspectRatio", "xMidYMid meet");
+            const margin = { top: 20, right: 30, bottom: 40, left: 60 };
+            const width = container.offsetWidth - margin.left - margin.right;
+            const height = 250 - margin.top - margin.bottom;
 
-        // Create scales
-        const xScale = d3.scaleLinear()
-            .domain([0, 100])
-            .range([50, integrationWidth - 50]);
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
 
-        const yScale = d3.scaleLinear()
-            .domain([-1, 1])
-            .range([integrationHeight - 50, 50]);
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Add axes
-        integrationSvg.append("g")
-            .attr("transform", `translate(0, ${integrationHeight / 2})`)
-            .call(d3.axisBottom(xScale).ticks(10))
-            .append("text")
-            .attr("x", integrationWidth / 2)
-            .attr("y", 40)
-            .attr("fill", "#FFF")
-            .style("text-anchor", "middle")
-            .text("Individuation Process →");
+            // Timeline data
+            const timelineData = [
+                { year: 30, event: 'Jesus\'s Death', symbolism: 'Cross emerges', prominence: 0.2 },
+                { year: 325, event: 'Council of Nicaea', symbolism: 'Trinity doctrine', prominence: 0.6 },
+                { year: 431, event: 'Council of Ephesus', symbolism: 'Mary as Theotokos', prominence: 0.4 },
+                { year: 1054, event: 'Great Schism', symbolism: 'East/West split', prominence: 0.7 },
+                { year: 1215, event: 'Fourth Lateran', symbolism: 'Trinity dogma', prominence: 0.9 },
+                { year: 1517, event: 'Reformation', symbolism: 'Trinity questioned', prominence: 0.5 },
+                { year: 1950, event: 'Marian dogma', symbolism: 'Fourth element?', prominence: 0.3 },
+                { year: 2000, event: 'Modern psychology', symbolism: 'Jung\'s analysis', prominence: 0.8 }
+            ];
 
-        // Generate data for light and shadow curves
-        const dataPoints = d3.range(0, 101, 1);
-        
-        const lightData = dataPoints.map(x => ({
-            x: x,
-            y: Math.sin(x * 0.05) * Math.exp(-x * 0.01)
-        }));
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(timelineData, d => d.year))
+                .range([0, width]);
 
-        const shadowData = dataPoints.map(x => ({
-            x: x,
-            y: -Math.sin(x * 0.05) * Math.exp(-x * 0.01)
-        }));
+            const yScale = d3.scaleLinear()
+                .domain([0, 1])
+                .range([height, 0]);
 
-        const integrationData = dataPoints.map(x => ({
-            x: x,
-            y: (lightData[x].y + shadowData[x].y) / 2
-        }));
+            // Add axes
+            g.append('g')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale).tickFormat(d => `${d} CE`));
 
-        // Create line generators
-        const line = d3.line()
-            .x(d => xScale(d.x))
-            .y(d => yScale(d.y))
-            .curve(d3.curveBasis);
+            g.append('g')
+                .call(d3.axisLeft(yScale).tickFormat(d => `${d*100}%`));
 
-        // Add gradient for integration
-        const integrationGradient = integrationSvg.append("defs")
-            .append("linearGradient")
-            .attr("id", "integrationGradient")
-            .attr("x1", "0%")
-            .attr("x2", "100%");
+            // Add timeline line
+            const line = d3.line()
+                .x(d => xScale(d.year))
+                .y(d => yScale(d.prominence))
+                .curve(d3.curveCardinal);
 
-        integrationGradient.append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", "#FFD700");
-        integrationGradient.append("stop")
-            .attr("offset", "50%")
-            .attr("stop-color", "#9D4EDD");
-        integrationGradient.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "#4B0082");
+            g.append('path')
+                .datum(timelineData)
+                .attr('fill', 'none')
+                .attr('stroke', '#6B46C1')
+                .attr('stroke-width', 3)
+                .attr('d', line);
 
-        // Draw lines
-        integrationSvg.append("path")
-            .datum(lightData)
-            .attr("fill", "none")
-            .attr("stroke", "#FFD700")
-            .attr("stroke-width", 3)
-            .attr("d", line)
-            .attr("opacity", 0.8);
+            // Add data points
+            g.selectAll('.data-point')
+                .data(timelineData)
+                .enter().append('circle')
+                .attr('class', 'data-point')
+                .attr('cx', d => xScale(d.year))
+                .attr('cy', d => yScale(d.prominence))
+                .attr('r', 6)
+                .attr('fill', '#FFD700')
+                .attr('stroke', '#6B46C1')
+                .attr('stroke-width', 2)
+                .on('mouseover', function(event, d) {
+                    // Tooltip functionality
+                    const tooltip = d3.select('body').append('div')
+                        .attr('class', 'tooltip')
+                        .style('opacity', 0);
+                    
+                    tooltip.transition()
+                        .duration(200)
+                        .style('opacity', .9);
+                    tooltip.html(`<strong>${d.year} CE: ${d.event}</strong><br/>${d.symbolism}`)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 28) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.selectAll('.tooltip').remove();
+                });
+        }
 
-        integrationSvg.append("path")
-            .datum(shadowData)
-            .attr("fill", "none")
-            .attr("stroke", "#4B0082")
-            .attr("stroke-width", 3)
-            .attr("d", line)
-            .attr("opacity", 0.8);
+        function initializeSymbolExercise() {
+            const workspace = document.getElementById('mandala-drop-zone');
+            const analysisResult = document.getElementById('analysis-result');
+            let placedSymbols = [];
 
-        integrationSvg.append("path")
-            .datum(integrationData)
-            .attr("fill", "none")
-            .attr("stroke", "url(#integrationGradient)")
-            .attr("stroke-width", 4)
-            .attr("d", line)
-            .attr("stroke-dasharray", "10,5");
+            // Drag and drop functionality
+            document.querySelectorAll('.symbol-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.dataset.symbol);
+                });
+            });
 
-        // Add labels
-        integrationSvg.append("text")
-            .attr("x", 100)
-            .attr("y", yScale(0.8))
-            .attr("fill", "#FFD700")
-            .text("Light/Conscious");
+            workspace.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                workspace.style.borderColor = 'var(--accent)';
+            });
 
-        integrationSvg.append("text")
-            .attr("x", 100)
-            .attr("y", yScale(-0.8))
-            .attr("fill", "#4B0082")
-            .text("Shadow/Unconscious");
+            workspace.addEventListener('dragleave', (e) => {
+                workspace.style.borderColor = 'var(--border-default)';
+            });
 
-        integrationSvg.append("text")
-            .attr("x", integrationWidth - 150)
-            .attr("y", integrationHeight / 2 - 20)
-            .attr("fill", "#9D4EDD")
-            .text("Integration");
+            workspace.addEventListener('drop', (e) => {
+                e.preventDefault();
+                workspace.style.borderColor = 'var(--border-default)';
+                
+                const symbolType = e.dataTransfer.getData('text/plain');
+                const rect = workspace.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                addSymbolToMandala(symbolType, x, y);
+            });
 
-        // Mobile menu toggle
-        document.querySelector('.nav-toggle').addEventListener('click', function() {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-    }
-    observeVisualization(document.getElementById("bg-canvas"), "initChapter5");
+            function addSymbolToMandala(symbolType, x, y) {
+                const symbolElement = document.createElement('div');
+                symbolElement.className = 'placed-symbol';
+                symbolElement.style.position = 'absolute';
+                symbolElement.style.left = `${x - 15}px`;
+                symbolElement.style.top = `${y - 15}px`;
+                symbolElement.style.width = '30px';
+                symbolElement.style.height = '30px';
+                symbolElement.style.display = 'flex';
+                symbolElement.style.alignItems = 'center';
+                symbolElement.style.justifyContent = 'center';
+                symbolElement.style.background = 'var(--accent)';
+                symbolElement.style.color = 'white';
+                symbolElement.style.borderRadius = '50%';
+                symbolElement.style.fontSize = '18px';
+                symbolElement.style.cursor = 'pointer';
+                symbolElement.style.zIndex = '10';
+                
+                const symbols = {
+                    'cross': '✝',
+                    'circle': '○',
+                    'triangle': '△',
+                    'square': '□',
+                    'shadow': '●',
+                    'light': '☉',
+                    'feminine': '☽',
+                    'masculine': '☉'
+                };
+                
+                symbolElement.textContent = symbols[symbolType] || '?';
+                symbolElement.addEventListener('click', () => {
+                    workspace.removeChild(symbolElement);
+                    placedSymbols = placedSymbols.filter(s => s.element !== symbolElement);
+                    analyzeMandala();
+                });
+                
+                workspace.appendChild(symbolElement);
+                placedSymbols.push({ type: symbolType, x, y, element: symbolElement });
+                analyzeMandala();
+            }
+
+            function analyzeMandala() {
+                if (placedSymbols.length === 0) {
+                    analysisResult.innerHTML = '<p>Create a mandala to see psychological interpretation...</p>';
+                    return;
+                }
+
+                const symbolCounts = {};
+                placedSymbols.forEach(symbol => {
+                    symbolCounts[symbol.type] = (symbolCounts[symbol.type] || 0) + 1;
+                });
+
+                let analysis = '<h4>Mandala Analysis:</h4>';
+                
+                // Check for balance
+                const hasShadow = symbolCounts.shadow > 0;
+                const hasLight = symbolCounts.light > 0;
+                const hasFeminine = symbolCounts.feminine > 0;
+                const hasMasculine = symbolCounts.masculine > 0;
+                
+                if (hasShadow && hasLight) {
+                    analysis += '<p>✅ <strong>Light/Shadow Balance:</strong> Good integration of opposites.</p>';
+                } else if (hasLight && !hasShadow) {
+                    analysis += '<p>⚠️ <strong>Missing Shadow:</strong> Consider integrating darker elements.</p>';
+                }
+                
+                if (hasFeminine && hasMasculine) {
+                    analysis += '<p>✅ <strong>Gender Balance:</strong> Anima/Animus integration present.</p>';
+                }
+                
+                // Check for sacred numbers
+                const totalSymbols = placedSymbols.length;
+                if (totalSymbols === 3) {
+                    analysis += '<p>🔺 <strong>Trinity Pattern:</strong> Spiritual perfection, but missing earthly completion.</p>';
+                } else if (totalSymbols === 4) {
+                    analysis += '<p>◼️ <strong>Quaternity Pattern:</strong> Psychological wholeness and completion.</p>';
+                } else if (totalSymbols % 4 === 0) {
+                    analysis += '<p>◼️ <strong>Quaternary Multiple:</strong> Strong foundation for psychological integration.</p>';
+                }
+                
+                analysisResult.innerHTML = analysis;
+            }
+
+            // Control buttons
+            document.getElementById('clear-mandala').addEventListener('click', () => {
+                placedSymbols.forEach(symbol => {
+                    workspace.removeChild(symbol.element);
+                });
+                placedSymbols = [];
+                analyzeMandala();
+            });
+
+            document.getElementById('load-example').addEventListener('click', () => {
+                // Clear existing
+                document.getElementById('clear-mandala').click();
+                
+                // Add example quaternary mandala
+                setTimeout(() => {
+                    addSymbolToMandala('light', 150, 50);     // North
+                    addSymbolToMandala('shadow', 150, 250);   // South  
+                    addSymbolToMandala('masculine', 250, 150); // East
+                    addSymbolToMandala('feminine', 50, 150);   // West
+                    addSymbolToMandala('cross', 150, 150);     // Center
+                }, 100);
+            });
+        }
     </script>
-    <script src="personalization.js"></script>
 </body>
 </html>
