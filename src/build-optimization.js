@@ -123,7 +123,7 @@ class BuildOptimization {
       })),
             
       // CSS files
-      { path: 'styles-v2.css', size: 20480 },
+      { path: 'styles-v3.css', size: 20480 },
       { path: 'styles-v3.css', size: 25600 },
       { path: 'responsive-utils.css', size: 5120 },
             
@@ -177,7 +177,7 @@ class BuildOptimization {
         
     const dependencies = {
       'index.html': [
-        'styles-v2.css',
+        'styles-v3.css',
         'styles-v3.css',
         'responsive-utils.css',
         'advanced-animations.js',

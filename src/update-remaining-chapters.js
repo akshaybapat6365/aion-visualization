@@ -108,9 +108,9 @@ filesToUpdate.forEach(fileName => {
     }
         
     // Add Phase 3 CSS after existing stylesheets
-    const cssPattern = /<link rel="stylesheet" href="styles-v2\.css">/;
+    const cssPattern = /<link rel="stylesheet" href="styles-v3\.css">/;
     if (cssPattern.test(content)) {
-      content = content.replace(cssPattern, `<link rel="stylesheet" href="styles-v2.css">\n${phase3CSS}`);
+      content = content.replace(cssPattern, `<link rel="stylesheet" href="styles-v3.css">\n${phase3CSS}`);
     } else {
       // Try alternative pattern
       const altCssPattern = /(<\/head>)/;

@@ -20,8 +20,8 @@ for i in {1..14}; do
         
         # Check if responsive-utils.css is already included
         if ! grep -q "responsive-utils.css" "$FILE"; then
-            # Add responsive CSS after styles-v2.css
-            sed -i '' '/<link rel="stylesheet" href="styles-v2.css">/a\
+            # Add responsive CSS after styles-v3.css
+            sed -i '' '/<link rel="stylesheet" href="styles-v3.css">/a\
     <link rel="stylesheet" href="responsive-utils.css">
 ' "$FILE"
         fi
@@ -51,7 +51,7 @@ echo "Updating other key files..."
 if [ -f "index-v2.html" ]; then
     echo "Updating index-v2.html..."
     if ! grep -q "responsive-utils.css" "index-v2.html"; then
-        sed -i '' '/<link rel="stylesheet" href="styles-v2.css">/a\
+        sed -i '' '/<link rel="stylesheet" href="styles-v3.css">/a\
     <link rel="stylesheet" href="responsive-utils.css">
 ' "index-v2.html"
     fi
@@ -72,7 +72,7 @@ fi
 if [ -f "chapters-v2.html" ]; then
     echo "Updating chapters-v2.html..."
     if ! grep -q "responsive-utils.css" "chapters-v2.html"; then
-        sed -i '' '/<link rel="stylesheet" href="styles-v2.css">/a\
+        sed -i '' '/<link rel="stylesheet" href="styles-v3.css">/a\
     <link rel="stylesheet" href="responsive-utils.css">
 ' "chapters-v2.html"
     fi
