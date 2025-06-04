@@ -2,11 +2,11 @@
 
 An interactive visualization suite exploring the core themes from C.G. Jung's *Aion: Researches into the Phenomenology of the Self* (CW9ii).
 
-All HTML, CSS and JavaScript files now live under `src/` while planning documents are organized in `docs/`.
+All HTML, CSS and JavaScript files now live under `src/` while detailed planning documents and reports are in [docs/](docs/README.md).
 
 ## Project Structure
 - `src/` - static HTML, CSS and JavaScript
-- `docs/` - planning notes and documentation
+- `docs/` - planning notes and reports ([overview](docs/README.md))
 
 ## Live Demo
 
