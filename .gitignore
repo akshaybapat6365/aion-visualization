@@ -11,6 +11,10 @@ npm-debug.log
 yarn-debug.log
 yarn-error.log
 
+# Environment files
+.env
+.env.*
+
 # IDE files
 .idea/
 .vscode/
@@ -21,3 +25,4 @@ yarn-error.log
 dist/
 build/
 *.log
+logs/
