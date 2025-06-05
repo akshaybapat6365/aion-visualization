@@ -5,7 +5,7 @@
  * progression for perfect visual harmony. Each shade is carefully calculated
  * to ensure optimal contrast ratios for WCAG AAA compliance.
  * 
- * Forbes 2025 Design Award Submission
+ * Premium Design System Showcase
  */
 
 :root {
@@ -154,7 +154,7 @@
  * =================================================================== */
 @media (prefers-color-scheme: light) {
   /* Light mode overrides would go here */
-  /* Currently disabled for Forbes 2025 monochromatic vision */
+  /* Currently disabled for Premium Design System monochromatic vision */
 }
 
 /* ===================================================================

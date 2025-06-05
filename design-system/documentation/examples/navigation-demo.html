@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion Navigation System Demo - Premium Design Excellence</title>
+    
+    <!-- Design System Core -->
+    <link rel="stylesheet" href="../../design-system/core/reset.css">
+    <link rel="stylesheet" href="../../design-system/core/colors.css">
+    <link rel="stylesheet" href="../../design-system/core/typography.css">
+    <link rel="stylesheet" href="../../design-system/core/spacing.css">
+    <link rel="stylesheet" href="../../design-system/core/layout.css">
+    
+    <!-- Navigation Components -->
+    <link rel="stylesheet" href="../../navigation/transitions/liquid-morphing.css">
+    
+    <!-- Demo Styles -->
+    <style>
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-16);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+            padding: var(--space-24) 0;
+            border-bottom: 1px solid var(--border-default);
+        }
+        
+        .demo-title {
+            font-size: var(--text-size-display);
+            font-weight: 300;
+            margin-bottom: var(--space-8);
+            letter-spacing: -0.02em;
+        }
+        
+        .demo-subtitle {
+            font-size: var(--text-size-large);
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+        
+        .demo-section {
+            margin-bottom: var(--space-32);
+            padding: var(--space-24);
+            background: var(--surface-primary);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .demo-section-title {
+            font-size: var(--text-size-extra-large);
+            margin-bottom: var(--space-16);
+            color: var(--text-primary);
+        }
+        
+        .demo-section-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-20);
+        }
+        
+        /* Constellation Demo */
+        .constellation-demo {
+            height: 400px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .constellation-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            color: var(--text-tertiary);
+        }
+        
+        .constellation-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: var(--space-8);
+            opacity: 0.5;
+        }
+        
+        /* Navigation Grid */
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+        
+        .nav-card {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 4px;
+            padding: var(--space-16);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+        }
+        
+        .nav-card-title {
+            font-size: var(--text-size-large);
+            margin-bottom: var(--space-8);
+            font-weight: 500;
+        }
+        
+        .nav-card-description {
+            color: var(--text-secondary);
+            font-size: var(--text-size-body);
+        }
+        
+        .nav-card-number {
+            position: absolute;
+            top: var(--space-8);
+            right: var(--space-12);
+            font-size: var(--text-size-small);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        
+        /* Controls */
+        .demo-controls {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-strong);
+            color: var(--text-primary);
+            padding: var(--space-8) var(--space-16);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: var(--text-size-body);
+        }
+        
+        .demo-button:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-primary);
+        }
+        
+        .demo-button:active {
+            transform: scale(0.98);
+        }
+        
+        /* Keyboard shortcuts display */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-12);
+        }
+        
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-8) var(--space-12);
+            background: var(--surface-secondary);
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .shortcut-key {
+            font-family: monospace;
+            background: var(--surface-primary);
+            padding: var(--space-2) var(--space-6);
+            border-radius: 4px;
+            font-size: var(--text-size-small);
+            border: 1px solid var(--border-default);
+        }
+        
+        .shortcut-description {
+            color: var(--text-secondary);
+            font-size: var(--text-size-small);
+        }
+        
+        /* Magnetic cursor demo area */
+        .magnetic-demo-area {
+            min-height: 300px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 4px;
+            padding: var(--space-24);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-16);
+        }
+        
+        .magnetic-target {
+            padding: var(--space-12) var(--space-20);
+            background: var(--surface-primary);
+            border: 1px solid var(--border-strong);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .magnetic-target:hover {
+            background: var(--surface-hover);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: var(--space-12);
+            }
+            
+            .demo-controls {
+                justify-content: center;
+            }
+            
+            .navigation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Help overlay styles */
+        .keyboard-help-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-16);
+        }
+        
+        .keyboard-help-content {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: var(--space-24);
+        }
+        
+        .keyboard-help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-20);
+            padding-bottom: var(--space-12);
+            border-bottom: 1px solid var(--border-default);
+        }
+        
+        .keyboard-help-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: var(--space-4);
+            border-radius: 4px;
+        }
+        
+        .keyboard-help-close:hover {
+            background: var(--surface-hover);
+        }
+        
+        .keyboard-help-section {
+            margin-bottom: var(--space-20);
+        }
+        
+        .keyboard-help-section h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-12);
+            font-size: var(--text-size-large);
+        }
+        
+        .keyboard-help-list {
+            display: grid;
+            gap: var(--space-8);
+        }
+        
+        .keyboard-help-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-6) var(--space-8);
+            background: var(--surface-secondary);
+            border-radius: 4px;
+        }
+        
+        .keyboard-help-key {
+            font-family: monospace;
+            background: var(--surface-primary);
+            padding: var(--space-2) var(--space-6);
+            border-radius: 4px;
+            font-size: var(--text-size-small);
+            border: 1px solid var(--border-default);
+        }
+        
+        .keyboard-help-description {
+            color: var(--text-secondary);
+            font-size: var(--text-size-small);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Liquid Transition Overlay -->
+    <div class="liquid-transition liquid-transition--hidden" id="liquid-overlay"></div>
+    
+    <div class="demo-container">
+        <header class="demo-header">
+            <h1 class="demo-title">Aion Navigation System</h1>
+            <p class="demo-subtitle">Premium Design Excellence - Phase 2 Implementation</p>
+        </header>
+        
+        <!-- Concept Constellation Demo -->
+        <section class="demo-section">
+            <h2 class="demo-section-title">Concept Constellation</h2>
+            <p class="demo-section-description">
+                Interactive force-directed graph for exploring relationships between Jung's psychological concepts. 
+                Click and drag to explore, zoom to focus, click nodes to navigate.
+            </p>
+            
+            <div class="demo-controls">
+                <button class="demo-button" id="reset-constellation">Reset View</button>
+                <button class="demo-button" id="focus-ego">Focus on Ego</button>
+                <button class="demo-button" id="focus-self">Focus on Self</button>
+            </div>
+            
+            <div class="constellation-demo" id="constellation-container">
+                <div class="constellation-placeholder">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="6" cy="6" r="2"/>
+                        <circle cx="18" cy="6" r="2"/>
+                        <circle cx="6" cy="18" r="2"/>
+                        <circle cx="18" cy="18" r="2"/>
+                        <line x1="12" y1="9" x2="6" y2="8" stroke="currentColor"/>
+                        <line x1="12" y1="9" x2="18" y2="8" stroke="currentColor"/>
+                        <line x1="12" y1="15" x2="6" y2="16" stroke="currentColor"/>
+                        <line x1="12" y1="15" x2="18" y2="16" stroke="currentColor"/>
+                    </svg>
+                    <p>Concept Constellation Loading...</p>
+                    <p style="font-size: 0.8em; opacity: 0.7;">Requires D3.js for full functionality</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Chapter Navigation -->
+        <section class="demo-section">
+            <h2 class="demo-section-title">Chapter Navigation</h2>
+            <p class="demo-section-description">
+                Direct access to any chapter using keyboard shortcuts (1-14) or click navigation.
+                Features liquid morphing transitions between chapters.
+            </p>
+            
+            <div class="navigation-grid" id="chapter-grid">
+                <!-- Chapters will be generated by JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Liquid Transitions Demo -->
+        <section class="demo-section">
+            <h2 class="demo-section-title">Liquid Transitions</h2>
+            <p class="demo-section-description">
+                Black ink morphing effects that create seamless transitions between pages.
+                Click buttons to see different transition styles.
+            </p>
+            
+            <div class="demo-controls">
+                <button class="demo-button" data-transition="expand">Circular Expand</button>
+                <button class="demo-button" data-transition="ripple">Ripple Effect</button>
+                <button class="demo-button" data-transition="organic">Organic Morph</button>
+                <button class="demo-button" data-transition="horizontal">Horizontal Wipe</button>
+                <button class="demo-button" data-transition="vertical">Vertical Wipe</button>
+            </div>
+        </section>
+        
+        <!-- Magnetic Cursor Demo -->
+        <section class="demo-section">
+            <h2 class="demo-section-title">Magnetic Cursor</h2>
+            <p class="demo-section-description">
+                Custom cursor with magnetic attraction to interactive elements (desktop only).
+                Move your mouse over the elements below to see the magnetic effect.
+            </p>
+            
+            <div class="magnetic-demo-area">
+                <a href="#" class="magnetic-target" data-magnetic>Chapter Link</a>
+                <button class="magnetic-target" data-magnetic>Interactive Button</button>
+                <a href="#" class="magnetic-target" data-magnetic>Concept Node</a>
+                <button class="magnetic-target" data-magnetic>Navigation Item</button>
+            </div>
+        </section>
+        
+        <!-- Keyboard Shortcuts -->
+        <section class="demo-section">
+            <h2 class="demo-section-title">Keyboard Shortcuts</h2>
+            <p class="demo-section-description">
+                Comprehensive keyboard navigation for power users and accessibility.
+                Press <kbd>?</kbd> or <kbd>/</kbd> to show the complete help overlay.
+            </p>
+            
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <span class="shortcut-key">1-14</span>
+                    <span class="shortcut-description">Direct chapter access</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">←→</span>
+                    <span class="shortcut-description">Previous/Next chapter</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">C</span>
+                    <span class="shortcut-description">Toggle constellation</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">O</span>
+                    <span class="shortcut-description">Toggle overview</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">ESC</span>
+                    <span class="shortcut-description">Return to main</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">?</span>
+                    <span class="shortcut-description">Show help</span>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- D3.js for Constellation -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Navigation Components -->
+    <script src="../../navigation/core/concept-constellation.js"></script>
+    <script src="../../navigation/interactions/magnetic-cursor.js"></script>
+    <script src="../../navigation/core/keyboard-shortcuts.js"></script>
+    
+    <!-- Demo JavaScript -->
+    <script>
+        // Demo initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initChapterGrid();
+            initLiquidTransitions();
+            initConstellationDemo();
+            initKeyboardNavigation();
+            
+            // Add some interactive feedback
+            addInteractiveFeedback();
+        });
+        
+        function initChapterGrid() {
+            const grid = document.getElementById('chapter-grid');
+            const chapters = [
+                { num: 1, title: 'The Ego', desc: 'The conscious personality' },
+                { num: 2, title: 'The Shadow', desc: 'The hidden aspects of personality' },
+                { num: 3, title: 'The Anima', desc: 'The feminine aspect in men' },
+                { num: 4, title: 'The Animus', desc: 'The masculine aspect in women' },
+                { num: 5, title: 'The Persona', desc: 'The mask we present to the world' },
+                { num: 6, title: 'Collective Unconscious', desc: 'Shared unconscious content' },
+                { num: 7, title: 'Archetypes', desc: 'Universal symbols and patterns' },
+                { num: 8, title: 'The Wise Old Man', desc: 'The archetype of wisdom' },
+                { num: 9, title: 'The Trickster', desc: 'The archetype of transformation' },
+                { num: 10, title: 'Transformation', desc: 'The process of change' },
+                { num: 11, title: 'The Miracle', desc: 'Extraordinary experiences' },
+                { num: 12, title: 'The Mandala', desc: 'Symbol of wholeness' },
+                { num: 13, title: 'Individuation', desc: 'The process of becoming whole' },
+                { num: 14, title: 'The Self', desc: 'The unified conscious and unconscious' }
+            ];
+            
+            chapters.forEach(chapter => {
+                const card = document.createElement('div');
+                card.className = 'nav-card';
+                card.setAttribute('data-chapter', chapter.num);
+                card.innerHTML = `
+                    <div class="nav-card-number">${chapter.num}</div>
+                    <h3 class="nav-card-title">${chapter.title}</h3>
+                    <p class="nav-card-description">${chapter.desc}</p>
+                `;
+                
+                card.addEventListener('click', () => {
+                    navigateToChapter(chapter.num);
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function initLiquidTransitions() {
+            const buttons = document.querySelectorAll('[data-transition]');
+            const overlay = document.getElementById('liquid-overlay');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const transitionType = button.getAttribute('data-transition');
+                    triggerLiquidTransition(transitionType, e);
+                });
+            });
+        }
+        
+        function triggerLiquidTransition(type, event) {
+            const overlay = document.getElementById('liquid-overlay');
+            
+            // Set origin point based on click position
+            if (event) {
+                const x = (event.clientX / window.innerWidth) * 100;
+                const y = (event.clientY / window.innerHeight) * 100;
+                overlay.style.setProperty('--liquid-origin-x', x + '%');
+                overlay.style.setProperty('--liquid-origin-y', y + '%');
+            }
+            
+            // Reset classes
+            overlay.className = 'liquid-transition';
+            
+            // Add transition type class
+            if (type === 'ripple') {
+                overlay.classList.add('liquid-transition--ripple');
+            } else if (type === 'organic') {
+                overlay.classList.add('liquid-transition--organic');
+            } else if (type === 'horizontal') {
+                overlay.classList.add('liquid-transition--wipe-horizontal');
+            } else if (type === 'vertical') {
+                overlay.classList.add('liquid-transition--wipe-vertical');
+            }
+            
+            // Trigger animation
+            overlay.classList.add('liquid-transition--expanding');
+            
+            // Reset after animation
+            setTimeout(() => {
+                overlay.classList.remove('liquid-transition--expanding');
+                overlay.classList.add('liquid-transition--contracting');
+                
+                setTimeout(() => {
+                    overlay.classList.add('liquid-transition--hidden');
+                }, 800);
+            }, 800);
+        }
+        
+        function initConstellationDemo() {
+            // Only initialize if D3 is available
+            if (typeof d3 !== 'undefined' && typeof ConceptConstellation !== 'undefined') {
+                const container = document.getElementById('constellation-container');
+                container.innerHTML = ''; // Clear placeholder
+                
+                try {
+                    window.constellation = new ConceptConstellation(container, {
+                        width: container.offsetWidth,
+                        height: 400
+                    });
+                    
+                    // Bind control buttons
+                    document.getElementById('reset-constellation').addEventListener('click', () => {
+                        window.constellation.resetView();
+                    });
+                    
+                    document.getElementById('focus-ego').addEventListener('click', () => {
+                        window.constellation.focusOnNode('ego');
+                    });
+                    
+                    document.getElementById('focus-self').addEventListener('click', () => {
+                        window.constellation.focusOnNode('self');
+                    });
+                    
+                    // Listen for navigation events
+                    container.addEventListener('constellation:navigate', (e) => {
+                        console.log('Navigate to:', e.detail);
+                        navigateToChapter(e.detail.chapter);
+                    });
+                } catch (error) {
+                    console.error('Error initializing constellation:', error);
+                }
+            }
+        }
+        
+        function initKeyboardNavigation() {
+            if (typeof KeyboardNavigation !== 'undefined') {
+                window.keyboardNav = new KeyboardNavigation({
+                    onChapterChange: (chapter) => {
+                        console.log('Keyboard navigation to chapter:', chapter);
+                        navigateToChapter(chapter);
+                    },
+                    onConstellationToggle: (visible) => {
+                        console.log('Constellation toggle:', visible);
+                        // In a real implementation, this would show/hide the constellation
+                    },
+                    onOverviewToggle: (visible) => {
+                        console.log('Overview toggle:', visible);
+                        // In a real implementation, this would show/hide the overview
+                    }
+                });
+            }
+        }
+        
+        function navigateToChapter(chapterNum) {
+            console.log(`Navigating to Chapter ${chapterNum}`);
+            
+            // Update visual feedback
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.classList.remove('nav-card--active');
+            });
+            
+            const targetCard = document.querySelector(`[data-chapter="${chapterNum}"]`);
+            if (targetCard) {
+                targetCard.classList.add('nav-card--active');
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            
+            // Trigger liquid transition
+            triggerLiquidTransition('expand');
+            
+            // Announce to screen reader
+            const announcement = document.createElement('div');
+            announcement.className = 'sr-only';
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.textContent = `Navigated to Chapter ${chapterNum}`;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+        
+        function addInteractiveFeedback() {
+            // Add active state to nav cards
+            const style = document.createElement('style');
+            style.textContent = `
+                .nav-card--active {
+                    background: var(--surface-active) !important;
+                    border-color: var(--text-primary) !important;
+                    transform: translateY(-2px) scale(1.02) !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add click feedback to magnetic targets
+            document.querySelectorAll('.magnetic-target').forEach(target => {
+                target.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    target.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        target.style.transform = '';
+                    }, 150);
+                    
+                    console.log('Magnetic target clicked:', target.textContent);
+                });
+            });
+        }
+        
+        // Handle window resize for constellation
+        window.addEventListener('resize', () => {
+            if (window.constellation) {
+                const container = document.getElementById('constellation-container');
+                window.constellation.options.width = container.offsetWidth;
+                // In a real implementation, you'd update the SVG viewBox
+            }
+        });
+    </script>
+</body>
+</html>

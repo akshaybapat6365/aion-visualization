@@ -34,13 +34,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    # Claude automation placeholder - to be implemented
     - name: Claude Auto Review & Management
-      uses: anthropic/claude-code-review@v2
-      with:
-        auto-merge: true
-        auto-fix: true
-        run-tests: true
-        update-docs: true
+      run: |
+        echo "Claude automation task placeholder"
+        echo "Manual review process active"
     
     - name: Run Comprehensive Tests
       run: |
