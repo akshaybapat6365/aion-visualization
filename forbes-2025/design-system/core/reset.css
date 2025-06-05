@@ -1,0 +1,275 @@
+/**
+ * Aion Design System - CSS Reset
+ * 
+ * A minimal, modern CSS reset that preserves useful browser defaults
+ * while removing inconsistencies. Optimized for Forbes 2025 submission.
+ */
+
+/* ===================================================================
+ * Box Model & Base Styles
+ * =================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Better text rendering */
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  
+  /* Prevent zoom on iOS */
+  touch-action: manipulation;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  
+  /* Base typography */
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  
+  /* Prevent font scaling in landscape */
+  -webkit-text-size-adjust: 100%;
+  
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===================================================================
+ * Typography Reset
+ * =================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/* ===================================================================
+ * Interactive Elements
+ * =================================================================== */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+  cursor: pointer;
+}
+
+button:disabled,
+[type='button']:disabled,
+[type='reset']:disabled,
+[type='submit']:disabled {
+  cursor: default;
+}
+
+input,
+textarea {
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1;
+  color: var(--text-muted);
+}
+
+/* ===================================================================
+ * Lists
+ * =================================================================== */
+
+ol, ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===================================================================
+ * Media Elements
+ * =================================================================== */
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
+  overflow: hidden;
+}
+
+/* ===================================================================
+ * Tables
+ * =================================================================== */
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* ===================================================================
+ * Forms
+ * =================================================================== */
+
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+/* ===================================================================
+ * Focus Management
+ * =================================================================== */
+
+/* Remove default focus styles */
+:focus {
+  outline: none;
+}
+
+/* Custom focus indicator */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ===================================================================
+ * Accessibility
+ * =================================================================== */
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===================================================================
+ * Utilities
+ * =================================================================== */
+
+/* Hide scrollbars while maintaining functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* ===================================================================
+ * Print Styles
+ * =================================================================== */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  
+  img {
+    page-break-inside: avoid;
+  }
+  
+  h2,
+  h3,
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}

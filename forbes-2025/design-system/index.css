@@ -1,0 +1,125 @@
+/**
+ * Aion Design System - Main Entry Point
+ * 
+ * A complete design system for the Forbes 2025 Best Web Design award.
+ * Monochromatic excellence meets sophisticated interaction design.
+ * 
+ * Import order is critical for proper cascade and specificity.
+ */
+
+/* ===================================================================
+ * Core Foundation
+ * Load in order of specificity: tokens → reset → base styles
+ * =================================================================== */
+
+/* Design tokens - CSS custom properties */
+@import './core/colors.css';
+@import './core/typography.css';
+@import './core/spacing.css';
+
+/* CSS reset - normalize browser defaults */
+@import './core/reset.css';
+
+/* Layout system - grid, flexbox, positioning */
+@import './core/layout.css';
+
+/* ===================================================================
+ * Component Library
+ * =================================================================== */
+
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/navigation.css';
+@import './components/forms.css';
+@import './components/modals.css';
+
+/* ===================================================================
+ * Animation System
+ * =================================================================== */
+
+@import './animations/transitions.css';
+@import './animations/interactions.css';
+@import './animations/loading.css';
+@import './animations/reveals.css';
+
+/* ===================================================================
+ * Utility Classes
+ * Final layer with highest specificity
+ * =================================================================== */
+
+@import './utilities/helpers.css';
+@import './utilities/responsive.css';
+@import './utilities/print.css';
+
+/* ===================================================================
+ * Global Overrides
+ * Last chance for critical fixes
+ * =================================================================== */
+
+/* Ensure consistent font rendering across browsers */
+body {
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'pnum' 1, 'tnum' 0, 'onum' 1, 'lnum' 0, 'dlig' 0;
+}
+
+/* Improve button accessibility */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Ensure interactive elements have proper cursor */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+html {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ===================================================================
+ * Performance Optimizations
+ * =================================================================== */
+
+/* Enable hardware acceleration for smooth animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* GPU compositing for complex layouts */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ===================================================================
+ * Development Helpers (Remove in production)
+ * =================================================================== */
+
+/* 
+[data-debug] * {
+  outline: 1px solid red;
+}
+
+[data-debug-grid] {
+  background-image: 
+    linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: var(--space-4) var(--space-4);
+}
+*/

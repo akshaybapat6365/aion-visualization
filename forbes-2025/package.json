@@ -1,0 +1,46 @@
+{
+  "name": "aion-design-system-forbes-2025",
+  "version": "1.0.0",
+  "description": "Forbes 2025 Best Web Design Award - Aion Visualization Design System",
+  "type": "module",
+  "scripts": {
+    "test": "node quality-control/scripts/screenshot-test.js",
+    "test:watch": "nodemon quality-control/scripts/screenshot-test.js",
+    "test:components": "node quality-control/scripts/test-components.js",
+    "serve": "python3 -m http.server 3000 || python -m http.server 3000",
+    "build": "node scripts/build-system.js",
+    "validate": "node quality-control/scripts/validate-system.js",
+    "analyze": "node quality-control/scripts/analyze-quality.js",
+    "report": "node quality-control/scripts/generate-report.js"
+  },
+  "keywords": [
+    "design-system",
+    "css",
+    "monochromatic",
+    "forbes-2025",
+    "jung",
+    "aion",
+    "visualization"
+  ],
+  "author": "Akshay Bapat",
+  "license": "MIT",
+  "devDependencies": {
+    "puppeteer": "^21.5.0",
+    "sharp": "^0.33.0",
+    "jimp": "^0.22.0",
+    "color": "^4.2.3",
+    "css-tree": "^2.3.1",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1",
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "glob": "^10.3.10",
+    "chalk": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
