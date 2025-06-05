@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AION - Forbes 2025 Design Preview</title>
+    
+    <style>
+        /* Design System - Monochromatic Excellence */
+        :root {
+            /* Pure */
+            --black: #000000;
+            --white: #FFFFFF;
+            
+            /* Greys */
+            --grey-900: #0A0A0A;
+            --grey-800: #141414;
+            --grey-700: #1F1F1F;
+            --grey-600: #2A2A2A;
+            --grey-500: #3F3F3F;
+            --grey-400: #555555;
+            --grey-300: #707070;
+            --grey-200: #8A8A8A;
+            --grey-100: #A5A5A5;
+            --grey-050: #F0F0F0;
+            
+            /* Semantic */
+            --bg: var(--grey-900);
+            --surface: var(--grey-800);
+            --border: var(--grey-700);
+            --text-primary: var(--grey-050);
+            --text-secondary: var(--grey-300);
+            
+            /* Typography */
+            --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-body: Georgia, serif;
+            
+            /* Timing */
+            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Base */
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--grey-400);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 100ms ease;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+        
+        .cursor.hover {
+            width: 40px;
+            height: 40px;
+            border-color: var(--white);
+        }
+        
+        /* Typography */
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--text-secondary);
+        }
+        
+        /* Landing */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-title {
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+        
+        .hero-subtitle {
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.6s;
+            margin-bottom: 3rem;
+        }
+        
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            border: 1px solid var(--grey-600);
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all var(--transition);
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.9s;
+            cursor: none;
+        }
+        
+        .btn:hover {
+            background: var(--grey-800);
+            border-color: var(--grey-500);
+            transform: translateY(-2px);
+        }
+        
+        /* Chapter Grid */
+        .chapters {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            margin-top: 3rem;
+        }
+        
+        .chapter-card {
+            background: var(--bg);
+            padding: 3rem 2rem;
+            transition: all var(--transition);
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chapter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, var(--grey-800));
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        
+        .chapter-card:hover {
+            background: var(--surface);
+        }
+        
+        .chapter-card:hover::before {
+            opacity: 1;
+        }
+        
+        .chapter-number {
+            font-size: 3rem;
+            font-weight: 100;
+            color: var(--grey-600);
+            margin-bottom: 1rem;
+            font-family: var(--font-display);
+        }
+        
+        .chapter-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chapter-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--bg), transparent);
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+        
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color var(--transition);
+            cursor: none;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--grey-600);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+            }
+            50% {
+                transform: translateY(-50px) translateX(-50px);
+            }
+            75% {
+                transform: translateY(-150px) translateX(25px);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .chapter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">AION</a>
+            <ul class="nav-menu">
+                <li><a href="#chapters" class="nav-link">Chapters</a></li>
+                <li><a href="#concepts" class="nav-link">Concepts</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="hero-title">AION</h1>
+        <h2 class="hero-subtitle">Jung's Masterwork Visualized</h2>
+        <a href="#chapters" class="btn">Begin Journey</a>
+    </section>
+    
+    <!-- Chapters -->
+    <section class="chapters" id="chapters">
+        <h2>Select Your Path</h2>
+        <div class="chapter-grid">
+            <div class="chapter-card">
+                <div class="chapter-number">01</div>
+                <h3 class="chapter-title">The Ego</h3>
+                <p class="chapter-subtitle">The Conscious Personality</p>
+            </div>
+            <div class="chapter-card">
+                <div class="chapter-number">02</div>
+                <h3 class="chapter-title">The Shadow</h3>
+                <p class="chapter-subtitle">The Hidden Self</p>
+            </div>
+            <div class="chapter-card">
+                <div class="chapter-number">03</div>
+                <h3 class="chapter-title">The Syzygy</h3>
+                <p class="chapter-subtitle">Anima and Animus</p>
+            </div>
+            <div class="chapter-card">
+                <div class="chapter-number">04</div>
+                <h3 class="chapter-title">The Self</h3>
+                <p class="chapter-subtitle">The Unified Psyche</p>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        // Smooth cursor animation
+        function animateCursor() {
+            const dx = mouseX - cursorX;
+            const dy = mouseY - cursorY;
+            
+            cursorX += dx * 0.1;
+            cursorY += dy * 0.1;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+        
+        // Hover effects
+        const hoverElements = document.querySelectorAll('a, .chapter-card');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+        
+        // Particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (20 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
