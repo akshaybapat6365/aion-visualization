@@ -16,9 +16,14 @@
     "deploy": "echo 'Auto-deployed via GitHub Pages'"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "@playwright/test": "^1.40.0",
     "@lhci/cli": "^0.13.0",
-    "eslint": "^8.56.0"
+    "@playwright/test": "^1.52.0",
+    "babel-jest": "^30.0.0-beta.3",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "jest-html-reporters": "^3.1.7",
+    "lighthouse": "^12.6.1",
+    "lighthouse-ci": "^1.13.1",
+    "puppeteer": "^24.10.0"
   }
 }
