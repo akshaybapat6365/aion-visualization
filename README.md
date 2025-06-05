@@ -11,7 +11,7 @@ AION transforms Jung's profound psychological concepts into an interactive digit
 ## Features
 
 - **14 Interactive Chapters** - Complete journey through Jung's work
-- **Monochromatic Design** - Forbes 2025 aesthetic with 10 shades of grey
+- **Monochromatic Design** - Premium aesthetic with 10 shades of grey
 - **WebGL Visualizations** - GPU-accelerated archetypal representations  
 - **Concept Constellation** - Navigate ideas in 3D space
 - **Liquid Transitions** - Morphing animations between states
