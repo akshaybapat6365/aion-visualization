@@ -158,8 +158,8 @@ jobs:
           # Create build directory
           mkdir -p build
           
-          # Copy all files to build directory
-          cp -r . build/
+          # Copy all files to build directory excluding build itself
+          rsync -av --exclude='build' --exclude='.git' . build/
           cd build
           
           # Remove development files
