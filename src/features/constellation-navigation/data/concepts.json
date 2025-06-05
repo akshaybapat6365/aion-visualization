@@ -1,0 +1,216 @@
+{
+  "concepts": [
+    {
+      "id": "ego",
+      "name": "The Ego",
+      "description": "The center of consciousness and personal identity",
+      "chapter": 1,
+      "importance": 10,
+      "position": [0, 0, 0],
+      "color": "#FFFFFF",
+      "connections": ["shadow", "self", "persona"]
+    },
+    {
+      "id": "shadow",
+      "name": "The Shadow",
+      "description": "The repressed and hidden aspects of personality",
+      "chapter": 2,
+      "importance": 9,
+      "position": [-2, 0, 0],
+      "color": "#171717",
+      "connections": ["ego", "self", "anima", "animus"]
+    },
+    {
+      "id": "anima",
+      "name": "The Anima",
+      "description": "The feminine aspect within the masculine psyche",
+      "chapter": 3,
+      "importance": 8,
+      "position": [2, 1, 0],
+      "color": "#E5E5E5",
+      "connections": ["shadow", "animus", "self", "syzygy"]
+    },
+    {
+      "id": "animus",
+      "name": "The Animus",
+      "description": "The masculine aspect within the feminine psyche",
+      "chapter": 3,
+      "importance": 8,
+      "position": [2, -1, 0],
+      "color": "#D4D4D4",
+      "connections": ["shadow", "anima", "self", "syzygy"]
+    },
+    {
+      "id": "syzygy",
+      "name": "The Syzygy",
+      "description": "The divine couple, unity of opposites",
+      "chapter": 3,
+      "importance": 7,
+      "position": [3, 0, 1],
+      "color": "#A3A3A3",
+      "connections": ["anima", "animus", "self", "hierosgamos"]
+    },
+    {
+      "id": "self",
+      "name": "The Self",
+      "description": "The unified whole of conscious and unconscious",
+      "chapter": 4,
+      "importance": 10,
+      "position": [0, 0, 3],
+      "color": "#FAFAFA",
+      "connections": ["ego", "shadow", "anima", "animus", "christ", "individuation"]
+    },
+    {
+      "id": "christ",
+      "name": "Christ Symbol",
+      "description": "The archetype of the Self in Western tradition",
+      "chapter": 5,
+      "importance": 9,
+      "position": [0, 2, 2],
+      "color": "#F5F5F5",
+      "connections": ["self", "fish", "antichrist", "quaternity"]
+    },
+    {
+      "id": "fish",
+      "name": "The Fish",
+      "description": "Symbol of Christ and the Piscean Age",
+      "chapter": 6,
+      "importance": 7,
+      "position": [-1, 2, 1],
+      "color": "#737373",
+      "connections": ["christ", "aquarius", "pisces", "astrological"]
+    },
+    {
+      "id": "gnosticism",
+      "name": "Gnosticism",
+      "description": "Ancient wisdom tradition of direct spiritual knowledge",
+      "chapter": 7,
+      "importance": 8,
+      "position": [-2, -1, 2],
+      "color": "#525252",
+      "connections": ["alchemy", "christ", "self", "naassenes"]
+    },
+    {
+      "id": "alchemy",
+      "name": "Alchemy",
+      "description": "The art of transformation, both material and spiritual",
+      "chapter": 8,
+      "importance": 9,
+      "position": [-3, 0, 1],
+      "color": "#404040",
+      "connections": ["gnosticism", "self", "transformation", "mercurius"]
+    },
+    {
+      "id": "transformation",
+      "name": "Transformation",
+      "description": "The process of psychological and spiritual change",
+      "chapter": 9,
+      "importance": 8,
+      "position": [-1, -2, 2],
+      "color": "#262626",
+      "connections": ["alchemy", "individuation", "self", "rebirth"]
+    },
+    {
+      "id": "individuation",
+      "name": "Individuation",
+      "description": "The process of becoming a whole, integrated person",
+      "chapter": 10,
+      "importance": 10,
+      "position": [1, -2, 3],
+      "color": "#FFFFFF",
+      "connections": ["self", "transformation", "wholeness", "ego"]
+    },
+    {
+      "id": "quaternity",
+      "name": "Quaternity",
+      "description": "The fourfold structure of wholeness",
+      "chapter": 11,
+      "importance": 8,
+      "position": [2, 2, 2],
+      "color": "#E5E5E5",
+      "connections": ["christ", "self", "mandala", "trinity"]
+    },
+    {
+      "id": "antichrist",
+      "name": "Antichrist",
+      "description": "The shadow aspect of the Christ symbol",
+      "chapter": 12,
+      "importance": 7,
+      "position": [0, -2, 1],
+      "color": "#171717",
+      "connections": ["christ", "shadow", "evil", "opposites"]
+    },
+    {
+      "id": "pisces",
+      "name": "Piscean Age",
+      "description": "The astrological age of duality and opposition",
+      "chapter": 13,
+      "importance": 7,
+      "position": [-2, 1, -1],
+      "color": "#737373",
+      "connections": ["fish", "aquarius", "astrological", "christ"]
+    },
+    {
+      "id": "aquarius",
+      "name": "Aquarian Age",
+      "description": "The coming age of unity and consciousness",
+      "chapter": 14,
+      "importance": 8,
+      "position": [2, 1, -1],
+      "color": "#A3A3A3",
+      "connections": ["pisces", "fish", "future", "wholeness"]
+    },
+    {
+      "id": "persona",
+      "name": "The Persona",
+      "description": "The mask we wear in social situations",
+      "chapter": 1,
+      "importance": 6,
+      "position": [1, 1, -1],
+      "color": "#D4D4D4",
+      "connections": ["ego", "shadow", "mask"]
+    },
+    {
+      "id": "wholeness",
+      "name": "Wholeness",
+      "description": "The state of complete integration",
+      "chapter": 14,
+      "importance": 9,
+      "position": [0, 0, 4],
+      "color": "#FAFAFA",
+      "connections": ["individuation", "self", "aquarius", "completion"]
+    }
+  ],
+  "relationships": [
+    {
+      "source": "ego",
+      "target": "shadow",
+      "strength": 1.0,
+      "type": "opposition"
+    },
+    {
+      "source": "ego",
+      "target": "self",
+      "strength": 0.8,
+      "type": "aspiration"
+    },
+    {
+      "source": "anima",
+      "target": "animus",
+      "strength": 1.0,
+      "type": "syzygy"
+    },
+    {
+      "source": "christ",
+      "target": "antichrist",
+      "strength": 1.0,
+      "type": "opposition"
+    },
+    {
+      "source": "pisces",
+      "target": "aquarius",
+      "strength": 0.9,
+      "type": "succession"
+    }
+  ]
+}

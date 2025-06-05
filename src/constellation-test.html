@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AION - Concept Constellation Test</title>
+    
+    <!-- Premium Design System -->
+    <link rel="stylesheet" href="design-system/premium/colors.css">
+    <link rel="stylesheet" href="design-system/premium/typography.css">
+    <link rel="stylesheet" href="design-system/premium/layout.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--pure-black);
+            color: var(--pure-white);
+            overflow: hidden;
+        }
+        
+        #constellation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .controls {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--grey-800);
+            max-width: 300px;
+        }
+        
+        .controls h3 {
+            margin-bottom: 1rem;
+            font-size: var(--text-lg);
+        }
+        
+        .controls p {
+            margin-bottom: 0.5rem;
+            font-size: var(--text-sm);
+            color: var(--grey-400);
+        }
+        
+        .controls kbd {
+            background: var(--grey-900);
+            padding: 0.2rem 0.4rem;
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+        }
+        
+        .node-info {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 4px;
+            border: 1px solid var(--grey-800);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            max-width: 500px;
+        }
+        
+        .node-info.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .node-info h2 {
+            margin-bottom: 0.5rem;
+            font-size: var(--text-2xl);
+        }
+        
+        .node-info .chapter {
+            color: var(--grey-500);
+            font-size: var(--text-sm);
+            margin-bottom: 1rem;
+        }
+        
+        .performance {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--grey-800);
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+        }
+        
+        .performance div {
+            margin-bottom: 0.25rem;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--grey-800);
+            border-top-color: var(--pure-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .quality-selector {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--grey-800);
+        }
+        
+        .quality-selector label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: var(--text-sm);
+        }
+        
+        .quality-selector select {
+            background: var(--grey-900);
+            color: var(--pure-white);
+            border: 1px solid var(--grey-700);
+            padding: 0.5rem;
+            border-radius: 2px;
+            font-size: var(--text-sm);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="constellation-container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading constellation...</p>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <h3>Navigation Controls</h3>
+        <p><kbd>Click</kbd> Select node</p>
+        <p><kbd>Drag</kbd> Rotate view</p>
+        <p><kbd>Scroll</kbd> Zoom in/out</p>
+        <p><kbd>R</kbd> Reset view</p>
+        <p><kbd>←→↑↓</kbd> Rotate camera</p>
+        <p><kbd>Double Click</kbd> Reset view</p>
+    </div>
+    
+    <div class="performance" id="performance">
+        <div>FPS: <span id="fps">60</span></div>
+        <div>Draw Calls: <span id="drawCalls">0</span></div>
+        <div>Triangles: <span id="triangles">0</span></div>
+        <div>Memory: <span id="memory">0</span> MB</div>
+    </div>
+    
+    <div class="quality-selector">
+        <label for="quality">Quality:</label>
+        <select id="quality">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high" selected>High</option>
+            <option value="ultra">Ultra</option>
+        </select>
+    </div>
+    
+    <div class="node-info" id="nodeInfo">
+        <div class="chapter" id="nodeChapter">Chapter 1</div>
+        <h2 id="nodeName">The Ego</h2>
+        <p id="nodeDescription">The center of consciousness</p>
+    </div>
+
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
+    
+    <script type="module">
+        // Import constellation engine
+        import { ConstellationEngine } from './features/constellation-navigation/core/ConstellationEngine.js';
+        
+        // Load concept data
+        async function loadConceptData() {
+            const response = await fetch('./features/constellation-navigation/data/concepts.json');
+            return await response.json();
+        }
+        
+        // Initialize constellation
+        async function init() {
+            try {
+                // Load data
+                const conceptData = await loadConceptData();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Create constellation
+                const container = document.getElementById('constellation-container');
+                const engine = new ConstellationEngine(container, conceptData);
+                
+                // Node selection handler
+                container.addEventListener('nodeSelected', (event) => {
+                    const node = event.detail;
+                    const nodeInfo = document.getElementById('nodeInfo');
+                    
+                    document.getElementById('nodeChapter').textContent = `Chapter ${node.chapter}`;
+                    document.getElementById('nodeName').textContent = node.name;
+                    document.getElementById('nodeDescription').textContent = node.description;
+                    
+                    nodeInfo.classList.add('visible');
+                    
+                    // Hide after 5 seconds
+                    setTimeout(() => {
+                        nodeInfo.classList.remove('visible');
+                    }, 5000);
+                });
+                
+                // Quality selector
+                document.getElementById('quality').addEventListener('change', (event) => {
+                    engine.setQuality(event.target.value);
+                });
+                
+                // Performance monitoring
+                setInterval(() => {
+                    const stats = engine.getStats();
+                    document.getElementById('fps').textContent = stats.fps;
+                    document.getElementById('drawCalls').textContent = stats.drawCalls;
+                    document.getElementById('triangles').textContent = stats.triangles;
+                    document.getElementById('memory').textContent = (stats.memory / 1024 / 1024).toFixed(1);
+                }, 100);
+                
+                // Expose engine for debugging
+                window.constellationEngine = engine;
+                
+            } catch (error) {
+                console.error('Failed to initialize constellation:', error);
+                document.getElementById('loading').innerHTML = `
+                    <p style="color: var(--grey-500)">Failed to load constellation</p>
+                    <p style="font-size: var(--text-sm); margin-top: 1rem;">${error.message}</p>
+                `;
+            }
+        }
+        
+        // Start initialization
+        init();
+    </script>
+</body>
+</html>
