@@ -135,21 +135,21 @@ export class MagneticField {
       
       // Apply force based on type
       switch (source.type) {
-        case 'attract':
-          totalForce.x += forceDirection.x * forceMagnitude;
-          totalForce.y += forceDirection.y * forceMagnitude;
-          break;
-          
-        case 'repel':
-          totalForce.x -= forceDirection.x * forceMagnitude;
-          totalForce.y -= forceDirection.y * forceMagnitude;
-          break;
-          
-        case 'orbit':
-          // Perpendicular force for orbital motion
-          totalForce.x += -forceDirection.y * forceMagnitude * 0.5;
-          totalForce.y += forceDirection.x * forceMagnitude * 0.5;
-          break;
+      case 'attract':
+        totalForce.x += forceDirection.x * forceMagnitude;
+        totalForce.y += forceDirection.y * forceMagnitude;
+        break;
+        
+      case 'repel':
+        totalForce.x -= forceDirection.x * forceMagnitude;
+        totalForce.y -= forceDirection.y * forceMagnitude;
+        break;
+        
+      case 'orbit':
+        // Perpendicular force for orbital motion
+        totalForce.x += -forceDirection.y * forceMagnitude * 0.5;
+        totalForce.y += forceDirection.x * forceMagnitude * 0.5;
+        break;
       }
     });
     
