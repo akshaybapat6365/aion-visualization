@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Constellation Visual Check</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, sans-serif;
+            background: #000;
+            color: #fff;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #333;
+            background: #000;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            background: #111;
+            border-radius: 4px;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .info { color: #2196F3; }
+    </style>
+</head>
+<body>
+    <h1>Constellation Navigation Visual Check</h1>
+    
+    <div class="status" id="status">
+        <p class="info">Loading constellation...</p>
+    </div>
+    
+    <iframe id="constellation" src="../../../constellation-test.html"></iframe>
+    
+    <div class="status">
+        <h3>Quick Checks:</h3>
+        <ul id="checks">
+            <li>Loading...</li>
+        </ul>
+    </div>
+    
+    <script>
+        const iframe = document.getElementById('constellation');
+        const status = document.getElementById('status');
+        const checks = document.getElementById('checks');
+        
+        let checkResults = [];
+        
+        iframe.onload = () => {
+            status.innerHTML = '<p class="success">✓ Iframe loaded successfully</p>';
+            
+            setTimeout(() => {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    // Check for canvas
+                    const canvas = iframeDoc.querySelector('canvas');
+                    checkResults.push({
+                        test: 'Canvas element exists',
+                        passed: !!canvas
+                    });
+                    
+                    // Check for WebGL context
+                    if (canvas) {
+                        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                        checkResults.push({
+                            test: 'WebGL context available',
+                            passed: !!gl
+                        });
+                    }
+                    
+                    // Check for controls
+                    const controls = iframeDoc.querySelector('.controls');
+                    checkResults.push({
+                        test: 'Controls UI present',
+                        passed: !!controls
+                    });
+                    
+                    // Check for performance stats
+                    const fps = iframeDoc.getElementById('fps');
+                    checkResults.push({
+                        test: 'Performance monitoring active',
+                        passed: !!fps && fps.textContent !== '0'
+                    });
+                    
+                    // Display results
+                    checks.innerHTML = checkResults.map(result => 
+                        `<li class="${result.passed ? 'success' : 'error'}">
+                            ${result.passed ? '✓' : '✗'} ${result.test}
+                        </li>`
+                    ).join('');
+                    
+                    // Overall status
+                    const allPassed = checkResults.every(r => r.passed);
+                    if (allPassed) {
+                        status.innerHTML += '<p class="success">✓ All checks passed! Constellation should be visible.</p>';
+                    } else {
+                        status.innerHTML += '<p class="error">✗ Some checks failed. Check console for errors.</p>';
+                    }
+                    
+                } catch (error) {
+                    status.innerHTML += `<p class="error">✗ Error accessing iframe: ${error.message}</p>`;
+                }
+            }, 3000);
+        };
+        
+        iframe.onerror = (error) => {
+            status.innerHTML = `<p class="error">✗ Failed to load iframe: ${error}</p>`;
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3: Advanced Visualizations Demo - Aion</title>
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="design-system/core/reset.css">
+    <link rel="stylesheet" href="design-system/core/colors.css">
+    <link rel="stylesheet" href="design-system/core/typography.css">
+    <link rel="stylesheet" href="design-system/core/spacing.css">
+    <link rel="stylesheet" href="design-system/core/layout.css">
+    
+    <style>
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(circle at center, var(--grey-900) 0%, var(--bg-primary) 100%);
+        }
+        
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 100;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-4);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+        
+        .hero-subtitle {
+            font-size: var(--text-size-h3);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-12);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 0.3s forwards;
+        }
+        
+        .hero-description {
+            max-width: 600px;
+            font-size: var(--text-size-body);
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-8);
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 0.5s forwards;
+        }
+        
+        /* Feature Grid */
+        .features {
+            padding: var(--space-24) var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .features-header {
+            text-align: center;
+            margin-bottom: var(--space-16);
+        }
+        
+        .features-title {
+            font-size: var(--text-size-h1);
+            font-weight: 300;
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-8);
+            margin-bottom: var(--space-24);
+        }
+        
+        .feature-card {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            padding: var(--space-8);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.02) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-strong);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-number {
+            font-size: var(--text-size-display);
+            color: var(--grey-700);
+            font-weight: 100;
+            line-height: 1;
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-title {
+            font-size: var(--text-size-h2);
+            margin-bottom: var(--space-4);
+            font-weight: 300;
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .feature-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: gap 0.3s ease;
+        }
+        
+        .feature-link:hover {
+            gap: var(--space-4);
+        }
+        
+        .feature-link::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-link:hover::after {
+            transform: translateX(4px);
+        }
+        
+        /* Visualization Preview */
+        .visualization-preview {
+            background: var(--bg-primary);
+            padding: var(--space-24) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-8);
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: var(--space-12);
+        }
+        
+        .preview-title {
+            font-size: var(--text-size-h1);
+            font-weight: 300;
+            margin-bottom: var(--space-4);
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .preview-item {
+            aspect-ratio: 16/9;
+            background: var(--surface-primary);
+            border: 1px solid var(--border-default);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+        
+        .preview-item:hover {
+            transform: scale(1.02);
+            border-color: var(--border-strong);
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+        
+        .preview-item:hover .preview-image {
+            opacity: 1;
+        }
+        
+        .preview-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            padding: var(--space-6) var(--space-4) var(--space-4);
+            color: var(--text-primary);
+            font-size: var(--text-size-sm);
+        }
+        
+        /* Technical Details */
+        .technical-section {
+            padding: var(--space-24) var(--space-8);
+            background: var(--surface-primary);
+        }
+        
+        .technical-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-8);
+            margin-top: var(--space-12);
+        }
+        
+        .tech-item {
+            text-align: center;
+        }
+        
+        .tech-metric {
+            font-size: var(--text-size-display);
+            font-weight: 100;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .tech-label {
+            font-size: var(--text-size-sm);
+            color: var(--text-secondary);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: var(--space-24) var(--space-8);
+            text-align: center;
+            background: radial-gradient(circle at center, var(--grey-900) 0%, var(--bg-primary) 100%);
+        }
+        
+        .cta-title {
+            font-size: var(--text-size-h1);
+            font-weight: 300;
+            margin-bottom: var(--space-8);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: var(--space-6);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: var(--space-4) var(--space-8);
+            background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: var(--text-size-body);
+        }
+        
+        .cta-btn:hover {
+            background: var(--surface-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .cta-btn.primary {
+            background: var(--surface-secondary);
+            border-color: var(--text-secondary);
+        }
+        
+        .cta-btn.primary:hover {
+            background: var(--grey-700);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 class="hero-title">Phase 3: Advanced Visualizations</h1>
+        <p class="hero-subtitle">WebGL Mastery Meets Jungian Psychology</p>
+        <p class="hero-description">
+            Experience Jung's concepts through stunning 3D visualizations, immersive reading modes, 
+            and revolutionary interaction patterns. Every frame rendered at 60fps, every pixel 
+            perfectly monochromatic.
+        </p>
+    </section>
+    
+    <!-- Features -->
+    <section class="features">
+        <div class="features-header">
+            <h2 class="features-title">Visualization Systems</h2>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-number">01</div>
+                <h3 class="feature-title">Ego Sphere</h3>
+                <p class="feature-description">
+                    A transparent consciousness container with flowing thought streams, 
+                    memory nodes, and particle systems representing mental processes.
+                </p>
+                <a href="visualizations/chapters/chapter-1-ego/ego-scene.html" class="feature-link">
+                    Experience Chapter 1
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-number">02</div>
+                <h3 class="feature-title">Shadow Realm</h3>
+                <p class="feature-description">
+                    Dark mirror world with hidden forms, smoky apparitions, and 
+                    reflective surfaces revealing the repressed aspects of psyche.
+                </p>
+                <a href="#" class="feature-link">
+                    Coming Soon
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-number">03</div>
+                <h3 class="feature-title">Anima Garden</h3>
+                <p class="feature-description">
+                    Organic flowing forms with luminescent growth patterns, ethereal 
+                    fabrics, and shape-shifting feminine essence.
+                </p>
+                <a href="#" class="feature-link">
+                    Coming Soon
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-number">04</div>
+                <h3 class="feature-title">Animus Structure</h3>
+                <p class="feature-description">
+                    Crystalline architectural forms with sharp geometries, rotating 
+                    mechanisms, and piercing light beams of logic.
+                </p>
+                <a href="#" class="feature-link">
+                    Coming Soon
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-number">05</div>
+                <h3 class="feature-title">Self Mandala</h3>
+                <p class="feature-description">
+                    Dynamic mandala generator representing unity and wholeness, 
+                    integrating all previous elements into transcendent patterns.
+                </p>
+                <a href="#" class="feature-link">
+                    Coming Soon
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-number">06</div>
+                <h3 class="feature-title">Immersive Reader</h3>
+                <p class="feature-description">
+                    Revolutionary reading experience with multiple viewing modes, 
+                    synchronized visualizations, and adaptive typography.
+                </p>
+                <a href="#" class="feature-link">
+                    Try Reading Modes
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Visualization Preview -->
+    <section class="visualization-preview">
+        <div class="preview-container">
+            <div class="preview-header">
+                <h2 class="preview-title">Visual Excellence</h2>
+            </div>
+            
+            <div class="preview-grid">
+                <div class="preview-item">
+                    <div class="preview-label">Consciousness Streams</div>
+                </div>
+                
+                <div class="preview-item">
+                    <div class="preview-label">Memory Node Network</div>
+                </div>
+                
+                <div class="preview-item">
+                    <div class="preview-label">Particle Systems</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technical Details -->
+    <section class="technical-section">
+        <div class="technical-container">
+            <h2 class="features-title" style="text-align: center;">Technical Excellence</h2>
+            
+            <div class="technical-grid">
+                <div class="tech-item">
+                    <div class="tech-metric">60fps</div>
+                    <div class="tech-label">Consistent Performance</div>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-metric">&lt;500MB</div>
+                    <div class="tech-label">Memory Usage</div>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-metric">100%</div>
+                    <div class="tech-label">Monochromatic</div>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-metric">AAA</div>
+                    <div class="tech-label">Accessibility</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2 class="cta-title">Ready to Explore Jung's Psyche?</h2>
+        <div class="cta-buttons">
+            <a href="visualizations/chapters/chapter-1-ego/ego-scene.html" class="cta-btn primary">
+                Start with The Ego
+            </a>
+            <a href="design-system-index.html" class="cta-btn">
+                View Design System
+            </a>
+            <a href="index.html" class="cta-btn">
+                Back to Home
+            </a>
+        </div>
+    </section>
+    
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Intersection observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.8s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
