@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AION - Liquid Transitions Test</title>
+    
+    <!-- Premium Design System -->
+    <link rel="stylesheet" href="design-system/premium/colors.css">
+    <link rel="stylesheet" href="design-system/premium/typography.css">
+    <link rel="stylesheet" href="design-system/premium/layout.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--pure-black);
+            color: var(--pure-white);
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+        
+        /* Page containers */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--pure-black);
+        }
+        
+        .page-content {
+            text-align: center;
+            padding: 3rem;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        /* Page specific styles */
+        #page1 {
+            background: linear-gradient(135deg, var(--pure-black) 0%, var(--grey-950) 100%);
+        }
+        
+        #page2 {
+            background: linear-gradient(135deg, var(--grey-950) 0%, var(--grey-900) 100%);
+            display: none;
+        }
+        
+        #page3 {
+            background: linear-gradient(135deg, var(--grey-900) 0%, var(--grey-800) 100%);
+            display: none;
+        }
+        
+        /* Content styling */
+        .page h1 {
+            font-size: var(--text-5xl);
+            margin-bottom: 2rem;
+            letter-spacing: -0.05em;
+        }
+        
+        .page p {
+            font-size: var(--text-lg);
+            color: var(--grey-400);
+            margin-bottom: 3rem;
+            line-height: var(--leading-relaxed);
+        }
+        
+        /* Morphable elements */
+        .morph-box {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-2xl);
+            font-weight: var(--font-bold);
+            transition: transform 0.3s ease;
+        }
+        
+        .morph-box:hover {
+            transform: scale(1.05);
+        }
+        
+        #page1 .morph-box {
+            background: var(--grey-800);
+        }
+        
+        #page2 .morph-box {
+            background: var(--grey-700);
+            border-radius: 50%;
+        }
+        
+        #page3 .morph-box {
+            background: var(--grey-600);
+            border-radius: 10px;
+            transform: rotate(45deg);
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid var(--grey-800);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--grey-900);
+            border: 1px solid var(--grey-700);
+            color: var(--pure-white);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: var(--text-sm);
+            transition: all 0.3s ease;
+            font-family: var(--font-primary);
+        }
+        
+        .btn:hover {
+            background: var(--grey-800);
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Transition type selector */
+        .transition-type {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--grey-800);
+            z-index: 1000;
+        }
+        
+        .transition-type h3 {
+            font-size: var(--text-lg);
+            margin-bottom: 1rem;
+        }
+        
+        .transition-type label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: var(--text-sm);
+            color: var(--grey-400);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .transition-type label:hover {
+            color: var(--pure-white);
+        }
+        
+        .transition-type input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Info panel */
+        .info {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--grey-800);
+            max-width: 300px;
+            font-size: var(--text-sm);
+            color: var(--grey-400);
+        }
+        
+        .info h3 {
+            font-size: var(--text-lg);
+            color: var(--pure-white);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Loading state */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 2000;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--grey-800);
+            border-top-color: var(--pure-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pages -->
+    <div id="page1" class="page">
+        <div class="page-content">
+            <h1>The Ego</h1>
+            <p>The center of consciousness, where our journey begins.</p>
+            <div class="morph-box" data-morph="shape">EGO</div>
+        </div>
+    </div>
+    
+    <div id="page2" class="page">
+        <div class="page-content">
+            <h1>The Shadow</h1>
+            <p>The hidden aspects of personality, waiting to be integrated.</p>
+            <div class="morph-box" data-morph="shape">SHADOW</div>
+        </div>
+    </div>
+    
+    <div id="page3" class="page">
+        <div class="page-content">
+            <h1>The Self</h1>
+            <p>The unified whole, the goal of individuation.</p>
+            <div class="morph-box" data-morph="shape">SELF</div>
+        </div>
+    </div>
+    
+    <!-- Transition Type Selector -->
+    <div class="transition-type">
+        <h3>Transition Type</h3>
+        <label>
+            <input type="radio" name="transition" value="liquid" checked>
+            Liquid Fade
+        </label>
+        <label>
+            <input type="radio" name="transition" value="ripple">
+            Ripple Effect
+        </label>
+        <label>
+            <input type="radio" name="transition" value="morph">
+            Element Morph
+        </label>
+    </div>
+    
+    <!-- Info Panel -->
+    <div class="info">
+        <h3>Liquid Transitions</h3>
+        <p>Experience smooth, organic transitions between psychological concepts. Each animation represents the fluid nature of consciousness.</p>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn" onclick="goToPage(1)">Ego</button>
+        <button class="btn" onclick="goToPage(2)">Shadow</button>
+        <button class="btn" onclick="goToPage(3)">Self</button>
+    </div>
+    
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script type="module">
+        import { PageTransitions } from './features/liquid-transitions/animations/page-transitions.js';
+        
+        // Initialize page transitions
+        const transitions = new PageTransitions({
+            duration: 1000,
+            liquidStrength: 0.8
+        });
+        
+        // Current page tracking
+        let currentPage = 1;
+        const pages = {
+            1: document.getElementById('page1'),
+            2: document.getElementById('page2'),
+            3: document.getElementById('page3')
+        };
+        
+        // Make goToPage global
+        window.goToPage = async function(pageNum) {
+            if (pageNum === currentPage || transitions.isTransitioning) return;
+            
+            const fromPage = pages[currentPage];
+            const toPage = pages[pageNum];
+            const transitionType = document.querySelector('input[name="transition"]:checked').value;
+            
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            
+            try {
+                switch (transitionType) {
+                    case 'liquid':
+                        await transitions.liquidFade(fromPage, toPage);
+                        break;
+                    case 'ripple':
+                        // Calculate click position for ripple origin
+                        const event = window.event || {};
+                        const rect = fromPage.getBoundingClientRect();
+                        const origin = {
+                            x: (event.clientX - rect.left) / rect.width || 0.5,
+                            y: (event.clientY - rect.top) / rect.height || 0.5
+                        };
+                        await transitions.rippleTransition(fromPage, toPage, origin);
+                        break;
+                    case 'morph':
+                        await transitions.morphTransition(fromPage, toPage);
+                        break;
+                }
+                
+                currentPage = pageNum;
+            } catch (error) {
+                console.error('Transition error:', error);
+            }
+            
+            // Hide loading
+            document.getElementById('loading').classList.remove('active');
+        };
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case '1':
+                    goToPage(1);
+                    break;
+                case '2':
+                    goToPage(2);
+                    break;
+                case '3':
+                    goToPage(3);
+                    break;
+                case 'ArrowLeft':
+                    goToPage(Math.max(1, currentPage - 1));
+                    break;
+                case 'ArrowRight':
+                    goToPage(Math.min(3, currentPage + 1));
+                    break;
+            }
+        });
+        
+        // Touch gesture support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next page
+                    goToPage(Math.min(3, currentPage + 1));
+                } else {
+                    // Swipe right - previous page
+                    goToPage(Math.max(1, currentPage - 1));
+                }
+            }
+        }
+        
+        // Performance monitoring
+        let lastTime = performance.now();
+        let frames = 0;
+        
+        function measureFPS() {
+            frames++;
+            const currentTime = performance.now();
+            
+            if (currentTime >= lastTime + 1000) {
+                console.log(`FPS: ${Math.round(frames * 1000 / (currentTime - lastTime))}`);
+                frames = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        
+        // Start FPS monitoring in development
+        if (window.location.hostname === 'localhost') {
+            measureFPS();
+        }
+    </script>
+</body>
+</html>

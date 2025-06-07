@@ -1,0 +1,407 @@
+/**
+ * Liquid Morphing Transitions
+ * 
+ * Black ink spreading effects for seamless page transitions.
+ * Creates organic, fluid animations that maintain visual continuity
+ * while enhancing the mystical quality of the Aion experience.
+ * 
+ * Premium Design System Component
+ */
+
+/* ===================================================================
+ * CSS Custom Properties for Liquid Transitions
+ * =================================================================== */
+:root {
+  /* Transition timing */
+  --liquid-duration: 800ms;
+  --liquid-easing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --liquid-fast: 400ms;
+  --liquid-slow: 1200ms;
+  
+  /* Morphing properties */
+  --liquid-spread-size: 150vmax;
+  --liquid-origin-x: 50%;
+  --liquid-origin-y: 50%;
+  
+  /* Colors for morphing */
+  --liquid-primary: var(--pure-black);
+  --liquid-secondary: var(--grey-900);
+  --liquid-transparent: transparent;
+}
+
+/* ===================================================================
+ * Main Liquid Transition Overlay
+ * =================================================================== */
+.liquid-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.liquid-transition::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--liquid-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: none;
+}
+
+/* ===================================================================
+ * Liquid Spread Animation States
+ * =================================================================== */
+
+/* Initial state - hidden */
+.liquid-transition--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Expanding state - ink spreads out */
+.liquid-transition--expanding::before {
+  animation: liquid-expand var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+/* Contracting state - ink recedes */
+.liquid-transition--contracting::before {
+  width: var(--liquid-spread-size);
+  height: var(--liquid-spread-size);
+  animation: liquid-contract var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+/* ===================================================================
+ * Keyframe Animations
+ * =================================================================== */
+
+@keyframes liquid-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  
+  50% {
+    width: calc(var(--liquid-spread-size) * 0.7);
+    height: calc(var(--liquid-spread-size) * 0.7);
+    opacity: 1;
+  }
+  
+  100% {
+    width: var(--liquid-spread-size);
+    height: var(--liquid-spread-size);
+    opacity: 1;
+  }
+}
+
+@keyframes liquid-contract {
+  0% {
+    width: var(--liquid-spread-size);
+    height: var(--liquid-spread-size);
+    opacity: 1;
+  }
+  
+  50% {
+    width: calc(var(--liquid-spread-size) * 0.7);
+    height: calc(var(--liquid-spread-size) * 0.7);
+    opacity: 1;
+  }
+  
+  100% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* ===================================================================
+ * Ripple Effect Variations
+ * =================================================================== */
+
+/* Multiple concentric ripples */
+.liquid-transition--ripple::before {
+  animation: liquid-ripple var(--liquid-duration) var(--liquid-easing) forwards;
+  box-shadow: 
+    0 0 0 0 rgba(0, 0, 0, 0.7),
+    0 0 0 0 rgba(0, 0, 0, 0.5),
+    0 0 0 0 rgba(0, 0, 0, 0.3);
+}
+
+@keyframes liquid-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    box-shadow: 
+      0 0 0 0 rgba(0, 0, 0, 0.7),
+      0 0 0 0 rgba(0, 0, 0, 0.5),
+      0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  25% {
+    width: calc(var(--liquid-spread-size) * 0.3);
+    height: calc(var(--liquid-spread-size) * 0.3);
+    box-shadow: 
+      0 0 0 20px rgba(0, 0, 0, 0.7),
+      0 0 0 0 rgba(0, 0, 0, 0.5),
+      0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  50% {
+    width: calc(var(--liquid-spread-size) * 0.6);
+    height: calc(var(--liquid-spread-size) * 0.6);
+    box-shadow: 
+      0 0 0 40px rgba(0, 0, 0, 0.5),
+      0 0 0 20px rgba(0, 0, 0, 0.5),
+      0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  100% {
+    width: var(--liquid-spread-size);
+    height: var(--liquid-spread-size);
+    box-shadow: 
+      0 0 0 60px rgba(0, 0, 0, 0.3),
+      0 0 0 40px rgba(0, 0, 0, 0.3),
+      0 0 0 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===================================================================
+ * Gradient Morphing Effects
+ * =================================================================== */
+
+/* Radial gradient expansion */
+.liquid-transition--gradient::before {
+  background: radial-gradient(circle at center,
+    var(--liquid-primary) 0%,
+    var(--liquid-primary) 30%,
+    var(--liquid-secondary) 60%,
+    var(--liquid-transparent) 100%);
+  animation: liquid-gradient-expand var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+@keyframes liquid-gradient-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  
+  10% {
+    opacity: 1;
+  }
+  
+  100% {
+    width: var(--liquid-spread-size);
+    height: var(--liquid-spread-size);
+    opacity: 1;
+  }
+}
+
+/* ===================================================================
+ * Morphing Shape Variants
+ * =================================================================== */
+
+/* Organic blob morphing */
+.liquid-transition--organic::before {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  animation: liquid-organic var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+@keyframes liquid-organic {
+  0% {
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+  }
+  
+  25% {
+    width: calc(var(--liquid-spread-size) * 0.3);
+    height: calc(var(--liquid-spread-size) * 0.4);
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  
+  50% {
+    width: calc(var(--liquid-spread-size) * 0.6);
+    height: calc(var(--liquid-spread-size) * 0.7);
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+  
+  75% {
+    width: calc(var(--liquid-spread-size) * 0.8);
+    height: calc(var(--liquid-spread-size) * 0.9);
+    border-radius: 40% 60% 60% 40% / 60% 30% 60% 40%;
+  }
+  
+  100% {
+    width: var(--liquid-spread-size);
+    height: var(--liquid-spread-size);
+    border-radius: 50%;
+  }
+}
+
+/* ===================================================================
+ * Directional Morphing
+ * =================================================================== */
+
+/* Horizontal wipe */
+.liquid-transition--wipe-horizontal::before {
+  border-radius: 0;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  animation: liquid-wipe-horizontal var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+@keyframes liquid-wipe-horizontal {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+
+/* Vertical wipe */
+.liquid-transition--wipe-vertical::before {
+  border-radius: 0;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  animation: liquid-wipe-vertical var(--liquid-duration) var(--liquid-easing) forwards;
+}
+
+@keyframes liquid-wipe-vertical {
+  0% {
+    top: -100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+/* ===================================================================
+ * Performance Optimizations
+ * =================================================================== */
+
+.liquid-transition,
+.liquid-transition::before {
+  will-change: transform, width, height, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Hardware acceleration */
+.liquid-transition--expanding::before,
+.liquid-transition--contracting::before {
+  transform: translate(-50%, -50%) translateZ(0);
+}
+
+/* ===================================================================
+ * Responsive Adaptations
+ * =================================================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --liquid-duration: 600ms;
+    --liquid-spread-size: 120vmax;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --liquid-duration: 200ms;
+  }
+  
+  .liquid-transition--expanding::before,
+  .liquid-transition--contracting::before {
+    animation-duration: 200ms;
+  }
+  
+  /* Simplified animation for reduced motion */
+  .liquid-transition--expanding::before {
+    animation-name: liquid-fade-in;
+  }
+  
+  .liquid-transition--contracting::before {
+    animation-name: liquid-fade-out;
+  }
+  
+  @keyframes liquid-fade-in {
+    0% { opacity: 0; }
+    100% { 
+      opacity: 1;
+      width: var(--liquid-spread-size);
+      height: var(--liquid-spread-size);
+    }
+  }
+  
+  @keyframes liquid-fade-out {
+    0% { 
+      opacity: 1;
+      width: var(--liquid-spread-size);
+      height: var(--liquid-spread-size);
+    }
+    100% { opacity: 0; }
+  }
+}
+
+/* ===================================================================
+ * Print Styles
+ * =================================================================== */
+@media print {
+  .liquid-transition {
+    display: none;
+  }
+}
+
+/* ===================================================================
+ * Utility Classes
+ * =================================================================== */
+
+/* Fast transitions */
+.liquid-transition--fast {
+  --liquid-duration: var(--liquid-fast);
+}
+
+/* Slow transitions */
+.liquid-transition--slow {
+  --liquid-duration: var(--liquid-slow);
+}
+
+/* Custom origin point */
+.liquid-transition--origin-top {
+  --liquid-origin-y: 0%;
+}
+
+.liquid-transition--origin-bottom {
+  --liquid-origin-y: 100%;
+}
+
+.liquid-transition--origin-left {
+  --liquid-origin-x: 0%;
+}
+
+.liquid-transition--origin-right {
+  --liquid-origin-x: 100%;
+}
+
+/* Color variants */
+.liquid-transition--grey::before {
+  background: var(--grey-800);
+}
+
+.liquid-transition--white::before {
+  background: var(--pure-white);
+}
