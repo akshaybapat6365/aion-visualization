@@ -1,11 +1,14 @@
 /**
- * Service Worker - Phase 5 Production Optimization
- * Provides offline functionality, caching, and performance optimization
+ * Service Worker for Aion Visualization PWA
+ * Provides advanced offline functionality, caching, and performance optimization
+ * Version: 2.0.0 - Enhanced PWA Support
  */
 
-const CACHE_NAME = 'aion-visualization-v1.0.0';
-const STATIC_CACHE = 'aion-static-v1.0.0';
-const DYNAMIC_CACHE = 'aion-dynamic-v1.0.0';
+const CACHE_VERSION = 'aion-v2.0.0';
+const STATIC_CACHE = `${CACHE_VERSION}-static`;
+const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
+const IMAGE_CACHE = `${CACHE_VERSION}-images`;
+const ANALYTICS_CACHE = 'analytics-queue';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [

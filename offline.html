@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Aion Visualization</title>
+    <style>
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --text-primary: #F0F0F0;
+            --text-secondary: #8A8A8A;
+            --accent: #FFD700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .offline-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .offline-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .button:hover {
+            opacity: 0.8;
+        }
+        
+        .button-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cached-content {
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--bg-secondary);
+        }
+        
+        .cached-content h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+        
+        .cached-list {
+            list-style: none;
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .cached-list li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .cached-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            flex: 1;
+        }
+        
+        .cached-list a:hover {
+            color: var(--accent);
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .checking {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📱</div>
+        <h1>You're Offline</h1>
+        <p>
+            Don't worry! Aion Visualization works offline too. 
+            You can still access any content you've previously viewed.
+        </p>
+        
+        <div class="offline-actions">
+            <button class="button" onclick="checkConnection()">
+                🔄 Try Again
+            </button>
+            <a href="/" class="button button-secondary">
+                🏠 Go Home
+            </a>
+        </div>
+        
+        <div class="cached-content">
+            <h2>Available Offline</h2>
+            <ul class="cached-list" id="cached-list">
+                <li class="checking">
+                    <span class="status-indicator"></span>
+                    <span>Checking cached content...</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Check connection status
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                showNotification('Still offline. Please check your connection.');
+            }
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--bg-secondary);
+                color: var(--text-primary);
+                padding: 1rem 2rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                animation: slideUp 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // Load cached content
+        async function loadCachedContent() {
+            const list = document.getElementById('cached-list');
+            
+            try {
+                // Get cached pages from service worker
+                const cache = await caches.open('aion-v2.0.0-static');
+                const keys = await cache.keys();
+                
+                const pages = keys
+                    .filter(request => request.url.includes('.html'))
+                    .map(request => {
+                        const url = new URL(request.url);
+                        return {
+                            path: url.pathname,
+                            name: getPageName(url.pathname)
+                        };
+                    });
+                
+                if (pages.length === 0) {
+                    list.innerHTML = `
+                        <li>
+                            <span>No cached content yet. Visit pages while online to make them available offline.</span>
+                        </li>
+                    `;
+                } else {
+                    list.innerHTML = pages.map(page => `
+                        <li>
+                            <span class="status-indicator"></span>
+                            <a href="${page.path}">${page.name}</a>
+                        </li>
+                    `).join('');
+                }
+            } catch (error) {
+                list.innerHTML = `
+                    <li>
+                        <span>Unable to check cached content.</span>
+                    </li>
+                `;
+            }
+        }
+        
+        // Get friendly page name
+        function getPageName(path) {
+            if (path === '/' || path.endsWith('/index.html')) return 'Home';
+            if (path.includes('chapter')) {
+                const match = path.match(/chapter(\d+)/);
+                return match ? `Chapter ${match[1]}` : 'Chapter';
+            }
+            if (path.includes('timeline')) return 'Timeline';
+            if (path.includes('symbols')) return 'Symbols';
+            if (path.includes('showcase')) return 'Showcase';
+            return path.split('/').pop().replace('.html', '');
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            showNotification('Connection restored! Refreshing...');
+            setTimeout(() => window.location.reload(), 1000);
+        });
+        
+        window.addEventListener('offline', () => {
+            showNotification('Connection lost.');
+        });
+        
+        // Load cached content on page load
+        loadCachedContent();
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideUp {
+                from {
+                    transform: translate(-50%, 100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translate(-50%, 0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

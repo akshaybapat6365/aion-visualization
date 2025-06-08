@@ -38,6 +38,13 @@
     <meta name="keywords" content="Carl Jung, Aion, analytical psychology, visualization, interactive, chapters, individuation, archetypes">
     <meta name="author" content="Akshay Bapat">
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#FFD700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Aion">
+    <link rel="manifest" href="/manifest.json">
+    
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Aion - A Visual Journey Through Jung's Masterwork">
     <meta property="og:description" content="An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies.">
@@ -490,12 +497,35 @@
                 navigator.serviceWorker.register('/aion-visualization/sw.js')
                     .then(function(registration) {
                         console.log('ServiceWorker registration successful');
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker available
+                                    console.log('New service worker available');
+                                    if (confirm('New version available! Reload to update?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
                     })
                     .catch(function(error) {
                         console.log('ServiceWorker registration failed:', error);
                     });
             });
         }
+    </script>
+    
+    <!-- PWA Install Prompt -->
+    <script type="module">
+        import { pwaInstaller } from '/src/pwa/install-prompt.js';
+        
+        // Make installer available globally for debugging
+        window.pwaInstaller = pwaInstaller;
     </script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>

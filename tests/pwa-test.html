@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Test - Aion Visualization</title>
+    <style>
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --text-primary: #F0F0F0;
+            --text-secondary: #8A8A8A;
+            --accent: #FFD700;
+            --success: #4CAF50;
+            --error: #F44336;
+            --warning: #FF9800;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+        
+        .test-section {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-pass {
+            background: var(--success);
+            color: white;
+        }
+        
+        .status-fail {
+            background: var(--error);
+            color: white;
+        }
+        
+        .status-warning {
+            background: var(--warning);
+            color: black;
+        }
+        
+        .status-pending {
+            background: var(--text-secondary);
+            color: white;
+        }
+        
+        .test-button {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        .test-button:hover {
+            opacity: 0.8;
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        
+        .info-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA Functionality Test</h1>
+    
+    <div class="info-box">
+        <strong>Note:</strong> This page tests Progressive Web App features. Some tests require HTTPS and may not work on localhost.
+    </div>
+    
+    <div class="test-section">
+        <h2>Core Requirements</h2>
+        <div class="test-item">
+            <span>HTTPS Connection</span>
+            <span class="test-status" id="test-https">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Service Worker Support</span>
+            <span class="test-status" id="test-sw-support">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Service Worker Registered</span>
+            <span class="test-status" id="test-sw-registered">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Manifest File</span>
+            <span class="test-status" id="test-manifest">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Valid Manifest</span>
+            <span class="test-status" id="test-manifest-valid">Checking...</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>PWA Features</h2>
+        <div class="test-item">
+            <span>Installable</span>
+            <span class="test-status" id="test-installable">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Offline Support</span>
+            <span class="test-status" id="test-offline">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>App Installed</span>
+            <span class="test-status" id="test-installed">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Standalone Mode</span>
+            <span class="test-status" id="test-standalone">Checking...</span>
+        </div>
+        <div class="test-item">
+            <span>Update Available</span>
+            <span class="test-status" id="test-update">Checking...</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Cache Status</h2>
+        <div id="cache-info">Loading cache information...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Actions</h2>
+        <button class="test-button" onclick="testInstall()">Test Install Prompt</button>
+        <button class="test-button" onclick="testOffline()">Test Offline Mode</button>
+        <button class="test-button" onclick="clearCache()">Clear Cache</button>
+        <button class="test-button" onclick="updateServiceWorker()">Check for Updates</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Debug Info</h2>
+        <div class="code-block" id="debug-info">
+            Loading debug information...
+        </div>
+    </div>
+    
+    <script type="module">
+        // Test functions
+        async function runTests() {
+            // HTTPS test
+            updateStatus('test-https', 
+                location.protocol === 'https:' || location.hostname === 'localhost',
+                location.protocol
+            );
+            
+            // Service Worker support
+            updateStatus('test-sw-support', 
+                'serviceWorker' in navigator,
+                'serviceWorker' in navigator ? 'Supported' : 'Not supported'
+            );
+            
+            // Service Worker registration
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    updateStatus('test-sw-registered', 
+                        !!registration,
+                        registration ? 'Registered' : 'Not registered'
+                    );
+                    
+                    // Check for updates
+                    if (registration) {
+                        updateStatus('test-update',
+                            registration.waiting || registration.installing,
+                            registration.waiting ? 'Update available' : 'No updates'
+                        );
+                    }
+                } catch (e) {
+                    updateStatus('test-sw-registered', false, e.message);
+                }
+            }
+            
+            // Manifest test
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            updateStatus('test-manifest', 
+                !!manifestLink,
+                manifestLink ? 'Found' : 'Not found'
+            );
+            
+            // Validate manifest
+            if (manifestLink) {
+                try {
+                    const response = await fetch(manifestLink.href);
+                    const manifest = await response.json();
+                    updateStatus('test-manifest-valid',
+                        manifest.name && manifest.icons && manifest.start_url,
+                        'Valid'
+                    );
+                } catch (e) {
+                    updateStatus('test-manifest-valid', false, 'Invalid: ' + e.message);
+                }
+            }
+            
+            // Installable test
+            let installable = false;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                installable = true;
+                updateStatus('test-installable', true, 'Ready to install');
+                window.deferredPrompt = e;
+            });
+            
+            setTimeout(() => {
+                if (!installable) {
+                    updateStatus('test-installable', false, 'Not available');
+                }
+            }, 2000);
+            
+            // Offline support
+            updateStatus('test-offline',
+                'serviceWorker' in navigator && 'caches' in window,
+                'caches' in window ? 'Supported' : 'Not supported'
+            );
+            
+            // Installed test
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+                             window.navigator.standalone ||
+                             document.referrer.includes('android-app://');
+            updateStatus('test-installed', isInstalled, isInstalled ? 'Yes' : 'No');
+            
+            // Standalone test
+            updateStatus('test-standalone',
+                window.matchMedia('(display-mode: standalone)').matches,
+                window.matchMedia('(display-mode: standalone)').matches ? 'Yes' : 'No'
+            );
+            
+            // Load cache info
+            await loadCacheInfo();
+            
+            // Update debug info
+            updateDebugInfo();
+        }
+        
+        function updateStatus(testId, passed, detail = '') {
+            const element = document.getElementById(testId);
+            if (passed === true) {
+                element.className = 'test-status status-pass';
+                element.textContent = detail || 'PASS';
+            } else if (passed === false) {
+                element.className = 'test-status status-fail';
+                element.textContent = detail || 'FAIL';
+            } else if (passed === 'warning') {
+                element.className = 'test-status status-warning';
+                element.textContent = detail || 'WARNING';
+            } else {
+                element.className = 'test-status status-pending';
+                element.textContent = detail || 'PENDING';
+            }
+        }
+        
+        async function loadCacheInfo() {
+            const cacheInfo = document.getElementById('cache-info');
+            
+            try {
+                const cacheNames = await caches.keys();
+                let html = `<h3>Active Caches (${cacheNames.length})</h3>`;
+                
+                for (const cacheName of cacheNames) {
+                    const cache = await caches.open(cacheName);
+                    const keys = await cache.keys();
+                    html += `<div class="test-item">
+                        <span>${cacheName}</span>
+                        <span class="test-status status-pending">${keys.length} items</span>
+                    </div>`;
+                }
+                
+                cacheInfo.innerHTML = html;
+            } catch (e) {
+                cacheInfo.innerHTML = `<p>Error loading cache info: ${e.message}</p>`;
+            }
+        }
+        
+        function updateDebugInfo() {
+            const debugInfo = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                onLine: navigator.onLine,
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                hardwareConcurrency: navigator.hardwareConcurrency,
+                connection: navigator.connection ? {
+                    effectiveType: navigator.connection.effectiveType,
+                    downlink: navigator.connection.downlink,
+                    rtt: navigator.connection.rtt,
+                    saveData: navigator.connection.saveData
+                } : 'Not available',
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelRatio: window.devicePixelRatio
+                }
+            };
+            
+            document.getElementById('debug-info').textContent = 
+                JSON.stringify(debugInfo, null, 2);
+        }
+        
+        // Action functions
+        window.testInstall = async function() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                const { outcome } = await window.deferredPrompt.userChoice;
+                alert(`Install prompt result: ${outcome}`);
+            } else {
+                alert('Install prompt not available. Make sure you\'re on HTTPS and the app isn\'t already installed.');
+            }
+        };
+        
+        window.testOffline = function() {
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                // Go offline
+                alert('To test offline mode, use Chrome DevTools:\n1. Open DevTools (F12)\n2. Go to Network tab\n3. Check "Offline"\n4. Refresh the page');
+            } else {
+                alert('Service Worker not active. Please refresh the page and try again.');
+            }
+        };
+        
+        window.clearCache = async function() {
+            if (confirm('This will clear all cached data. Continue?')) {
+                try {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    alert('Cache cleared successfully!');
+                    loadCacheInfo();
+                } catch (e) {
+                    alert('Error clearing cache: ' + e.message);
+                }
+            }
+        };
+        
+        window.updateServiceWorker = async function() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        registration.update();
+                        alert('Checking for updates...');
+                    } else {
+                        alert('No service worker registration found.');
+                    }
+                } catch (e) {
+                    alert('Error checking for updates: ' + e.message);
+                }
+            }
+        };
+        
+        // Run tests on load
+        window.addEventListener('load', runTests);
+        
+        // Listen for online/offline
+        window.addEventListener('online', () => location.reload());
+        window.addEventListener('offline', () => {
+            document.body.style.opacity = '0.7';
+            alert('You are now offline!');
+        });
+    </script>
+</body>
+</html>
