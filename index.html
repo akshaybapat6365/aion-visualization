@@ -288,13 +288,13 @@
                 
                 <!-- Action Buttons -->
                 <div class="hero-buttons">
-                    <a href="/chapters/" class="button button-primary" data-transition="chapter">
+                    <a href="/chapters/" class="button button-primary magnetic-element" data-transition="chapter">
                         📚 Begin Journey
                     </a>
-                    <a href="/chapters/enhanced/1/" class="button button-secondary" data-transition="chapter">
+                    <a href="/chapters/enhanced/1/" data-transition="morph" class="button button-secondary magnetic-element" data-transition="chapter">
                         🚀 Enhanced Experience
                     </a>
-                    <a href="/timeline/" class="button button-secondary">
+                    <a href="/timeline/" class="button button-secondary magnetic-element">
                         📅 Timeline View
                     </a>
                 </div>
@@ -317,7 +317,7 @@
                         <div class="feature-icon">🎭</div>
                         <h3>Dual Experience Modes</h3>
                         <p>Choose between standard and enhanced versions for your preferred level of interaction.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">Try Enhanced</a>
+                        <a href="/chapters/enhanced/1/" data-transition="morph" class="feature-link" data-transition="chapter">Try Enhanced</a>
                     </div>
                     
                     <div class="feature-card">
@@ -331,7 +331,7 @@
                         <div class="feature-icon">🔗</div>
                         <h3>Clean URLs</h3>
                         <p>Navigate with intuitive URLs like /chapters/enhanced/1/ for easy bookmarking and sharing.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">See Example</a>
+                        <a href="/chapters/enhanced/1/" data-transition="morph" class="feature-link" data-transition="chapter">See Example</a>
                     </div>
                 </div>
             </div>
@@ -342,13 +342,13 @@
             <div class="container">
                 <h2 id="quicknav-heading" class="section-title">Quick Navigation</h2>
                 <div class="quick-nav-grid">
-                    <a href="/chapters/enhanced/1/" class="quick-nav-item" data-transition="chapter">
+                    <a href="/chapters/enhanced/1/" data-transition="morph" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">01</span>
                         <span class="nav-title">The Ego</span>
                         <span class="nav-description">Begin with the conscious personality</span>
                     </a>
                     
-                    <a href="/chapters/enhanced/5/" class="quick-nav-item" data-transition="chapter">
+                    <a href="/chapters/enhanced/5/" data-transition="morph" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">05</span>
                         <span class="nav-title">The Self</span>
                         <span class="nav-description">Explore the unified consciousness</span>
@@ -499,5 +499,13 @@
     </script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>
+
+    <!-- Premium Features -->
+    <script type="module">
+      import '/src/premium-features/index.js';
+      
+      // Enable premium features
+      console.log('✨ Premium features loaded');
+    </script>
 </body>
 </html>
