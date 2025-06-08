@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aion - A Visual Journey Through Jung's Masterwork</title>
@@ -30,7 +55,7 @@
     <link rel="canonical" href="https://akshaybapat6365.github.io/aion-visualization/">
     
     <!-- CSS Assets -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/bundle.min.css">
     <link rel="stylesheet" href="assets/css/loading-indicators.css">
     
     <!-- Favicon -->
@@ -197,8 +222,29 @@
     </style>
     <!-- Design System Features -->
     <link rel="stylesheet" href="assets/css/liquid-morphing.css">
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Router Loading Indicator -->
     <div class="router-loading" id="router-loading"></div>
     
@@ -212,7 +258,7 @@
     <nav class="nav" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <a href="/" class="nav-link active" aria-current="page">Home</a>
-            <a href="/chapters/" class="nav-link">Chapters</a>
+            <a href="/chapters/" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="/timeline/" class="nav-link">Timeline</a>
             <a href="/symbols/" class="nav-link">Symbols</a>
             <a href="/showcase.html" class="nav-link">Showcase</a>
@@ -239,10 +285,10 @@
                 
                 <!-- Action Buttons -->
                 <div class="hero-buttons">
-                    <a href="/chapters/" class="button button-primary">
+                    <a href="/chapters/" class="button button-primary" data-transition="chapter">
                         📚 Begin Journey
                     </a>
-                    <a href="/chapters/enhanced/1/" class="button button-secondary">
+                    <a href="/chapters/enhanced/1/" class="button button-secondary" data-transition="chapter">
                         🚀 Enhanced Experience
                     </a>
                     <a href="/timeline/" class="button button-secondary">
@@ -261,14 +307,14 @@
                         <div class="feature-icon">🧠</div>
                         <h3>14 Interactive Chapters</h3>
                         <p>Journey through each chapter of Aion with immersive visualizations and interactive elements.</p>
-                        <a href="/chapters/" class="feature-link">Explore Chapters</a>
+                        <a href="/chapters/" class="feature-link" data-transition="chapter">Explore Chapters</a>
                     </div>
                     
                     <div class="feature-card">
                         <div class="feature-icon">🎭</div>
                         <h3>Dual Experience Modes</h3>
                         <p>Choose between standard and enhanced versions for your preferred level of interaction.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link">Try Enhanced</a>
+                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">Try Enhanced</a>
                     </div>
                     
                     <div class="feature-card">
@@ -282,7 +328,7 @@
                         <div class="feature-icon">🔗</div>
                         <h3>Clean URLs</h3>
                         <p>Navigate with intuitive URLs like /chapters/enhanced/1/ for easy bookmarking and sharing.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link">See Example</a>
+                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">See Example</a>
                     </div>
                 </div>
             </div>
@@ -293,13 +339,13 @@
             <div class="container">
                 <h2 id="quicknav-heading" class="section-title">Quick Navigation</h2>
                 <div class="quick-nav-grid">
-                    <a href="/chapters/enhanced/1/" class="quick-nav-item">
+                    <a href="/chapters/enhanced/1/" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">01</span>
                         <span class="nav-title">The Ego</span>
                         <span class="nav-description">Begin with the conscious personality</span>
                     </a>
                     
-                    <a href="/chapters/enhanced/5/" class="quick-nav-item">
+                    <a href="/chapters/enhanced/5/" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">05</span>
                         <span class="nav-title">The Self</span>
                         <span class="nav-description">Explore the unified consciousness</span>
@@ -333,7 +379,7 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="/chapters/">All Chapters</a></li>
+                        <li><a href="/chapters/" data-transition="chapter">All Chapters</a></li>
                         <li><a href="/timeline/">Timeline</a></li>
                         <li><a href="/symbols/">Symbols</a></li>
                         <li><a href="/about/">About</a></li>

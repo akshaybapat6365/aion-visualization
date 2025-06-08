@@ -1,13 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters - Aion Visualization</title>
-    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/bundle.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- WebGL Background -->
     <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
     
@@ -15,7 +61,7 @@
     <nav class="nav">
         <div class="nav-container">
             <a href="../index.html" class="nav-link">Home</a>
-            <a href="chapters.html" class="nav-link active">Chapters</a>
+            <a href="chapters.html" class="nav-link active" data-transition="chapter">Chapters</a>
             <a href="timeline.html" class="nav-link">Timeline</a>
             <a href="symbols.html" class="nav-link">Symbols</a>
             <a href="../showcase.html" class="nav-link">Showcase</a>
@@ -36,7 +82,7 @@
             <!-- Chapter Grid -->
             <div class="chapter-grid">
                 <!-- Chapter 1 -->
-                <a href="chapter1.html" class="card chapter-card">
+                <a href="chapter1.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">01</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Ego</h3>
@@ -45,7 +91,7 @@
                 </a>
                 
                 <!-- Chapter 2 -->
-                <a href="chapter2.html" class="card chapter-card">
+                <a href="chapter2.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">02</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Shadow</h3>
@@ -54,7 +100,7 @@
                 </a>
                 
                 <!-- Chapter 3 -->
-                <a href="chapter3.html" class="card chapter-card">
+                <a href="chapter3.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">03</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Syzygy</h3>
@@ -63,7 +109,7 @@
                 </a>
                 
                 <!-- Chapter 4 -->
-                <a href="chapter4.html" class="card chapter-card">
+                <a href="chapter4.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">04</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Sign of the Fishes</h3>
@@ -72,7 +118,7 @@
                 </a>
                 
                 <!-- Chapter 5 -->
-                <a href="chapter5.html" class="card chapter-card">
+                <a href="chapter5.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">05</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Christ as Archetype</h3>
@@ -81,7 +127,7 @@
                 </a>
                 
                 <!-- Chapter 6 -->
-                <a href="chapter6.html" class="card chapter-card">
+                <a href="chapter6.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">06</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Antichrist</h3>
@@ -90,7 +136,7 @@
                 </a>
                 
                 <!-- Chapter 7 -->
-                <a href="chapter7.html" class="card chapter-card">
+                <a href="chapter7.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">07</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Pleroma</h3>
@@ -99,7 +145,7 @@
                 </a>
                 
                 <!-- Chapter 8 -->
-                <a href="chapter8.html" class="card chapter-card">
+                <a href="chapter8.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">08</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Sophia</h3>
@@ -108,7 +154,7 @@
                 </a>
                 
                 <!-- Chapter 9 -->
-                <a href="chapter9.html" class="card chapter-card">
+                <a href="chapter9.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">09</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Naassenes</h3>
@@ -117,7 +163,7 @@
                 </a>
                 
                 <!-- Chapter 10 -->
-                <a href="chapter10.html" class="card chapter-card">
+                <a href="chapter10.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">10</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Lapis</h3>
@@ -126,7 +172,7 @@
                 </a>
                 
                 <!-- Chapter 11 -->
-                <a href="chapter11.html" class="card chapter-card">
+                <a href="chapter11.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">11</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Mercurius</h3>
@@ -135,7 +181,7 @@
                 </a>
                 
                 <!-- Chapter 12 -->
-                <a href="chapter12.html" class="card chapter-card">
+                <a href="chapter12.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">12</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Coniunctio</h3>
@@ -144,7 +190,7 @@
                 </a>
                 
                 <!-- Chapter 13 -->
-                <a href="chapter13.html" class="card chapter-card">
+                <a href="chapter13.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">13</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Quaternary</h3>
@@ -153,7 +199,7 @@
                 </a>
                 
                 <!-- Chapter 14 -->
-                <a href="chapter14.html" class="card chapter-card">
+                <a href="chapter14.html" class="card chapter-card" data-transition="chapter">
                     <div class="chapter-card-number">14</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Self</h3>
