@@ -527,6 +527,17 @@
         // Make installer available globally for debugging
         window.pwaInstaller = pwaInstaller;
     </script>
+    
+    <!-- Accessibility Enhancements -->
+    <script type="module">
+        import { a11y } from '/src/accessibility/a11y-enhancements.js';
+        
+        // Make accessibility features available globally
+        window.a11y = a11y;
+        
+        // Log accessibility state
+        console.log('Accessibility features initialized:', a11y.getAccessibilityState());
+    </script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>
 
