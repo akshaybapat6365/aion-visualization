@@ -507,5 +507,32 @@
       // Enable premium features
       console.log('✨ Premium features loaded');
     </script>
+
+    <!-- Privacy-Focused Analytics -->
+    <script type="module">
+      import analytics from '/src/analytics/privacy-analytics.js';
+      
+      // Track initial page load
+      window.analytics = analytics;
+      
+      // Track chapter views
+      document.addEventListener('DOMContentLoaded', () => {
+        const chapterLinks = document.querySelectorAll('a[data-transition="chapter"]');
+        chapterLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            analytics.event('navigation', 'chapter-click', href);
+          });
+        });
+        
+        // Track CTA clicks
+        const ctaButtons = document.querySelectorAll('.button-primary, .button-secondary');
+        ctaButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            analytics.event('engagement', 'cta-click', button.textContent.trim());
+          });
+        });
+      });
+    </script>
 </body>
 </html>

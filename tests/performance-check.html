@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Check - Aion Visualization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0A0A0A;
+            color: #F0F0F0;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            font-weight: 300;
+        }
+        
+        .metric {
+            background: #141414;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-name {
+            font-size: 1.2rem;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .good { color: #4CAF50; }
+        .warning { color: #FF9800; }
+        .poor { color: #F44336; }
+        
+        .test-button {
+            background: #FFD700;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        
+        .results {
+            margin-top: 40px;
+        }
+        
+        .loading {
+            display: none;
+            color: #8A8A8A;
+            margin: 20px 0;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Performance Check</h1>
+    <p>Test the performance of Aion Visualization pages</p>
+    
+    <button class="test-button" onclick="runPerformanceTests()">Run Performance Tests</button>
+    
+    <div class="loading">Running tests...</div>
+    
+    <div class="results" id="results"></div>
+    
+    <script>
+        const PERFORMANCE_TARGETS = {
+            'First Paint': 800,
+            'First Contentful Paint': 800,
+            'DOM Interactive': 1500,
+            'DOM Complete': 2000,
+            'Load Complete': 2500,
+            'JS Heap Size': 50 * 1024 * 1024, // 50MB
+            'DOM Nodes': 1500,
+            'Layout Duration': 16,
+            'Recalc Styles Duration': 16
+        };
+        
+        async function measurePagePerformance(url) {
+            return new Promise((resolve) => {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url;
+                
+                iframe.onload = () => {
+                    setTimeout(() => {
+                        try {
+                            const iframeWindow = iframe.contentWindow;
+                            const performance = iframeWindow.performance;
+                            const timing = performance.timing;
+                            
+                            // Navigation timings
+                            const metrics = {
+                                'First Paint': performance.getEntriesByType('paint').find(e => e.name === 'first-paint')?.startTime || 0,
+                                'First Contentful Paint': performance.getEntriesByType('paint').find(e => e.name === 'first-contentful-paint')?.startTime || 0,
+                                'DOM Interactive': timing.domInteractive - timing.navigationStart,
+                                'DOM Complete': timing.domComplete - timing.navigationStart,
+                                'Load Complete': timing.loadEventEnd - timing.navigationStart,
+                            };
+                            
+                            // Memory usage (if available)
+                            if (performance.memory) {
+                                metrics['JS Heap Size'] = performance.memory.usedJSHeapSize;
+                            }
+                            
+                            // DOM complexity
+                            metrics['DOM Nodes'] = iframe.contentDocument.getElementsByTagName('*').length;
+                            
+                            // Layout performance
+                            const layoutEntries = performance.getEntriesByType('measure')
+                                .filter(e => e.name.includes('layout'));
+                            if (layoutEntries.length > 0) {
+                                metrics['Layout Duration'] = Math.max(...layoutEntries.map(e => e.duration));
+                            }
+                            
+                            resolve(metrics);
+                        } catch (error) {
+                            console.error('Error measuring performance:', error);
+                            resolve({});
+                        } finally {
+                            document.body.removeChild(iframe);
+                        }
+                    }, 3000); // Wait for page to fully load
+                };
+                
+                document.body.appendChild(iframe);
+            });
+        }
+        
+        function getMetricClass(metricName, value) {
+            const target = PERFORMANCE_TARGETS[metricName];
+            if (!target) return '';
+            
+            if (metricName.includes('Heap Size') || metricName.includes('DOM Nodes')) {
+                // For memory and DOM nodes, lower is better
+                if (value < target * 0.5) return 'good';
+                if (value < target) return 'warning';
+                return 'poor';
+            } else {
+                // For timing metrics, lower is better
+                if (value < target * 0.8) return 'good';
+                if (value < target) return 'warning';
+                return 'poor';
+            }
+        }
+        
+        function formatValue(metricName, value) {
+            if (metricName.includes('Heap Size')) {
+                return `${(value / 1024 / 1024).toFixed(1)} MB`;
+            } else if (metricName.includes('DOM Nodes')) {
+                return value.toLocaleString();
+            } else {
+                return `${Math.round(value)} ms`;
+            }
+        }
+        
+        function calculateScore(metrics) {
+            let score = 100;
+            let penalties = 0;
+            
+            for (const [metric, value] of Object.entries(metrics)) {
+                const target = PERFORMANCE_TARGETS[metric];
+                if (target && value > target) {
+                    const overBy = (value - target) / target;
+                    penalties += overBy * 10; // 10 points per 100% over target
+                }
+            }
+            
+            return Math.max(0, Math.round(score - penalties));
+        }
+        
+        async function runPerformanceTests() {
+            const resultsDiv = document.getElementById('results');
+            const loadingDiv = document.querySelector('.loading');
+            
+            loadingDiv.classList.add('active');
+            resultsDiv.innerHTML = '';
+            
+            const pagesToTest = [
+                { name: 'Homepage', url: '../index.html' },
+                { name: 'Chapters', url: '../chapters/index.html' },
+                { name: 'Chapter 1', url: '../chapters/chapter1.html' },
+                { name: 'Showcase', url: '../showcase.html' }
+            ];
+            
+            let totalScore = 0;
+            
+            for (const page of pagesToTest) {
+                const section = document.createElement('div');
+                section.innerHTML = `<h2>${page.name}</h2>`;
+                
+                const metrics = await measurePagePerformance(page.url);
+                const score = calculateScore(metrics);
+                totalScore += score;
+                
+                section.innerHTML += `<div class="metric">
+                    <span class="metric-name">Performance Score</span>
+                    <span class="metric-value ${score >= 95 ? 'good' : score >= 80 ? 'warning' : 'poor'}">${score}/100</span>
+                </div>`;
+                
+                for (const [metricName, value] of Object.entries(metrics)) {
+                    const metricDiv = document.createElement('div');
+                    metricDiv.className = 'metric';
+                    metricDiv.innerHTML = `
+                        <span class="metric-name">${metricName}</span>
+                        <span class="metric-value ${getMetricClass(metricName, value)}">${formatValue(metricName, value)}</span>
+                    `;
+                    section.appendChild(metricDiv);
+                }
+                
+                resultsDiv.appendChild(section);
+            }
+            
+            // Overall summary
+            const avgScore = Math.round(totalScore / pagesToTest.length);
+            const summary = document.createElement('div');
+            summary.innerHTML = `
+                <h2>Overall Performance</h2>
+                <div class="metric">
+                    <span class="metric-name">Average Score</span>
+                    <span class="metric-value ${avgScore >= 95 ? 'good' : avgScore >= 80 ? 'warning' : 'poor'}">${avgScore}/100</span>
+                </div>
+                <p style="margin-top: 20px; color: #8A8A8A;">
+                    ${avgScore >= 95 ? '✅ Excellent! Performance target achieved.' : 
+                      avgScore >= 80 ? '⚠️ Good, but there\'s room for improvement.' :
+                      '❌ Performance optimizations needed.'}
+                </p>
+            `;
+            resultsDiv.insertBefore(summary, resultsDiv.firstChild);
+            
+            loadingDiv.classList.remove('active');
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            console.log('Performance check page loaded. Click the button to run tests.');
+        });
+    </script>
+</body>
+</html>
