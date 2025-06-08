@@ -40,10 +40,7 @@
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#FFD700">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Aion">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/aion-visualization/manifest.json">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Aion - A Visual Journey Through Jung's Masterwork">
@@ -520,24 +517,8 @@
         }
     </script>
     
-    <!-- PWA Install Prompt -->
-    <script type="module">
-        import { pwaInstaller } from '/src/pwa/install-prompt.js';
-        
-        // Make installer available globally for debugging
-        window.pwaInstaller = pwaInstaller;
-    </script>
-    
-    <!-- Accessibility Enhancements -->
-    <script type="module">
-        import { a11y } from '/src/accessibility/a11y-enhancements.js';
-        
-        // Make accessibility features available globally
-        window.a11y = a11y;
-        
-        // Log accessibility state
-        console.log('Accessibility features initialized:', a11y.getAccessibilityState());
-    </script>
+    <!-- Basic Keyboard Navigation -->
+    <script src="/aion-visualization/src/core/keyboard-nav.js" defer></script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>
 

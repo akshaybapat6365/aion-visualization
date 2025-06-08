@@ -14,17 +14,9 @@ const ANALYTICS_CACHE = 'analytics-queue';
 const STATIC_ASSETS = [
     '/aion-visualization/',
     '/aion-visualization/index.html',
-    '/aion-visualization/404.html',
-    '/aion-visualization/chapters/',
-    '/aion-visualization/assets/css/main.min.css',
-    '/aion-visualization/assets/css/chapters.min.css',
-    '/aion-visualization/assets/css/loading-indicators.css',
-    '/aion-visualization/assets/css/error-handling.css',
-    '/aion-visualization/assets/js/core/github-pages-router.min.js',
-    '/aion-visualization/assets/js/core/consolidated-utilities.min.js',
-    '/aion-visualization/assets/js/core/environment-config.js',
-    '/aion-visualization/sitemap.xml',
-    '/aion-visualization/robots.txt'
+    '/aion-visualization/offline.html',
+    '/aion-visualization/manifest.json',
+    '/aion-visualization/assets/css/bundle.min.css'
 ];
 
 // Chapter files to cache on demand
