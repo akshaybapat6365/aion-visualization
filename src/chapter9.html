@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 9: Ouroboros and Self-Renewal - Aion by Carl Jung</title>
@@ -16,13 +41,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -43,11 +89,11 @@
         <!-- Animated Ouroboros Visualization -->
         <section class="visualization-section">
             <h2>Living Ouroboros</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Experience the breathing, pulsing Ouroboros as a living symbol. Watch how destruction and creation flow into each other in eternal motion.</p>
             </div>
-            <div id="ouroboros-container" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="ouroboros-container" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <div class="control-group">
                     <button id="toggle-breathing">Toggle Breathing</button>
                     <button id="show-energy-flow">Show Energy Flow</button>
@@ -69,10 +115,10 @@
         <!-- Personal Lifecycle Journey -->
         <section class="visualization-section">
             <h2>Personal Renewal Journey</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Map your own cycles of death and rebirth. Identify patterns of endings and beginnings in your psychological development.</p>
             </div>
-            <div id="lifecycle-journey" class="visualization-container">
+            <div id="lifecycle-journey" class="visualization-container" data-error-boundary="true">
                 <div class="journey-interface">
                     <div class="cycle-input">
                         <h3>Add Life Cycle</h3>
@@ -101,7 +147,7 @@
                         <button id="add-cycle">Add to Journey</button>
                     </div>
                     
-                    <div class="cycle-visualization">
+                    <div class="cycle-visualization" data-error-boundary="true">
                         <h3>Your Renewal Cycles</h3>
                         <div id="personal-ouroboros"></div>
                         <div class="cycle-legend">
@@ -136,10 +182,10 @@
         <!-- Mandala Creation Tool -->
         <section class="visualization-section">
             <h2>Ouroboros Mandala Creator</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Create your own circular mandala incorporating the ouroboros principle. Design patterns that represent your personal cycles of transformation.</p>
             </div>
-            <div id="mandala-creator" class="visualization-container">
+            <div id="mandala-creator" class="visualization-container" data-error-boundary="true">
                 <div class="creator-interface">
                     <div class="tool-palette">
                         <h3>Drawing Tools</h3>
@@ -180,10 +226,10 @@
         <!-- Meditation Timer -->
         <section class="visualization-section">
             <h2>Ouroboros Meditation</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Use the cyclic breathing of the Ouroboros as a meditation focus. Synchronize your breath with the eternal cycle.</p>
             </div>
-            <div id="meditation-timer" class="visualization-container">
+            <div id="meditation-timer" class="visualization-container" data-error-boundary="true">
                 <div class="meditation-interface">
                     <div class="timer-display">
                         <div id="meditation-ouroboros"></div>

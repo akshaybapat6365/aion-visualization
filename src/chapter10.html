@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 10: The Lapis - Aion by Carl Jung</title>
@@ -13,13 +38,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -40,10 +86,10 @@
         <!-- Interactive Alchemical Laboratory -->
         <section class="visualization-section">
             <h2>Interactive Alchemical Laboratory</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Experience the Great Work by combining elements, applying heat, and watching transformations. Each stage represents a step in psychological individuation.</p>
             </div>
-            <div id="alchemical-lab" class="visualization-container">
+            <div id="alchemical-lab" class="visualization-container" data-error-boundary="true">
                 <!-- Lab workspace -->
                 <div class="lab-workspace">
                     <div class="ingredient-shelf">
@@ -105,11 +151,11 @@
         <!-- Opus Magnum Wheel -->
         <section class="visualization-section">
             <h2>The Opus Magnum Wheel</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>The Great Work represented as a circular process with planetary associations. Each stage corresponds to both chemical and psychological transformations.</p>
             </div>
-            <div id="opus-wheel" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="opus-wheel" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="rotate-wheel">Rotate Wheel</button>
                 <button id="show-planets">Show Planetary Associations</button>
                 <button id="highlight-stage">Highlight Current Stage</button>
@@ -120,10 +166,10 @@
         <!-- Transformation Timeline -->
         <section class="visualization-section">
             <h2>Alchemical Transformation Timeline</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Watch the complete transformation from base matter to the Philosopher's Stone, with each stage's symbolic meaning.</p>
             </div>
-            <div id="transformation-timeline" class="visualization-container"></div>
+            <div id="transformation-timeline" class="visualization-container" data-error-boundary="true"></div>
             <div class="timeline-controls">
                 <button id="play-transformation">Play Transformation</button>
                 <button id="pause-transformation">Pause</button>
@@ -222,8 +268,8 @@
 
         <!-- Navigation -->
         <div class="chapter-nav">
-            <a href="chapter9.html" class="prev-chapter">← Chapter 9: The Naassenes</a>
-            <a href="chapter11.html" class="next-chapter">Chapter 11: Mercurius →</a>
+            <a href="chapter9.html" class="prev-chapter" data-transition="chapter">← Chapter 9: The Naassenes</a>
+            <a href="chapter11.html" class="next-chapter" data-transition="chapter">Chapter 11: Mercurius →</a>
         </div>
     </main>
 

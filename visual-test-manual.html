@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Testing Dashboard - Aion Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0A0A0A;
+            color: #F0F0F0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .test-card {
+            background: #141414;
+            border: 1px solid #2A2A2A;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-4px);
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+        }
+        
+        .test-header {
+            padding: 1.5rem;
+            background: #1F1F1F;
+            border-bottom: 1px solid #2A2A2A;
+        }
+        
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-description {
+            color: #8A8A8A;
+            font-size: 0.875rem;
+        }
+        
+        .test-frame {
+            width: 100%;
+            height: 300px;
+            border: none;
+            background: #0A0A0A;
+        }
+        
+        .test-controls {
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            background: #1F1F1F;
+            border-top: 1px solid #2A2A2A;
+        }
+        
+        .test-button {
+            padding: 0.5rem 1rem;
+            background: #2A2A2A;
+            border: 1px solid #3F3F3F;
+            color: #F0F0F0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+        
+        .test-button:hover {
+            background: #3F3F3F;
+            border-color: #FFD700;
+        }
+        
+        .status {
+            padding: 1rem;
+            font-size: 0.875rem;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0A0A0A;
+            border-top: 1px solid #2A2A2A;
+        }
+        
+        .status-line {
+            margin: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-line.pass { color: #4CAF50; }
+        .status-line.fail { color: #F44336; }
+        .status-line.warn { color: #FFD700; }
+        .status-line.info { color: #8A8A8A; }
+        
+        .summary {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #141414;
+            border: 1px solid #2A2A2A;
+            border-radius: 12px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: 200;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-label {
+            color: #8A8A8A;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #3F3F3F;
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Visual Testing Dashboard</h1>
+        <p style="color: #8A8A8A; margin-bottom: 2rem;">
+            Automated visual testing for Aion Visualization features
+        </p>
+        
+        <div class="test-grid">
+            <!-- Homepage Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Homepage Visual Test</h3>
+                    <p class="test-description">Tests hero section, navigation, and WebGL background</p>
+                </div>
+                <iframe class="test-frame" src="index.html" id="homepage-frame" onload="this.contentWindow.console.log('Homepage iframe loaded')"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testHomepage()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('homepage-frame')">Reload</button>
+                </div>
+                <div class="status" id="homepage-status"></div>
+            </div>
+            
+            <!-- Loading States Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Loading States</h3>
+                    <p class="test-description">Tests all loading indicators and states</p>
+                </div>
+                <iframe class="test-frame" src="polish-test.html" id="loading-frame"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testLoadingStates()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('loading-frame')">Reload</button>
+                </div>
+                <div class="status" id="loading-status"></div>
+            </div>
+            
+            <!-- Showcase Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Design Features</h3>
+                    <p class="test-description">Tests magnetic cursor and liquid transitions</p>
+                </div>
+                <iframe class="test-frame" src="showcase.html" id="showcase-frame"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testShowcase()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('showcase-frame')">Reload</button>
+                </div>
+                <div class="status" id="showcase-status"></div>
+            </div>
+            
+            <!-- Chapter Navigation Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Chapter Navigation</h3>
+                    <p class="test-description">Tests chapter grid and navigation</p>
+                </div>
+                <iframe class="test-frame" src="chapters/index.html" id="chapters-frame"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testChapters()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('chapters-frame')">Reload</button>
+                </div>
+                <div class="status" id="chapters-status"></div>
+            </div>
+            
+            <!-- Error Handling Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Error Handling</h3>
+                    <p class="test-description">Tests error boundaries and recovery</p>
+                </div>
+                <iframe class="test-frame" src="polish-test.html#errors" id="errors-frame"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testErrorHandling()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('errors-frame')">Reload</button>
+                </div>
+                <div class="status" id="errors-status"></div>
+            </div>
+            
+            <!-- Performance Test -->
+            <div class="test-card">
+                <div class="test-header">
+                    <h3 class="test-title">Performance Metrics</h3>
+                    <p class="test-description">Tests loading performance and optimizations</p>
+                </div>
+                <iframe class="test-frame" src="index.html" id="performance-frame"></iframe>
+                <div class="test-controls">
+                    <button class="test-button" onclick="testPerformance()">Run Test</button>
+                    <button class="test-button" onclick="reloadFrame('performance-frame')">Reload</button>
+                </div>
+                <div class="status" id="performance-status"></div>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary">
+            <h2 style="font-size: 2rem; font-weight: 300; margin-bottom: 1rem;">Test Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-value" id="total-tests">0</div>
+                    <div class="summary-label">Total Tests</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="passed-tests" style="color: #4CAF50;">0</div>
+                    <div class="summary-label">Passed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="failed-tests" style="color: #F44336;">0</div>
+                    <div class="summary-label">Failed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="pass-rate">0%</div>
+                    <div class="summary-label">Pass Rate</div>
+                </div>
+            </div>
+            <button class="test-button" style="margin-top: 2rem; padding: 1rem 2rem;" onclick="runAllTests()">
+                Run All Tests
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Test results tracking
+        const testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0
+        };
+        
+        function log(testId, message, type = 'info') {
+            const status = document.getElementById(testId + '-status');
+            const line = document.createElement('div');
+            line.className = `status-line ${type}`;
+            
+            const icon = {
+                pass: '✅',
+                fail: '❌',
+                warn: '⚠️',
+                info: 'ℹ️'
+            }[type] || '•';
+            
+            line.textContent = `${icon} ${message}`;
+            status.appendChild(line);
+            status.scrollTop = status.scrollHeight;
+        }
+        
+        function clearLog(testId) {
+            document.getElementById(testId + '-status').innerHTML = '';
+        }
+        
+        function reloadFrame(frameId) {
+            const frame = document.getElementById(frameId);
+            frame.src = frame.src;
+        }
+        
+        async function testHomepage() {
+            clearLog('homepage');
+            log('homepage', 'Starting homepage tests...', 'info');
+            
+            const frame = document.getElementById('homepage-frame');
+            
+            // Ensure frame has correct src
+            if (!frame.src || frame.src === 'about:blank') {
+                frame.src = 'index.html';
+                log('homepage', 'Loading homepage...', 'info');
+                
+                // Wait for load
+                await new Promise(resolve => {
+                    frame.onload = () => {
+                        setTimeout(resolve, 1000); // Extra time for JS to run
+                    };
+                });
+            }
+            
+            const win = frame.contentWindow;
+            const doc = frame.contentDocument || win.document;
+            
+            // Check if document is accessible
+            if (!doc || !doc.body) {
+                log('homepage', 'Unable to access iframe document', 'fail');
+                return;
+            }
+            
+            // Test 1: Hero Title
+            const heroTitle = doc.querySelector('.hero-title');
+            if (heroTitle && heroTitle.textContent === 'Aion') {
+                log('homepage', 'Hero title renders correctly', 'pass');
+            } else {
+                log('homepage', 'Hero title missing or incorrect', 'fail');
+            }
+            
+            // Test 2: Navigation Links
+            const navLinks = doc.querySelectorAll('.nav-link');
+            if (navLinks.length >= 5) {
+                log('homepage', `Navigation has ${navLinks.length} links`, 'pass');
+            } else {
+                log('homepage', `Navigation only has ${navLinks.length} links (expected 5+)`, 'fail');
+            }
+            
+            // Test 3: Clean Background (no WebGL needed)
+            const bodyStyles = doc.defaultView.getComputedStyle(doc.body);
+            if (bodyStyles.backgroundImage && bodyStyles.backgroundImage !== 'none') {
+                log('homepage', 'Clean CSS background applied', 'pass');
+            } else {
+                log('homepage', 'Background styles missing', 'warn');
+            }
+            
+            // Test 4: Global Loader
+            const loader = doc.getElementById('global-loader');
+            if (loader) {
+                log('homepage', 'Global loader container found', 'pass');
+            } else {
+                log('homepage', 'Global loader missing', 'fail');
+            }
+            
+            // Test 5: Action Buttons
+            const buttons = doc.querySelectorAll('.button');
+            if (buttons.length >= 3) {
+                log('homepage', `Found ${buttons.length} action buttons`, 'pass');
+            } else {
+                log('homepage', `Only ${buttons.length} buttons found (expected 3+)`, 'fail');
+            }
+            
+            updateSummary();
+        }
+        
+        async function testLoadingStates() {
+            clearLog('loading');
+            log('loading', 'Testing loading states...', 'info');
+            
+            const frame = document.getElementById('loading-frame');
+            const win = frame.contentWindow;
+            
+            // Wait for page to load
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test if loading states are available
+            if (win.loadingStates) {
+                log('loading', 'Loading states module loaded', 'pass');
+                
+                // Test chapter loader
+                try {
+                    win.testChapterLoader();
+                    log('loading', 'Chapter loader triggered successfully', 'pass');
+                } catch (e) {
+                    log('loading', `Chapter loader error: ${e.message}`, 'fail');
+                }
+                
+                // Test viz loader
+                try {
+                    win.testVizLoader();
+                    log('loading', 'Visualization loader triggered successfully', 'pass');
+                } catch (e) {
+                    log('loading', `Viz loader error: ${e.message}`, 'fail');
+                }
+            } else {
+                log('loading', 'Loading states module not found', 'fail');
+            }
+            
+            updateSummary();
+        }
+        
+        async function testShowcase() {
+            clearLog('showcase');
+            log('showcase', 'Testing showcase features...', 'info');
+            
+            const frame = document.getElementById('showcase-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            
+            // Test magnetic buttons
+            const magneticButtons = doc.querySelectorAll('.magnetic-button');
+            if (magneticButtons.length === 4) {
+                log('showcase', 'All 4 magnetic buttons found', 'pass');
+            } else {
+                log('showcase', `Found ${magneticButtons.length} magnetic buttons (expected 4)`, 'fail');
+            }
+            
+            // Test liquid transition boxes
+            const liquidBoxes = doc.querySelectorAll('.transition-box');
+            if (liquidBoxes.length === 3) {
+                log('showcase', 'All 3 liquid transition boxes found', 'pass');
+            } else {
+                log('showcase', `Found ${liquidBoxes.length} transition boxes (expected 3)`, 'fail');
+            }
+            
+            updateSummary();
+        }
+        
+        async function testChapters() {
+            clearLog('chapters');
+            log('chapters', 'Testing chapter navigation...', 'info');
+            
+            const frame = document.getElementById('chapters-frame');
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            
+            // Test chapter cards
+            const chapterCards = doc.querySelectorAll('.chapter-card');
+            if (chapterCards.length === 14) {
+                log('chapters', 'All 14 chapter cards found', 'pass');
+            } else {
+                log('chapters', `Found ${chapterCards.length} chapter cards (expected 14)`, 'fail');
+            }
+            
+            // Test chapter numbering
+            const numbers = doc.querySelectorAll('.chapter-card-number');
+            let numbersCorrect = true;
+            numbers.forEach((num, i) => {
+                if (num.textContent !== String(i + 1).padStart(2, '0')) {
+                    numbersCorrect = false;
+                }
+            });
+            
+            if (numbersCorrect && numbers.length === 14) {
+                log('chapters', 'Chapter numbering is correct', 'pass');
+            } else {
+                log('chapters', 'Chapter numbering has errors', 'fail');
+            }
+            
+            updateSummary();
+        }
+        
+        async function testErrorHandling() {
+            clearLog('errors');
+            log('errors', 'Testing error handling...', 'info');
+            
+            const frame = document.getElementById('errors-frame');
+            const win = frame.contentWindow;
+            
+            // Wait for page to load
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Test if error boundary is available
+            if (win.errorBoundary) {
+                log('errors', 'Error boundary module loaded', 'pass');
+                
+                // Test toast error
+                try {
+                    win.testToastError();
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const doc = frame.contentDocument;
+                    const toast = doc.querySelector('.toast-error') || doc.querySelector('.error-toast') || doc.querySelector('[data-testid="global-toast"]');
+                    if (toast) {
+                        log('errors', 'Toast error displays correctly', 'pass');
+                    } else {
+                        log('errors', 'Toast error not visible (may have auto-dismissed)', 'warn');
+                    }
+                } catch (e) {
+                    log('errors', `Toast error test failed: ${e.message}`, 'fail');
+                }
+            } else {
+                log('errors', 'Error boundary module not found', 'fail');
+            }
+            
+            updateSummary();
+        }
+        
+        async function testPerformance() {
+            clearLog('performance');
+            log('performance', 'Testing performance metrics...', 'info');
+            
+            const frame = document.getElementById('performance-frame');
+            const win = frame.contentWindow;
+            const doc = frame.contentDocument;
+            
+            // Check if bundle is loaded
+            const bundleCSS = doc.querySelector('link[href*="bundle.min.css"]');
+            if (bundleCSS) {
+                log('performance', 'Optimized CSS bundle loaded', 'pass');
+            } else {
+                log('performance', 'CSS bundle not found', 'warn');
+            }
+            
+            // Check DOM node count
+            const nodeCount = doc.querySelectorAll('*').length;
+            if (nodeCount < 1500) {
+                log('performance', `DOM nodes: ${nodeCount} (good)`, 'pass');
+            } else {
+                log('performance', `DOM nodes: ${nodeCount} (high)`, 'warn');
+            }
+            
+            // Check for performance monitoring
+            if (win.performanceMonitor || win.PerformanceMonitor) {
+                log('performance', 'Performance monitor available', 'pass');
+            } else {
+                // Check if script is loaded
+                const perfScript = doc.querySelector('script[src*="performance-monitor"]');
+                if (perfScript) {
+                    log('performance', 'Performance monitor script loaded (may initialize later)', 'pass');
+                } else {
+                    log('performance', 'Performance monitor not loaded', 'warn');
+                }
+            }
+            
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            // Count pass/fail from all status divs
+            const allStatusLines = document.querySelectorAll('.status-line');
+            let passed = 0, failed = 0;
+            
+            allStatusLines.forEach(line => {
+                if (line.classList.contains('pass')) passed++;
+                if (line.classList.contains('fail')) failed++;
+            });
+            
+            const total = passed + failed;
+            const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+            
+            document.getElementById('total-tests').textContent = total;
+            document.getElementById('passed-tests').textContent = passed;
+            document.getElementById('failed-tests').textContent = failed;
+            document.getElementById('pass-rate').textContent = passRate + '%';
+        }
+        
+        async function runAllTests() {
+            // Clear all logs
+            ['homepage', 'loading', 'showcase', 'chapters', 'errors', 'performance'].forEach(clearLog);
+            
+            // Run tests sequentially
+            await testHomepage();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testLoadingStates();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testShowcase();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testChapters();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testErrorHandling();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testPerformance();
+        }
+        
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 2000);
+        });
+    </script>
+</body>
+</html>

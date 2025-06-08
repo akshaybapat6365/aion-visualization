@@ -13,7 +13,10 @@
     "claude:auto": "./claude-auto-manager.sh",
     "claude:review": "claude /review dir=.",
     "claude:fix": "claude /fix",
-    "deploy": "echo 'Auto-deployed via GitHub Pages'"
+    "deploy": "echo 'Auto-deployed via GitHub Pages'",
+    "optimize": "node optimize-bundle.js",
+    "audit": "node src/performance-audit.js",
+    "visual-test": "node src/visual-testing.js"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",

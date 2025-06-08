@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 6: Shadow Projections - Aion by Carl Jung</title>
@@ -14,13 +39,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -41,10 +87,10 @@
         <!-- Interactive World Map of Shadow Projections -->
         <section class="visualization-section">
             <h2>Global Shadow Projection Map</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Explore historical events through the lens of shadow projection. See how collective shadows have manifested across time and geography, creating patterns of conflict and scapegoating.</p>
             </div>
-            <div id="shadow-map" class="visualization-container"></div>
+            <div id="shadow-map" class="visualization-container" data-error-boundary="true"></div>
             <div class="map-controls">
                 <div class="control-group">
                     <label for="time-period">Time Period:</label>
@@ -79,10 +125,10 @@
         <!-- Shadow Integration Simulator -->
         <section class="visualization-section">
             <h2>Personal Shadow Integration Simulator</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Practice identifying and integrating shadow projections. This exercise helps you recognize when you might be projecting your own disowned qualities onto others.</p>
             </div>
-            <div id="shadow-simulator" class="visualization-container">
+            <div id="shadow-simulator" class="visualization-container" data-error-boundary="true">
                 <div class="simulator-workspace">
                     <div class="person-profile">
                         <h3>Person A (You)</h3>
@@ -151,10 +197,10 @@
         <!-- Historical Shadow Timeline -->
         <section class="visualization-section">
             <h2>Timeline of Collective Shadow Events</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Follow the historical progression of major shadow projection events. See how patterns repeat across cultures and centuries.</p>
             </div>
-            <div id="shadow-timeline" class="visualization-container"></div>
+            <div id="shadow-timeline" class="visualization-container" data-error-boundary="true"></div>
             <div class="timeline-controls">
                 <button id="play-history">Play Timeline</button>
                 <button id="focus-persecution">Focus on Persecution</button>

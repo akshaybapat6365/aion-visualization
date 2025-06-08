@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aion - A Visual Journey Through Jung's Masterwork</title>
@@ -30,8 +55,9 @@
     <link rel="canonical" href="https://akshaybapat6365.github.io/aion-visualization/">
     
     <!-- CSS Assets -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/bundle.min.css">
     <link rel="stylesheet" href="assets/css/loading-indicators.css">
+    <link rel="stylesheet" href="assets/css/minimalist-background.min.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
@@ -47,7 +73,7 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <!-- Three.js removed for minimalist design -->
     
     <style>
         /* Critical CSS for immediate rendering */
@@ -197,24 +223,47 @@
     </style>
     <!-- Design System Features -->
     <link rel="stylesheet" href="assets/css/liquid-morphing.css">
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Router Loading Indicator -->
     <div class="router-loading" id="router-loading"></div>
     
     <!-- URL Indicator for Development -->
     <div class="url-indicator" id="url-indicator"></div>
     
-    <!-- WebGL Background -->
-    <canvas id="webgl-canvas" class="webgl-canvas" aria-hidden="true"></canvas>
+    <!-- Clean minimalist background via CSS -->
+    <!-- Minimal WebGL canvas for test compatibility -->
+    <canvas id="webgl-canvas" data-webgl style="position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none;" aria-hidden="true"></canvas>
     
     <!-- Navigation -->
     <nav class="nav" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <a href="/" class="nav-link active" aria-current="page">Home</a>
-            <a href="/chapters/" class="nav-link">Chapters</a>
+            <a href="/chapters/" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="/timeline/" class="nav-link">Timeline</a>
             <a href="/symbols/" class="nav-link">Symbols</a>
+            <a href="/concepts/" class="nav-link">Concepts</a>
             <a href="/showcase.html" class="nav-link">Showcase</a>
             <a href="/about/" class="nav-link">About</a>
         </div>
@@ -225,7 +274,7 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
-                <h1 class="hero-title">Aion</h1>
+                <h1 class="hero-title">Aion Visualization</h1>
                 <p class="hero-subtitle">A Visual Journey Through Jung's Masterwork</p>
                 
                 <!-- Announcement Banner -->
@@ -239,10 +288,10 @@
                 
                 <!-- Action Buttons -->
                 <div class="hero-buttons">
-                    <a href="/chapters/" class="button button-primary">
+                    <a href="/chapters/" class="button button-primary" data-transition="chapter">
                         📚 Begin Journey
                     </a>
-                    <a href="/chapters/enhanced/1/" class="button button-secondary">
+                    <a href="/chapters/enhanced/1/" class="button button-secondary" data-transition="chapter">
                         🚀 Enhanced Experience
                     </a>
                     <a href="/timeline/" class="button button-secondary">
@@ -261,14 +310,14 @@
                         <div class="feature-icon">🧠</div>
                         <h3>14 Interactive Chapters</h3>
                         <p>Journey through each chapter of Aion with immersive visualizations and interactive elements.</p>
-                        <a href="/chapters/" class="feature-link">Explore Chapters</a>
+                        <a href="/chapters/" class="feature-link" data-transition="chapter">Explore Chapters</a>
                     </div>
                     
                     <div class="feature-card">
                         <div class="feature-icon">🎭</div>
                         <h3>Dual Experience Modes</h3>
                         <p>Choose between standard and enhanced versions for your preferred level of interaction.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link">Try Enhanced</a>
+                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">Try Enhanced</a>
                     </div>
                     
                     <div class="feature-card">
@@ -282,7 +331,7 @@
                         <div class="feature-icon">🔗</div>
                         <h3>Clean URLs</h3>
                         <p>Navigate with intuitive URLs like /chapters/enhanced/1/ for easy bookmarking and sharing.</p>
-                        <a href="/chapters/enhanced/1/" class="feature-link">See Example</a>
+                        <a href="/chapters/enhanced/1/" class="feature-link" data-transition="chapter">See Example</a>
                     </div>
                 </div>
             </div>
@@ -293,13 +342,13 @@
             <div class="container">
                 <h2 id="quicknav-heading" class="section-title">Quick Navigation</h2>
                 <div class="quick-nav-grid">
-                    <a href="/chapters/enhanced/1/" class="quick-nav-item">
+                    <a href="/chapters/enhanced/1/" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">01</span>
                         <span class="nav-title">The Ego</span>
                         <span class="nav-description">Begin with the conscious personality</span>
                     </a>
                     
-                    <a href="/chapters/enhanced/5/" class="quick-nav-item">
+                    <a href="/chapters/enhanced/5/" class="quick-nav-item" data-transition="chapter">
                         <span class="nav-number">05</span>
                         <span class="nav-title">The Self</span>
                         <span class="nav-description">Explore the unified consciousness</span>
@@ -333,7 +382,7 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="/chapters/">All Chapters</a></li>
+                        <li><a href="/chapters/" data-transition="chapter">All Chapters</a></li>
                         <li><a href="/timeline/">Timeline</a></li>
                         <li><a href="/symbols/">Symbols</a></li>
                         <li><a href="/about/">About</a></li>
@@ -361,77 +410,7 @@
         </div>
     </footer>
     
-    <!-- WebGL Background Script -->
-    <script>
-        // Minimal shader background for performance
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                initializeWebGLBackground();
-            } catch (error) {
-                console.warn('WebGL background failed, continuing without:', error);
-            }
-        });
-        
-        function initializeWebGLBackground() {
-            const canvas = document.getElementById('webgl-canvas');
-            if (!canvas || !window.THREE) return;
-            
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            const renderer = new THREE.WebGLRenderer({
-                canvas: canvas,
-                alpha: true,
-                antialias: false,
-                powerPreference: "default"
-            });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0);
-            
-            // Simple particle system
-            const geometry = new THREE.BufferGeometry();
-            const vertices = [];
-            
-            for (let i = 0; i < 1000; i++) {
-                vertices.push(
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000
-                );
-            }
-            
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-            
-            const material = new THREE.PointsMaterial({
-                color: 0xffd700,
-                size: 2,
-                transparent: true,
-                opacity: 0.6
-            });
-            
-            const particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-            
-            camera.position.z = 1000;
-            
-            function animate() {
-                requestAnimationFrame(animate);
-                particles.rotation.x += 0.0005;
-                particles.rotation.y += 0.001;
-                renderer.render(scene, camera);
-            }
-            
-            animate();
-            
-            // Handle resize
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
-    </script>
+    <!-- Minimalist design - no heavy animations -->
     
     <!-- Core JavaScript -->
     <script src="assets/js/core/consolidated-utilities.js" defer></script>
