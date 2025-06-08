@@ -363,6 +363,7 @@ export class ErrorBoundarySystem {
   showToastError(message, duration = 5000) {
     const toast = document.createElement('div');
     toast.className = 'error-toast';
+    toast.setAttribute('data-testid', 'global-toast');
     toast.innerHTML = `
       <div class="error-toast-content">
         <div class="error-toast-icon">⚠️</div>

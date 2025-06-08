@@ -509,7 +509,7 @@
                     win.testToastError();
                     await new Promise(resolve => setTimeout(resolve, 1000));
                     const doc = frame.contentDocument;
-                    const toast = doc.querySelector('.toast-error') || doc.querySelector('.error-toast');
+                    const toast = doc.querySelector('.toast-error') || doc.querySelector('.error-toast') || doc.querySelector('[data-testid="global-toast"]');
                     if (toast) {
                         log('errors', 'Toast error displays correctly', 'pass');
                     } else {
