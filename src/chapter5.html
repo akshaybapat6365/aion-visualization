@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 5: Christ as Archetype - Aion by Carl Jung</title>
@@ -15,13 +40,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -42,11 +88,11 @@
         <!-- Interactive Trinity/Quaternity Mandala -->
         <section class="visualization-section">
             <h2>Interactive Trinity/Quaternity Mandala</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Explore the psychological transformation from trinity to quaternity. Watch as the three-fold Christian symbol evolves to include the fourth element - the shadow - creating psychological wholeness.</p>
             </div>
-            <div id="trinity-mandala" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="trinity-mandala" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <div class="control-group">
                     <button id="show-trinity">Show Trinity</button>
                     <button id="show-quaternity">Show Quaternity</button>
@@ -67,10 +113,10 @@
         <!-- Christian Symbol Timeline -->
         <section class="visualization-section">
             <h2>Evolution of Christian Symbolism</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Trace the development of Christian symbols from early Christianity through medieval theology, showing how the trinity symbol evolved and what it left out.</p>
             </div>
-            <div id="symbol-timeline" class="visualization-container"></div>
+            <div id="symbol-timeline" class="visualization-container" data-error-boundary="true"></div>
             <div class="timeline-controls">
                 <button id="play-timeline">Play Evolution</button>
                 <button id="pause-timeline">Pause</button>
@@ -135,10 +181,10 @@
         <!-- Interactive Symbol Placement -->
         <section class="visualization-section">
             <h2>Symbol Integration Exercise</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Drag and drop symbols to create your own mandala. Explore how different arrangements affect the psychological meaning and balance.</p>
             </div>
-            <div id="symbol-exercise" class="visualization-container">
+            <div id="symbol-exercise" class="visualization-container" data-error-boundary="true">
                 <div class="symbol-palette">
                     <h3>Available Symbols</h3>
                     <div class="symbol-items">

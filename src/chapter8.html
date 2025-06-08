@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 8: Natural Transformation Symbols - Aion by Carl Jung</title>
@@ -14,13 +39,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -41,10 +87,10 @@
         <!-- Interactive Alchemical Laboratory -->
         <section class="visualization-section">
             <h2>Advanced Alchemical Laboratory</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Experience the Great Work through interactive alchemical processes. Each transformation stage represents psychological development and individuation progress.</p>
             </div>
-            <div id="alchemical-lab" class="visualization-container">
+            <div id="alchemical-lab" class="visualization-container" data-error-boundary="true">
                 <!-- Laboratory Interface -->
                 <div class="lab-interface">
                     <!-- Element Periodic Table -->
@@ -177,10 +223,10 @@
         <!-- Symbol Evolution Timeline -->
         <section class="visualization-section">
             <h2>Evolution of Alchemical Symbols</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Trace how alchemical symbols evolved across cultures and centuries, from Egyptian metallurgy to medieval Europe to modern psychology.</p>
             </div>
-            <div id="symbol-evolution" class="visualization-container"></div>
+            <div id="symbol-evolution" class="visualization-container" data-error-boundary="true"></div>
             <div class="evolution-controls">
                 <button id="show-egyptian">Egyptian Origins</button>
                 <button id="show-arabic">Arabic Development</button>
@@ -193,10 +239,10 @@
         <!-- Planetary Correspondences -->
         <section class="visualization-section">
             <h2>Planetary-Metal Correspondences</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Explore the seven classical metals and their planetary correspondences, understanding how celestial movements were believed to influence terrestrial transformations.</p>
             </div>
-            <div id="planetary-correspondences" class="visualization-container">
+            <div id="planetary-correspondences" class="visualization-container" data-error-boundary="true">
                 <div class="correspondence-wheel">
                     <div class="planet-metal-pair" data-planet="sun">
                         <div class="planet">☉ Sun</div>

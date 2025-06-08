@@ -30,7 +30,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters - Aion Visualization</title>
     <link rel="stylesheet" href="../assets/css/bundle.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/minimalist-background.min.css">
 
     <!-- Phase 4: Polish Features -->
     <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
@@ -54,8 +54,7 @@
     <!-- Global Loading Container -->
     <div id="global-loader" class="loading-container"></div>
 
-    <!-- WebGL Background -->
-    <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
+    <!-- Clean minimalist background via CSS -->
     
     <!-- Navigation -->
     <nav class="nav">
@@ -210,108 +209,7 @@
         </div>
     </main>
     
-    <!-- Minimal Background Shader -->
-    <script>
-        // Three.js setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        const renderer = new THREE.WebGLRenderer({ 
-            canvas: document.getElementById('webgl-canvas'),
-            antialias: true
-        });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        
-        // Minimal particle field shader
-        const particleShader = {
-            uniforms: {
-                time: { value: 0 },
-                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                mouse: { value: new THREE.Vector2(0.5, 0.5) }
-            },
-            vertexShader: `
-                void main() {
-                    gl_Position = vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                uniform float time;
-                uniform vec2 resolution;
-                uniform vec2 mouse;
-                
-                float random(vec2 st) {
-                    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-                }
-                
-                void main() {
-                    vec2 uv = gl_FragCoord.xy / resolution.xy;
-                    vec3 color = vec3(0.0);
-                    
-                    // Create subtle particle field
-                    for(float i = 0.0; i < 50.0; i++) {
-                        vec2 particle = vec2(
-                            random(vec2(i, i * 2.0)),
-                            random(vec2(i * 3.0, i))
-                        );
-                        
-                        // Slow drift
-                        particle.y += time * 0.01 * random(vec2(i, 0.0));
-                        particle.y = fract(particle.y);
-                        
-                        // Distance to particle
-                        float dist = distance(uv, particle);
-                        
-                        // Glow effect
-                        float glow = 0.002 / dist;
-                        glow *= smoothstep(0.1, 0.0, dist);
-                        
-                        // Mouse interaction
-                        float mouseDist = distance(mouse, particle);
-                        glow *= 1.0 + (1.0 - smoothstep(0.0, 0.3, mouseDist)) * 2.0;
-                        
-                        color += vec3(glow) * 0.5;
-                    }
-                    
-                    // Add gradient background
-                    color += vec3(0.02, 0.01, 0.03) * (1.0 - uv.y * 0.5);
-                    
-                    gl_FragColor = vec4(color, 1.0);
-                }
-            `
-        };
-        
-        const geometry = new THREE.PlaneGeometry(2, 2);
-        const material = new THREE.ShaderMaterial(particleShader);
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        
-        // Mouse tracking
-        let mouseX = 0.5, mouseY = 0.5;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX / window.innerWidth;
-            mouseY = 1.0 - (e.clientY / window.innerHeight);
-        });
-        
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            material.uniforms.time.value += 0.01;
-            material.uniforms.mouse.value.x += (mouseX - material.uniforms.mouse.value.x) * 0.05;
-            material.uniforms.mouse.value.y += (mouseY - material.uniforms.mouse.value.y) * 0.05;
-            
-            renderer.render(scene, camera);
-        }
-        
-        // Handle resize
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-        });
-        
-        animate();
-    </script>
+    <!-- Minimalist design - no heavy animations -->
     <script src="../assets/js/core/utilities.js"></script>
 </body>
 </html>

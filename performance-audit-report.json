@@ -1,0 +1,881 @@
+{
+  "timestamp": "2025-06-08T00:54:42.257Z",
+  "totalSize": 2711137,
+  "fileCount": 196,
+  "largeFiles": [
+    {
+      "path": "src/design-system/package-lock.json",
+      "size": 163.98046875,
+      "type": ".json"
+    }
+  ],
+  "cssAnalysis": {
+    "totalSize": 227176,
+    "fileCount": 25,
+    "duplicates": [
+      {
+        "file": "assets/css/liquid-morphing.css",
+        "rule": "\n  \n  50% {\n    width: calc(var(--liquid-spread-si..."
+      },
+      {
+        "file": "assets/css/liquid-morphing.css",
+        "rule": "\n  \n  100% {\n    width: var(--liquid-spread-size);..."
+      },
+      {
+        "file": "src/design-system/navigation/transitions/liquid-morphing.css",
+        "rule": "\n  \n  50% {\n    width: calc(var(--liquid-spread-si..."
+      },
+      {
+        "file": "src/design-system/navigation/transitions/liquid-morphing.css",
+        "rule": "\n  \n  100% {\n    width: var(--liquid-spread-size);..."
+      }
+    ],
+    "unusedSelectors": []
+  },
+  "jsAnalysis": {
+    "totalSize": 1047537,
+    "fileCount": 94,
+    "unminified": [
+      {
+        "file": "assets/js/core/chapter-router.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "assets/js/core/consolidated-utilities.js",
+        "size": "9KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "assets/js/core/environment-config.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "assets/js/core/github-pages-router.js",
+        "size": "14KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "assets/js/core/lazy-loader.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "assets/js/core/navigation.js",
+        "size": "22KB",
+        "potentialSavings": "9KB"
+      },
+      {
+        "file": "assets/js/core/network-error-handler.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/core/performance-monitor.js",
+        "size": "3KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "assets/js/core/utilities.js",
+        "size": "8KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/feature-loader.js",
+        "size": "2KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/config/presets.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/core/CursorTracker.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/core/MagneticField.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/core/MagneticInteraction.js",
+        "size": "8KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/effects/MagneticButton.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/effects/MagneticLink.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/effects/MagneticTrail.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/magnetic-cursor/index.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/visualizations/webgl-error-handler.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "assets/js/visualizations/webgl-manager.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "assets/js/visualizations/webgl-manager.optimized.js",
+        "size": "3KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/accessibility-utils.js",
+        "size": "14KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "src/adaptive-assessment.js",
+        "size": "33KB",
+        "potentialSavings": "13KB"
+      },
+      {
+        "file": "src/adaptive-quality.js",
+        "size": "24KB",
+        "potentialSavings": "10KB"
+      },
+      {
+        "file": "src/advanced-animations.js",
+        "size": "13KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/apply-fixes.js",
+        "size": "11KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/apply-visual-polish.js",
+        "size": "9KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/browser-compatibility.js",
+        "size": "18KB",
+        "potentialSavings": "7KB"
+      },
+      {
+        "file": "src/build-optimization.js",
+        "size": "31KB",
+        "potentialSavings": "13KB"
+      },
+      {
+        "file": "src/chapter-navigation.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/chapter1.js",
+        "size": "17KB",
+        "potentialSavings": "7KB"
+      },
+      {
+        "file": "src/components/error-boundaries.js",
+        "size": "13KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/components/loading-states.js",
+        "size": "11KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/components/micro-interactions.js",
+        "size": "13KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/concept-mapper.js",
+        "size": "20KB",
+        "potentialSavings": "8KB"
+      },
+      {
+        "file": "src/contextual-help.js",
+        "size": "26KB",
+        "potentialSavings": "10KB"
+      },
+      {
+        "file": "src/cultural-map.js",
+        "size": "1KB",
+        "potentialSavings": "0KB"
+      },
+      {
+        "file": "src/design-system/navigation/core/concept-constellation.js",
+        "size": "11KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/design-system/navigation/core/keyboard-shortcuts.js",
+        "size": "15KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "src/design-system/navigation/interactions/magnetic-cursor.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/design-system/quality-control/scripts/screenshot-test.js",
+        "size": "16KB",
+        "potentialSavings": "7KB"
+      },
+      {
+        "file": "src/error-boundaries.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/core/CameraController.js",
+        "size": "11KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/core/ConnectionRenderer.js",
+        "size": "9KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/core/ConstellationEngine.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/core/NodeSystem.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/core/SimpleCameraController.js",
+        "size": "5KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/tests/code-quality-check.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/features/constellation-navigation/tests/visual-test.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/features/liquid-transitions/animations/page-transitions.js",
+        "size": "15KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "src/features/liquid-transitions/core/MorphEngine.js",
+        "size": "11KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/features/liquid-transitions/core/TransitionOrchestrator.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/config/presets.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/core/CursorTracker.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/core/MagneticField.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/core/MagneticInteraction.js",
+        "size": "8KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/effects/MagneticButton.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/effects/MagneticLink.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/effects/MagneticTrail.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/features/magnetic-cursor/index.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/gesture-controller.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/keyboard-shortcuts.js",
+        "size": "32KB",
+        "potentialSavings": "13KB"
+      },
+      {
+        "file": "src/lazy-visualizations.js",
+        "size": "1KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/leaderboard.js",
+        "size": "1KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/learning-analytics.js",
+        "size": "28KB",
+        "potentialSavings": "11KB"
+      },
+      {
+        "file": "src/navigation.js",
+        "size": "18KB",
+        "potentialSavings": "7KB"
+      },
+      {
+        "file": "src/performance-audit.js",
+        "size": "15KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "src/personalization.js",
+        "size": "1KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/polish-integration.js",
+        "size": "9KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/production-error-handler.js",
+        "size": "40KB",
+        "potentialSavings": "16KB"
+      },
+      {
+        "file": "src/progress-tracker.js",
+        "size": "19KB",
+        "potentialSavings": "7KB"
+      },
+      {
+        "file": "src/smart-asset-loader.js",
+        "size": "24KB",
+        "potentialSavings": "10KB"
+      },
+      {
+        "file": "src/starfield.js",
+        "size": "3KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/timeline-component.js",
+        "size": "2KB",
+        "potentialSavings": "1KB"
+      },
+      {
+        "file": "src/transitions.js",
+        "size": "6KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/update-all-pages-phase3.js",
+        "size": "5KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/update-remaining-chapters.js",
+        "size": "4KB",
+        "potentialSavings": "2KB"
+      },
+      {
+        "file": "src/visualization-loader.js",
+        "size": "9KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/visualizations/chapters/chapter-1-ego/consciousness-flow.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/visualizations/chapters/chapter-1-ego/ego-sphere.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/visualizations/core/camera-controller.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/visualizations/core/geometry-utils.js",
+        "size": "14KB",
+        "potentialSavings": "5KB"
+      },
+      {
+        "file": "src/visualizations/core/material-system.js",
+        "size": "10KB",
+        "potentialSavings": "4KB"
+      },
+      {
+        "file": "src/visualizations/core/performance-monitor.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/visualizations/core/scene-manager.js",
+        "size": "7KB",
+        "potentialSavings": "3KB"
+      },
+      {
+        "file": "src/voice-commands.js",
+        "size": "1KB",
+        "potentialSavings": "0KB"
+      },
+      {
+        "file": "src/webgl-context-manager.js",
+        "size": "16KB",
+        "potentialSavings": "6KB"
+      },
+      {
+        "file": "src/webgl-utils.js",
+        "size": "12KB",
+        "potentialSavings": "5KB"
+      }
+    ],
+    "largeLibraries": []
+  },
+  "imageAnalysis": {},
+  "recommendations": [
+    {
+      "type": "css",
+      "file": "assets/css/chapters.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/chapters.css",
+      "message": "CSS file is not minified",
+      "savings": "7KB"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/chapters.min.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/error-handling.css",
+      "message": "CSS file is not minified",
+      "savings": "1KB"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/liquid-morphing.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/loading-indicators.css",
+      "message": "CSS file is not minified",
+      "savings": "0KB"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/main.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/main.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "css",
+      "file": "assets/css/main.min.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/consolidated-utilities.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/environment-config.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/github-pages-router.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/lazy-loader.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/network-error-handler.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/performance-monitor.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/utilities.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/core/utilities.min.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/feature-loader.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/visualizations/webgl-error-handler.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/visualizations/webgl-manager.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/visualizations/webgl-manager.min.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "assets/js/visualizations/webgl-manager.optimized.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/adaptive-quality.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/apply-fixes.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/build-optimization.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "css",
+      "file": "src/chapter-navigation.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/chapter-navigation.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/chapter-styles.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/chapter-styles.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "js",
+      "file": "src/concept-mapper.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "css",
+      "file": "src/content/enhanced/chapter-layouts/immersive-reader.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/content/enhanced/chapter-layouts/immersive-reader.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "css",
+      "file": "src/content/enhanced/chapter-layouts/split-view.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/colors.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/layout.css",
+      "message": "CSS file is not minified",
+      "savings": "4KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/reset.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/reset.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/spacing.css",
+      "message": "CSS file is not minified",
+      "savings": "4KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/typography.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/core/typography.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/forbes-2025/colors.css",
+      "message": "CSS file is not minified",
+      "savings": "1KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/forbes-2025/layout.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/forbes-2025/typography.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/forbes-2025/typography.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/index.css",
+      "message": "CSS file is not minified",
+      "savings": "1KB"
+    },
+    {
+      "type": "css",
+      "file": "src/design-system/navigation/transitions/liquid-morphing.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "js",
+      "file": "src/design-system/quality-control/scripts/screenshot-test.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/features/constellation-navigation/tests/code-quality-check.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/features/constellation-navigation/tests/visual-test.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/keyboard-shortcuts.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/learning-analytics.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/navigation-updated.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/performance-audit.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/polish-integration.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/production-error-handler.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "css",
+      "file": "src/responsive-utils.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/responsive-utils.css",
+      "message": "CSS file is not minified",
+      "savings": "2KB"
+    },
+    {
+      "type": "js",
+      "file": "src/smart-asset-loader.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "css",
+      "file": "src/styles-v2.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/styles-v2.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "css",
+      "file": "src/styles-v3.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/styles-v3.css",
+      "message": "CSS file is not minified",
+      "savings": "4KB"
+    },
+    {
+      "type": "css",
+      "file": "src/styles.css",
+      "message": "Contains vendor prefixes - consider using autoprefixer"
+    },
+    {
+      "type": "css",
+      "file": "src/styles.css",
+      "message": "CSS file is not minified",
+      "savings": "3KB"
+    },
+    {
+      "type": "js",
+      "file": "src/update-all-pages-phase3.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/update-remaining-chapters.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/visualization-loader.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/visualizations/core/performance-monitor.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/webgl-context-manager.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "js",
+      "file": "src/webgl-utils.js",
+      "message": "Contains console.log statements - remove for production"
+    },
+    {
+      "type": "compression",
+      "file": "assets/css/main.css",
+      "message": "No compressed version found - enable gzip/brotli",
+      "savings": "8KB"
+    },
+    {
+      "type": "compression",
+      "file": "assets/js/core/github-pages-router.js",
+      "message": "No compressed version found - enable gzip/brotli",
+      "savings": "10KB"
+    },
+    {
+      "type": "caching",
+      "message": "Implement aggressive caching in service worker for static assets",
+      "impact": "high"
+    },
+    {
+      "type": "caching",
+      "message": "Use cache-first strategy for fonts and images",
+      "impact": "medium"
+    }
+  ],
+  "score": 0
+}

@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 7: The Pleroma - Aion by Carl Jung</title>
@@ -14,13 +39,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -41,11 +87,11 @@
         <!-- Interactive Gnostic Cosmology -->
         <section class="visualization-section">
             <h2>Interactive Gnostic Cosmology</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Experience the emanation from the undifferentiated Pleroma through the various levels of creation. Watch as the perfect unity gradually differentiates into the material world.</p>
             </div>
-            <div id="gnostic-cosmology" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="gnostic-cosmology" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <div class="control-group">
                     <button id="start-emanation">Start Emanation</button>
                     <button id="reverse-emanation">Reverse Process</button>
@@ -67,11 +113,11 @@
         <!-- Sophia's Fall Visualization -->
         <section class="visualization-section">
             <h2>Sophia's Fall and the Creation of Matter</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Watch Sophia's dramatic fall from the Pleroma into matter, creating the material world through her desire for knowledge outside the divine unity.</p>
             </div>
-            <div id="sophia-fall" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="sophia-fall" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="play-sophia-fall">Play Sophia's Fall</button>
                 <button id="show-demiurge">Show Demiurge Creation</button>
                 <button id="highlight-redemption">Show Redemption Path</button>
@@ -82,10 +128,10 @@
         <!-- Aeon Hierarchy Viewer -->
         <section class="visualization-section">
             <h2>The Aeon Hierarchy</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Explore the complex hierarchy of Aeons (divine emanations) in Gnostic cosmology. Each pair represents complementary aspects of divine consciousness.</p>
             </div>
-            <div id="aeon-hierarchy" class="visualization-container"></div>
+            <div id="aeon-hierarchy" class="visualization-container" data-error-boundary="true"></div>
             <div class="aeon-controls">
                 <select id="aeon-selector">
                     <option value="all">All Aeons</option>
@@ -103,11 +149,11 @@
         <!-- Pleroma vs Material World -->
         <section class="visualization-section">
             <h2>Pleroma vs Material World</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Contrast the perfect unity of the Pleroma with the divided, conflicted nature of the material world. See how Jung relates this to psychological wholeness.</p>
             </div>
-            <div id="pleroma-material" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="pleroma-material" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="toggle-realm">Toggle Between Realms</button>
                 <button id="show-psychological">Show Psychological Parallels</button>
                 <button id="animate-integration">Animate Integration</button>
@@ -168,8 +214,8 @@
 
         <!-- Navigation -->
         <div class="chapter-nav">
-            <a href="chapter6.html" class="prev-chapter">← Chapter 6: The Antichrist</a>
-            <a href="chapter8.html" class="next-chapter">Chapter 8: Sophia →</a>
+            <a href="chapter6.html" class="prev-chapter" data-transition="chapter">← Chapter 6: The Antichrist</a>
+            <a href="chapter8.html" class="next-chapter" data-transition="chapter">Chapter 8: Sophia →</a>
         </div>
     </main>
 

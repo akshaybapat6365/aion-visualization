@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 4: The Sign of the Fishes - Aion Visualization</title>
@@ -14,13 +39,34 @@
     <script src="progress-tracker.js"></script>
     <script src="visualization-loader.js"></script>
     <script src="apply-fixes.js" defer></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
+            <a href="chapters/index.html" class="nav-link" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html" class="nav-link">Timeline</a>
             <a href="src/symbols.html" class="nav-link">Symbols</a>
             <a href="src/about.html" class="nav-link">About</a>
@@ -41,11 +87,11 @@
         <!-- Enhanced Astrological Clock -->
         <section class="visualization-section">
             <h2>The Great Astrological Clock</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Experience the 26,000-year cycle of precession. Each astrological age lasts approximately 2,160 years. Watch the transition from Aries (Ram) to Pisces (Fish) to Aquarius (Water Bearer).</p>
             </div>
-            <div id="astrological-clock" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="astrological-clock" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <div class="control-group">
                     <label for="time-slider">Time Span:</label>
                     <input type="range" id="time-slider" min="-4000" max="4000" value="0" step="50">
@@ -71,11 +117,11 @@
         <!-- Fish Duality Visualization -->
         <section class="visualization-section">
             <h2>The Dual Fish: Opposition in Unity</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>The two fish of Pisces swim in opposite directions, representing the eternal tension between spirit and matter, Christ and Antichrist, conscious and unconscious.</p>
             </div>
-            <div id="fish-duality" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="fish-duality" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="toggle-fish-animation">Toggle Animation</button>
                 <button id="show-symbolic-meaning">Show Symbolic Meaning</button>
                 <button id="highlight-opposition">Highlight Opposition</button>
@@ -85,11 +131,11 @@
         <!-- Constellation Viewer -->
         <section class="visualization-section">
             <h2>Interactive Constellation Viewer</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>Explore the actual constellations and their mythological significance. See how the stars appear to move due to Earth's axial precession.</p>
             </div>
-            <div id="constellation-viewer" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="constellation-viewer" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="show-constellation-lines">Toggle Constellation Lines</button>
                 <button id="show-mythology">Show Mythology</button>
                 <button id="toggle-precession-motion">Toggle Precession Motion</button>
@@ -104,10 +150,10 @@
         <!-- Historical Timeline -->
         <section class="visualization-section">
             <h2>Historical Manifestations</h2>
-            <div class="visualization-intro">
+            <div class="visualization-intro" data-error-boundary="true">
                 <p>See how the transition between astrological ages manifests in historical events, religious movements, and cultural shifts.</p>
             </div>
-            <div id="historical-timeline" class="visualization-container"></div>
+            <div id="historical-timeline" class="visualization-container" data-error-boundary="true"></div>
             <div class="timeline-controls">
                 <button id="filter-religious">Religious Events</button>
                 <button id="filter-cultural">Cultural Shifts</button>
@@ -152,8 +198,8 @@
 
         <!-- Navigation -->
         <div class="chapter-nav">
-            <a href="chapter3.html" class="prev-chapter">← Chapter 3: The Syzygy</a>
-            <a href="chapter5.html" class="next-chapter">Chapter 5: Christ as Archetype →</a>
+            <a href="chapter3.html" class="prev-chapter" data-transition="chapter">← Chapter 3: The Syzygy</a>
+            <a href="chapter5.html" class="next-chapter" data-transition="chapter">Chapter 5: Christ as Archetype →</a>
         </div>
     </main>
 

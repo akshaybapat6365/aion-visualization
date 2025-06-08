@@ -57,6 +57,7 @@
     <!-- CSS Assets -->
     <link rel="stylesheet" href="assets/css/bundle.min.css">
     <link rel="stylesheet" href="assets/css/loading-indicators.css">
+    <link rel="stylesheet" href="assets/css/minimalist-background.min.css">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
@@ -72,7 +73,7 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <!-- Three.js removed for minimalist design -->
     
     <style>
         /* Critical CSS for immediate rendering */
@@ -251,8 +252,7 @@
     <!-- URL Indicator for Development -->
     <div class="url-indicator" id="url-indicator"></div>
     
-    <!-- WebGL Background -->
-    <canvas id="webgl-canvas" class="webgl-canvas" aria-hidden="true"></canvas>
+    <!-- Clean minimalist background via CSS -->
     
     <!-- Navigation -->
     <nav class="nav" role="navigation" aria-label="Main navigation">
@@ -407,77 +407,7 @@
         </div>
     </footer>
     
-    <!-- WebGL Background Script -->
-    <script>
-        // Minimal shader background for performance
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                initializeWebGLBackground();
-            } catch (error) {
-                console.warn('WebGL background failed, continuing without:', error);
-            }
-        });
-        
-        function initializeWebGLBackground() {
-            const canvas = document.getElementById('webgl-canvas');
-            if (!canvas || !window.THREE) return;
-            
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            const renderer = new THREE.WebGLRenderer({
-                canvas: canvas,
-                alpha: true,
-                antialias: false,
-                powerPreference: "default"
-            });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0);
-            
-            // Simple particle system
-            const geometry = new THREE.BufferGeometry();
-            const vertices = [];
-            
-            for (let i = 0; i < 1000; i++) {
-                vertices.push(
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000,
-                    (Math.random() - 0.5) * 2000
-                );
-            }
-            
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-            
-            const material = new THREE.PointsMaterial({
-                color: 0xffd700,
-                size: 2,
-                transparent: true,
-                opacity: 0.6
-            });
-            
-            const particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-            
-            camera.position.z = 1000;
-            
-            function animate() {
-                requestAnimationFrame(animate);
-                particles.rotation.x += 0.0005;
-                particles.rotation.y += 0.001;
-                renderer.render(scene, camera);
-            }
-            
-            animate();
-            
-            // Handle resize
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
-    </script>
+    <!-- Minimalist design - no heavy animations -->
     
     <!-- Core JavaScript -->
     <script src="assets/js/core/consolidated-utilities.js" defer></script>

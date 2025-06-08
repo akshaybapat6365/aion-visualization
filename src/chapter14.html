@@ -1,18 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <!-- Performance Optimization -->
+    <script>
+      // Early performance hints
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+          document.documentElement.classList.add('reduced-data-mode');
+        }
+      }
+      
+      // Preload critical resources
+      const criticalResources = [
+        '/assets/css/main.css',
+        '/assets/js/core/github-pages-router.js'
+      ];
+      
+      criticalResources.forEach(resource => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = resource;
+        link.as = resource.endsWith('.css') ? 'style' : 'script';
+        document.head.appendChild(link);
+      });
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 14: The Self - Aion by Carl Jung</title>
     <link rel="stylesheet" href="assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+    <!-- Phase 4: Polish Features -->
+    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
+    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
+    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
+    
+    <!-- Initialize Polish Features -->
+    <script type="module">
+      import polishIntegration from '/src/polish-integration.js';
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          console.log('Initializing polish features...');
+        });
+      }
+    </script>
 </head>
 <body>
+
+    <!-- Global Loading Container -->
+    <div id="global-loader" class="loading-container"></div>
+
     <nav class="main-nav">
         <a href="./index.html" class="nav-home">Aion</a>
         <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
         <div class="nav-links">
-            <a href="chapters/index.html">Chapters</a>
+            <a href="chapters/index.html" data-transition="chapter">Chapters</a>
             <a href="src/timeline.html">Timeline</a>
             <a href="src/symbols.html">Symbols</a>
             <a href="src/about.html">About</a>
@@ -32,8 +78,8 @@
 
         <section class="visualization-section">
             <h2>Complete Integration Mandala</h2>
-            <div id="self-mandala" class="visualization-container"></div>
-            <div class="visualization-controls">
+            <div id="self-mandala" class="visualization-container" data-error-boundary="true"></div>
+            <div class="visualization-controls" data-error-boundary="true">
                 <button id="animate-integration">Animate Integration</button>
                 <button id="show-wholeness">Show Wholeness</button>
                 <button id="reset-self">Reset</button>
@@ -64,7 +110,7 @@
 
         <section class="visualization-section">
             <h2>The Journey Complete</h2>
-            <div id="journey-complete" class="visualization-container"></div>
+            <div id="journey-complete" class="visualization-container" data-error-boundary="true"></div>
         </section>
 
         <section class="content-section">
@@ -80,8 +126,8 @@
         </section>
 
         <div class="chapter-nav">
-            <a href="chapter13.html" class="prev-chapter">← Chapter 13: The Quaternary</a>
-            <a href="chapters/index.html" class="next-chapter">Return to Chapters</a>
+            <a href="chapter13.html" class="prev-chapter" data-transition="chapter">← Chapter 13: The Quaternary</a>
+            <a href="chapters/index.html" class="next-chapter" data-transition="chapter">Return to Chapters</a>
         </div>
     </main>
 
