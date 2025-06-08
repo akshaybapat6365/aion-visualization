@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Aion Visualization</title>
+    <style>
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --text-primary: #F0F0F0;
+            --text-secondary: #8A8A8A;
+            --accent: #FFD700;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .metric-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .metric-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-change {
+            font-size: 0.875rem;
+            color: var(--success);
+        }
+        
+        .metric-change.negative {
+            color: var(--error);
+        }
+        
+        .chart-container {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            height: 400px;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .performance-table {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-good { background: var(--success); }
+        .status-warning { background: var(--warning); }
+        .status-poor { background: var(--error); }
+        
+        .refresh-button {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        
+        .refresh-button:hover {
+            opacity: 0.8;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        /* Simple chart visualization */
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            height: 300px;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: var(--accent);
+            opacity: 0.8;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+        
+        .chart-bar:hover {
+            opacity: 1;
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .chart-value {
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <h1>Analytics Dashboard</h1>
+            <p>Real-time insights for Aion Visualization</p>
+        </header>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3>Total Visitors</h3>
+                <div class="metric-value" id="total-visitors">0</div>
+                <div class="metric-change">+0% from last week</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Page Views</h3>
+                <div class="metric-value" id="page-views">0</div>
+                <div class="metric-change">+0% from last week</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Avg. Session Duration</h3>
+                <div class="metric-value" id="session-duration">0:00</div>
+                <div class="metric-change">+0% from last week</div>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Performance Score</h3>
+                <div class="metric-value" id="performance-score">0</div>
+                <div class="metric-change">Lighthouse average</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2 class="chart-title">Visitors Over Time</h2>
+            <div class="chart" id="visitors-chart"></div>
+        </div>
+        
+        <div class="chart-container">
+            <h2 class="chart-title">Popular Chapters</h2>
+            <div class="chart" id="chapters-chart"></div>
+        </div>
+        
+        <div class="performance-table">
+            <h2 class="chart-title">Core Web Vitals</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Target</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="web-vitals-table">
+                    <tr>
+                        <td>First Contentful Paint</td>
+                        <td>0.0s</td>
+                        <td>&lt; 0.8s</td>
+                        <td><span class="status-indicator status-good"></span>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Largest Contentful Paint</td>
+                        <td>0.0s</td>
+                        <td>&lt; 2.5s</td>
+                        <td><span class="status-indicator status-good"></span>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Cumulative Layout Shift</td>
+                        <td>0.00</td>
+                        <td>&lt; 0.1</td>
+                        <td><span class="status-indicator status-good"></span>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Total Blocking Time</td>
+                        <td>0ms</td>
+                        <td>&lt; 300ms</td>
+                        <td><span class="status-indicator status-good"></span>Good</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <button class="refresh-button" onclick="refreshDashboard()">Refresh Data</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            Loading analytics data...
+        </div>
+    </div>
+    
+    <script type="module">
+        // Mock data for demonstration
+        const mockData = {
+            visitors: 15234,
+            pageViews: 48921,
+            sessionDuration: 245, // seconds
+            performanceScore: 97,
+            visitorsTimeline: [
+                { day: 'Mon', count: 1823 },
+                { day: 'Tue', count: 2156 },
+                { day: 'Wed', count: 2489 },
+                { day: 'Thu', count: 2234 },
+                { day: 'Fri', count: 2678 },
+                { day: 'Sat', count: 1989 },
+                { day: 'Sun', count: 1865 }
+            ],
+            popularChapters: [
+                { chapter: 'The Ego', views: 4821 },
+                { chapter: 'The Shadow', views: 4234 },
+                { chapter: 'The Self', views: 3987 },
+                { chapter: 'The Syzygy', views: 3456 },
+                { chapter: 'Christ', views: 3123 }
+            ],
+            webVitals: {
+                fcp: 0.6,
+                lcp: 1.8,
+                cls: 0.05,
+                tbt: 120
+            }
+        };
+        
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+        
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function updateMetrics(data) {
+            document.getElementById('total-visitors').textContent = formatNumber(data.visitors);
+            document.getElementById('page-views').textContent = formatNumber(data.pageViews);
+            document.getElementById('session-duration').textContent = formatDuration(data.sessionDuration);
+            document.getElementById('performance-score').textContent = data.performanceScore;
+        }
+        
+        function drawVisitorsChart(data) {
+            const chart = document.getElementById('visitors-chart');
+            const maxValue = Math.max(...data.map(d => d.count));
+            
+            chart.innerHTML = data.map(item => `
+                <div class="chart-bar" style="height: ${(item.count / maxValue) * 100}%">
+                    <div class="chart-value">${formatNumber(item.count)}</div>
+                    <div class="chart-label">${item.day}</div>
+                </div>
+            `).join('');
+        }
+        
+        function drawChaptersChart(data) {
+            const chart = document.getElementById('chapters-chart');
+            const maxValue = Math.max(...data.map(d => d.views));
+            
+            chart.innerHTML = data.map(item => `
+                <div class="chart-bar" style="height: ${(item.views / maxValue) * 100}%">
+                    <div class="chart-value">${formatNumber(item.views)}</div>
+                    <div class="chart-label">${item.chapter.split(' ')[1]}</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateWebVitals(vitals) {
+            const tbody = document.getElementById('web-vitals-table');
+            const metrics = [
+                { name: 'First Contentful Paint', value: vitals.fcp, unit: 's', target: 0.8 },
+                { name: 'Largest Contentful Paint', value: vitals.lcp, unit: 's', target: 2.5 },
+                { name: 'Cumulative Layout Shift', value: vitals.cls, unit: '', target: 0.1 },
+                { name: 'Total Blocking Time', value: vitals.tbt, unit: 'ms', target: 300 }
+            ];
+            
+            tbody.innerHTML = metrics.map(metric => {
+                const status = metric.value <= metric.target ? 'good' : 
+                              metric.value <= metric.target * 1.5 ? 'warning' : 'poor';
+                return `
+                    <tr>
+                        <td>${metric.name}</td>
+                        <td>${metric.value}${metric.unit}</td>
+                        <td>&lt; ${metric.target}${metric.unit}</td>
+                        <td><span class="status-indicator status-${status}"></span>${status.charAt(0).toUpperCase() + status.slice(1)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function loadAnalyticsData() {
+            // In production, this would fetch from your analytics API
+            // For now, we'll use mock data
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            return mockData;
+        }
+        
+        async function refreshDashboard() {
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+            
+            try {
+                const data = await loadAnalyticsData();
+                
+                updateMetrics(data);
+                drawVisitorsChart(data.visitorsTimeline);
+                drawChaptersChart(data.popularChapters);
+                updateWebVitals(data.webVitals);
+                
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(refreshDashboard, 30000);
+        
+        // Initial load
+        window.addEventListener('DOMContentLoaded', refreshDashboard);
+    </script>
+</body>
+</html>
