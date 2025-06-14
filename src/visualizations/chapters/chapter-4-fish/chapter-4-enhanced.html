@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: The Sign of the Fishes - Aion Visualization</title>
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/chapters.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <style>
+        /* Enhanced styles for Fish Timeline */
+        .fish-timeline-section {
+            background: var(--surface-glass);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fish-timeline-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #8B7355 0%, #6B46C1 50%, #00CED1 100%);
+            opacity: 0.6;
+        }
+        
+        #fish-timeline-viz {
+            width: 100%;
+            height: 400px;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .timeline-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--surface-secondary);
+            border-radius: 0.5rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .fish-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .insight-card {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .insight-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .insight-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+        
+        .insight-card p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        /* Animation for fish symbols */
+        @keyframes swim {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(10px) rotate(5deg); }
+            75% { transform: translateX(-10px) rotate(-5deg); }
+        }
+        
+        .swimming-fish {
+            animation: swim 4s ease-in-out infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .fish-timeline-section {
+                padding: 1.5rem;
+                margin: 2rem 0;
+            }
+            
+            #fish-timeline-viz {
+                height: 300px;
+            }
+            
+            .timeline-legend {
+                gap: 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="../../../index.html" class="nav-link">Home</a>
+            <a href="../../../chapters/index.html" class="nav-link">Chapters</a>
+            <a href="../../../src/timeline.html" class="nav-link">Timeline</a>
+            <a href="../../../src/symbols.html" class="nav-link">Symbols</a>
+            <a href="../../../src/about.html" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="chapter-content">
+        <div class="chapter-header">
+            <div class="chapter-number">Chapter IV</div>
+            <h1 class="chapter-title">The Sign of the Fishes</h1>
+            <p class="chapter-subtitle">The Fish Symbol Through Two Millennia</p>
+        </div>
+
+        <section class="chapter-intro">
+            <p>In this chapter, Jung traces the fish symbol from its pre-Christian origins through its adoption by early Christianity, its astrological significance in the Age of Pisces, and its psychological meaning as a symbol of contents rising from the unconscious depths.</p>
+        </section>
+
+        <!-- NEW: Fish Symbol Timeline Visualization -->
+        <section class="visualization-section fish-timeline-section">
+            <h2>Fish Symbol Timeline</h2>
+            <div class="visualization-intro">
+                <p>Explore the evolution of the fish symbol across 2000+ years, from ancient fertility symbol to the Christian ichthys, through medieval alchemy to modern psychological understanding.</p>
+            </div>
+            
+            <div id="fish-timeline-viz"></div>
+            
+            <div class="timeline-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8B7355;"></div>
+                    <span>Ancient Period</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFD700;"></div>
+                    <span>Early Christianity</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #6B46C1;"></div>
+                    <span>Medieval Period</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF8C00;"></div>
+                    <span>Renaissance</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #00CED1;"></div>
+                    <span>Modern Era</span>
+                </div>
+            </div>
+            
+            <div class="fish-insights">
+                <div class="insight-card">
+                    <h4>Ichthys Acronym</h4>
+                    <p>ΙΧΘΥΣ - Iesous Christos Theou Yios Soter (Jesus Christ, Son of God, Savior)</p>
+                </div>
+                <div class="insight-card">
+                    <h4>Vesica Piscis</h4>
+                    <p>The fish-shaped intersection of two circles, representing the union of heaven and earth</p>
+                </div>
+                <div class="insight-card">
+                    <h4>Astrological Age</h4>
+                    <p>The 2,160-year Age of Pisces coincides with the Christian era</p>
+                </div>
+                <div class="insight-card">
+                    <h4>Psychological Meaning</h4>
+                    <p>Fish symbolize contents rising from the unconscious depths into consciousness</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Astrological Clock -->
+        <section class="visualization-section">
+            <h2>The Great Astrological Clock</h2>
+            <div class="visualization-intro">
+                <p>Experience the 26,000-year cycle of precession. Each astrological age lasts approximately 2,160 years. Watch the transition from Aries (Ram) to Pisces (Fish) to Aquarius (Water Bearer).</p>
+            </div>
+            <div id="astrological-clock" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <div class="control-group">
+                    <label for="time-slider">Time Span:</label>
+                    <input type="range" id="time-slider" min="-4000" max="4000" value="0" step="50">
+                    <span id="current-year">0 CE</span>
+                </div>
+                <div class="control-group">
+                    <button id="play-precession">Play Precession</button>
+                    <button id="pause-precession">Pause</button>
+                    <button id="reset-precession">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fish Duality Visualization -->
+        <section class="visualization-section">
+            <h2>The Dual Fish: Opposition in Unity</h2>
+            <div class="visualization-intro">
+                <p>The two fish of Pisces swim in opposite directions, representing the eternal tension between spirit and matter, Christ and Antichrist, conscious and unconscious.</p>
+            </div>
+            <div id="fish-duality" class="visualization-container"></div>
+            <div class="visualization-controls">
+                <button id="toggle-fish-animation">Toggle Animation</button>
+                <button id="show-symbolic-meaning">Show Symbolic Meaning</button>
+            </div>
+        </section>
+
+        <!-- Key Concepts -->
+        <section class="content-section">
+            <h2>The Psychological Significance</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>Pre-Christian Fish</h3>
+                    <ul>
+                        <li>Symbol of fertility and life</li>
+                        <li>Associated with water goddesses</li>
+                        <li>Represents the unconscious depths</li>
+                        <li>Found in multiple ancient cultures</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3>Christian Ichthys</h3>
+                    <ul>
+                        <li>Secret symbol during persecution</li>
+                        <li>Miraculous draught of fishes</li>
+                        <li>Fishers of men metaphor</li>
+                        <li>Baptismal water symbolism</li>
+                    </ul>
+                </div>
+                <div class="concept-card">
+                    <h3>Astrological Pisces</h3>
+                    <ul>
+                        <li>Two fish bound together</li>
+                        <li>Represents duality and opposition</li>
+                        <li>2,160-year astrological age</li>
+                        <li>Transition to Aquarius approaching</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jung's Interpretation -->
+        <section class="content-section">
+            <h2>Jung's Analysis</h2>
+            <blockquote class="jung-quote">
+                "The fish in dreams occasionally signifies the unborn child, because the child before its birth lives in the water like a fish; similarly, when the sun sinks into the sea, it becomes child and fish at once."
+            </blockquote>
+            <p>Jung saw the fish as a symbol of the Self in its unconscious state, swimming in the waters of the psyche. The Christian adoption of this symbol represents the manifestation of the Self in historical time, while the dual fish of Pisces point to the fundamental split in the Christian psyche between good and evil, Christ and Antichrist.</p>
+        </section>
+
+        <!-- Navigation -->
+        <div class="chapter-nav">
+            <a href="chapter3.html" class="prev-chapter">← Chapter 3: The Syzygy</a>
+            <a href="../../../chapters/index.html" class="nav-button home">Chapter Index</a>
+            <a href="chapter5.html" class="next-chapter">Chapter 5: Christ as Archetype →</a>
+        </div>
+    </main>
+
+    <!-- Load Fish Timeline Visualization -->
+    <script src="./fish-timeline-simple.js"></script>
+    
+    <!-- Existing visualization scripts -->
+    <script>
+        // Initialize Fish Timeline when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // The fish-timeline-simple.js will auto-initialize
+            console.log('Chapter 4 Enhanced loaded with Fish Timeline');
+        });
+        
+        // Placeholder for other visualizations
+        // You can add the astrological clock and fish duality visualizations here
+    </script>
+</body>
+</html>

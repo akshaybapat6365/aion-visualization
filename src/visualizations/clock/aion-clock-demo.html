@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aion Clock - 2000-Year Zodiacal Cycle Visualization</title>
+    
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="clock.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            font-family: 'Georgia', serif;
+        }
+        
+        .demo-header {
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            color: #000;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .instructions {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .instructions ul {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .keyboard-shortcuts {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .keyboard-shortcuts h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .keyboard-shortcuts table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .keyboard-shortcuts td {
+            padding: 5px 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .keyboard-shortcuts td:first-child {
+            font-family: monospace;
+            background: #fff;
+            border-radius: 3px;
+            text-align: center;
+            width: 100px;
+        }
+        
+        .quote {
+            background: #fff;
+            border-left: 4px solid #666;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #444;
+        }
+        
+        .quote-author {
+            text-align: right;
+            margin-top: 10px;
+            color: #666;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>Aion Clock Visualization</h1>
+        <p>The Great Year and the Precession of Equinoxes</p>
+    </div>
+    
+    <div class="demo-container">
+        <div class="instructions">
+            <h2>About the Visualization</h2>
+            <p>This circular clock represents the Great Year of approximately 25,920 years, divided into 12 zodiacal ages of roughly 2,160 years each. The visualization shows the precession of the equinoxes and marks significant historical events in relation to the astrological ages.</p>
+            
+            <div class="quote">
+                "The course of our religious history as well as an essential part of our psychic development could have been predicted more or less accurately, both as regards time and content, from the precession of the equinoxes through the constellation of Pisces."
+                <div class="quote-author">— C.G. Jung, Aion</div>
+            </div>
+            
+            <h3>How to Use</h3>
+            <ul>
+                <li><strong>Drag to rotate:</strong> Click and drag the clock to manually rotate through time</li>
+                <li><strong>Zoom:</strong> Use mouse wheel or pinch gesture to zoom in/out</li>
+                <li><strong>Hover over events:</strong> See details about historical events marked on the timeline</li>
+                <li><strong>Hover over zodiac signs:</strong> View information about each astrological sign</li>
+                <li><strong>Time controls:</strong> Play, pause, and adjust the speed of time progression</li>
+                <li><strong>Jump to date:</strong> Enter a specific year or select from historical events</li>
+            </ul>
+            
+            <div class="keyboard-shortcuts">
+                <h3>Keyboard Shortcuts</h3>
+                <table>
+                    <tr>
+                        <td>Space</td>
+                        <td>Play/Pause animation</td>
+                    </tr>
+                    <tr>
+                        <td>← →</td>
+                        <td>Step backward/forward 10 years</td>
+                    </tr>
+                    <tr>
+                        <td>↑ ↓</td>
+                        <td>Increase/decrease speed</td>
+                    </tr>
+                    <tr>
+                        <td>R</td>
+                        <td>Reset view to current date</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div id="aion-clock" class="aion-clock-container"></div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="ZodiacRenderer.js"></script>
+    <script src="TimeController.js"></script>
+    <script src="AionClock.js"></script>
+    
+    <script>
+        // Initialize the Aion Clock
+        const clock = new AionClock('aion-clock', {
+            width: 800,
+            height: 800,
+            innerRadius: 150,
+            outerRadius: 350,
+            currentYear: new Date().getFullYear()
+        });
+        
+        // Optional: Start with a specific historical moment
+        // clock.animateToYear(0); // Birth of Christ
+        // clock.animateToYear(-2150); // Beginning of Age of Pisces
+    </script>
+</body>
+</html>

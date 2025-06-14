@@ -1,27 +1,31 @@
-# AION
+# Aion Visualization
 
-An immersive exploration of C.G. Jung's *Aion: Researches into the Phenomenology of the Self*.
+An interactive visualization of Carl Jung's *Aion: Researches into the Phenomenology of the Self*.
 
 **Live**: [akshaybapat6365.github.io/aion-visualization](https://akshaybapat6365.github.io/aion-visualization/)
 
 ## Overview
 
-AION transforms Jung's profound psychological concepts into an interactive digital experience. Through minimalist design and innovative interactions, we make complex archetypal patterns accessible and engaging.
+Experience Jung's masterwork through interactive visualizations and a clean, minimalist design. Navigate through 14 chapters exploring the depths of analytical psychology.
 
 ## Features
 
 - **14 Interactive Chapters** - Complete journey through Jung's work
-- **Monochromatic Design** - Premium aesthetic with 10 shades of grey
-- **WebGL Visualizations** - GPU-accelerated archetypal representations  
-- **Concept Constellation** - Navigate ideas in 3D space
-- **Liquid Transitions** - Morphing animations between states
-- **<2s Load Time** - Optimized for instant access
+- **Minimalist Design** - Clean monochromatic aesthetic
+- **Fast Performance** - Optimized for quick loading
+- **Keyboard Navigation** - Press 1-9 for chapters, Esc for home
+- **Offline Support** - Basic PWA functionality
+- **Mobile Responsive** - Works on all devices
 
 ## Quick Start
 
 ```bash
-cd src
-python3 -m http.server
+# Clone the repository
+git clone https://github.com/akshaybapat6365/aion-visualization.git
+cd aion-visualization
+
+# Serve locally
+python3 -m http.server 8000
 ```
 
 Visit `http://localhost:8000`

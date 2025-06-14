@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Aion Visualization</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #0A0A0A;
+            color: #F0F0F0;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test { 
+            background: #141414;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+        .pass { color: #4CAF50; }
+        .fail { color: #F44336; }
+    </style>
+</head>
+<body>
+    <h1>Core Functionality Test</h1>
+    
+    <div class="test">
+        <h2>PWA Tests</h2>
+        <p>Manifest: <span id="manifest"></span></p>
+        <p>Service Worker: <span id="sw"></span></p>
+        <p>HTTPS: <span id="https"></span></p>
+    </div>
+    
+    <div class="test">
+        <h2>Navigation Tests</h2>
+        <p>Press 1-9 to test chapter navigation</p>
+        <p>Press Escape to go home</p>
+    </div>
+    
+    <div class="test">
+        <h2>Critical Resources</h2>
+        <p>CSS Bundle: <span id="css"></span></p>
+        <p>JS Router: <span id="router"></span></p>
+    </div>
+    
+    <script>
+        // Test manifest
+        const manifestLink = document.querySelector('link[rel="manifest"]');
+        if (manifestLink) {
+            fetch(manifestLink.href)
+                .then(r => r.json())
+                .then(() => {
+                    document.getElementById('manifest').innerHTML = '<span class="pass">✓ Loaded</span>';
+                })
+                .catch(() => {
+                    document.getElementById('manifest').innerHTML = '<span class="fail">✗ Failed</span>';
+                });
+        } else {
+            document.getElementById('manifest').innerHTML = '<span class="fail">✗ Not linked</span>';
+        }
+        
+        // Test service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration()
+                .then(reg => {
+                    document.getElementById('sw').innerHTML = reg ? 
+                        '<span class="pass">✓ Registered</span>' : 
+                        '<span class="fail">✗ Not registered</span>';
+                });
+        } else {
+            document.getElementById('sw').innerHTML = '<span class="fail">✗ Not supported</span>';
+        }
+        
+        // Test HTTPS
+        document.getElementById('https').innerHTML = 
+            (location.protocol === 'https:' || location.hostname === 'localhost') ?
+            '<span class="pass">✓ Secure</span>' : 
+            '<span class="fail">✗ Not secure</span>';
+        
+        // Test resources
+        fetch('/aion-visualization/assets/css/bundle.min.css')
+            .then(r => {
+                document.getElementById('css').innerHTML = r.ok ? 
+                    '<span class="pass">✓ Loaded</span>' : 
+                    '<span class="fail">✗ Failed</span>';
+            });
+            
+        fetch('/aion-visualization/assets/js/core/github-pages-router.js')
+            .then(r => {
+                document.getElementById('router').innerHTML = r.ok ? 
+                    '<span class="pass">✓ Loaded</span>' : 
+                    '<span class="fail">✗ Failed</span>';
+            });
+    </script>
+</body>
+</html>

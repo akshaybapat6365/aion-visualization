@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow Integration Demo - Aion Visualization</title>
+  <link rel="stylesheet" href="shadow-integration.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="shadow-container" class="shadow-integration-container">
+    <!-- Instructions Overlay -->
+    <div class="instructions-overlay" id="instructionsOverlay">
+      <h2>Shadow Integration</h2>
+      <p>
+        Explore Jung's concept of shadow work through interactive particle physics.
+      </p>
+      <p>
+        <strong>Drag shadow particles</strong> from the unconscious realm to the conscious realm,
+        bringing them close to light particles to integrate them.
+      </p>
+      <p>
+        Integration transforms both particles, creating balance between light and shadow.
+      </p>
+      <button class="start-button" onclick="startVisualization()">Begin Integration</button>
+    </div>
+    
+    <!-- Level Indicator -->
+    <div class="level-indicator" id="levelIndicator" style="display: none;">
+      Level <span id="currentLevel">1</span>
+    </div>
+    
+    <!-- Controls Panel -->
+    <div class="shadow-controls" id="controlsPanel" style="display: none;">
+      <h3>Controls</h3>
+      <button class="control-button" onclick="resetVisualization()">Reset</button>
+      <button class="control-button" onclick="togglePause()">
+        <span id="pauseButtonText">Pause</span>
+      </button>
+      <button class="control-button" onclick="showStats()">Show Stats</button>
+    </div>
+    
+    <!-- Stats Display -->
+    <div class="shadow-stats" id="statsDisplay" style="display: none;">
+      <div class="stat-item">
+        <div class="stat-label">Integrations</div>
+        <div class="stat-value" id="integrationCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Shadow</div>
+        <div class="stat-value" id="shadowCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Light</div>
+        <div class="stat-value" id="lightCount">0</div>
+      </div>
+    </div>
+    
+    <!-- Achievement Notification -->
+    <div class="achievement-notification" id="achievementNotification" style="display: none;">
+      <h4 id="achievementTitle"></h4>
+      <p id="achievementDescription"></p>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script type="module">
+    import ShadowIntegration from './ShadowIntegration.js';
+    
+    let visualization = null;
+    let isPaused = false;
+    
+    window.startVisualization = function() {
+      // Hide instructions
+      document.getElementById('instructionsOverlay').style.display = 'none';
+      
+      // Show UI elements
+      document.getElementById('levelIndicator').style.display = 'block';
+      document.getElementById('controlsPanel').style.display = 'block';
+      
+      // Initialize visualization
+      const container = document.getElementById('shadow-container');
+      visualization = new ShadowIntegration(container);
+      
+      // Setup event handlers
+      visualization.onProgressUpdate = (progress, level) => {
+        updateUI(progress, level);
+      };
+      
+      visualization.integrationEngine.onAchievementUnlocked = (achievement) => {
+        showAchievement(achievement);
+      };
+      
+      // Start
+      visualization.start();
+      updateStats();
+    };
+    
+    window.resetVisualization = function() {
+      if (visualization) {
+        visualization.destroy();
+        startVisualization();
+      }
+    };
+    
+    window.togglePause = function() {
+      if (!visualization) return;
+      
+      isPaused = !isPaused;
+      if (isPaused) {
+        visualization.stop();
+        document.getElementById('pauseButtonText').textContent = 'Resume';
+      } else {
+        visualization.start();
+        document.getElementById('pauseButtonText').textContent = 'Pause';
+      }
+    };
+    
+    window.showStats = function() {
+      const statsDisplay = document.getElementById('statsDisplay');
+      if (statsDisplay.style.display === 'none') {
+        statsDisplay.style.display = 'flex';
+        updateStats();
+      } else {
+        statsDisplay.style.display = 'none';
+      }
+    };
+    
+    function updateUI(progress, level) {
+      // Update level
+      document.getElementById('currentLevel').textContent = level;
+      
+      // Update stats
+      updateStats();
+    }
+    
+    function updateStats() {
+      if (!visualization) return;
+      
+      const stats = visualization.integrationEngine.getStats();
+      
+      document.getElementById('integrationCount').textContent = stats.totalIntegrations;
+      document.getElementById('shadowCount').textContent = stats.shadowIntegrated;
+      document.getElementById('lightCount').textContent = stats.lightIntegrated;
+    }
+    
+    function showAchievement(achievement) {
+      const notification = document.getElementById('achievementNotification');
+      const title = document.getElementById('achievementTitle');
+      const description = document.getElementById('achievementDescription');
+      
+      title.textContent = achievement.title;
+      description.textContent = achievement.description;
+      
+      notification.style.display = 'block';
+      
+      // Hide after animation
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Update stats periodically
+    setInterval(() => {
+      if (visualization && !isPaused) {
+        updateStats();
+      }
+    }, 1000);
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (visualization) {
+        // Visualization handles resize internally
+      }
+    });
+  </script>
+</body>
+</html>

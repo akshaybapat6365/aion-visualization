@@ -1,0 +1,437 @@
+/* alchemy.css - Monochromatic styles for Alchemical Transformation Lab */
+
+.alchemy-lab {
+    width: 100%;
+    height: 100vh;
+    background: #000000;
+    color: #CCCCCC;
+    font-family: 'Georgia', serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header */
+.alchemy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, #111111, #000000);
+    border-bottom: 1px solid #333333;
+}
+
+.alchemy-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    color: #EEEEEE;
+}
+
+.stage-indicator {
+    text-align: center;
+}
+
+.stage-name {
+    display: block;
+    font-size: 20px;
+    color: #CCCCCC;
+    margin-bottom: 5px;
+}
+
+.stage-description {
+    font-size: 14px;
+    color: #666666;
+    font-style: italic;
+}
+
+.score-display {
+    font-size: 18px;
+}
+
+.score-label {
+    color: #666666;
+    margin-right: 10px;
+}
+
+.score-value {
+    color: #EEEEEE;
+    font-weight: bold;
+}
+
+/* Stage Progression */
+.stage-progression {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #0A0A0A;
+    border-bottom: 1px solid #333333;
+}
+
+.stage-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 30px;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.stage-node.active {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.stage-symbol {
+    font-size: 36px;
+    margin-bottom: 5px;
+}
+
+.stage-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Workspace */
+.alchemy-workspace {
+    display: flex;
+    height: calc(100vh - 200px);
+    padding: 20px;
+}
+
+/* Element Palette */
+.element-palette {
+    width: 200px;
+    background: #0A0A0A;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-right: 20px;
+    overflow-y: auto;
+}
+
+.element-palette h3 {
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: #999999;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.alchemical-element {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.alchemical-element:hover {
+    background: #1A1A1A;
+    border-color: #444444;
+    transform: scale(1.05);
+}
+
+.alchemical-element.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.element-svg {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+}
+
+.element-name {
+    font-size: 12px;
+    text-align: center;
+    color: #999999;
+}
+
+/* Transformation Vessel */
+.transformation-vessel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 0 20px;
+}
+
+.vessel-svg {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+}
+
+.vessel-contents {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.vessel-element {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+    transition: all 0.5s ease;
+}
+
+.vessel-element.active {
+    opacity: 1;
+    transform: scale(1) rotate(var(--rotation));
+}
+
+.transformation-vessel.drag-over .vessel-svg circle:first-of-type {
+    stroke: #666666;
+    stroke-width: 3;
+}
+
+.transformation-vessel.transforming {
+    animation: vessel-glow 1.5s ease-in-out;
+}
+
+@keyframes vessel-glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.5); }
+}
+
+.transformation-effect {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: transformation-pulse 1.5s ease-out;
+}
+
+@keyframes transformation-pulse {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.transformation-result {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    animation: result-appear 0.5s forwards;
+}
+
+@keyframes result-appear {
+    to { opacity: 1; }
+}
+
+.transformation-result.fade-out {
+    animation: result-fade 1s forwards;
+}
+
+@keyframes result-fade {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.result-name {
+    font-size: 18px;
+    color: #EEEEEE;
+    margin-top: 10px;
+}
+
+.result-description {
+    font-size: 14px;
+    color: #666666;
+    font-style: italic;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Discovery Panel */
+.discovery-panel {
+    width: 250px;
+    background: #0A0A0A;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.discovery-panel h3 {
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: #999999;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.discovery-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.discovery-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #1A1A1A;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.5s ease;
+}
+
+.discovery-item.revealed {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.discovery-item .element-svg {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.discovery-info {
+    flex: 1;
+}
+
+.discovery-name {
+    font-size: 14px;
+    color: #CCCCCC;
+    margin-bottom: 3px;
+}
+
+.discovery-recipe {
+    font-size: 11px;
+    color: #666666;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1A1A1A;
+    border: 1px solid #444444;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #CCCCCC;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+/* Achievements */
+.achievement {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    border: 2px solid #444444;
+    padding: 20px 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-50px);
+    transition: all 0.5s ease;
+    z-index: 1001;
+    box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+}
+
+.achievement.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.achievement-icon {
+    font-size: 36px;
+    color: #EEEEEE;
+}
+
+.achievement-text {
+    font-size: 18px;
+    color: #CCCCCC;
+    font-weight: bold;
+}
+
+/* Stage Transition Effect */
+.alchemy-lab.stage-transition {
+    animation: stage-flash 1s ease;
+}
+
+@keyframes stage-flash {
+    0%, 100% { background: #000000; }
+    50% { background: #1A1A1A; }
+}
+
+/* Scrollbar Styling */
+.element-palette::-webkit-scrollbar,
+.discovery-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.element-palette::-webkit-scrollbar-track,
+.discovery-panel::-webkit-scrollbar-track {
+    background: #0A0A0A;
+}
+
+.element-palette::-webkit-scrollbar-thumb,
+.discovery-panel::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 4px;
+}
+
+.element-palette::-webkit-scrollbar-thumb:hover,
+.discovery-panel::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .alchemy-workspace {
+        flex-direction: column;
+    }
+    
+    .element-palette,
+    .discovery-panel {
+        width: 100%;
+        margin: 0 0 20px 0;
+        max-height: 150px;
+    }
+    
+    .transformation-vessel {
+        margin: 0;
+    }
+}

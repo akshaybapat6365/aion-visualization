@@ -38,6 +38,10 @@
     <meta name="keywords" content="Carl Jung, Aion, analytical psychology, visualization, interactive, chapters, individuation, archetypes">
     <meta name="author" content="Akshay Bapat">
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#FFD700">
+    <link rel="manifest" href="/aion-visualization/manifest.json">
+    
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Aion - A Visual Journey Through Jung's Masterwork">
     <meta property="og:description" content="An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies.">
@@ -490,6 +494,21 @@
                 navigator.serviceWorker.register('/aion-visualization/sw.js')
                     .then(function(registration) {
                         console.log('ServiceWorker registration successful');
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker available
+                                    console.log('New service worker available');
+                                    if (confirm('New version available! Reload to update?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
                     })
                     .catch(function(error) {
                         console.log('ServiceWorker registration failed:', error);
@@ -497,6 +516,9 @@
             });
         }
     </script>
+    
+    <!-- Basic Keyboard Navigation -->
+    <script src="/aion-visualization/src/core/keyboard-nav.js" defer></script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>
 

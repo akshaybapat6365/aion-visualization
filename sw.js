@@ -1,27 +1,22 @@
 /**
- * Service Worker - Phase 5 Production Optimization
- * Provides offline functionality, caching, and performance optimization
+ * Service Worker for Aion Visualization PWA
+ * Provides advanced offline functionality, caching, and performance optimization
+ * Version: 2.0.0 - Enhanced PWA Support
  */
 
-const CACHE_NAME = 'aion-visualization-v1.0.0';
-const STATIC_CACHE = 'aion-static-v1.0.0';
-const DYNAMIC_CACHE = 'aion-dynamic-v1.0.0';
+const CACHE_VERSION = 'aion-v2.0.0';
+const STATIC_CACHE = `${CACHE_VERSION}-static`;
+const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
+const IMAGE_CACHE = `${CACHE_VERSION}-images`;
+const ANALYTICS_CACHE = 'analytics-queue';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
     '/aion-visualization/',
     '/aion-visualization/index.html',
-    '/aion-visualization/404.html',
-    '/aion-visualization/chapters/',
-    '/aion-visualization/assets/css/main.min.css',
-    '/aion-visualization/assets/css/chapters.min.css',
-    '/aion-visualization/assets/css/loading-indicators.css',
-    '/aion-visualization/assets/css/error-handling.css',
-    '/aion-visualization/assets/js/core/github-pages-router.min.js',
-    '/aion-visualization/assets/js/core/consolidated-utilities.min.js',
-    '/aion-visualization/assets/js/core/environment-config.js',
-    '/aion-visualization/sitemap.xml',
-    '/aion-visualization/robots.txt'
+    '/aion-visualization/offline.html',
+    '/aion-visualization/manifest.json',
+    '/aion-visualization/assets/css/bundle.min.css'
 ];
 
 // Chapter files to cache on demand
