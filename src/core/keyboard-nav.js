@@ -9,7 +9,7 @@ document.addEventListener('keydown', (e) => {
   
   // Number keys 1-9 for chapters
   if (/^[1-9]$/.test(e.key)) {
-    window.location.href = `/aion-visualization/chapters/chapter${e.key}.html`;
+    window.location.href = `/aion-visualization/chapters/standard/chapter-${e.key}.html`;
   }
   
   // Escape to go home

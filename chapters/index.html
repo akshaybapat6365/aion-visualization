@@ -32,22 +32,6 @@
     <link rel="stylesheet" href="../assets/css/bundle.min.css">
     <link rel="stylesheet" href="../assets/css/minimalist-background.min.css">
 
-    <!-- Phase 4: Polish Features -->
-    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
-    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
-    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
-    
-    <!-- Initialize Polish Features -->
-    <script type="module">
-      import polishIntegration from '/src/polish-integration.js';
-      
-      // Initialize when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          console.log('Initializing polish features...');
-        });
-      }
-    </script>
 </head>
 <body>
 
@@ -60,7 +44,7 @@
     <nav class="nav">
         <div class="nav-container">
             <a href="../index.html" class="nav-link">Home</a>
-            <a href="chapters.html" class="nav-link active" data-transition="chapter">Chapters</a>
+            <a href="standard/chapter-s.html" class="nav-link active" data-transition="chapter">Chapters</a>
             <a href="timeline.html" class="nav-link">Timeline</a>
             <a href="symbols.html" class="nav-link">Symbols</a>
             <a href="../showcase.html" class="nav-link">Showcase</a>
@@ -81,7 +65,7 @@
             <!-- Chapter Grid -->
             <div class="chapter-grid">
                 <!-- Chapter 1 -->
-                <a href="chapter1.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-1.html" class="card chapter-card">
                     <div class="chapter-card-number">01</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Ego</h3>
@@ -90,7 +74,7 @@
                 </a>
                 
                 <!-- Chapter 2 -->
-                <a href="chapter2.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-2.html" class="card chapter-card">
                     <div class="chapter-card-number">02</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Shadow</h3>
@@ -99,7 +83,7 @@
                 </a>
                 
                 <!-- Chapter 3 -->
-                <a href="chapter3.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-3.html" class="card chapter-card">
                     <div class="chapter-card-number">03</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Syzygy</h3>
@@ -108,7 +92,7 @@
                 </a>
                 
                 <!-- Chapter 4 -->
-                <a href="chapter4.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-4.html" class="card chapter-card">
                     <div class="chapter-card-number">04</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Sign of the Fishes</h3>
@@ -117,7 +101,7 @@
                 </a>
                 
                 <!-- Chapter 5 -->
-                <a href="chapter5.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-5.html" class="card chapter-card">
                     <div class="chapter-card-number">05</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Christ as Archetype</h3>
@@ -126,7 +110,7 @@
                 </a>
                 
                 <!-- Chapter 6 -->
-                <a href="chapter6.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-6.html" class="card chapter-card">
                     <div class="chapter-card-number">06</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Antichrist</h3>
@@ -135,7 +119,7 @@
                 </a>
                 
                 <!-- Chapter 7 -->
-                <a href="chapter7.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-7.html" class="card chapter-card">
                     <div class="chapter-card-number">07</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Pleroma</h3>
@@ -144,7 +128,7 @@
                 </a>
                 
                 <!-- Chapter 8 -->
-                <a href="chapter8.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-8.html" class="card chapter-card">
                     <div class="chapter-card-number">08</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Sophia</h3>
@@ -153,7 +137,7 @@
                 </a>
                 
                 <!-- Chapter 9 -->
-                <a href="chapter9.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-9.html" class="card chapter-card">
                     <div class="chapter-card-number">09</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Naassenes</h3>
@@ -162,7 +146,7 @@
                 </a>
                 
                 <!-- Chapter 10 -->
-                <a href="chapter10.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-10.html" class="card chapter-card">
                     <div class="chapter-card-number">10</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Lapis</h3>
@@ -171,7 +155,7 @@
                 </a>
                 
                 <!-- Chapter 11 -->
-                <a href="chapter11.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-11.html" class="card chapter-card">
                     <div class="chapter-card-number">11</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">Mercurius</h3>
@@ -180,7 +164,7 @@
                 </a>
                 
                 <!-- Chapter 12 -->
-                <a href="chapter12.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-12.html" class="card chapter-card">
                     <div class="chapter-card-number">12</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Coniunctio</h3>
@@ -189,7 +173,7 @@
                 </a>
                 
                 <!-- Chapter 13 -->
-                <a href="chapter13.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-13.html" class="card chapter-card">
                     <div class="chapter-card-number">13</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Quaternary</h3>
@@ -198,7 +182,7 @@
                 </a>
                 
                 <!-- Chapter 14 -->
-                <a href="chapter14.html" data-transition="morph" class="card chapter-card magnetic-element" data-transition="chapter">
+                <a href="standard/chapter-14.html" class="card chapter-card">
                     <div class="chapter-card-number">14</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Self</h3>
@@ -212,12 +196,5 @@
     <!-- Minimalist design - no heavy animations -->
     <script src="../assets/js/core/utilities.js"></script>
 
-    <!-- Premium Features -->
-    <script type="module">
-      import '/src/premium-features/index.js';
-      
-      // Enable premium features
-      console.log('✨ Premium features loaded');
-    </script>
 </body>
 </html>
