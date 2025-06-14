@@ -1,0 +1,383 @@
+/**
+ * clock.css - Monochromatic styles for Aion Clock Visualization
+ */
+
+/* Base styles */
+.aion-clock-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Georgia', serif;
+    background: #fafafa;
+    padding: 20px;
+}
+
+/* SVG styles */
+.aion-clock-svg {
+    display: block;
+    margin: 0 auto;
+    cursor: grab;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.aion-clock-svg:active {
+    cursor: grabbing;
+}
+
+/* Zodiac segments */
+.zodiac-segment {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.zodiac-segment:hover {
+    fill: #f0f0f0;
+    stroke-width: 2;
+}
+
+/* Element indicators */
+.element-indicator.fire { fill: #666; }
+.element-indicator.earth { fill: #555; }
+.element-indicator.air { fill: #777; }
+.element-indicator.water { fill: #444; }
+
+/* Zodiac symbols */
+.zodiac-symbol {
+    font-size: 24px;
+    fill: #000;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.zodiac-symbol-group circle {
+    transition: all 0.3s ease;
+}
+
+/* Age labels */
+.age-label-name {
+    font-size: 14px;
+    font-weight: bold;
+    fill: #333;
+}
+
+.age-label-years {
+    font-size: 10px;
+    fill: #666;
+}
+
+.age-label-group.current-age .age-label-name {
+    fill: #000;
+    font-weight: bold;
+}
+
+/* Event markers */
+.event-marker circle {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.event-marker:hover circle {
+    r: 6;
+    fill: #333;
+}
+
+/* Current indicator */
+.current-indicator line {
+    pointer-events: none;
+}
+
+.year-label {
+    font-size: 16px;
+    font-weight: bold;
+    fill: #000;
+}
+
+/* Center info */
+.age-name {
+    font-size: 18px;
+    font-weight: bold;
+    fill: #000;
+}
+
+.age-years {
+    font-size: 14px;
+    fill: #666;
+}
+
+.speed-indicator {
+    font-size: 12px;
+    fill: #999;
+}
+
+/* Tooltip */
+.aion-tooltip {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    max-width: 250px;
+}
+
+.tooltip-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.tooltip-event {
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.tooltip-significance {
+    color: #666;
+    font-style: italic;
+}
+
+.sign-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.sign-info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Time controls */
+.time-controls {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.control-group label {
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 10px;
+    min-width: 120px;
+    color: #333;
+}
+
+/* Control buttons */
+.control-btn {
+    background: #fff;
+    border: 1px solid #666;
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background: #f0f0f0;
+    border-color: #333;
+}
+
+.control-btn:active {
+    background: #e0e0e0;
+}
+
+#play-pause {
+    font-size: 18px;
+    padding: 8px 20px;
+}
+
+/* Speed buttons */
+.speed-buttons {
+    display: inline-block;
+}
+
+.speed-btn {
+    background: #fff;
+    border: 1px solid #999;
+    padding: 6px 12px;
+    margin: 0 2px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.speed-btn:hover {
+    background: #f0f0f0;
+}
+
+.speed-btn.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+/* Navigation inputs */
+#year-input {
+    width: 100px;
+    padding: 6px 10px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+#event-select {
+    padding: 6px 10px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    max-width: 300px;
+}
+
+/* Mode buttons */
+.mode-btn {
+    background: #666;
+    color: #fff;
+    border-color: #666;
+}
+
+.mode-btn:hover {
+    background: #555;
+    border-color: #555;
+}
+
+/* Info panel */
+.info-panel {
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+}
+
+.current-info, .age-info, .cycle-info {
+    margin-bottom: 10px;
+}
+
+.info-label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #666;
+}
+
+#current-year-display, #current-age-display {
+    color: #000;
+}
+
+/* Progress bar */
+.progress-bar {
+    display: inline-block;
+    width: 200px;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin: 0 10px;
+    vertical-align: middle;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #666;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+#cycle-percent {
+    color: #666;
+    font-size: 12px;
+}
+
+/* Event modal */
+.event-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.event-modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    text-align: center;
+}
+
+.event-modal-content h2 {
+    margin: 0 0 10px 0;
+    color: #000;
+}
+
+.event-modal-content h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+.event-modal-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.close-modal {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.close-modal:hover {
+    background: #000;
+}
+
+/* Projection markers */
+.projection-marker text {
+    font-size: 12px;
+    fill: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .control-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .progress-bar {
+        display: block;
+        margin: 10px 0;
+    }
+    
+    #event-select {
+        max-width: 100%;
+    }
+}

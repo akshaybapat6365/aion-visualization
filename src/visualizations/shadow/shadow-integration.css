@@ -1,0 +1,324 @@
+/**
+ * Shadow Integration Visualization Styles
+ * Monochromatic design matching Aion aesthetic
+ */
+
+.shadow-integration-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #f5f5f5 0%, #1a1a1a 100%);
+  overflow: hidden;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.shadow-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.shadow-canvas:active {
+  cursor: grabbing;
+}
+
+/* Realm indicators */
+.realm-indicator {
+  position: absolute;
+  left: 20px;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.realm-indicator.conscious {
+  top: 30px;
+  color: #333;
+}
+
+.realm-indicator.unconscious {
+  bottom: 30px;
+  color: #ccc;
+}
+
+/* Control panel */
+.shadow-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 200px;
+}
+
+.shadow-controls h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.control-button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background: rgba(150, 100, 200, 0.2);
+  border: 1px solid rgba(150, 100, 200, 0.4);
+  border-radius: 4px;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-button:hover {
+  background: rgba(150, 100, 200, 0.3);
+  border-color: rgba(150, 100, 200, 0.6);
+}
+
+.control-button:active {
+  transform: scale(0.98);
+}
+
+/* Stats display */
+.shadow-stats {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px 30px;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Progress bar */
+.progress-container {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(50, 50, 50, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(100, 50, 150, 0.8) 0%, 
+    rgba(150, 100, 200, 0.8) 100%);
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Achievement notification */
+.achievement-notification {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(150, 100, 200, 0.6);
+  border-radius: 12px;
+  padding: 30px 40px;
+  text-align: center;
+  opacity: 0;
+  animation: achievementPop 3s ease forwards;
+  pointer-events: none;
+}
+
+.achievement-notification h4 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(200, 150, 250, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.achievement-notification p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes achievementPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Instructions overlay */
+.instructions-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.instructions-overlay h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.instructions-overlay p {
+  margin: 15px 0;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.instructions-overlay .start-button {
+  margin-top: 30px;
+  padding: 15px 40px;
+  background: rgba(150, 100, 200, 0.3);
+  border: 2px solid rgba(150, 100, 200, 0.6);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.instructions-overlay .start-button:hover {
+  background: rgba(150, 100, 200, 0.5);
+  border-color: rgba(150, 100, 200, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Particle hover effect */
+.particle-hover-info {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.particle-hover-info.visible {
+  opacity: 1;
+}
+
+/* Level indicator */
+.level-indicator {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: rgba(150, 100, 200, 0.8);
+  text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .shadow-controls {
+    top: 10px;
+    right: 10px;
+    padding: 15px;
+    min-width: 150px;
+  }
+  
+  .shadow-stats {
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 20px;
+  }
+  
+  .instructions-overlay {
+    padding: 30px 20px;
+    max-width: 90%;
+  }
+}
