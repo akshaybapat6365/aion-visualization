@@ -1,0 +1,256 @@
+/* Gnostic Cosmology Map - Monochromatic Styles */
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000000;
+    font-family: 'Georgia', serif;
+    color: #ffffff;
+}
+
+#cosmology-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+.cosmology-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.realm-selector {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+}
+
+.realm-selector h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: normal;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.realm-selector button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.realm-selector button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(5px);
+}
+
+.realm-selector button:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+}
+
+.controls button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.controls button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.info-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    max-width: 600px;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.info-panel.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.info-panel h2 {
+    margin: 0 0 15px 0;
+    font-size: 24px;
+    font-weight: normal;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+.info-panel p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Loading screen */
+.loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 1s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-content h1 {
+    font-size: 36px;
+    font-weight: normal;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    animation: pulse 2s infinite;
+}
+
+.loading-bar {
+    width: 200px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    animation: loading 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 15px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 200;
+}
+
+.tooltip.visible {
+    opacity: 1;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .realm-selector {
+        top: 10px;
+        left: 10px;
+        padding: 15px;
+    }
+    
+    .realm-selector h3 {
+        font-size: 16px;
+    }
+    
+    .realm-selector button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .controls {
+        top: auto;
+        bottom: 20px;
+        right: 10px;
+        left: 10px;
+        text-align: center;
+    }
+    
+    .info-panel {
+        max-width: 90%;
+        padding: 20px;
+    }
+    
+    .info-panel h2 {
+        font-size: 20px;
+    }
+    
+    .info-panel p {
+        font-size: 14px;
+    }
+}

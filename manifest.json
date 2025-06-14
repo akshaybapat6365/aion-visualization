@@ -1,0 +1,17 @@
+{
+  "name": "Aion Visualization",
+  "short_name": "Aion",
+  "description": "Interactive visualization of Carl Jung's Aion",
+  "start_url": "/aion-visualization/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#FFD700",
+  "scope": "/aion-visualization/",
+  "icons": [
+    {
+      "src": "/aion-visualization/assets/images/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

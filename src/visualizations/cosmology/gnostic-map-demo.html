@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gnostic Cosmology 3D Map - Aion Visualization</title>
+    <link rel="stylesheet" href="cosmology.css">
+    <style>
+        /* Additional demo-specific styles */
+        .demo-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 150;
+        }
+        
+        .demo-header h1 {
+            font-size: 28px;
+            font-weight: normal;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .demo-header p {
+            font-size: 14px;
+            margin: 5px 0 0 0;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <h1>Gnostic Cosmology</h1>
+            <div class="loading-bar"></div>
+        </div>
+    </div>
+    
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <h1>Gnostic Cosmology Map</h1>
+        <p>Journey through the realms of being</p>
+    </div>
+    
+    <!-- Main Container -->
+    <div id="cosmology-container"></div>
+    
+    <!-- Three.js and Dependencies -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js",
+            "three/examples/jsm/postprocessing/EffectComposer.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js",
+            "three/examples/jsm/postprocessing/RenderPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js",
+            "three/examples/jsm/postprocessing/UnrealBloomPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js",
+            "@tweenjs/tween.js": "https://unpkg.com/@tweenjs/tween.js@18.6.4/dist/tween.esm.js"
+        }
+    }
+    </script>
+    
+    <script type="module">
+        import { GnosticMap } from './GnosticMap.js';
+        
+        // Initialize visualization when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('cosmology-container');
+            const visualization = new GnosticMap(container);
+            
+            // Hide loading screen after a short delay
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+            }, 2000);
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', (event) => {
+                switch(event.key) {
+                    case '1':
+                        visualization.navigateToRealm('pleroma');
+                        break;
+                    case '2':
+                        visualization.navigateToRealm('ogdoad');
+                        break;
+                    case '3':
+                        visualization.navigateToRealm('hebdomad');
+                        break;
+                    case '4':
+                        visualization.navigateToRealm('kenoma');
+                        break;
+                    case '5':
+                        visualization.navigateToRealm('material');
+                        break;
+                    case 'g':
+                    case 'G':
+                        visualization.startGuidedTour();
+                        break;
+                    case 'f':
+                    case 'F':
+                        visualization.stopGuidedTour();
+                        break;
+                    case ' ':
+                        event.preventDefault();
+                        // Toggle info panel
+                        const infoPanel = document.getElementById('infoPanel');
+                        infoPanel.classList.toggle('visible');
+                        break;
+                }
+            });
+            
+            // Add instructions
+            const instructions = document.createElement('div');
+            instructions.style.cssText = `
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(0, 0, 0, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 15px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                z-index: 100;
+            `;
+            instructions.innerHTML = `
+                <strong>Controls:</strong><br>
+                Mouse: Rotate view<br>
+                Scroll: Zoom in/out<br>
+                1-5: Jump to realms<br>
+                G: Guided tour<br>
+                F: Free explore<br>
+                Space: Toggle info
+            `;
+            container.appendChild(instructions);
+            
+            // Add performance monitor (optional)
+            if (window.location.hash === '#debug') {
+                import('https://unpkg.com/three@0.160.0/examples/jsm/libs/stats.module.js').then(module => {
+                    const Stats = module.default;
+                    const stats = new Stats();
+                    container.appendChild(stats.dom);
+                    
+                    function updateStats() {
+                        stats.update();
+                        requestAnimationFrame(updateStats);
+                    }
+                    updateStats();
+                });
+            }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Visualization handles resize internally
+        });
+        
+        // Prevent context menu on right click
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+fix: Essential path corrections
+
+- Fixed keyboard navigation to use correct chapter paths (standard/chapter-X.html)
+- Fixed all chapter links in chapters index page
+- Removed non-existent script imports
+- Cleaned up unnecessary data attributes
+
+The site should now properly navigate between chapters.

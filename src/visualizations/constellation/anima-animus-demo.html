@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anima/Animus Constellation - Aion Visualization</title>
+    <link rel="stylesheet" href="constellation.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        #visualization {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .demo-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #ffffff;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .demo-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .demo-header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+    <div id="visualization" class="constellation-container">
+        <div class="demo-header">
+            <h1>Anima/Animus Constellation</h1>
+            <p>Jung's Archetypal Relationships</p>
+        </div>
+        
+        <div class="constellation-loading">Loading...</div>
+    </div>
+    
+    <!-- Controls Help -->
+    <div class="controls-help">
+        <h4>Controls</h4>
+        <p>Left Click + Drag: Rotate</p>
+        <p>Right Click + Drag: Pan</p>
+        <p>Scroll: Zoom</p>
+        <p>Click Node: View Details</p>
+    </div>
+    
+    <!-- Import Maps for ES Modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
+            "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js",
+            "d3": "https://unpkg.com/d3@7.8.5/src/index.js"
+        }
+    }
+    </script>
+    
+    <!-- Main Script -->
+    <script type="module">
+        import AnimaAnimus from './AnimaAnimus.js';
+        
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('visualization');
+            
+            // Hide loading indicator
+            const loading = container.querySelector('.constellation-loading');
+            if (loading) {
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 1000);
+            }
+            
+            // Initialize visualization
+            const visualization = new AnimaAnimus(container);
+            
+            // Add performance monitoring (optional)
+            if (window.location.hash === '#debug') {
+                const stats = document.createElement('div');
+                stats.className = 'performance-stats visible';
+                stats.innerHTML = 'FPS: <span id="fps">60</span>';
+                container.appendChild(stats);
+                
+                let frameCount = 0;
+                let lastTime = performance.now();
+                
+                function updateStats() {
+                    frameCount++;
+                    const currentTime = performance.now();
+                    
+                    if (currentTime >= lastTime + 1000) {
+                        const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                        document.getElementById('fps').textContent = fps;
+                        frameCount = 0;
+                        lastTime = currentTime;
+                    }
+                    
+                    requestAnimationFrame(updateStats);
+                }
+                
+                updateStats();
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                // Visualization handles resize internally
+            });
+            
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                visualization.dispose();
+            });
+        });
+    </script>
+</body>
+</html>
