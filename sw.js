@@ -4,7 +4,7 @@
  * Version: 2.0.0 - Enhanced PWA Support
  */
 
-const CACHE_VERSION = 'aion-v2.0.0';
+const CACHE_VERSION = 'aion-v2.1.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -14,6 +14,8 @@ const ANALYTICS_CACHE = 'analytics-queue';
 const STATIC_ASSETS = [
     '/aion-visualization/',
     '/aion-visualization/index.html',
+    '/aion-visualization/visualizations.html',
+    '/aion-visualization/test-visualizations.html',
     '/aion-visualization/offline.html',
     '/aion-visualization/manifest.json',
     '/aion-visualization/assets/css/bundle.min.css'
