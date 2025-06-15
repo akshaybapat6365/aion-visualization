@@ -1,552 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <!-- Performance Optimization -->
-    <script>
-      // Early performance hints
-      if ('connection' in navigator) {
-        const connection = navigator.connection;
-        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-          document.documentElement.classList.add('reduced-data-mode');
-        }
-      }
-      
-      // Preload critical resources
-      const criticalResources = [
-        '/assets/css/main.css',
-        '/assets/js/core/github-pages-router.js'
-      ];
-      
-      criticalResources.forEach(resource => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = resource;
-        link.as = resource.endsWith('.css') ? 'style' : 'script';
-        document.head.appendChild(link);
-      });
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aion - A Visual Journey Through Jung's Masterwork</title>
-    
-    <!-- Resource hints for faster external resource loading -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://unpkg.com">
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Anti-redirect Protection - Now non-blocking -->
-    <script src="anti-redirect.js" defer></script>
-    
-    <!-- Meta Tags for SEO and Social Media -->
-    <meta name="description" content="An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies. Navigate through 14 chapters of psychological insights.">
-    <meta name="keywords" content="Carl Jung, Aion, analytical psychology, visualization, interactive, chapters, individuation, archetypes">
-    <meta name="author" content="Akshay Bapat">
-    
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#FFD700">
-    <link rel="manifest" href="/aion-visualization/manifest.json">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Aion - A Visual Journey Through Jung's Masterwork">
-    <meta property="og:description" content="An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://akshaybapat6365.github.io/aion-visualization/">
-    <meta property="og:image" content="https://akshaybapat6365.github.io/aion-visualization/assets/images/og-image.jpg">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Aion - A Visual Journey Through Jung's Masterwork">
-    <meta name="twitter:description" content="An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies.">
-    <meta name="twitter:image" content="https://akshaybapat6365.github.io/aion-visualization/assets/images/twitter-card.jpg">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://akshaybapat6365.github.io/aion-visualization/">
-    
-    <!-- CSS Assets -->
-    <link rel="stylesheet" href="assets/css/bundle.min.css">
-    <link rel="stylesheet" href="assets/css/loading-indicators.css">
-    <link rel="stylesheet" href="assets/css/minimalist-background.min.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
-    
-    <!-- Preload Critical Assets -->
-    <link rel="preload" href="assets/css/main.css" as="style">
-    <link rel="preload" href="assets/js/core/github-pages-router.js" as="script">
-    <link rel="preload" href="assets/js/core/consolidated-utilities.js" as="script">
-    
-    <!-- DNS Prefetch for External Resources -->
-    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    
-    <!-- External Libraries -->
-    <!-- Three.js removed for minimalist design -->
-    
+    <title>Aion Visualization - Jung's Masterwork</title>
     <style>
-        /* Critical CSS for immediate rendering */
-        .hero-announcement {
-            margin: 2rem 0;
-            text-align: center;
-        }
-        
-        .announcement-badge {
-            background: linear-gradient(135deg, var(--accent, #ffd700), var(--accent-light, #ffed4e));
-            color: var(--text-dark, #000000);
-            padding: 0.5rem 1.5rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 1rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .hero-announcement p {
-            color: var(--text-secondary, #cccccc);
-            font-size: 1.125rem;
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
             line-height: 1.6;
-            max-width: 600px;
+        }
+        
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 2rem;
         }
         
-        .hero-buttons {
+        nav {
+            background: rgba(0,0,0,0.9);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav .container {
             display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .button {
-            display: inline-flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links a {
+            color: #fff;
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
+            transition: color 0.3s;
         }
         
-        .button-primary {
-            background: var(--accent, #ffd700);
-            color: var(--text-dark, #000000);
+        .nav-links a:hover {
+            color: #ffd700;
         }
         
-        .button-primary:hover {
-            background: var(--accent-light, #ffed4e);
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            margin: 0 0 1rem;
+            background: linear-gradient(45deg, #ffd700, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #ffd700;
+            color: #000;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: #ffed4e;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
         }
         
-        .button-secondary {
-            background: var(--surface-glass, rgba(255, 255, 255, 0.1));
-            color: var(--text-primary, #ffffff);
-            border: 1px solid var(--border-default, rgba(255, 255, 255, 0.2));
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #ffd700;
         }
         
-        .button-secondary:hover {
-            background: var(--surface-glass-hover, rgba(255, 255, 255, 0.2));
-            transform: translateY(-2px);
+        .btn-secondary:hover {
+            background: #ffd700;
+            color: #000;
         }
         
-        /* Loading states */
-        .loading-content {
-            opacity: 0.6;
-            animation: contentPulse 2s ease-in-out infinite;
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
         }
         
-        @keyframes contentPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        .feature {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
         }
         
-        /* Router loading indicator */
-        .router-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent, #ffd700);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-            z-index: 10000;
+        .feature h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
         }
         
-        .router-loading.active {
-            transform: scaleX(1);
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 4rem;
+            opacity: 0.7;
         }
         
-        /* Clean URL support styles */
-        .url-indicator {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--surface-glass, rgba(0, 0, 0, 0.8));
-            color: var(--text-primary, #ffffff);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 9999;
-            font-family: monospace;
-        }
-        
-        .url-indicator.visible {
-            opacity: 1;
-        }
-        
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            .announcement-badge {
-                animation: none;
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
             }
             
-            .loading-content {
-                animation: none;
-            }
-        }
-        
-        @media (prefers-contrast: high) {
-            .button-primary {
-                border: 2px solid #000000;
-            }
-            
-            .button-secondary {
-                border: 2px solid #ffffff;
+            .container {
+                padding: 1rem;
             }
         }
     </style>
-    <!-- Design System Features -->
-    <link rel="stylesheet" href="assets/css/liquid-morphing.css">
-
-    <!-- Phase 4: Polish Features -->
-    <link rel="preload" href="/src/components/loading-states.js" as="script" type="module">
-    <link rel="preload" href="/src/components/error-boundaries.js" as="script" type="module">
-    <link rel="preload" href="/src/components/micro-interactions.js" as="script" type="module">
-    
-    <!-- Initialize Polish Features -->
-    <script type="module">
-      import polishIntegration from '/src/polish-integration.js';
-      
-      // Initialize when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          console.log('Initializing polish features...');
-        });
-      }
-    </script>
 </head>
 <body>
-
-    <!-- Global Loading Container -->
-    <div id="global-loader" class="loading-container"></div>
-
-    <!-- Router Loading Indicator -->
-    <div class="router-loading" id="router-loading"></div>
-    
-    <!-- URL Indicator for Development -->
-    <div class="url-indicator" id="url-indicator"></div>
-    
-    <!-- Clean minimalist background via CSS -->
-    <!-- Minimal WebGL canvas for test compatibility -->
-    <canvas id="webgl-canvas" data-webgl style="position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none;" aria-hidden="true"></canvas>
-    
-    <!-- Navigation -->
-    <nav class="nav" role="navigation" aria-label="Main navigation">
-        <div class="nav-container">
-            <a href="/" class="nav-link active" aria-current="page">Home</a>
-            <a href="/chapters/" class="nav-link" data-transition="chapter">Chapters</a>
-            <a href="/timeline/" class="nav-link">Timeline</a>
-            <a href="/symbols/" class="nav-link">Symbols</a>
-            <a href="/concepts/" class="nav-link">Concepts</a>
-            <a href="/visualizations.html" class="nav-link">Visualizations</a>
-            <a href="/showcase.html" class="nav-link">Showcase</a>
-            <a href="/about/" class="nav-link">About</a>
+    <nav>
+        <div class="container">
+            <div class="logo">AION</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/aion-visualization/chapters/">Chapters</a></li>
+                <li><a href="/aion-visualization/visualizations.html">Visualizations</a></li>
+                <li><a href="/aion-visualization/viz.html">Demos</a></li>
+            </ul>
         </div>
     </nav>
-    
-    <!-- Main Content -->
-    <main id="main-content" role="main">
-        <!-- Hero Section -->
+
+    <main>
         <section class="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Aion Visualization</h1>
-                <p class="hero-subtitle">A Visual Journey Through Jung's Masterwork</p>
-                
-                <!-- Announcement Banner -->
-                <div class="hero-announcement">
-                    <div class="announcement-badge">✨ Now with Clean URLs & GitHub Pages</div>
-                    <p>
-                        Experience Carl Jung's profound insights through interactive visualizations, 
-                        enhanced with modern web technologies and intuitive navigation.
-                    </p>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="hero-buttons">
-                    <a href="/chapters/" class="button button-primary magnetic-element" data-transition="chapter">
-                        📚 Begin Journey
-                    </a>
-                    <a href="/chapters/enhanced/1/" data-transition="morph" class="button button-secondary magnetic-element" data-transition="chapter">
-                        🚀 Enhanced Experience
-                    </a>
-                    <a href="/timeline/" class="button button-secondary magnetic-element">
-                        📅 Timeline View
-                    </a>
-                </div>
+            <div class="container">
+                <h1>Aion Visualization</h1>
+                <p>An Interactive Journey Through Carl Jung's Masterwork</p>
+                <a href="/aion-visualization/visualizations.html" class="btn">Explore Visualizations</a>
+                <a href="/aion-visualization/viz.html" class="btn btn-secondary">Quick Access</a>
             </div>
         </section>
-        
-        <!-- Features Overview -->
-        <section class="features-overview" aria-labelledby="features-heading">
-            <div class="container">
-                <h2 id="features-heading" class="section-title">Explore Jung's Aion</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🧠</div>
-                        <h3>14 Interactive Chapters</h3>
-                        <p>Journey through each chapter of Aion with immersive visualizations and interactive elements.</p>
-                        <a href="/chapters/" class="feature-link" data-transition="chapter">Explore Chapters</a>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">🎭</div>
-                        <h3>Dual Experience Modes</h3>
-                        <p>Choose between standard and enhanced versions for your preferred level of interaction.</p>
-                        <a href="/chapters/enhanced/1/" data-transition="morph" class="feature-link" data-transition="chapter">Try Enhanced</a>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>Responsive Design</h3>
-                        <p>Optimized for all devices with progressive enhancement and accessibility features.</p>
-                        <a href="/about/" class="feature-link">Learn More</a>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">🔗</div>
-                        <h3>Clean URLs</h3>
-                        <p>Navigate with intuitive URLs like /chapters/enhanced/1/ for easy bookmarking and sharing.</p>
-                        <a href="/chapters/enhanced/1/" data-transition="morph" class="feature-link" data-transition="chapter">See Example</a>
-                    </div>
-                </div>
+
+        <section class="features">
+            <div class="feature">
+                <h3>🐟 Fish Symbol Timeline</h3>
+                <p>Explore 2000 years of symbolic evolution from Pisces to Aquarius</p>
+                <a href="/aion-visualization/src/visualizations/chapters/chapter-4-fish/fish-timeline-showcase.html" class="btn">Launch</a>
             </div>
-        </section>
-        
-        <!-- Quick Navigation -->
-        <section class="quick-nav" aria-labelledby="quicknav-heading">
-            <div class="container">
-                <h2 id="quicknav-heading" class="section-title">Quick Navigation</h2>
-                <div class="quick-nav-grid">
-                    <a href="/chapters/enhanced/1/" data-transition="morph" class="quick-nav-item" data-transition="chapter">
-                        <span class="nav-number">01</span>
-                        <span class="nav-title">The Ego</span>
-                        <span class="nav-description">Begin with the conscious personality</span>
-                    </a>
-                    
-                    <a href="/chapters/enhanced/5/" data-transition="morph" class="quick-nav-item" data-transition="chapter">
-                        <span class="nav-number">05</span>
-                        <span class="nav-title">The Self</span>
-                        <span class="nav-description">Explore the unified consciousness</span>
-                    </a>
-                    
-                    <a href="/timeline/" class="quick-nav-item">
-                        <span class="nav-number">📅</span>
-                        <span class="nav-title">Timeline</span>
-                        <span class="nav-description">Chronological journey</span>
-                    </a>
-                    
-                    <a href="/symbols/" class="quick-nav-item">
-                        <span class="nav-number">🔮</span>
-                        <span class="nav-title">Symbols</span>
-                        <span class="nav-description">Symbolic representations</span>
-                    </a>
-                </div>
+            
+            <div class="feature">
+                <h3>🌑 Shadow Integration</h3>
+                <p>Interactive particle physics simulation of shadow work</p>
+                <a href="/aion-visualization/src/visualizations/shadow/shadow-demo.html" class="btn">Launch</a>
+            </div>
+            
+            <div class="feature">
+                <h3>⭐ Anima/Animus Constellation</h3>
+                <p>3D force-directed map of archetypal relationships</p>
+                <a href="/aion-visualization/src/visualizations/constellation/anima-animus-demo.html" class="btn">Launch</a>
+            </div>
+            
+            <div class="feature">
+                <h3>🌌 Gnostic Cosmology</h3>
+                <p>Navigate through the hierarchical realms of Gnostic cosmology</p>
+                <a href="/aion-visualization/src/visualizations/cosmology/gnostic-map-demo.html" class="btn">Launch</a>
+            </div>
+            
+            <div class="feature">
+                <h3>⚗️ Alchemical Lab</h3>
+                <p>Transform elements through interactive alchemical processes</p>
+                <a href="/aion-visualization/src/visualizations/alchemy/alchemy-lab-demo.html" class="btn">Launch</a>
+            </div>
+            
+            <div class="feature">
+                <h3>🕐 Aion Clock</h3>
+                <p>Visualize the 2000-year zodiacal cycle and cosmic ages</p>
+                <a href="/aion-visualization/src/visualizations/clock/aion-clock-demo.html" class="btn">Launch</a>
             </div>
         </section>
     </main>
-    
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
+
+    <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Aion Visualization</h3>
-                    <p>An interactive exploration of Carl Jung's analytical psychology masterwork.</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/chapters/" data-transition="chapter">All Chapters</a></li>
-                        <li><a href="/timeline/">Timeline</a></li>
-                        <li><a href="/symbols/">Symbols</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Technical</h3>
-                    <ul>
-                        <li><a href="https://github.com/akshaybapat6365/aion-visualization">GitHub Repository</a></li>
-                        <li><a href="/sitemap.xml">Sitemap</a></li>
-                        <li><a href="/robots.txt">Robots.txt</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 Aion Visualization. Built with modern web technologies for educational purposes.</p>
-                <p>
-                    <a href="https://github.com/akshaybapat6365/aion-visualization" target="_blank" rel="noopener">
-                        View Source on GitHub
-                    </a>
-                </p>
-            </div>
+            <p>&copy; 2024 Aion Visualization. An interactive exploration of Carl Jung's analytical psychology.</p>
+            <p>
+                <a href="/aion-visualization/visualizations.html" style="color: #ffd700;">All Visualizations</a> | 
+                <a href="https://github.com/akshaybapat6365/aion-visualization" style="color: #ffd700;">GitHub</a>
+            </p>
         </div>
     </footer>
-    
-    <!-- Minimalist design - no heavy animations -->
-    
-    <!-- Core JavaScript -->
-    <script src="assets/js/core/consolidated-utilities.js" defer></script>
-    <script src="assets/js/core/github-pages-router.js" defer></script>
-    <script src="assets/js/core/performance-monitor.js" defer></script>
-    <script src="assets/js/core/network-error-handler.js" defer></script>
-    
-    <!-- URL Indicator for Development -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlIndicator = document.getElementById('url-indicator');
-            const routerLoading = document.getElementById('router-loading');
-            
-            // Show current URL in development
-            if (window.location.hostname === 'localhost' || window.location.hostname.includes('github.io')) {
-                urlIndicator.textContent = window.location.pathname;
-                urlIndicator.classList.add('visible');
-                
-                setTimeout(() => {
-                    urlIndicator.classList.remove('visible');
-                }, 3000);
-            }
-            
-            // Router loading indicator
-            window.addEventListener('routechange', function() {
-                routerLoading.classList.add('active');
-                setTimeout(() => {
-                    routerLoading.classList.remove('active');
-                }, 300);
-            });
-            
-            // Performance monitoring toggle
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'P') {
-                    e.preventDefault();
-                    if (window.performanceMonitor) {
-                        window.performanceMonitor.toggle();
-                    }
-                }
-            });
-        });
-    </script>
-    
-    <!-- Schema.org structured data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Aion Visualization",
-        "description": "An interactive visualization of Carl Jung's Aion, exploring analytical psychology through immersive web technologies",
-        "url": "https://akshaybapat6365.github.io/aion-visualization/",
-        "author": {
-            "@type": "Person",
-            "name": "Akshay Bapat"
-        },
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://akshaybapat6365.github.io/aion-visualization/chapters/?search={search_term_string}",
-            "query-input": "required name=search_term_string"
-        },
-        "mainEntity": {
-            "@type": "Book",
-            "name": "Aion: Researches into the Phenomenology of the Self",
-            "author": {
-                "@type": "Person",
-                "name": "Carl Jung"
-            },
-            "about": "Analytical psychology, individuation, archetypes, the collective unconscious"
-        }
-    }
-    </script>
-    
-    <!-- Service Worker Registration - DISABLED TO FIX OFFLINE ISSUE -->
-    <script>
-        // Unregister any existing service workers to fix offline page issue
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) {
-                    registration.unregister().then(function(boolean) {
-                        console.log('Service Worker unregistered:', boolean);
-                    });
-                }
-            });
-        }
-    </script>
-    
-    <!-- Basic Keyboard Navigation -->
-    <script src="/aion-visualization/src/core/keyboard-nav.js" defer></script>
-    <!-- Load Design System Features -->
-    <script type="module" src="assets/js/feature-loader.js"></script>
-
-    <!-- Premium Features -->
-    <script type="module">
-      import '/src/premium-features/index.js';
-      
-      // Enable premium features
-      console.log('✨ Premium features loaded');
-    </script>
-
-    <!-- Privacy-Focused Analytics -->
-    <script type="module">
-      import analytics from '/src/analytics/privacy-analytics.js';
-      
-      // Track initial page load
-      window.analytics = analytics;
-      
-      // Track chapter views
-      document.addEventListener('DOMContentLoaded', () => {
-        const chapterLinks = document.querySelectorAll('a[data-transition="chapter"]');
-        chapterLinks.forEach(link => {
-          link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            analytics.event('navigation', 'chapter-click', href);
-          });
-        });
-        
-        // Track CTA clicks
-        const ctaButtons = document.querySelectorAll('.button-primary, .button-secondary');
-        ctaButtons.forEach(button => {
-          button.addEventListener('click', (e) => {
-            analytics.event('engagement', 'cta-click', button.textContent.trim());
-          });
-        });
-      });
-    </script>
 </body>
 </html>
