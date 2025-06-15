@@ -142,8 +142,10 @@
                 <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
                     Shadow Dynamics
                 </h3>
-                <div class="visualization-container">
-                    <canvas id="shadow-dynamics"></canvas>
+                <div class="visualization-container" id="shadow-integration-container">
+                    <div class="viz-loading" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary);">
+                        <div>Loading Shadow Integration Demo...</div>
+                    </div>
                 </div>
                 <p style="margin-top: var(--space-4);">
                     The shadow operates through projection—we see in others what we cannot accept 
@@ -476,6 +478,49 @@
         document.querySelectorAll('.content-block').forEach(block => {
             observer.observe(block);
         });
+        
+        // Load Shadow Integration Visualization
+        async function loadShadowIntegration() {
+            const container = document.getElementById('shadow-integration-container');
+            const loadingDiv = container.querySelector('.viz-loading');
+            
+            try {
+                // Load Matter.js for physics
+                if (!window.Matter) {
+                    const matterScript = document.createElement('script');
+                    matterScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js';
+                    document.head.appendChild(matterScript);
+                    
+                    await new Promise((resolve, reject) => {
+                        matterScript.onload = resolve;
+                        matterScript.onerror = reject;
+                    });
+                }
+                
+                // Load the visualization module
+                const ShadowIntegration = await import('../../src/visualizations/shadow/ShadowIntegration.js');
+                
+                // Clear loading indicator
+                if (loadingDiv) loadingDiv.remove();
+                
+                // Initialize the visualization
+                const shadowViz = new ShadowIntegration.default(container);
+                
+                console.log('Shadow Integration visualization loaded successfully');
+            } catch (error) {
+                console.error('Failed to load Shadow Integration:', error);
+                if (loadingDiv) {
+                    loadingDiv.innerHTML = '<div style="color: #ff6b6b;">Failed to load visualization. <a href="../../src/visualizations/shadow/shadow-demo.html" style="color: #ffd700;">View standalone demo</a></div>';
+                }
+            }
+        }
+        
+        // Load when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadShadowIntegration);
+        } else {
+            loadShadowIntegration();
+        }
     </script>
     <script src="../../assets/js/core/utilities.js"></script>
     <script src="personalization.js"></script>
