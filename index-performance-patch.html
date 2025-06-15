@@ -1,0 +1,28 @@
+<!-- Add these lines to the <head> section of index.html -->
+
+<!-- Resource hints for faster external resource loading -->
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Critical CSS (inline this in <head>) -->
+<style>
+  /* Critical CSS for above-the-fold content */
+  body { margin: 0; background: #000; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
+  .nav { display: flex; padding: 1rem; background: rgba(0,0,0,0.8); }
+  .nav-link { color: #fff; text-decoration: none; padding: 0.5rem 1rem; }
+  .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .hero-content { text-align: center; padding: 2rem; }
+  .hero-title { font-size: clamp(2rem, 5vw, 4rem); margin: 0 0 1rem; }
+  .loading-container { position: fixed; inset: 0; background: #000; z-index: 9999; }
+</style>
+
+<!-- Async CSS loading -->
+<link rel="preload" href="assets/css/bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="assets/css/bundle.min.css"></noscript>
+
+<!-- Update anti-redirect.js to use defer -->
+<!-- Change: <script src="assets/js/anti-redirect.js"></script> -->
+<!-- To: <script src="assets/js/anti-redirect.js" defer></script> -->
