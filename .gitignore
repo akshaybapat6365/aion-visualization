@@ -26,3 +26,18 @@ dist/
 build/
 *.log
 logs/
+
+# Backup folders
+PHASE*_BACKUP/
+PHASES_*_BACKUP_*/
+*_backup/
+*_BACKUP/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test reports (keep only essential ones)
+performance-audit-report.json
+test-results/
