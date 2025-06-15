@@ -4,7 +4,7 @@
  * Version: 2.0.0 - Enhanced PWA Support
  */
 
-const CACHE_VERSION = 'aion-v2.2.0';
+const CACHE_VERSION = 'aion-v3.0.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -12,21 +12,21 @@ const ANALYTICS_CACHE = 'analytics-queue';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
-    '/aion-visualization/',
-    '/aion-visualization/index.html',
-    '/aion-visualization/visualizations.html',
-    '/aion-visualization/test-visualizations.html',
-    '/aion-visualization/showcase.html',
-    '/aion-visualization/404.html',
-    '/aion-visualization/offline.html',
-    '/aion-visualization/manifest.json',
-    '/aion-visualization/assets/css/bundle.min.css'
+    '/',
+    '/index.html',
+    '/visualizations.html',
+    '/test-visualizations.html',
+    '/showcase.html',
+    '/404.html',
+    '/offline.html',
+    '/manifest.json',
+    '/assets/css/bundle.min.css'
 ];
 
 // Chapter files to cache on demand
 const CHAPTER_PATTERNS = [
-    /\/aion-visualization\/chapters\/enhanced\/chapter-\d+\.html$/,
-    /\/aion-visualization\/chapters\/standard\/chapter-\d+\.html$/
+    /\/chapters\/enhanced\/chapter-\d+\.html$/,
+    /\/chapters\/standard\/chapter-\d+\.html$/
 ];
 
 // External resources to cache
@@ -194,7 +194,7 @@ async function handleNavigationRequest(request) {
         }
         
         // No cache, return offline page
-        const offlinePage = await cache.match('/aion-visualization/404.html');
+        const offlinePage = await cache.match('/404.html');
         return offlinePage || createGenericOfflineResponse();
     }
 }
@@ -247,7 +247,7 @@ async function handleOfflineRequest(request) {
     if (request.headers.get('accept').includes('text/html')) {
         // HTML request - return offline page
         const cache = await caches.open(STATIC_CACHE);
-        return cache.match('/aion-visualization/404.html') || createGenericOfflineResponse();
+        return cache.match('/404.html') || createGenericOfflineResponse();
     }
     
     return createOfflineResponse(request);
@@ -337,7 +337,7 @@ function createOfflineResponse(request) {
             <h1>You're Offline</h1>
             <p>This content is not available offline.</p>
             <p>Please check your internet connection and try again.</p>
-            <a href="/aion-visualization/" class="button">Return Home</a>
+            <a href="/" class="button">Return Home</a>
             <button onclick="window.location.reload()" class="button">Retry</button>
         </body>
         </html>
@@ -362,20 +362,20 @@ function createChapterOfflineResponse(request) {
         <html>
         <head>
             <title>Chapter ${chapterNum} - Offline</title>
-            <link rel="stylesheet" href="/aion-visualization/assets/css/main.min.css">
+            <link rel="stylesheet" href="/assets/css/main.min.css">
         </head>
         <body>
             <nav class="nav">
                 <div class="nav-container">
-                    <a href="/aion-visualization/">Home</a>
-                    <a href="/aion-visualization/chapters/">Chapters</a>
+                    <a href="/">Home</a>
+                    <a href="/chapters/">Chapters</a>
                 </div>
             </nav>
             <main style="padding: 50px; text-align: center;">
                 <h1>Chapter ${chapterNum}</h1>
                 <p>This chapter is not available offline.</p>
                 <p>Please connect to the internet to view the full content.</p>
-                <a href="/aion-visualization/chapters/">View Available Chapters</a>
+                <a href="/chapters/">View Available Chapters</a>
             </main>
         </body>
         </html>
@@ -420,7 +420,7 @@ function createGenericOfflineResponse() {
             <h1>Aion Visualization</h1>
             <h2>Offline Mode</h2>
             <p>You're currently offline. Some content may not be available.</p>
-            <a href="/aion-visualization/" class="button">Try to Load Home</a>
+            <a href="/" class="button">Try to Load Home</a>
         </body>
         </html>
     `;

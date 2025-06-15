@@ -47,7 +47,7 @@
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#FFD700">
-    <link rel="manifest" href="/aion-visualization/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Aion - A Visual Journey Through Jung's Masterwork">
@@ -499,7 +499,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/aion-visualization/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
                         console.log('ServiceWorker registration successful');
                         
@@ -526,7 +526,7 @@
     </script>
     
     <!-- Basic Keyboard Navigation -->
-    <script src="/aion-visualization/src/core/keyboard-nav.js" defer></script>
+    <script src="/src/core/keyboard-nav.js" defer></script>
     <!-- Load Design System Features -->
     <script type="module" src="assets/js/feature-loader.js"></script>
 
