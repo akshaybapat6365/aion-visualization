@@ -495,32 +495,16 @@
     }
     </script>
     
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration - DISABLED TO FIX OFFLINE ISSUE -->
     <script>
+        // Unregister any existing service workers to fix offline page issue
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/aion-visualization/sw.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful');
-                        
-                        // Check for updates
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // New service worker available
-                                    console.log('New service worker available');
-                                    if (confirm('New version available! Reload to update?')) {
-                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        window.location.reload();
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch(function(error) {
-                        console.log('ServiceWorker registration failed:', error);
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister().then(function(boolean) {
+                        console.log('Service Worker unregistered:', boolean);
                     });
+                }
             });
         }
     </script>
