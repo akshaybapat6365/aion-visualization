@@ -1,10 +1,18 @@
 {
-  "buildCommand": "echo 'No build needed'",
+  "buildCommand": false,
   "outputDirectory": ".",
   "framework": null,
+  "installCommand": "echo 'No install needed'",
+  "devCommand": false,
   "public": true,
   "trailingSlash": false,
   "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -20,6 +28,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
         }
       ]
     },
@@ -29,6 +41,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
         }
       ]
     }

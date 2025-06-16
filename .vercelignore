@@ -1,0 +1,16 @@
+.git
+.gitignore
+.vercel
+node_modules
+*.log
+.DS_Store
+test*
+*.test.js
+*.spec.js
+deployment.txt
+verify-deployment.txt
+README.md
+docs/
+scripts/test*
+scripts/run-tests.sh
+phase*.sh
