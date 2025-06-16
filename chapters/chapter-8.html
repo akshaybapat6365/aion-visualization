@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 8 - The Historical Significance of the Fish - Aion</title>
+    <link rel="stylesheet" href="/styles/full-width.css">
     <style>
         * {
             margin: 0;
@@ -51,9 +52,30 @@
         
         /* Chapter Content */
         .chapter-content {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 4rem;
+        }
+        
+        /* Visualization Container */
+        .viz-container {
+            margin: 3rem 0;
+            padding: 0;
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .viz-container h3 {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            padding: 1rem;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 300;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
         
         .section {
@@ -91,9 +113,9 @@
         
         /* Chapter Navigation */
         .chapter-nav {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 3rem 4rem;
             display: flex;
             justify-content: space-between;
             border-top: 1px solid #333;
@@ -166,6 +188,38 @@
             <p>Jung demonstrates how the fish symbol serves as a bridge between conscious and unconscious realms. Its association with water - the universal symbol of the unconscious - makes it particularly suited to represent contents emerging from the depths of the psyche.</p>
             <p>The chapter reveals how historical symbols function as containers for collective psychological experience, preserving and transmitting essential wisdom about the nature of psychic transformation across generations.</p>
         </section>
+        
+        <!-- Visualization 1: Ancient Fish Gods Timeline -->
+        <div class="viz-container">
+            <h3>Fish Deities Through the Ages</h3>
+            <div id="fish-gods-timeline" style="width: 100%; height: 600px; position: relative;">
+                <svg id="gods-timeline-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
+        
+        <!-- Visualization 2: Evolution of the Ichthys -->
+        <div class="viz-container">
+            <h3>The Fish Symbol's Journey Through Cultures</h3>
+            <div id="ichthys-evolution" style="width: 100%; height: 500px; position: relative;">
+                <canvas id="evolution-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+        
+        <!-- Visualization 3: Sacred Fish in World Religions -->
+        <div class="viz-container">
+            <h3>Sacred Fish Across World Religions</h3>
+            <div id="world-religions-fish" style="width: 100%; height: 600px; position: relative;">
+                <div id="religions-container" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        
+        <!-- Visualization 4: Interactive Fish Symbol Map -->
+        <div class="viz-container">
+            <h3>The Great Chain of Fish Symbolism</h3>
+            <div id="fish-symbol-map" style="width: 100%; height: 700px; position: relative;">
+                <svg id="symbol-map-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
     </main>
     
     <!-- Chapter Navigation -->
@@ -179,5 +233,564 @@
     </nav>
     
     <script src="/components/navigation.js"></script>
+    <script src="/js/ensure-viz-load.js"></script>
+    
+    <!-- Visualization Scripts -->
+    <script>
+        // Visualization 1: Ancient Fish Gods Timeline
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('gods-timeline-svg');
+            const width = 900;
+            const height = 600;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // Fish deities data
+            const deities = [
+                { name: 'Oannes', culture: 'Babylonian', date: -3000, desc: 'Fish-man who taught civilization', y: 100 },
+                { name: 'Dagon', culture: 'Philistine', date: -2000, desc: 'Half-man, half-fish god', y: 150 },
+                { name: 'Matsya', culture: 'Hindu', date: -1500, desc: 'Fish avatar of Vishnu', y: 200 },
+                { name: 'Triton', culture: 'Greek', date: -800, desc: 'Merman messenger of the sea', y: 250 },
+                { name: 'Aphrodite', culture: 'Greek', date: -600, desc: 'Born from sea foam', y: 300 },
+                { name: 'Christ', culture: 'Christian', date: 0, desc: 'Fisher of men, Ichthys', y: 350 },
+                { name: 'Manu', culture: 'Buddhist', date: 200, desc: 'Saved by golden fish', y: 400 }
+            ];
+            
+            // Background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('width', width);
+            bg.setAttribute('height', height);
+            bg.setAttribute('fill', '#0a0a0a');
+            svg.appendChild(bg);
+            
+            // Create underwater effect
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            const waterGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            waterGrad.setAttribute('id', 'waterGradient');
+            waterGrad.setAttribute('x1', '0%');
+            waterGrad.setAttribute('y1', '0%');
+            waterGrad.setAttribute('x2', '0%');
+            waterGrad.setAttribute('y2', '100%');
+            waterGrad.innerHTML = `
+                <stop offset="0%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#001f3f;stop-opacity:0.3" />
+            `;
+            defs.appendChild(waterGrad);
+            svg.appendChild(defs);
+            
+            const waterBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            waterBg.setAttribute('width', width);
+            waterBg.setAttribute('height', height);
+            waterBg.setAttribute('fill', 'url(#waterGradient)');
+            svg.appendChild(waterBg);
+            
+            // Timeline base
+            const timeline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            timeline.setAttribute('x1', 100);
+            timeline.setAttribute('y1', height - 100);
+            timeline.setAttribute('x2', width - 100);
+            timeline.setAttribute('y2', height - 100);
+            timeline.setAttribute('stroke', '#D4AF37');
+            timeline.setAttribute('stroke-width', '3');
+            svg.appendChild(timeline);
+            
+            // Calculate scale
+            const startDate = -3500;
+            const endDate = 500;
+            const timelineWidth = width - 200;
+            
+            // Draw deities
+            deities.forEach((deity, i) => {
+                const x = 100 + ((deity.date - startDate) / (endDate - startDate)) * timelineWidth;
+                
+                // Vertical line
+                const vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                vLine.setAttribute('x1', x);
+                vLine.setAttribute('y1', height - 100);
+                vLine.setAttribute('x2', x);
+                vLine.setAttribute('y2', deity.y + 40);
+                vLine.setAttribute('stroke', '#666');
+                vLine.setAttribute('stroke-width', '1');
+                vLine.setAttribute('stroke-dasharray', '3,3');
+                svg.appendChild(vLine);
+                
+                // Fish symbol for each deity
+                const fishGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                fishGroup.setAttribute('transform', `translate(${x}, ${deity.y})`);
+                
+                // Simple fish shape
+                const fish = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                fish.setAttribute('d', 'M -30 0 Q -15 -15, 0 -15 Q 15 -15, 30 0 Q 15 15, 0 15 Q -15 15, -30 0 L -35 -8 L -40 0 L -35 8 Z');
+                fish.setAttribute('fill', '#D4AF37');
+                fish.setAttribute('opacity', '0.7');
+                fishGroup.appendChild(fish);
+                
+                // Eye
+                const eye = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                eye.setAttribute('cx', '10');
+                eye.setAttribute('cy', '0');
+                eye.setAttribute('r', '3');
+                eye.setAttribute('fill', '#000');
+                fishGroup.appendChild(eye);
+                
+                // Deity name
+                const name = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                name.setAttribute('x', '0');
+                name.setAttribute('y', '-25');
+                name.setAttribute('text-anchor', 'middle');
+                name.setAttribute('fill', '#D4AF37');
+                name.setAttribute('font-size', '14');
+                name.setAttribute('font-weight', 'bold');
+                name.textContent = deity.name;
+                fishGroup.appendChild(name);
+                
+                // Culture
+                const culture = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                culture.setAttribute('x', '0');
+                culture.setAttribute('y', '35');
+                culture.setAttribute('text-anchor', 'middle');
+                culture.setAttribute('fill', '#888');
+                culture.setAttribute('font-size', '12');
+                culture.textContent = deity.culture;
+                fishGroup.appendChild(culture);
+                
+                // Description
+                const desc = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                desc.setAttribute('x', '0');
+                desc.setAttribute('y', '50');
+                desc.setAttribute('text-anchor', 'middle');
+                desc.setAttribute('fill', '#666');
+                desc.setAttribute('font-size', '10');
+                desc.textContent = deity.desc;
+                fishGroup.appendChild(desc);
+                
+                // Date on timeline
+                const date = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                date.setAttribute('x', x);
+                date.setAttribute('y', height - 80);
+                date.setAttribute('text-anchor', 'middle');
+                date.setAttribute('fill', '#888');
+                date.setAttribute('font-size', '10');
+                date.textContent = deity.date > 0 ? deity.date + ' CE' : Math.abs(deity.date) + ' BCE';
+                svg.appendChild(date);
+                
+                svg.appendChild(fishGroup);
+                
+                // Animate fish
+                const animateTransform = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+                animateTransform.setAttribute('attributeName', 'transform');
+                animateTransform.setAttribute('type', 'translate');
+                animateTransform.setAttribute('values', `${x},${deity.y};${x},${deity.y - 10};${x},${deity.y}`);
+                animateTransform.setAttribute('dur', '4s');
+                animateTransform.setAttribute('begin', `${i * 0.5}s`);
+                animateTransform.setAttribute('repeatCount', 'indefinite');
+                fishGroup.appendChild(animateTransform);
+            });
+            
+            // Title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width/2);
+            title.setAttribute('y', 40);
+            title.setAttribute('text-anchor', 'middle');
+            title.setAttribute('fill', '#D4AF37');
+            title.setAttribute('font-size', '22');
+            title.textContent = 'Fish Deities Throughout History';
+            svg.appendChild(title);
+        });
+        
+        // Visualization 2: Evolution of the Ichthys
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('evolution-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Evolution stages
+            const stages = [
+                { era: 'Prehistoric', symbol: 'Cave painting', color: '#8B4513' },
+                { era: 'Ancient', symbol: 'Sacred fish', color: '#B8860B' },
+                { era: 'Classical', symbol: 'Mystery religions', color: '#4682B4' },
+                { era: 'Early Christian', symbol: 'Secret sign', color: '#228B22' },
+                { era: 'Medieval', symbol: 'Church art', color: '#8B008B' },
+                { era: 'Modern', symbol: 'Universal symbol', color: '#FF4500' }
+            ];
+            
+            let time = 0;
+            
+            function drawFish(x, y, size, rotation, style) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rotation);
+                
+                ctx.beginPath();
+                if (style === 'primitive') {
+                    // Simple lines
+                    ctx.moveTo(-size, 0);
+                    ctx.lineTo(size * 0.5, -size * 0.3);
+                    ctx.lineTo(size, 0);
+                    ctx.lineTo(size * 0.5, size * 0.3);
+                    ctx.closePath();
+                    ctx.moveTo(size, 0);
+                    ctx.lineTo(size * 1.2, -size * 0.2);
+                    ctx.moveTo(size, 0);
+                    ctx.lineTo(size * 1.2, size * 0.2);
+                } else {
+                    // Curved fish
+                    ctx.moveTo(-size, 0);
+                    ctx.quadraticCurveTo(-size/2, -size/2, size/2, -size/3);
+                    ctx.quadraticCurveTo(size, -size/4, size, 0);
+                    ctx.quadraticCurveTo(size, size/4, size/2, size/3);
+                    ctx.quadraticCurveTo(-size/2, size/2, -size, 0);
+                    // Tail
+                    ctx.moveTo(size, 0);
+                    ctx.lineTo(size * 1.3, -size * 0.3);
+                    ctx.lineTo(size * 1.3, size * 0.3);
+                    ctx.closePath();
+                }
+                
+                ctx.stroke();
+                
+                // Eye
+                ctx.beginPath();
+                ctx.arc(-size * 0.3, 0, size * 0.1, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+            
+            function draw() {
+                const width = canvas.getBoundingClientRect().width;
+                const height = canvas.getBoundingClientRect().height;
+                
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, width, height);
+                
+                const centerY = height / 2;
+                const stageWidth = width / stages.length;
+                
+                // Draw evolution path
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(0, centerY);
+                
+                for (let i = 0; i < stages.length; i++) {
+                    const x = (i + 0.5) * stageWidth;
+                    const y = centerY + Math.sin(time * 0.02 + i) * 30;
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw stages
+                stages.forEach((stage, i) => {
+                    const x = (i + 0.5) * stageWidth;
+                    const y = centerY + Math.sin(time * 0.02 + i) * 30;
+                    
+                    // Stage circle
+                    ctx.beginPath();
+                    ctx.arc(x, y, 40, 0, Math.PI * 2);
+                    ctx.fillStyle = stage.color;
+                    ctx.globalAlpha = 0.3;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    ctx.strokeStyle = stage.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Fish symbol
+                    ctx.strokeStyle = '#D4AF37';
+                    ctx.fillStyle = '#D4AF37';
+                    ctx.lineWidth = 2;
+                    const style = i < 2 ? 'primitive' : 'curved';
+                    drawFish(x, y, 20, Math.sin(time * 0.01 + i) * 0.2, style);
+                    
+                    // Era label
+                    ctx.fillStyle = stage.color;
+                    ctx.font = 'bold 14px Georgia';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(stage.era, x, y - 60);
+                    
+                    // Symbol type
+                    ctx.fillStyle = '#888';
+                    ctx.font = '12px Georgia';
+                    ctx.fillText(stage.symbol, x, y + 60);
+                });
+                
+                // Title
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = '20px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText('Evolution of the Fish Symbol', width / 2, 40);
+                
+                // Swimming fish across top
+                for (let i = 0; i < 5; i++) {
+                    const fishX = ((time * 2 + i * 200) % (width + 100)) - 50;
+                    const fishY = 80 + Math.sin(time * 0.05 + i) * 10;
+                    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+                    ctx.fillStyle = 'rgba(212, 175, 55, 0.3)';
+                    drawFish(fishX, fishY, 15, 0, 'curved');
+                }
+                
+                time++;
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+        
+        // Visualization 3: Sacred Fish in World Religions
+        window.initializeVisualization(function() {
+            const container = document.getElementById('religions-container');
+            
+            container.innerHTML = `
+                <svg viewBox="0 0 900 600" style="width: 100%; height: 100%;">
+                    <defs>
+                        <radialGradient id="centerGrad">
+                            <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.3" />
+                            <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+                        </radialGradient>
+                    </defs>
+                    
+                    <!-- Background -->
+                    <rect width="900" height="600" fill="#0a0a0a"/>
+                    
+                    <!-- Central glow -->
+                    <circle cx="450" cy="300" r="200" fill="url(#centerGrad)"/>
+                    
+                    <!-- Christianity -->
+                    <g transform="translate(450, 150)">
+                        <circle r="60" fill="rgba(255, 215, 0, 0.2)" stroke="#FFD700" stroke-width="2"/>
+                        <path d="M -30 0 Q -15 -15, 0 -15 Q 15 -15, 30 0 Q 15 15, 0 15 Q -15 15, -30 0" 
+                              fill="none" stroke="#FFD700" stroke-width="2"/>
+                        <text y="-80" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">Christianity</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Ichthys - Christ</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">"Fisher of Men"</text>
+                    </g>
+                    
+                    <!-- Hinduism -->
+                    <g transform="translate(250, 200)">
+                        <circle r="60" fill="rgba(255, 140, 0, 0.2)" stroke="#FF8C00" stroke-width="2"/>
+                        <text y="0" text-anchor="middle" fill="#FF8C00" font-size="20">ॐ</text>
+                        <text y="-80" text-anchor="middle" fill="#FF8C00" font-size="16" font-weight="bold">Hinduism</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Matsya Avatar</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">First incarnation of Vishnu</text>
+                    </g>
+                    
+                    <!-- Buddhism -->
+                    <g transform="translate(650, 200)">
+                        <circle r="60" fill="rgba(255, 215, 0, 0.2)" stroke="#FFD700" stroke-width="2"/>
+                        <text y="0" text-anchor="middle" fill="#FFD700" font-size="20">☸</text>
+                        <text y="-80" text-anchor="middle" fill="#FFD700" font-size="16" font-weight="bold">Buddhism</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Golden Fish</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">Symbol of liberation</text>
+                    </g>
+                    
+                    <!-- Judaism -->
+                    <g transform="translate(250, 400)">
+                        <circle r="60" fill="rgba(70, 130, 180, 0.2)" stroke="#4682B4" stroke-width="2"/>
+                        <text y="0" text-anchor="middle" fill="#4682B4" font-size="20">✡</text>
+                        <text y="-80" text-anchor="middle" fill="#4682B4" font-size="16" font-weight="bold">Judaism</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Leviathan</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">Primordial sea monster</text>
+                    </g>
+                    
+                    <!-- Ancient Egypt -->
+                    <g transform="translate(450, 450)">
+                        <circle r="60" fill="rgba(218, 165, 32, 0.2)" stroke="#DAA520" stroke-width="2"/>
+                        <text y="0" text-anchor="middle" fill="#DAA520" font-size="20">☥</text>
+                        <text y="-80" text-anchor="middle" fill="#DAA520" font-size="16" font-weight="bold">Ancient Egypt</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Tilapia</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">Symbol of rebirth</text>
+                    </g>
+                    
+                    <!-- Greek/Roman -->
+                    <g transform="translate(650, 400)">
+                        <circle r="60" fill="rgba(138, 43, 226, 0.2)" stroke="#8A2BE2" stroke-width="2"/>
+                        <text y="0" text-anchor="middle" fill="#8A2BE2" font-size="20">Ψ</text>
+                        <text y="-80" text-anchor="middle" fill="#8A2BE2" font-size="16" font-weight="bold">Greek/Roman</text>
+                        <text y="40" text-anchor="middle" fill="#888" font-size="12">Aphrodite/Venus</text>
+                        <text y="55" text-anchor="middle" fill="#666" font-size="10">Born from sea foam</text>
+                    </g>
+                    
+                    <!-- Connecting lines -->
+                    <line x1="450" y1="210" x2="310" y2="260" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    <line x1="450" y1="210" x2="590" y2="260" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    <line x1="310" y1="340" x2="450" y2="390" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    <line x1="590" y1="340" x2="450" y2="390" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    <line x1="310" y1="260" x2="310" y2="340" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    <line x1="590" y1="260" x2="590" y2="340" stroke="#666" stroke-width="1" opacity="0.5"/>
+                    
+                    <!-- Central symbol -->
+                    <circle cx="450" cy="300" r="40" fill="rgba(212, 175, 55, 0.3)" stroke="#D4AF37" stroke-width="2"/>
+                    <text x="450" y="305" text-anchor="middle" fill="#D4AF37" font-size="16" font-weight="bold">FISH</text>
+                    
+                    <!-- Title -->
+                    <text x="450" y="40" text-anchor="middle" fill="#D4AF37" font-size="22">Sacred Fish Across Religions</text>
+                    <text x="450" y="65" text-anchor="middle" fill="#888" font-size="14">Universal symbol of life, fertility, and transformation</text>
+                </svg>
+            `;
+        });
+        
+        // Visualization 4: Interactive Fish Symbol Map
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('symbol-map-svg');
+            const width = 900;
+            const height = 700;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // Create interactive nodes
+            const nodes = [
+                // Ancient roots
+                { id: 'water', x: 450, y: 100, label: 'Primordial Waters', type: 'origin', connections: ['creation', 'chaos'] },
+                { id: 'creation', x: 300, y: 200, label: 'Creation Myths', type: 'myth', connections: ['fertility', 'gods'] },
+                { id: 'chaos', x: 600, y: 200, label: 'Chaos/Abyss', type: 'myth', connections: ['monster', 'unconscious'] },
+                
+                // Divine manifestations
+                { id: 'gods', x: 200, y: 300, label: 'Fish Gods', type: 'divine', connections: ['christ', 'savior'] },
+                { id: 'monster', x: 700, y: 300, label: 'Sea Monsters', type: 'shadow', connections: ['leviathan', 'dragon'] },
+                { id: 'fertility', x: 450, y: 300, label: 'Fertility Symbol', type: 'nature', connections: ['abundance', 'life'] },
+                
+                // Christian era
+                { id: 'christ', x: 300, y: 400, label: 'Christ/Ichthys', type: 'christian', connections: ['fisher', 'eucharist'] },
+                { id: 'leviathan', x: 600, y: 400, label: 'Leviathan', type: 'shadow', connections: ['evil', 'depths'] },
+                
+                // Psychological
+                { id: 'unconscious', x: 750, y: 400, label: 'Unconscious', type: 'psyche', connections: ['depths', 'transformation'] },
+                { id: 'savior', x: 150, y: 400, label: 'Savior/Redeemer', type: 'christian', connections: ['fisher', 'sacrifice'] },
+                
+                // Modern interpretations
+                { id: 'fisher', x: 200, y: 500, label: 'Fisher of Souls', type: 'symbol', connections: ['psychopomp'] },
+                { id: 'eucharist', x: 350, y: 500, label: 'Spiritual Food', type: 'symbol', connections: ['transformation'] },
+                { id: 'depths', x: 650, y: 500, label: 'Depths of Psyche', type: 'psyche', connections: ['transformation'] },
+                { id: 'evil', x: 500, y: 500, label: 'Shadow/Evil', type: 'shadow', connections: ['integration'] },
+                
+                // Integration
+                { id: 'transformation', x: 450, y: 600, label: 'Transformation', type: 'integration', connections: ['wholeness'] },
+                { id: 'psychopomp', x: 250, y: 600, label: 'Psychopomp', type: 'integration', connections: ['wholeness'] },
+                { id: 'integration', x: 650, y: 600, label: 'Shadow Integration', type: 'integration', connections: ['wholeness'] },
+                { id: 'wholeness', x: 450, y: 650, label: 'Self/Wholeness', type: 'self', connections: [] }
+            ];
+            
+            // Color scheme for node types
+            const colors = {
+                origin: '#4169E1',
+                myth: '#8A2BE2',
+                divine: '#FFD700',
+                shadow: '#8B0000',
+                christian: '#228B22',
+                nature: '#32CD32',
+                psyche: '#FF69B4',
+                symbol: '#FF8C00',
+                integration: '#D4AF37',
+                self: '#FFFFFF'
+            };
+            
+            // Background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('width', width);
+            bg.setAttribute('height', height);
+            bg.setAttribute('fill', '#0a0a0a');
+            svg.appendChild(bg);
+            
+            // Create connections
+            const connections = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            nodes.forEach(node => {
+                node.connections.forEach(targetId => {
+                    const target = nodes.find(n => n.id === targetId);
+                    if (target) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', node.x);
+                        line.setAttribute('y1', node.y);
+                        line.setAttribute('x2', target.x);
+                        line.setAttribute('y2', target.y);
+                        line.setAttribute('stroke', '#333');
+                        line.setAttribute('stroke-width', '1');
+                        connections.appendChild(line);
+                    }
+                });
+            });
+            svg.appendChild(connections);
+            
+            // Create nodes
+            nodes.forEach(node => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('transform', `translate(${node.x}, ${node.y})`);
+                g.style.cursor = 'pointer';
+                
+                // Node circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('r', '25');
+                circle.setAttribute('fill', colors[node.type]);
+                circle.setAttribute('opacity', '0.7');
+                circle.setAttribute('stroke', colors[node.type]);
+                circle.setAttribute('stroke-width', '2');
+                g.appendChild(circle);
+                
+                // Node label
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('y', '5');
+                text.setAttribute('fill', '#fff');
+                text.setAttribute('font-size', '11');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = node.label;
+                g.appendChild(text);
+                
+                // Hover effect
+                g.addEventListener('mouseenter', function() {
+                    circle.setAttribute('r', '30');
+                    circle.setAttribute('opacity', '1');
+                });
+                
+                g.addEventListener('mouseleave', function() {
+                    circle.setAttribute('r', '25');
+                    circle.setAttribute('opacity', '0.7');
+                });
+                
+                // Pulsing animation for Self node
+                if (node.type === 'self') {
+                    const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+                    pulse.setAttribute('attributeName', 'r');
+                    pulse.setAttribute('values', '25;30;25');
+                    pulse.setAttribute('dur', '2s');
+                    pulse.setAttribute('repeatCount', 'indefinite');
+                    circle.appendChild(pulse);
+                }
+                
+                svg.appendChild(g);
+            });
+            
+            // Title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width/2);
+            title.setAttribute('y', 40);
+            title.setAttribute('text-anchor', 'middle');
+            title.setAttribute('fill', '#D4AF37');
+            title.setAttribute('font-size', '22');
+            title.textContent = 'The Great Chain of Fish Symbolism';
+            svg.appendChild(title);
+            
+            // Subtitle
+            const subtitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            subtitle.setAttribute('x', width/2);
+            subtitle.setAttribute('y', 65);
+            subtitle.setAttribute('text-anchor', 'middle');
+            subtitle.setAttribute('fill', '#888');
+            subtitle.setAttribute('font-size', '14');
+            subtitle.textContent = 'From primordial waters to psychological wholeness';
+            svg.appendChild(subtitle);
+        });
+    </script>
 </body>
 </html>

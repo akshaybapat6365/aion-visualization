@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 7 - The Prophecies of Nostradamus - Aion</title>
+    <link rel="stylesheet" href="/styles/full-width.css">
     <style>
         * {
             margin: 0;
@@ -51,9 +52,30 @@
         
         /* Chapter Content */
         .chapter-content {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 4rem;
+        }
+        
+        /* Visualization Container */
+        .viz-container {
+            margin: 3rem 0;
+            padding: 0;
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .viz-container h3 {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            padding: 1rem;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 300;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
         
         .section {
@@ -91,9 +113,9 @@
         
         /* Chapter Navigation */
         .chapter-nav {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 3rem 4rem;
             display: flex;
             justify-content: space-between;
             border-top: 1px solid #333;
@@ -166,6 +188,38 @@
             <p>Jung interprets Nostradamus's references to fish, water, and apocalyptic imagery as expressions of the psychological transformation occurring at the end of the Piscean Age. These symbols point to the dissolution of old forms and the emergence of new consciousness.</p>
             <p>The chapter demonstrates how prophetic literature serves as a repository of collective psychological wisdom, encoding deep truths about human nature and the patterns of psychological and spiritual evolution.</p>
         </section>
+        
+        <!-- Visualization 1: Nostradamus's Vision Chamber -->
+        <div class="viz-container">
+            <h3>The Prophet's Vision: Gateway to the Collective Unconscious</h3>
+            <div id="vision-chamber" style="width: 100%; height: 600px; position: relative;">
+                <canvas id="vision-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+        
+        <!-- Visualization 2: Quatrain Decoder -->
+        <div class="viz-container">
+            <h3>Decoding the Quatrains: Symbolic Language of the Unconscious</h3>
+            <div id="quatrain-decoder" style="width: 100%; height: 500px; position: relative;">
+                <div id="decoder-content" style="width: 100%; height: 100%; padding: 2rem;"></div>
+            </div>
+        </div>
+        
+        <!-- Visualization 3: Timeline of Prophecies -->
+        <div class="viz-container">
+            <h3>Prophetic Timeline: Archetypal Patterns in History</h3>
+            <div id="prophecy-timeline" style="width: 100%; height: 600px; position: relative;">
+                <svg id="timeline-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
+        
+        <!-- Visualization 4: Astrological Wheel of Ages -->
+        <div class="viz-container">
+            <h3>The Wheel of Ages: Nostradamus's Cosmic Vision</h3>
+            <div id="astrological-wheel" style="width: 100%; height: 600px; position: relative;">
+                <canvas id="wheel-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
     </main>
     
     <!-- Chapter Navigation -->
@@ -179,5 +233,491 @@
     </nav>
     
     <script src="/components/navigation.js"></script>
+    <script src="/js/ensure-viz-load.js"></script>
+    
+    <!-- Visualization Scripts -->
+    <script>
+        // Visualization 1: Nostradamus's Vision Chamber
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('vision-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Particle system for visions
+            class VisionParticle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.vx = (Math.random() - 0.5) * 2;
+                    this.vy = (Math.random() - 0.5) * 2;
+                    this.life = 1;
+                    this.decay = Math.random() * 0.01 + 0.005;
+                    this.size = Math.random() * 3 + 1;
+                    this.symbol = ['☾', '☉', '♓', '♒', '✦', '⚜', '☿', '♃'][Math.floor(Math.random() * 8)];
+                }
+                
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.life -= this.decay;
+                    this.vy -= 0.05; // Float upward
+                }
+                
+                draw(ctx) {
+                    if (this.life <= 0) return;
+                    
+                    ctx.globalAlpha = this.life;
+                    ctx.fillStyle = '#D4AF37';
+                    ctx.font = `${this.size * 10}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.symbol, this.x, this.y);
+                    ctx.globalAlpha = 1;
+                }
+            }
+            
+            const particles = [];
+            let time = 0;
+            
+            function draw() {
+                const width = canvas.getBoundingClientRect().width;
+                const height = canvas.getBoundingClientRect().height;
+                
+                // Dark mystical background
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Crystal ball in center
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = 150;
+                
+                // Outer glow
+                const glowGrad = ctx.createRadialGradient(centerX, centerY, radius * 0.8, centerX, centerY, radius * 1.5);
+                glowGrad.addColorStop(0, 'rgba(212, 175, 55, 0.3)');
+                glowGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+                ctx.fillStyle = glowGrad;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius * 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Crystal ball
+                const ballGrad = ctx.createRadialGradient(
+                    centerX - radius/3, centerY - radius/3, 0,
+                    centerX, centerY, radius
+                );
+                ballGrad.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                ballGrad.addColorStop(0.5, 'rgba(100, 100, 150, 0.5)');
+                ballGrad.addColorStop(1, 'rgba(20, 20, 40, 0.8)');
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.fillStyle = ballGrad;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Swirling mists inside
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius - 5, 0, Math.PI * 2);
+                ctx.clip();
+                
+                for (let i = 0; i < 3; i++) {
+                    const mistX = centerX + Math.sin(time * 0.001 + i * 2) * 50;
+                    const mistY = centerY + Math.cos(time * 0.001 + i * 2) * 50;
+                    const mistGrad = ctx.createRadialGradient(mistX, mistY, 0, mistX, mistY, 80);
+                    mistGrad.addColorStop(0, 'rgba(212, 175, 55, 0.2)');
+                    mistGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+                    ctx.fillStyle = mistGrad;
+                    ctx.fillRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
+                }
+                ctx.restore();
+                
+                // Create new particles from crystal ball
+                if (Math.random() < 0.1) {
+                    particles.push(new VisionParticle(centerX + (Math.random() - 0.5) * radius, centerY));
+                }
+                
+                // Update and draw particles
+                particles.forEach((particle, index) => {
+                    particle.update();
+                    particle.draw(ctx);
+                    if (particle.life <= 0) {
+                        particles.splice(index, 1);
+                    }
+                });
+                
+                // Nostradamus silhouette
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.beginPath();
+                ctx.ellipse(centerX, height - 50, 100, 150, 0, Math.PI, 0);
+                ctx.fill();
+                
+                // Title
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = '18px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText('"Les Propheties"', centerX, 40);
+                
+                // Mystical text around the ball
+                ctx.font = '12px Georgia';
+                ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
+                const prophecyText = 'NOVUS ORDO SECLORUM';
+                for (let i = 0; i < prophecyText.length; i++) {
+                    const angle = (i / prophecyText.length) * Math.PI * 2 - Math.PI / 2 + time * 0.0005;
+                    const x = centerX + Math.cos(angle) * (radius + 30);
+                    const y = centerY + Math.sin(angle) * (radius + 30);
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(angle + Math.PI / 2);
+                    ctx.fillText(prophecyText[i], 0, 0);
+                    ctx.restore();
+                }
+                
+                time++;
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+        
+        // Visualization 2: Quatrain Decoder
+        window.initializeVisualization(function() {
+            const container = document.getElementById('decoder-content');
+            
+            // Sample quatrains with psychological interpretations
+            const quatrains = [
+                {
+                    number: 'Century X, Quatrain 72',
+                    original: 'L\'an mil neuf cens nonante neuf sept mois,\nDu ciel viendra un grand Roy d\'effrayeur:\nRessusciter le grand Roy d\'Angolmois,\nAvant après Mars regner par bon-heur.',
+                    translation: 'The year 1999, seventh month,\nFrom the sky will come a great King of terror:\nTo bring back to life the great King of Angolmois,\nBefore and after Mars to reign by good luck.',
+                    jungian: 'The "King of terror" represents the emergence of shadow contents from the collective unconscious at the millennium\'s end. Mars symbolizes the aggressive instincts that must be integrated for psychological wholeness.'
+                },
+                {
+                    number: 'Century I, Quatrain 87',
+                    original: 'Ennosigée feu du centre de terre\nFera trembler au tour de cité neufve:\nDeux grands rochiers long temps feront la guerre\nPuis Arethuse rougira nouveau fleuve.',
+                    translation: 'Earthshaking fire from the center of the earth\nWill cause tremors around the new city:\nTwo great rocks will make war for a long time\nThen Arethusa will redden a new river.',
+                    jungian: 'The "center of the earth" symbolizes the depths of the unconscious. The "two great rocks" represent opposing psychological forces that must be reconciled through the transformative process (the reddened river).'
+                },
+                {
+                    number: 'Century II, Quatrain 62',
+                    original: 'Mabus puis tost alors mourra, viendra\nDe gens et bestes une horrible defaite:\nPuis tout à coup la vengeance on verra\nCent, main, soif, faim, quand courra la comete.',
+                    translation: 'Mabus then will soon die, there will come\nOf people and beasts a horrible rout:\nThen suddenly one will see vengeance\nHundred, hand, thirst, hunger when the comet will run.',
+                    jungian: 'Mabus represents the death of an old psychological attitude. The "horrible rout" is the chaos that follows when unconscious contents are released. The comet symbolizes the illumination that comes after dark night of the soul.'
+                }
+            ];
+            
+            let currentQuatrain = 0;
+            
+            function displayQuatrain() {
+                const q = quatrains[currentQuatrain];
+                container.innerHTML = `
+                    <div style="color: #D4AF37; font-size: 16px; margin-bottom: 1rem;">${q.number}</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                        <div>
+                            <h4 style="color: #888; margin-bottom: 0.5rem; font-size: 14px;">Original French</h4>
+                            <div style="font-style: italic; color: #ccc; line-height: 1.6; white-space: pre-line;">${q.original}</div>
+                        </div>
+                        <div>
+                            <h4 style="color: #888; margin-bottom: 0.5rem; font-size: 14px;">English Translation</h4>
+                            <div style="color: #ccc; line-height: 1.6; white-space: pre-line;">${q.translation}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(212, 175, 55, 0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #D4AF37;">
+                        <h4 style="color: #D4AF37; margin-bottom: 0.5rem;">Jungian Interpretation</h4>
+                        <div style="color: #ddd; line-height: 1.6;">${q.jungian}</div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                        <button onclick="window.changeQuatrain(-1)" style="background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px;">← Previous</button>
+                        <button onclick="window.changeQuatrain(1)" style="background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px;">Next →</button>
+                    </div>
+                `;
+            }
+            
+            window.changeQuatrain = function(direction) {
+                currentQuatrain = (currentQuatrain + direction + quatrains.length) % quatrains.length;
+                displayQuatrain();
+            };
+            
+            displayQuatrain();
+        });
+        
+        // Visualization 3: Timeline of Prophecies
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('timeline-svg');
+            const width = 900;
+            const height = 600;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // Timeline events
+            const events = [
+                { year: 1555, title: 'Les Propheties Published', desc: 'First edition of prophecies', y: 150 },
+                { year: 1666, title: 'Great Fire of London', desc: 'Prophesied destruction', y: 200 },
+                { year: 1789, title: 'French Revolution', desc: 'Fall of monarchy foretold', y: 250 },
+                { year: 1914, title: 'World War I', desc: 'Great war prophecy', y: 300 },
+                { year: 1999, title: 'Millennium Shift', desc: 'King of Terror prophecy', y: 350 },
+                { year: 2150, title: 'Age of Aquarius', desc: 'New age begins', y: 400 }
+            ];
+            
+            // Background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('width', width);
+            bg.setAttribute('height', height);
+            bg.setAttribute('fill', '#0a0a0a');
+            svg.appendChild(bg);
+            
+            // Timeline axis
+            const timeline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            timeline.setAttribute('x1', 100);
+            timeline.setAttribute('y1', height/2);
+            timeline.setAttribute('x2', width - 100);
+            timeline.setAttribute('y2', height/2);
+            timeline.setAttribute('stroke', '#D4AF37');
+            timeline.setAttribute('stroke-width', '3');
+            svg.appendChild(timeline);
+            
+            // Calculate positions
+            const startYear = 1500;
+            const endYear = 2200;
+            const timelineWidth = width - 200;
+            
+            events.forEach((event, i) => {
+                const x = 100 + ((event.year - startYear) / (endYear - startYear)) * timelineWidth;
+                
+                // Event group
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                
+                // Vertical line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', height/2);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', event.y);
+                line.setAttribute('stroke', '#666');
+                line.setAttribute('stroke-width', '1');
+                line.setAttribute('stroke-dasharray', '3,3');
+                g.appendChild(line);
+                
+                // Event circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', event.y);
+                circle.setAttribute('r', '8');
+                circle.setAttribute('fill', '#D4AF37');
+                g.appendChild(circle);
+                
+                // Glow animation
+                const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                glow.setAttribute('cx', x);
+                glow.setAttribute('cy', event.y);
+                glow.setAttribute('r', '8');
+                glow.setAttribute('fill', 'none');
+                glow.setAttribute('stroke', '#D4AF37');
+                glow.setAttribute('stroke-width', '2');
+                glow.setAttribute('opacity', '0');
+                glow.innerHTML = `
+                    <animate attributeName="r" values="8;20;8" dur="3s" begin="${i * 0.5}s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0;0.5;0" dur="3s" begin="${i * 0.5}s" repeatCount="indefinite"/>
+                `;
+                g.appendChild(glow);
+                
+                // Event text
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                title.setAttribute('x', x);
+                title.setAttribute('y', event.y - 20);
+                title.setAttribute('text-anchor', 'middle');
+                title.setAttribute('fill', '#D4AF37');
+                title.setAttribute('font-size', '14');
+                title.setAttribute('font-weight', 'bold');
+                title.textContent = event.title;
+                g.appendChild(title);
+                
+                const year = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                year.setAttribute('x', x);
+                year.setAttribute('y', height/2 + 25);
+                year.setAttribute('text-anchor', 'middle');
+                year.setAttribute('fill', '#888');
+                year.setAttribute('font-size', '12');
+                year.textContent = event.year;
+                g.appendChild(year);
+                
+                const desc = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                desc.setAttribute('x', x);
+                desc.setAttribute('y', event.y + 25);
+                desc.setAttribute('text-anchor', 'middle');
+                desc.setAttribute('fill', '#666');
+                desc.setAttribute('font-size', '11');
+                desc.textContent = event.desc;
+                g.appendChild(desc);
+                
+                svg.appendChild(g);
+            });
+            
+            // Title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width/2);
+            title.setAttribute('y', 50);
+            title.setAttribute('text-anchor', 'middle');
+            title.setAttribute('fill', '#D4AF37');
+            title.setAttribute('font-size', '20');
+            title.textContent = 'Nostradamus: Prophecies Through Time';
+            svg.appendChild(title);
+            
+            // Subtitle
+            const subtitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            subtitle.setAttribute('x', width/2);
+            subtitle.setAttribute('y', 80);
+            subtitle.setAttribute('text-anchor', 'middle');
+            subtitle.setAttribute('fill', '#888');
+            subtitle.setAttribute('font-size', '14');
+            subtitle.textContent = 'Archetypal patterns manifesting in historical events';
+            svg.appendChild(subtitle);
+        });
+        
+        // Visualization 4: Astrological Wheel of Ages
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Astrological ages
+            const ages = [
+                { name: 'Pisces', symbol: '♓', color: '#4169E1', prophecy: 'Age of belief and faith' },
+                { name: 'Aquarius', symbol: '♒', color: '#00CED1', prophecy: 'Age of knowledge and freedom' },
+                { name: 'Capricorn', symbol: '♑', color: '#8B4513', prophecy: 'Age of materialism' },
+                { name: 'Sagittarius', symbol: '♐', color: '#FF4500', prophecy: 'Age of exploration' },
+                { name: 'Scorpio', symbol: '♏', color: '#8B0000', prophecy: 'Age of transformation' },
+                { name: 'Libra', symbol: '♎', color: '#FFD700', prophecy: 'Age of balance' },
+                { name: 'Virgo', symbol: '♍', color: '#228B22', prophecy: 'Age of analysis' },
+                { name: 'Leo', symbol: '♌', color: '#FFA500', prophecy: 'Age of kings' },
+                { name: 'Cancer', symbol: '♋', color: '#C0C0C0', prophecy: 'Age of the mother' },
+                { name: 'Gemini', symbol: '♊', color: '#F0E68C', prophecy: 'Age of communication' },
+                { name: 'Taurus', symbol: '♉', color: '#A0522D', prophecy: 'Age of agriculture' },
+                { name: 'Aries', symbol: '♈', color: '#DC143C', prophecy: 'Age of heroes' }
+            ];
+            
+            let rotation = 0;
+            let selectedAge = 0;
+            
+            function draw() {
+                const width = canvas.getBoundingClientRect().width;
+                const height = canvas.getBoundingClientRect().height;
+                
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, width, height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.35;
+                
+                // Draw ages
+                ages.forEach((age, i) => {
+                    const startAngle = (i * 30 - 90 + rotation) * Math.PI / 180;
+                    const endAngle = ((i + 1) * 30 - 90 + rotation) * Math.PI / 180;
+                    
+                    // Age segment
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = age.color;
+                    ctx.globalAlpha = i === selectedAge ? 0.6 : 0.3;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    ctx.strokeStyle = '#D4AF37';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Symbol
+                    const symbolAngle = (i * 30 + 15 - 90 + rotation) * Math.PI / 180;
+                    const symbolX = centerX + Math.cos(symbolAngle) * (radius * 0.7);
+                    const symbolY = centerY + Math.sin(symbolAngle) * (radius * 0.7);
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '24px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(age.symbol, symbolX, symbolY);
+                });
+                
+                // Center prophecy display
+                if (selectedAge >= 0) {
+                    const age = ages[selectedAge];
+                    
+                    // Central circle
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.3, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#D4AF37';
+                    ctx.stroke();
+                    
+                    // Age name
+                    ctx.fillStyle = age.color;
+                    ctx.font = 'bold 20px Georgia';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(age.name, centerX, centerY - 15);
+                    
+                    // Prophecy
+                    ctx.fillStyle = '#ccc';
+                    ctx.font = '14px Georgia';
+                    ctx.fillText(age.prophecy, centerX, centerY + 10);
+                }
+                
+                // Title
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = '20px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText('The Great Wheel of Ages', centerX, 40);
+                
+                // Current age indicator
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX, centerY - radius);
+                ctx.stroke();
+                
+                // Arrow at end
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY - radius);
+                ctx.lineTo(centerX - 10, centerY - radius + 10);
+                ctx.moveTo(centerX, centerY - radius);
+                ctx.lineTo(centerX + 10, centerY - radius + 10);
+                ctx.stroke();
+                
+                // Rotation and selection
+                rotation += 0.1;
+                selectedAge = Math.floor((((-rotation + 90) % 360) / 30 + 12) % 12);
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+    </script>
 </body>
 </html>
