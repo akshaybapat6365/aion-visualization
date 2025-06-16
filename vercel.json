@@ -1,9 +1,9 @@
 {
-  "buildCommand": false,
+  "buildCommand": null,
   "outputDirectory": ".",
   "framework": null,
-  "installCommand": "echo 'No install needed'",
-  "devCommand": false,
+  "installCommand": null,
+  "devCommand": null,
   "public": true,
   "trailingSlash": false,
   "cleanUrls": true,
