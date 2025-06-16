@@ -3,316 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish Symbol Timeline - Aion Chapter 4</title>
-    <link rel="stylesheet" href="../../../../assets/css/main.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <title>The Fish Symbol: From Christ to Aquarius - Aion Visualization</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background: var(--surface-primary);
-            color: var(--text-primary);
-            font-family: var(--font-primary);
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, serif;
+            background: #000;
+            color: #fff;
             overflow-x: hidden;
-        }
-        
-        .showcase-container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .showcase-header {
-            padding: 2rem;
-            background: var(--surface-glass);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-default);
-        }
-        
-        .showcase-header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 300;
-            color: var(--text-primary);
-        }
-        
-        .showcase-header p {
-            margin: 0.5rem 0 0;
-            color: var(--text-secondary);
-            font-size: 1.125rem;
-        }
-        
-        .visualization-wrapper {
-            flex: 1;
-            position: relative;
-            padding: 2rem;
-        }
-        
-        #fish-timeline-container {
-            width: 100%;
-            height: 800px;
-            background: var(--surface-glass);
-            border-radius: 1rem;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .controls-panel {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--surface-secondary);
-            border: 1px solid var(--border-default);
-            border-radius: 0.5rem;
-            padding: 1rem 2rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            z-index: 100;
-        }
-        
-        .controls-panel button {
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.875rem;
-        }
-        
-        .controls-panel button:hover {
-            background: var(--accent-dark);
-            transform: translateY(-1px);
-        }
-        
-        .controls-panel button:active {
-            transform: translateY(0);
-        }
-        
-        .info-section {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .info-card {
-            background: var(--surface-glass);
-            border: 1px solid var(--border-default);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(107, 70, 193, 0.1);
-        }
-        
-        .info-card h3 {
-            margin: 0 0 1rem;
-            color: var(--accent);
-            font-size: 1.25rem;
-        }
-        
-        .info-card p {
-            margin: 0;
-            color: var(--text-secondary);
             line-height: 1.6;
         }
         
-        .keyboard-hints {
+        /* Intro Screen */
+        .intro-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            background: radial-gradient(circle at center, #0a0a0a, #000);
+        }
+        
+        .intro-screen h1 {
+            font-size: 3rem;
+            color: #D4AF37;
+            margin-bottom: 1rem;
+            animation: fadeIn 2s ease;
+        }
+        
+        .intro-screen .subtitle {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 2rem;
+            animation: fadeIn 2s ease 0.5s both;
+        }
+        
+        .intro-screen .explanation {
+            max-width: 800px;
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 3rem;
+            animation: fadeIn 2s ease 1s both;
+        }
+        
+        .start-button {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            background: transparent;
+            border: 2px solid #D4AF37;
+            color: #D4AF37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeIn 2s ease 1.5s both;
+        }
+        
+        .start-button:hover {
+            background: #D4AF37;
+            color: #000;
+            transform: scale(1.05);
+        }
+        
+        /* Main Timeline */
+        .timeline-container {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            background: #000;
+        }
+        
+        /* Fixed Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            text-align: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #333;
+        }
+        
+        .header h2 {
+            color: #D4AF37;
+            font-size: 1.5rem;
+        }
+        
+        .current-era {
+            color: #888;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Timeline Track */
+        .timeline-track {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin-top: 100px;
+            background: linear-gradient(to right, #111 0%, #222 50%, #111 100%);
+            overflow: hidden;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        .timeline-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background: #D4AF37;
+            transform: translateY(-50%);
+            width: 0%;
+            transition: width 2s ease;
+        }
+        
+        /* Era Sections */
+        .era-section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        
+        .era-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .era-content {
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .era-text h2 {
+            font-size: 3rem;
+            color: #D4AF37;
+            margin-bottom: 1rem;
+        }
+        
+        .era-text .years {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+        
+        .era-text p {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 1.5rem;
+        }
+        
+        .era-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Fish Symbols */
+        .fish-symbol {
+            font-size: 150px;
+            animation: swim 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        
+        @keyframes swim {
+            0%, 100% { transform: translateX(0) rotateY(0); }
+            50% { transform: translateX(20px) rotateY(180deg); }
+        }
+        
+        /* Special Era Styles */
+        .era-pisces { background: linear-gradient(180deg, #000 0%, #001133 100%); }
+        .era-pisces .fish-symbol { color: #4169E1; }
+        
+        .era-christ { background: linear-gradient(180deg, #000 0%, #332200 100%); }
+        .era-christ .fish-symbol { color: #FFD700; }
+        
+        .era-medieval { background: linear-gradient(180deg, #000 0%, #1a0f0a 100%); }
+        .era-medieval .fish-symbol { color: #8B4513; }
+        
+        .era-modern { background: linear-gradient(180deg, #000 0%, #003333 100%); }
+        .era-modern .fish-symbol { color: #00CED1; }
+        
+        .era-aquarius { background: linear-gradient(180deg, #000 0%, #330066 100%); }
+        .era-aquarius .water-bearer { 
+            font-size: 150px; 
+            color: #9370DB;
+            animation: pour 3s ease-in-out infinite;
+        }
+        
+        @keyframes pour {
+            0%, 100% { transform: rotate(0); }
+            50% { transform: rotate(-15deg); }
+        }
+        
+        /* Quote Boxes */
+        .jung-quote {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #D4AF37;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+        }
+        
+        .jung-quote cite {
+            display: block;
+            margin-top: 1rem;
+            color: #888;
+            font-style: normal;
+            text-align: right;
+        }
+        
+        /* Navigation */
+        .timeline-nav {
             position: fixed;
             bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .nav-button:hover {
+            background: #D4AF37;
+            color: #000;
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Progress Indicators */
+        .progress-dots {
+            position: fixed;
             right: 2rem;
-            background: var(--surface-glass);
-            border: 1px solid var(--border-default);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
         }
         
-        .keyboard-hints:hover {
-            opacity: 1;
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #333;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .keyboard-hints h4 {
-            margin: 0 0 0.5rem;
-            color: var(--text-primary);
+        .dot.active {
+            background: #D4AF37;
+            transform: scale(1.5);
         }
         
-        .keyboard-hints kbd {
-            display: inline-block;
-            padding: 0.2rem 0.4rem;
-            background: var(--surface-secondary);
-            border: 1px solid var(--border-default);
-            border-radius: 0.25rem;
-            font-family: monospace;
-            font-size: 0.75rem;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Responsive */
         @media (max-width: 768px) {
-            #fish-timeline-container {
-                height: 600px;
-            }
-            
-            .controls-panel {
-                flex-wrap: wrap;
-                padding: 0.75rem 1rem;
-            }
-            
-            .keyboard-hints {
-                display: none;
-            }
+            .intro-screen h1 { font-size: 2rem; }
+            .era-content { grid-template-columns: 1fr; }
+            .era-text h2 { font-size: 2rem; }
+            .fish-symbol, .water-bearer { font-size: 100px; }
+            .timeline-nav { flex-direction: column; bottom: 1rem; }
+            .progress-dots { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="showcase-container">
-        <header class="showcase-header">
-            <h1>Fish Symbol Timeline</h1>
-            <p>2000+ Years of Symbolic Evolution - From Ichthys to Aquarius</p>
-        </header>
-        
-        <div class="visualization-wrapper">
-            <div id="fish-timeline-container"></div>
-            
-            <div class="controls-panel">
-                <button id="play-timeline">Play Timeline</button>
-                <button id="reset-timeline">Reset View</button>
-                <button id="toggle-3d">Toggle 3D/2D</button>
-                <button id="show-all-fish">Show All Symbols</button>
-            </div>
+    <!-- Intro Screen -->
+    <div class="intro-screen" id="intro">
+        <h1>The Fish Symbol Through Time</h1>
+        <p class="subtitle">Understanding Jung's Aion Through the Evolution of a Symbol</p>
+        <p class="explanation">
+            In "Aion," Carl Jung traces how the fish symbol transformed from an ancient fertility symbol 
+            to the Christian Ichthys, and how this relates to the astrological ages. This visualization 
+            will guide you through 2,500 years of symbolic evolution, showing how collective human 
+            consciousness shifts with the precession of the equinoxes.
+        </p>
+        <button class="start-button" onclick="startJourney()">Begin the Journey</button>
+    </div>
+    
+    <!-- Main Timeline -->
+    <div class="timeline-container" id="timeline">
+        <!-- Fixed Header -->
+        <div class="header">
+            <h2>The Aeon of the Fish</h2>
+            <div class="current-era" id="currentEra">Pre-Christian Era</div>
         </div>
         
-        <section class="info-section">
-            <h2>Understanding the Fish Symbol Through Time</h2>
-            
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3>Ancient Origins</h3>
-                    <p>Before Christianity, fish symbols appeared in various cultures as representations of fertility, abundance, and the mysterious depths of water - the primordial element of life and the unconscious.</p>
+        <!-- Timeline Track -->
+        <div class="timeline-track">
+            <div class="timeline-line"></div>
+            <div class="timeline-progress" id="progress"></div>
+        </div>
+        
+        <!-- Era 1: Pre-Christian -->
+        <section class="era-section era-pisces" id="era1">
+            <div class="era-content">
+                <div class="era-text">
+                    <h2>The Ancient Fish</h2>
+                    <p class="years">500 BCE - 0 CE</p>
+                    <p>
+                        Before Christianity, the fish was already a powerful symbol. In ancient cultures, 
+                        it represented fertility, the feminine principle, and the unconscious depths.
+                    </p>
+                    <p>
+                        The astrological Age of Pisces was beginning. Two fish swimming in opposite 
+                        directions would come to represent the fundamental duality of human nature.
+                    </p>
+                    <div class="jung-quote">
+                        "The fish is a content of the unconscious, for it lives in the water, 
+                        which is the commonest symbol for the unconscious."
+                        <cite>- C.G. Jung, Aion</cite>
+                    </div>
                 </div>
-                
-                <div class="info-card">
-                    <h3>Christian Ichthys</h3>
-                    <p>The Greek word ΙΧΘΥΣ (Ichthys) became an acronym for "Jesus Christ, Son of God, Savior." During Roman persecution, Christians used the fish symbol as a secret sign of recognition.</p>
-                </div>
-                
-                <div class="info-card">
-                    <h3>Astrological Significance</h3>
-                    <p>The Age of Pisces, beginning around the time of Christ, is symbolized by two fish swimming in opposite directions - representing the fundamental duality of the Christian aeon.</p>
-                </div>
-                
-                <div class="info-card">
-                    <h3>Alchemical Fish</h3>
-                    <p>In alchemy, the fish represents the prima materia swimming in the waters of the unconscious, undergoing transformation in the vessel of the psyche.</p>
-                </div>
-                
-                <div class="info-card">
-                    <h3>Psychological Meaning</h3>
-                    <p>Jung saw fish as symbols of contents rising from the unconscious. Dreams of fish often indicate contact with deeper layers of the psyche and the process of individuation.</p>
-                </div>
-                
-                <div class="info-card">
-                    <h3>Aquarian Transition</h3>
-                    <p>As we approach the Age of Aquarius, the symbol shifts from fish (unconscious immersion) to the water-bearer (conscious handling of psychic contents).</p>
+                <div class="era-visual">
+                    <div class="fish-symbol">🐟</div>
                 </div>
             </div>
         </section>
         
-        <div class="keyboard-hints">
-            <h4>Keyboard Controls</h4>
-            <p><kbd>←</kbd> <kbd>→</kbd> Navigate timeline</p>
-            <p><kbd>Space</kbd> Play/Pause</p>
-            <p><kbd>Scroll</kbd> Zoom in/out</p>
+        <!-- Era 2: Early Christianity -->
+        <section class="era-section era-christ" id="era2">
+            <div class="era-content">
+                <div class="era-text">
+                    <h2>The Ichthys</h2>
+                    <p class="years">0 - 313 CE</p>
+                    <p>
+                        Early Christians adopted the fish as their secret symbol. The Greek word for fish, 
+                        ΙΧΘΥΣ (Ichthys), became an acronym: "Jesus Christ, Son of God, Savior."
+                    </p>
+                    <p>
+                        Jung saw this as more than coincidence. The fish symbol emerged from the collective 
+                        unconscious at the precise moment the Age of Pisces began, linking Christ to the 
+                        archetype of the Fish.
+                    </p>
+                    <div class="jung-quote">
+                        "Christ himself is the 'Fish' (Ichthys), and his disciples are 'fishers of men.' 
+                        Here the fish is an allegory of Christ."
+                        <cite>- C.G. Jung, Aion</cite>
+                    </div>
+                </div>
+                <div class="era-visual">
+                    <div class="fish-symbol">✝️🐠</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Era 3: Medieval Period -->
+        <section class="era-section era-medieval" id="era3">
+            <div class="era-content">
+                <div class="era-text">
+                    <h2>The Dual Fish</h2>
+                    <p class="years">313 - 1500 CE</p>
+                    <p>
+                        As Christianity established itself, the fish symbol evolved. The two fish of Pisces 
+                        came to represent Christ and Antichrist, good and evil, the conscious and unconscious.
+                    </p>
+                    <p>
+                        Jung observed how medieval alchemists used the fish to symbolize the prima materia - 
+                        the raw, unconscious material that must be transformed through the opus.
+                    </p>
+                    <div class="jung-quote">
+                        "The one fish which is Christ is followed by the Antichrist... This is the 
+                        dilemma of the opposites inherent in the archetype."
+                        <cite>- C.G. Jung, Aion</cite>
+                    </div>
+                </div>
+                <div class="era-visual">
+                    <div class="fish-symbol">♓</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Era 4: Modern Era -->
+        <section class="era-section era-modern" id="era4">
+            <div class="era-content">
+                <div class="era-text">
+                    <h2>The Fading Fish</h2>
+                    <p class="years">1500 - 2000 CE</p>
+                    <p>
+                        As we approach the end of the Age of Pisces, the fish symbol's power wanes. 
+                        The rise of science and rationalism represents a shift in collective consciousness.
+                    </p>
+                    <p>
+                        Jung saw this as the necessary integration of the shadow - the dark fish must 
+                        be acknowledged alongside the light. The opposites must be united.
+                    </p>
+                    <div class="jung-quote">
+                        "We are living in what the Greeks called the Kairos - the right moment - 
+                        for a 'metamorphosis of the gods.'"
+                        <cite>- C.G. Jung, Aion</cite>
+                    </div>
+                </div>
+                <div class="era-visual">
+                    <div class="fish-symbol" style="opacity: 0.6;">🐠</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Era 5: Age of Aquarius -->
+        <section class="era-section era-aquarius" id="era5">
+            <div class="era-content">
+                <div class="era-text">
+                    <h2>The Water Bearer</h2>
+                    <p class="years">2000 - 4000 CE</p>
+                    <p>
+                        We stand at the threshold of the Age of Aquarius. The Water Bearer pours out 
+                        the waters of consciousness, symbolizing a new level of human awareness.
+                    </p>
+                    <p>
+                        Jung believed this transition would bring profound psychological changes - 
+                        a new relationship between conscious and unconscious, individual and collective.
+                    </p>
+                    <div class="jung-quote">
+                        "The approach of the Aquarian age will constellate the problem of the union 
+                        of opposites. It will then no longer be possible to write off evil as the 
+                        mere privation of good."
+                        <cite>- C.G. Jung, Aion</cite>
+                    </div>
+                </div>
+                <div class="era-visual">
+                    <div class="water-bearer">♒</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Navigation -->
+        <div class="timeline-nav">
+            <button class="nav-button" id="prevBtn" onclick="previousEra()">← Previous</button>
+            <button class="nav-button" onclick="showIntro()">Introduction</button>
+            <button class="nav-button" id="nextBtn" onclick="nextEra()">Next →</button>
+        </div>
+        
+        <!-- Progress Dots -->
+        <div class="progress-dots">
+            <div class="dot" onclick="goToEra(1)"></div>
+            <div class="dot" onclick="goToEra(2)"></div>
+            <div class="dot" onclick="goToEra(3)"></div>
+            <div class="dot" onclick="goToEra(4)"></div>
+            <div class="dot" onclick="goToEra(5)"></div>
         </div>
     </div>
     
-    <script type="module">
-        // Import and initialize the Fish Symbol Timeline
-        import FishSymbolTimeline from './fish-symbol-timeline.js';
+    <script>
+        let currentEra = 0;
+        const totalEras = 5;
+        const eraNames = [
+            'Pre-Christian Era',
+            'Early Christianity',
+            'Medieval Period', 
+            'Modern Era',
+            'Age of Aquarius'
+        ];
         
-        // Wait for DOM to load
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('fish-timeline-container');
-            const timeline = new FishSymbolTimeline(container);
-            
-            // Control panel functionality
-            let isPlaying = false;
-            let animationInterval;
-            
-            document.getElementById('play-timeline').addEventListener('click', function() {
-                isPlaying = !isPlaying;
-                this.textContent = isPlaying ? 'Pause Timeline' : 'Play Timeline';
-                
-                if (isPlaying) {
-                    let eventIndex = 0;
-                    animationInterval = setInterval(() => {
-                        timeline.handleEventClick(timeline.timelineData[eventIndex]);
-                        eventIndex = (eventIndex + 1) % timeline.timelineData.length;
-                    }, 3000);
-                } else {
-                    clearInterval(animationInterval);
-                }
+        function startJourney() {
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('timeline').style.display = 'block';
+            goToEra(1);
+        }
+        
+        function showIntro() {
+            document.getElementById('timeline').style.display = 'none';
+            document.getElementById('intro').style.display = 'flex';
+            currentEra = 0;
+        }
+        
+        function goToEra(num) {
+            // Hide all eras
+            document.querySelectorAll('.era-section').forEach(section => {
+                section.classList.remove('active');
             });
             
-            document.getElementById('reset-timeline').addEventListener('click', () => {
-                timeline.camera.position.set(0, 0, 10);
-                timeline.fishGroup.rotation.y = 0;
-                timeline.historicalFish.forEach(fish => {
-                    fish.visible = false;
-                    fish.position.y = -5;
-                });
+            // Show selected era
+            setTimeout(() => {
+                document.getElementById(`era${num}`).classList.add('active');
+            }, 100);
+            
+            // Update current era
+            currentEra = num;
+            document.getElementById('currentEra').textContent = eraNames[num - 1];
+            
+            // Update progress bar
+            const progress = (num / totalEras) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            // Update dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === num - 1);
             });
             
-            document.getElementById('toggle-3d').addEventListener('click', function() {
-                const is3D = timeline.threeDContainer.style.display !== 'none';
-                timeline.threeDContainer.style.display = is3D ? 'none' : 'block';
-                timeline.svg.style.display = is3D ? 'block' : 'none';
-                this.textContent = is3D ? 'Show 3D View' : 'Show Timeline';
-            });
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = num === 1;
+            document.getElementById('nextBtn').disabled = num === totalEras;
+        }
+        
+        function nextEra() {
+            if (currentEra < totalEras) {
+                goToEra(currentEra + 1);
+            }
+        }
+        
+        function previousEra() {
+            if (currentEra > 1) {
+                goToEra(currentEra - 1);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (currentEra === 0) return;
             
-            document.getElementById('show-all-fish').addEventListener('click', () => {
-                timeline.historicalFish.forEach((fish, index) => {
-                    fish.visible = true;
-                    gsap.to(fish.position, {
-                        y: 0,
-                        x: (index - timeline.timelineData.length / 2) * 2,
-                        duration: 1,
-                        delay: index * 0.1,
-                        ease: "power2.out"
-                    });
-                    
-                    gsap.to(fish.rotation, {
-                        y: Math.PI * 2,
-                        duration: 2,
-                        delay: index * 0.1,
-                        ease: "power2.inOut"
-                    });
-                });
-            });
-            
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                timeline.resize();
-            });
+            if (e.key === 'ArrowRight') nextEra();
+            if (e.key === 'ArrowLeft') previousEra();
+            if (e.key === 'Escape') showIntro();
+            if (e.key >= '1' && e.key <= '5') goToEra(parseInt(e.key));
         });
+        
+        // Scroll to navigate
+        let scrollTimeout;
+        window.addEventListener('wheel', (e) => {
+            if (currentEra === 0) return;
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (e.deltaY > 0) {
+                    nextEra();
+                } else {
+                    previousEra();
+                }
+            }, 100);
+        }, { passive: true });
     </script>
+    <script src="/components/navigation.js"></script>
 </body>
 </html>

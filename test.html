@@ -80,14 +80,14 @@
             '<span class="fail">✗ Not secure</span>';
         
         // Test resources
-        fetch('/aion-visualization/assets/css/bundle.min.css')
+        fetch('/assets/css/bundle.min.css')
             .then(r => {
                 document.getElementById('css').innerHTML = r.ok ? 
                     '<span class="pass">✓ Loaded</span>' : 
                     '<span class="fail">✗ Failed</span>';
             });
             
-        fetch('/aion-visualization/assets/js/core/github-pages-router.js')
+        fetch('/assets/js/core/github-pages-router.js')
             .then(r => {
                 document.getElementById('router').innerHTML = r.ok ? 
                     '<span class="pass">✓ Loaded</span>' : 

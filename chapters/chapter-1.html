@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1 - The Ego - Aion</title>
+    <link rel="stylesheet" href="/styles/full-width.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.8;
+        }
+        
+        /* Chapter Header */
+        .chapter-header {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid #333;
+        }
+        
+        .chapter-number {
+            font-size: 1.2rem;
+            color: #D4AF37;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        
+        .chapter-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        
+        .chapter-summary {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.3rem;
+            color: #ccc;
+            font-style: italic;
+        }
+        
+        /* Chapter Content */
+        .chapter-content {
+            width: 100%;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            color: #D4AF37;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .section p {
+            font-size: 1.1rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quote-box {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 4px solid #D4AF37;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+        }
+        
+        .quote-box cite {
+            display: block;
+            margin-top: 1rem;
+            color: #888;
+            font-style: normal;
+            text-align: right;
+        }
+        
+        /* Visualization Container */
+        .viz-container {
+            margin: 3rem 0;
+            padding: 0;
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .viz-container h3 {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            padding: 1rem;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 300;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Chapter Navigation */
+        .chapter-nav {
+            width: 100%;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid #333;
+        }
+        
+        .nav-link {
+            color: #D4AF37;
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            transform: translateX(5px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 2rem;
+            }
+            
+            .chapter-summary {
+                font-size: 1.1rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .chapter-content {
+                padding: 4rem 2rem;
+            }
+            
+            .chapter-nav {
+                padding: 3rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Chapter Header -->
+    <header class="chapter-header">
+        <div class="chapter-number">Chapter 1</div>
+        <h1 class="chapter-title">The Ego</h1>
+        <p class="chapter-summary">The center of consciousness and the starting point of individuation</p>
+    </header>
+    
+    <!-- Chapter Content -->
+    <main class="chapter-content">
+        <section class="section">
+            <h2>Overview</h2>
+            <p>Jung begins Aion with an exploration of the ego - the center of consciousness and our sense of personal identity. The ego is what we typically think of as "I" or "me," but Jung reveals it to be just one complex among many in the psyche.</p>
+            <p>Understanding the ego's proper role is crucial for the process of individuation. While the ego likes to believe it's in control, it's actually a relatively small part of the total psyche, floating like an island in the vast ocean of the unconscious.</p>
+        </section>
+        
+        <!-- Visualization 1: Ego as Island -->
+        <div class="viz-container">
+            <h3>The Ego as an Island in the Ocean of the Unconscious</h3>
+            <div id="ego-island-viz" style="width: 100%; height: 400px; position: relative; background: #000;">
+                <canvas id="ocean-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+        
+        <section class="section">
+            <h2>Key Concepts</h2>
+            <p><strong>The Ego-Complex:</strong> The ego is a complex of representations which constitutes the center of consciousness. It possesses a high degree of continuity and identity, giving us our sense of being the same person throughout life.</p>
+            <p><strong>Relationship to the Self:</strong> While the ego is the center of consciousness, the Self is the center of the total psyche. The ego emerges from the Self and maintains a vital connection to it throughout life.</p>
+            <p><strong>Ego-Inflation:</strong> When the ego identifies with the Self or with unconscious contents, it becomes inflated. This leads to hubris and a dangerous overestimation of one's conscious powers.</p>
+        </section>
+        
+        <div class="quote-box">
+            "The ego is only a bit of consciousness which floats upon the ocean of the dark things within."
+            <cite>- C.G. Jung, Aion</cite>
+        </div>
+        
+        <!-- Visualization 2: Ego-Self Relationship -->
+        <div class="viz-container">
+            <h3>The Relationship Between Ego and Self</h3>
+            <div id="ego-self-viz" style="width: 100%; height: 500px; position: relative;">
+                <svg id="ego-self-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
+        
+        <section class="section">
+            <h2>The Journey Ahead</h2>
+            <p>This chapter sets the stage for Jung's exploration of the deeper layers of the psyche. By understanding the ego's limitations and its proper relationship to the unconscious, we prepare ourselves for encounters with the shadow, the anima/animus, and ultimately the Self.</p>
+            <p>The ego must be strong enough to withstand the encounter with unconscious contents, yet flexible enough to be transformed by them. This delicate balance is essential for psychological development.</p>
+        </section>
+        
+        <!-- Visualization 3: Layers of the Psyche -->
+        <div class="viz-container">
+            <h3>The Layers of the Psyche</h3>
+            <div id="psyche-layers-viz" style="width: 100%; height: 600px; position: relative;">
+                <div id="psyche-container" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Chapter Navigation -->
+    <nav class="chapter-nav">
+        <a href="/chapters/chapter-2.html" class="nav-link next">
+            Chapter 2: The Shadow →
+        </a>
+    </nav>
+    
+    <script src="/components/navigation.js"></script>
+    <script src="/js/ensure-viz-load.js"></script>
+    
+    <!-- Visualization Scripts -->
+    <script>
+        // Visualization 1: Ego as Island
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('ocean-canvas');
+            const ctx = canvas.getContext('2d');
+            let time = 0;
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            function drawOcean() {
+                ctx.fillStyle = '#000011';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw waves
+                ctx.strokeStyle = 'rgba(0, 50, 100, 0.5)';
+                ctx.lineWidth = 2;
+                
+                for (let y = 50; y < canvas.height; y += 30) {
+                    ctx.beginPath();
+                    for (let x = 0; x <= canvas.width; x += 10) {
+                        const waveY = y + Math.sin((x + time) * 0.01) * 10 + Math.sin((x + time * 1.5) * 0.02) * 5;
+                        if (x === 0) ctx.moveTo(x, waveY);
+                        else ctx.lineTo(x, waveY);
+                    }
+                    ctx.stroke();
+                }
+                
+                // Draw island (ego)
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = 60;
+                
+                // Island glow
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius * 2);
+                gradient.addColorStop(0, 'rgba(212, 175, 55, 0.3)');
+                gradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Island
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#D4AF37';
+                ctx.fill();
+                
+                // Ego label
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 20px Georgia';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('EGO', centerX, centerY);
+                
+                // Unconscious label
+                ctx.fillStyle = 'rgba(100, 150, 200, 0.5)';
+                ctx.font = '16px Georgia';
+                ctx.fillText('The Unconscious Ocean', canvas.width / 2, canvas.height - 30);
+                
+                time += 2;
+                requestAnimationFrame(drawOcean);
+            }
+            
+            drawOcean();
+        });
+        
+        // Visualization 2: Ego-Self Relationship
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('ego-self-svg');
+            const width = 800;
+            const height = 500;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            
+            // Create main group
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            svg.appendChild(g);
+            
+            // Self circle (large, encompassing)
+            const selfCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            selfCircle.setAttribute('cx', width/2);
+            selfCircle.setAttribute('cy', height/2);
+            selfCircle.setAttribute('r', 200);
+            selfCircle.setAttribute('fill', 'none');
+            selfCircle.setAttribute('stroke', '#D4AF37');
+            selfCircle.setAttribute('stroke-width', '2');
+            selfCircle.setAttribute('opacity', '0.5');
+            g.appendChild(selfCircle);
+            
+            // Self glow
+            const selfGlow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            selfGlow.setAttribute('cx', width/2);
+            selfGlow.setAttribute('cy', height/2);
+            selfGlow.setAttribute('r', 200);
+            selfGlow.setAttribute('fill', 'rgba(212, 175, 55, 0.1)');
+            g.appendChild(selfGlow);
+            
+            // Ego circle (small, off-center)
+            const egoCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            egoCircle.setAttribute('cx', width/2 - 50);
+            egoCircle.setAttribute('cy', height/2 - 50);
+            egoCircle.setAttribute('r', 40);
+            egoCircle.setAttribute('fill', '#D4AF37');
+            g.appendChild(egoCircle);
+            
+            // Connection line
+            const connection = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            connection.setAttribute('x1', width/2 - 50);
+            connection.setAttribute('y1', height/2 - 50);
+            connection.setAttribute('x2', width/2);
+            connection.setAttribute('y2', height/2);
+            connection.setAttribute('stroke', '#D4AF37');
+            connection.setAttribute('stroke-width', '1');
+            connection.setAttribute('stroke-dasharray', '5,5');
+            connection.setAttribute('opacity', '0.5');
+            g.appendChild(connection);
+            
+            // Labels
+            const selfText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            selfText.setAttribute('x', width/2);
+            selfText.setAttribute('y', height/2);
+            selfText.setAttribute('text-anchor', 'middle');
+            selfText.setAttribute('fill', '#D4AF37');
+            selfText.setAttribute('font-size', '24');
+            selfText.setAttribute('font-family', 'Georgia');
+            selfText.textContent = 'SELF';
+            g.appendChild(selfText);
+            
+            const egoText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            egoText.setAttribute('x', width/2 - 50);
+            egoText.setAttribute('y', height/2 - 50);
+            egoText.setAttribute('text-anchor', 'middle');
+            egoText.setAttribute('fill', '#000');
+            egoText.setAttribute('font-size', '16');
+            egoText.setAttribute('font-family', 'Georgia');
+            egoText.textContent = 'EGO';
+            g.appendChild(egoText);
+            
+            // Description text
+            const desc1 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            desc1.setAttribute('x', width/2);
+            desc1.setAttribute('y', height - 50);
+            desc1.setAttribute('text-anchor', 'middle');
+            desc1.setAttribute('fill', '#888');
+            desc1.setAttribute('font-size', '14');
+            desc1.textContent = 'The Self encompasses the totality of conscious and unconscious';
+            g.appendChild(desc1);
+            
+            const desc2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            desc2.setAttribute('x', width/2);
+            desc2.setAttribute('y', height - 30);
+            desc2.setAttribute('text-anchor', 'middle');
+            desc2.setAttribute('fill', '#888');
+            desc2.setAttribute('font-size', '14');
+            desc2.textContent = 'The Ego is the center of consciousness within the greater Self';
+            g.appendChild(desc2);
+            
+            // Animate
+            let angle = 0;
+            function animate() {
+                angle += 0.01;
+                const x = width/2 + Math.cos(angle) * 100 - 50;
+                const y = height/2 + Math.sin(angle) * 100 - 50;
+                
+                egoCircle.setAttribute('cx', x);
+                egoCircle.setAttribute('cy', y);
+                egoText.setAttribute('x', x);
+                egoText.setAttribute('y', y);
+                connection.setAttribute('x1', x);
+                connection.setAttribute('y1', y);
+                
+                requestAnimationFrame(animate);
+            }
+            animate();
+        });
+        
+        // Visualization 3: Layers of the Psyche
+        window.initializeVisualization(function() {
+            const container = document.getElementById('psyche-container');
+            container.innerHTML = `
+                <svg viewBox="0 0 800 600" style="width: 100%; height: 100%;">
+                    <defs>
+                        <radialGradient id="psycheGradient">
+                            <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+                            <stop offset="30%" style="stop-color:#B8860B;stop-opacity:0.7" />
+                            <stop offset="60%" style="stop-color:#4B0082;stop-opacity:0.5" />
+                            <stop offset="100%" style="stop-color:#000033;stop-opacity:0.3" />
+                        </radialGradient>
+                    </defs>
+                    
+                    <!-- Collective Unconscious -->
+                    <circle cx="400" cy="300" r="280" fill="#000033" opacity="0.3"/>
+                    <text x="400" y="50" text-anchor="middle" fill="#4169E1" font-size="16" opacity="0.7">Collective Unconscious</text>
+                    
+                    <!-- Personal Unconscious -->
+                    <circle cx="400" cy="300" r="200" fill="#4B0082" opacity="0.3"/>
+                    <text x="400" y="130" text-anchor="middle" fill="#8B7DD8" font-size="16">Personal Unconscious</text>
+                    
+                    <!-- Consciousness -->
+                    <circle cx="400" cy="300" r="120" fill="#B8860B" opacity="0.5"/>
+                    <text x="400" y="210" text-anchor="middle" fill="#D4AF37" font-size="16">Consciousness</text>
+                    
+                    <!-- Ego -->
+                    <circle cx="400" cy="300" r="50" fill="#D4AF37"/>
+                    <text x="400" y="305" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">EGO</text>
+                    
+                    <!-- Archetypes floating in collective unconscious -->
+                    <g opacity="0.6">
+                        <circle cx="200" cy="400" r="30" fill="#FF69B4" opacity="0.5"/>
+                        <text x="200" y="405" text-anchor="middle" fill="#FFF" font-size="12">Shadow</text>
+                        
+                        <circle cx="600" cy="400" r="30" fill="#4169E1" opacity="0.5"/>
+                        <text x="600" y="405" text-anchor="middle" fill="#FFF" font-size="12">Anima</text>
+                        
+                        <circle cx="300" cy="150" r="30" fill="#FFD700" opacity="0.5"/>
+                        <text x="300" y="155" text-anchor="middle" fill="#FFF" font-size="12">Self</text>
+                        
+                        <circle cx="500" cy="150" r="30" fill="#8B4513" opacity="0.5"/>
+                        <text x="500" y="155" text-anchor="middle" fill="#FFF" font-size="12">Wise Old Man</text>
+                    </g>
+                    
+                    <!-- Legend -->
+                    <g transform="translate(50, 450)">
+                        <text x="0" y="0" fill="#888" font-size="14">Layers of the Psyche:</text>
+                        <circle cx="10" cy="20" r="5" fill="#D4AF37"/>
+                        <text x="20" y="25" fill="#888" font-size="12">Ego (Center of Consciousness)</text>
+                        <circle cx="10" cy="40" r="5" fill="#B8860B"/>
+                        <text x="20" y="45" fill="#888" font-size="12">Consciousness</text>
+                        <circle cx="10" cy="60" r="5" fill="#4B0082"/>
+                        <text x="20" y="65" fill="#888" font-size="12">Personal Unconscious</text>
+                        <circle cx="10" cy="80" r="5" fill="#000033"/>
+                        <text x="20" y="85" fill="#888" font-size="12">Collective Unconscious</text>
+                    </g>
+                </svg>
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -41,3 +41,4 @@ PHASES_*_BACKUP_*/
 # Test reports (keep only essential ones)
 performance-audit-report.json
 test-results/
+.vercel

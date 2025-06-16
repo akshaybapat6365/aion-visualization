@@ -135,12 +135,12 @@ class EnvironmentConfig {
       production: {
         threejs: {
           url: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
-          fallback: '/aion-visualization/assets/js/vendor/three.min.js',
+          fallback: '/assets/js/vendor/three.min.js',
           integrity: 'sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=='
         },
         d3: {
           url: 'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js',
-          fallback: '/aion-visualization/assets/js/vendor/d3.min.js',
+          fallback: '/assets/js/vendor/d3.min.js',
           integrity: 'sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ=='
         }
       }

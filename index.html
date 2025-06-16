@@ -3,219 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aion Visualization - Jung's Masterwork</title>
+    <title>Aion - Journey Through Jung's Masterwork</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
+            font-family: Georgia, serif;
             background: #000;
             color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            overflow-x: hidden;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        nav {
-            background: rgba(0,0,0,0.9);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        nav .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffd700;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #ffd700;
-        }
-        
+        /* Hero Section */
         .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 4rem 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1), transparent),
+                        linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            position: relative;
         }
         
         .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 5rem);
-            margin: 0 0 1rem;
-            background: linear-gradient(45deg, #ffd700, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 6rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: #D4AF37;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
         }
         
-        .hero p {
-            font-size: 1.25rem;
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: #888;
             margin-bottom: 2rem;
-            opacity: 0.8;
+            letter-spacing: 0.1em;
         }
         
-        .btn {
+        .hero .description {
+            max-width: 800px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 3rem;
+            padding: 0 2rem;
+        }
+        
+        .cta-button {
             display: inline-block;
-            background: #ffd700;
-            color: #000;
-            padding: 1rem 2rem;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            color: #D4AF37;
+            border: 2px solid #D4AF37;
             text-decoration: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            margin: 0.5rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
         
-        .btn:hover {
-            background: #ffed4e;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: #fff;
-            border: 2px solid #ffd700;
-        }
-        
-        .btn-secondary:hover {
-            background: #ffd700;
+        .cta-button:hover {
+            background: #D4AF37;
             color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
         }
         
+        /* Floating symbols */
+        .symbol {
+            position: absolute;
+            color: #D4AF37;
+            opacity: 0.1;
+            font-size: 3rem;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        .symbol:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .symbol:nth-child(2) { top: 20%; right: 15%; animation-delay: 5s; }
+        .symbol:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 10s; }
+        .symbol:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 15s; }
+        
+        /* Features Section */
         .features {
+            padding: 5rem 2rem;
+            background: #0a0a0a;
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 3rem;
+            color: #D4AF37;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+        
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin: 4rem 0;
         }
         
-        .feature {
-            background: rgba(255,255,255,0.05);
+        .feature-card {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             padding: 2rem;
-            border-radius: 1rem;
-            text-align: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
         
-        .feature h3 {
-            color: #ffd700;
+        .feature-card:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
         
-        .footer {
-            text-align: center;
-            padding: 2rem 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 4rem;
-            opacity: 0.7;
+        .feature-card h3 {
+            color: #D4AF37;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
         
+        .feature-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            background: #000;
+            border-top: 1px solid #333;
+        }
+        
+        footer p {
+            color: #888;
+            margin-bottom: 1rem;
+        }
+        
+        footer a {
+            color: #D4AF37;
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: #fff;
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
+            .hero h1 {
+                font-size: 3rem;
+                letter-spacing: 0.1em;
             }
             
-            .container {
-                padding: 1rem;
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero .description {
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="container">
-            <div class="logo">AION</div>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/aion-visualization/chapters/">Chapters</a></li>
-                <li><a href="/aion-visualization/visualizations.html">Visualizations</a></li>
-                <li><a href="/aion-visualization/viz.html">Demos</a></li>
-            </ul>
+    <!-- Floating Symbols -->
+    <div class="symbol">☉</div>
+    <div class="symbol">☽</div>
+    <div class="symbol">♓</div>
+    <div class="symbol">♒</div>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>AION</h1>
+        <p class="subtitle">Researches into the Phenomenology of the Self</p>
+        <p class="description">
+            Journey through Carl Jung's profound exploration of the Self, where ancient symbols meet 
+            modern psychology. Experience the evolution of human consciousness through interactive 
+            visualizations that illuminate the path from the Age of Pisces to the Age of Aquarius.
+        </p>
+        <a href="/chapters/chapter-1.html" class="cta-button">Begin the Journey</a>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <h2>Explore Jung's Masterwork</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>14 Chapters</h3>
+                    <p>Navigate through Jung's complete work, from the Ego to the Structure and Dynamics of the Self.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>6 Visualizations</h3>
+                    <p>Interactive experiences that bring Jung's concepts to life through modern web technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Symbolic Journey</h3>
+                    <p>Discover how ancient symbols reveal timeless truths about the human psyche.</p>
+                </div>
+            </div>
         </div>
-    </nav>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1>Aion Visualization</h1>
-                <p>An Interactive Journey Through Carl Jung's Masterwork</p>
-                <a href="/aion-visualization/visualizations.html" class="btn">Explore Visualizations</a>
-                <a href="/aion-visualization/viz.html" class="btn btn-secondary">Quick Access</a>
-            </div>
-        </section>
-
-        <section class="features">
-            <div class="feature">
-                <h3>🐟 Fish Symbol Timeline</h3>
-                <p>Explore 2000 years of symbolic evolution from Pisces to Aquarius</p>
-                <a href="/aion-visualization/src/visualizations/chapters/chapter-4-fish/fish-timeline-showcase.html" class="btn">Launch</a>
-            </div>
-            
-            <div class="feature">
-                <h3>🌑 Shadow Integration</h3>
-                <p>Interactive particle physics simulation of shadow work</p>
-                <a href="/aion-visualization/src/visualizations/shadow/shadow-demo.html" class="btn">Launch</a>
-            </div>
-            
-            <div class="feature">
-                <h3>⭐ Anima/Animus Constellation</h3>
-                <p>3D force-directed map of archetypal relationships</p>
-                <a href="/aion-visualization/src/visualizations/constellation/anima-animus-demo.html" class="btn">Launch</a>
-            </div>
-            
-            <div class="feature">
-                <h3>🌌 Gnostic Cosmology</h3>
-                <p>Navigate through the hierarchical realms of Gnostic cosmology</p>
-                <a href="/aion-visualization/src/visualizations/cosmology/gnostic-map-demo.html" class="btn">Launch</a>
-            </div>
-            
-            <div class="feature">
-                <h3>⚗️ Alchemical Lab</h3>
-                <p>Transform elements through interactive alchemical processes</p>
-                <a href="/aion-visualization/src/visualizations/alchemy/alchemy-lab-demo.html" class="btn">Launch</a>
-            </div>
-            
-            <div class="feature">
-                <h3>🕐 Aion Clock</h3>
-                <p>Visualize the 2000-year zodiacal cycle and cosmic ages</p>
-                <a href="/aion-visualization/src/visualizations/clock/aion-clock-demo.html" class="btn">Launch</a>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Aion Visualization. An interactive exploration of Carl Jung's analytical psychology.</p>
-            <p>
-                <a href="/aion-visualization/visualizations.html" style="color: #ffd700;">All Visualizations</a> | 
-                <a href="https://github.com/akshaybapat6365/aion-visualization" style="color: #ffd700;">GitHub</a>
-            </p>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Aion Visualization - An Interactive Exploration of Jung's Psychology</p>
+        <div>
+            <a href="/about.html">About</a>
+            <a href="/chapters/chapter-1.html">Start Reading</a>
+            <a href="https://github.com/akshaybapat6365/aion-visualization" target="_blank">GitHub</a>
         </div>
     </footer>
+    
+    <script src="/components/navigation.js"></script>
 </body>
 </html>

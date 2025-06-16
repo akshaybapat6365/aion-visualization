@@ -11,18 +11,18 @@
     <meta property="og:title" content="Page Not Found - Aion Visualization">
     <meta property="og:description" content="The requested page could not be found. Navigate back to explore Jung's Aion visualization.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://akshaybapat6365.github.io/aion-visualization/404.html">
+    <meta property="og:url" content="https://akshaybapat6365.github.io/404.html">
     
     <!-- CSS Assets -->
-    <link rel="stylesheet" href="/aion-visualization/assets/css/main.css">
-    <link rel="stylesheet" href="/aion-visualization/assets/css/error-handling.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/error-handling.css">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/aion-visualization/assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
     
     <!-- Preload Critical Assets -->
-    <link rel="preload" href="/aion-visualization/assets/css/main.css" as="style">
-    <link rel="preload" href="/aion-visualization/assets/js/core/utilities.js" as="script">
+    <link rel="preload" href="/assets/css/main.css" as="style">
+    <link rel="preload" href="/assets/js/core/utilities.js" as="script">
     
     <style>
         /* 404-specific styles for immediate rendering */
@@ -273,7 +273,7 @@
         <div class="error-content">
             <!-- Breadcrumb Navigation -->
             <nav class="breadcrumb" aria-label="Breadcrumb">
-                <a href="/aion-visualization/">Home</a> > 
+                <a href="/">Home</a> > 
                 <span>404 Error</span>
             </nav>
             
@@ -289,13 +289,13 @@
             
             <!-- Primary Actions -->
             <div class="error-actions">
-                <a href="/aion-visualization/" class="button button-primary">
+                <a href="/" class="button button-primary">
                     🏠 Return Home
                 </a>
                 <button onclick="window.history.back()" class="button button-secondary">
                     ← Go Back
                 </button>
-                <a href="/aion-visualization/chapters/" class="button button-secondary">
+                <a href="/chapters/" class="button button-secondary">
                     📚 Browse Chapters
                 </a>
             </div>
@@ -313,22 +313,22 @@
             
             <!-- Suggested Links -->
             <div class="suggested-links">
-                <a href="/aion-visualization/chapters/enhanced/1/" class="link-card">
+                <a href="/chapters/enhanced/1/" class="link-card">
                     <h3>Chapter 1: The Ego</h3>
                     <p>Begin your journey with the foundational concept of the conscious ego.</p>
                 </a>
                 
-                <a href="/aion-visualization/chapters/" class="link-card">
+                <a href="/chapters/" class="link-card">
                     <h3>All Chapters</h3>
                     <p>Explore the complete collection of Jung's Aion visualizations.</p>
                 </a>
                 
-                <a href="/aion-visualization/timeline/" class="link-card">
+                <a href="/timeline/" class="link-card">
                     <h3>Timeline</h3>
                     <p>Navigate through the chronological development of Jung's ideas.</p>
                 </a>
                 
-                <a href="/aion-visualization/symbols/" class="link-card">
+                <a href="/symbols/" class="link-card">
                     <h3>Symbols</h3>
                     <p>Discover the rich symbolic language of analytical psychology.</p>
                 </a>
@@ -399,15 +399,15 @@
         function performSearch(query) {
             // Simple search suggestions based on common terms
             const suggestions = {
-                'ego': '/aion-visualization/chapters/enhanced/1/',
-                'shadow': '/aion-visualization/chapters/enhanced/2/',
-                'anima': '/aion-visualization/chapters/enhanced/3/',
-                'animus': '/aion-visualization/chapters/enhanced/4/',
-                'self': '/aion-visualization/chapters/enhanced/5/',
-                'chapter': '/aion-visualization/chapters/',
-                'timeline': '/aion-visualization/timeline/',
-                'symbol': '/aion-visualization/symbols/',
-                'about': '/aion-visualization/about/'
+                'ego': '/chapters/enhanced/1/',
+                'shadow': '/chapters/enhanced/2/',
+                'anima': '/chapters/enhanced/3/',
+                'animus': '/chapters/enhanced/4/',
+                'self': '/chapters/enhanced/5/',
+                'chapter': '/chapters/',
+                'timeline': '/timeline/',
+                'symbol': '/symbols/',
+                'about': '/about/'
             };
             
             const lowerQuery = query.toLowerCase();
@@ -462,7 +462,7 @@
         
         function redirectToSearch(query) {
             // Redirect to chapters page with search query
-            window.location.href = `/aion-visualization/chapters/?search=${encodeURIComponent(query)}`;
+            window.location.href = `/chapters/?search=${encodeURIComponent(query)}`;
         }
         
         function suggestCorreections() {
@@ -470,11 +470,11 @@
             
             // Common URL corrections
             const corrections = {
-                '/aion-visualization/chapter1': '/aion-visualization/chapters/enhanced/1/',
-                '/aion-visualization/chapter2': '/aion-visualization/chapters/enhanced/2/',
-                '/aion-visualization/chapter3': '/aion-visualization/chapters/enhanced/3/',
-                '/aion-visualization/chapters/1': '/aion-visualization/chapters/enhanced/1/',
-                '/aion-visualization/chapters/2': '/aion-visualization/chapters/enhanced/2/',
+                '/chapter1': '/chapters/enhanced/1/',
+                '/chapter2': '/chapters/enhanced/2/',
+                '/chapter3': '/chapters/enhanced/3/',
+                '/chapters/1': '/chapters/enhanced/1/',
+                '/chapters/2': '/chapters/enhanced/2/',
             };
             
             // Check for partial matches
@@ -490,7 +490,7 @@
             if (chapterMatch) {
                 const chapterNum = parseInt(chapterMatch[1]);
                 if (chapterNum >= 1 && chapterNum <= 14) {
-                    showUrlCorrection(`/aion-visualization/chapters/enhanced/${chapterNum}/`);
+                    showUrlCorrection(`/chapters/enhanced/${chapterNum}/`);
                 }
             }
         }
@@ -540,13 +540,13 @@
                 // Alt + H for Home
                 if (e.altKey && e.key === 'h') {
                     e.preventDefault();
-                    window.location.href = '/aion-visualization/';
+                    window.location.href = '/';
                 }
                 
                 // Alt + C for Chapters
                 if (e.altKey && e.key === 'c') {
                     e.preventDefault();
-                    window.location.href = '/aion-visualization/chapters/';
+                    window.location.href = '/chapters/';
                 }
                 
                 // Alt + S to focus search
@@ -590,7 +590,7 @@
     </script>
     
     <!-- Load utility scripts for enhanced functionality -->
-    <script src="/aion-visualization/assets/js/core/utilities.js" defer></script>
+    <script src="/assets/js/core/utilities.js" defer></script>
     
     <!-- Schema.org structured data for search engines -->
     <script type="application/ld+json">
@@ -599,11 +599,11 @@
         "@type": "WebPage",
         "name": "Page Not Found - Aion Visualization",
         "description": "404 error page for the Aion Visualization project",
-        "url": "https://akshaybapat6365.github.io/aion-visualization/404.html",
+        "url": "https://akshaybapat6365.github.io/404.html",
         "isPartOf": {
             "@type": "WebSite",
             "name": "Aion Visualization",
-            "url": "https://akshaybapat6365.github.io/aion-visualization/"
+            "url": "https://akshaybapat6365.github.io/"
         }
     }
     </script>

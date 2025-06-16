@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Aion Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.8;
+        }
+        
+        /* Header */
+        .page-header {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid #333;
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #D4AF37;
+            margin-bottom: 1rem;
+        }
+        
+        /* Content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            color: #D4AF37;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .section p {
+            font-size: 1.1rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section ul {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section li {
+            font-size: 1.1rem;
+            color: #ddd;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quote-box {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 4px solid #D4AF37;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+        }
+        
+        .quote-box cite {
+            display: block;
+            margin-top: 1rem;
+            color: #888;
+            font-style: normal;
+            text-align: right;
+        }
+        
+        .credits {
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .credits h3 {
+            color: #D4AF37;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #D4AF37;
+            text-decoration: none;
+            margin-top: 3rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <h1 class="page-title">About Aion Visualization</h1>
+    </header>
+    
+    <!-- Content -->
+    <main class="content">
+        <section class="section">
+            <h2>The Project</h2>
+            <p>
+                Aion Visualization is an interactive exploration of Carl Jung's masterwork "Aion: Researches into the 
+                Phenomenology of the Self." This digital experience transforms Jung's complex psychological concepts into 
+                visual, interactive journeys that make his profound insights accessible to modern audiences.
+            </p>
+            <p>
+                Through six carefully crafted visualizations and comprehensive chapter guides, we invite you to explore 
+                the depths of the human psyche as Jung understood it - from the ego and shadow to the ultimate goal of 
+                individuation and the Self.
+            </p>
+        </section>
+        
+        <div class="quote-box">
+            "The privilege of a lifetime is to become who you truly are."
+            <cite>- C.G. Jung</cite>
+        </div>
+        
+        <section class="section">
+            <h2>Why Aion?</h2>
+            <p>
+                Published in 1951, "Aion" represents Jung's mature reflection on the evolution of human consciousness 
+                through the lens of Christian and Gnostic symbolism. The book traces how the symbol of Christ has 
+                evolved over 2,000 years, paralleling humanity's psychological development.
+            </p>
+            <p>
+                Jung believed we are living in a time of profound transition - moving from the Age of Pisces to the 
+                Age of Aquarius. This shift demands a new understanding of the relationship between conscious and 
+                unconscious, individual and collective, light and shadow.
+            </p>
+        </section>
+        
+        <section class="section">
+            <h2>Interactive Features</h2>
+            <ul>
+                <li><strong>Shadow Integration:</strong> Experience the process of integrating rejected aspects of the self</li>
+                <li><strong>Anima/Animus Constellation:</strong> Explore the relationships between contrasexual archetypes</li>
+                <li><strong>Fish Symbol Timeline:</strong> Journey through 2,500 years of symbolic evolution</li>
+                <li><strong>Gnostic Cosmology:</strong> Navigate the hierarchical realms of ancient wisdom</li>
+                <li><strong>Alchemical Laboratory:</strong> Transform base matter into gold through psychological opus</li>
+                <li><strong>Aion Clock:</strong> Witness the precession of equinoxes and the turning of ages</li>
+            </ul>
+        </section>
+        
+        <div class="credits">
+            <h3>Technical Implementation</h3>
+            <p>
+                Built with modern web technologies including Three.js, Matter.js, D3.js, and GSAP. 
+                The visualizations are designed to work seamlessly across devices, bringing Jung's insights 
+                to life through interactive experiences.
+            </p>
+        </div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </main>
+    
+    <script src="/components/navigation.js"></script>
+</body>
+</html>

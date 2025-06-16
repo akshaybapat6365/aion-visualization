@@ -9,26 +9,38 @@
     "test:morning": "./phase6-morning-testing.sh",
     "test:afternoon": "./phase6-afternoon-testing.sh",
     "test:full": "npm run test:morning && npm run test:afternoon",
+    "test:smoke": "./scripts/run-tests.sh smoke",
+    "test:comprehensive": "./scripts/run-tests.sh comprehensive",
+    "test:checklist": "./scripts/run-tests.sh checklist",
+    "test:all": "./scripts/run-tests.sh all",
+    "test:before-deploy": "./scripts/test-before-deploy.sh",
+    "migrate-paths": "node scripts/migrate-paths.js",
+    "quick-fix": "node scripts/quick-path-fix.js",
     "lint": "eslint 'assets/js/**/*.js' --ignore-pattern '**/*.min.js'",
     "claude:auto": "./claude-auto-manager.sh",
     "claude:review": "claude /review dir=.",
     "claude:fix": "claude /fix",
     "deploy": "echo 'Auto-deployed via GitHub Pages'",
+    "deploy:vercel": "vercel --prod",
     "optimize": "node optimize-bundle.js",
     "audit": "node src/performance-audit.js",
-    "visual-test": "node src/visual-testing.js"
+    "visual-test": "node src/visual-testing.js",
+    "pre-deploy": "npm run test:checklist && npm run optimize"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.52.0",
     "@types/three": "^0.160.0",
+    "axios": "^1.6.7",
     "babel-jest": "^30.0.0-beta.3",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
+    "glob": "^10.4.5",
     "jest": "^29.7.0",
     "jest-html-reporters": "^3.1.7",
     "lighthouse": "^12.6.1",
     "lighthouse-ci": "^1.13.1",
+    "playwright": "^1.42.1",
     "prettier": "^3.2.4",
     "puppeteer": "^24.10.0",
     "tesseract.js": "^5.0.4",
@@ -37,9 +49,9 @@
     "webpack-bundle-analyzer": "^4.10.1"
   },
   "dependencies": {
-    "three": "^0.160.0",
-    "gsap": "^3.12.4",
     "d3": "^7.8.5",
-    "matter-js": "^0.19.0"
+    "gsap": "^3.12.4",
+    "matter-js": "^0.19.0",
+    "three": "^0.160.0"
   }
 }
