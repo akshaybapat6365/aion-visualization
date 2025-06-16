@@ -183,7 +183,7 @@
         <div class="viz-container">
             <h3>Shadow Projection: Seeing Our Darkness in Others</h3>
             <div id="projection-viz" style="width: 100%; height: 500px; position: relative;">
-                <svg id="projection-svg" style="width: 100%; height: 100%;"></svg>
+                <svg id="projection-svg" style="width: 100%; height: 100%;" preserveAspectRatio="xMidYMid meet"></svg>
             </div>
         </div>
         
@@ -205,8 +205,7 @@
             <iframe 
                 src="/src/visualizations/shadow/shadow-demo.html" 
                 style="width: 100%; height: 700px; border: none;"
-                title="Shadow Integration Visualization"
-                sandbox="allow-scripts allow-same-origin">
+                title="Shadow Integration Visualization">
             </iframe>
         </div>
         
@@ -367,8 +366,13 @@
             const ctx = canvas.getContext('2d');
             
             function resizeCanvas() {
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
             }
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
@@ -388,26 +392,28 @@
             aspects.forEach((aspect, i) => {
                 const angle = (i / aspects.length) * Math.PI * 2;
                 const radius = 150;
-                aspect.x = canvas.width / 2 + Math.cos(angle) * radius;
-                aspect.y = canvas.height / 2 + Math.sin(angle) * radius;
+                const rect = canvas.getBoundingClientRect();
+                aspect.x = rect.width / 2 + Math.cos(angle) * radius;
+                aspect.y = rect.height / 2 + Math.sin(angle) * radius;
                 aspect.vx = (Math.random() - 0.5) * 2;
                 aspect.vy = (Math.random() - 0.5) * 2;
             });
             
             function drawAspects() {
+                const rect = canvas.getBoundingClientRect();
                 ctx.fillStyle = '#0a0a0a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, rect.width, rect.height);
                 
                 // Draw center
                 ctx.beginPath();
-                ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, Math.PI * 2);
+                ctx.arc(rect.width / 2, rect.height / 2, 60, 0, Math.PI * 2);
                 ctx.fillStyle = '#D4AF37';
                 ctx.fill();
                 ctx.fillStyle = '#000';
                 ctx.font = 'bold 20px Georgia';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('EGO', canvas.width / 2, canvas.height / 2);
+                ctx.fillText('EGO', rect.width / 2, rect.height / 2);
                 
                 // Draw shadow aspects
                 aspects.forEach(aspect => {
@@ -416,16 +422,16 @@
                     aspect.y += aspect.vy;
                     
                     // Bounce off edges
-                    if (aspect.x < aspect.size || aspect.x > canvas.width - aspect.size) {
+                    if (aspect.x < aspect.size || aspect.x > rect.width - aspect.size) {
                         aspect.vx *= -1;
                     }
-                    if (aspect.y < aspect.size || aspect.y > canvas.height - aspect.size) {
+                    if (aspect.y < aspect.size || aspect.y > rect.height - aspect.size) {
                         aspect.vy *= -1;
                     }
                     
                     // Keep away from center
-                    const dx = aspect.x - canvas.width / 2;
-                    const dy = aspect.y - canvas.height / 2;
+                    const dx = aspect.x - rect.width / 2;
+                    const dy = aspect.y - rect.height / 2;
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < 100) {
                         aspect.vx += (dx / dist) * 0.5;
@@ -452,7 +458,7 @@
                 ctx.fillStyle = '#888';
                 ctx.font = '16px Georgia';
                 ctx.textAlign = 'center';
-                ctx.fillText('Shadow aspects orbit the conscious ego, seeking integration', canvas.width / 2, canvas.height - 30);
+                ctx.fillText('Shadow aspects orbit the conscious ego, seeking integration', rect.width / 2, rect.height - 30);
                 
                 requestAnimationFrame(drawAspects);
             }
