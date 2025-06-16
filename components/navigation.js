@@ -241,13 +241,10 @@ function navigateToChapter(chapterNumber) {
 // Initialize navigation when DOM is ready
 // Don't show navigation if page is in an iframe
 if (window.self === window.top) {
-    // Only create sidebar navigation on the homepage
-    const isHomepage = window.location.pathname === '/' || window.location.pathname === '/index.html';
-    if (isHomepage) {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createNavigation);
-        } else {
-            createNavigation();
-        }
+    // Show sidebar navigation on all pages
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createNavigation);
+    } else {
+        createNavigation();
     }
 }
