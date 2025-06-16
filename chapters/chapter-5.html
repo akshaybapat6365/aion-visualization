@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 5 - Christ, A Symbol of the Self - Aion</title>
+    <link rel="stylesheet" href="/styles/full-width.css">
     <style>
         * {
             margin: 0;
@@ -51,9 +52,30 @@
         
         /* Chapter Content */
         .chapter-content {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 4rem;
+        }
+        
+        /* Visualization Container */
+        .viz-container {
+            margin: 3rem 0;
+            padding: 0;
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .viz-container h3 {
+            background: rgba(212, 175, 55, 0.1);
+            color: #D4AF37;
+            padding: 1rem;
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 300;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
         
         .section {
@@ -91,9 +113,9 @@
         
         /* Chapter Navigation */
         .chapter-nav {
-            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 3rem 4rem;
             display: flex;
             justify-content: space-between;
             border-top: 1px solid #333;
@@ -166,6 +188,38 @@
             <p>Jung explores how the Christ symbol serves as a powerful organizing principle in the Western psyche, providing a model for the integration of opposites and the transformation of consciousness.</p>
             <p>The chapter examines the psychological implications of Christ's dual nature, his role as mediator between God and humanity, and the significance of his sacrificial death and resurrection as patterns of psychological transformation.</p>
         </section>
+        
+        <!-- Visualization 1: The God-Man Mandala -->
+        <div class="viz-container">
+            <h3>The God-Man Mandala: Union of Divine and Human</h3>
+            <div id="godman-mandala" style="width: 100%; height: 600px; position: relative;">
+                <svg id="mandala-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
+        
+        <!-- Visualization 2: Death and Resurrection Cycle -->
+        <div class="viz-container">
+            <h3>The Transformation Cycle: Death and Rebirth</h3>
+            <div id="transformation-cycle" style="width: 100%; height: 500px; position: relative;">
+                <canvas id="cycle-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+        
+        <!-- Visualization 3: Light and Shadow Integration -->
+        <div class="viz-container">
+            <h3>Christ as Light: The Question of Shadow</h3>
+            <div id="light-shadow-viz" style="width: 100%; height: 500px; position: relative;">
+                <svg id="light-shadow-svg" style="width: 100%; height: 100%;"></svg>
+            </div>
+        </div>
+        
+        <!-- Visualization 4: Historical Evolution -->
+        <div class="viz-container">
+            <h3>Evolution of the Christ Symbol Through History</h3>
+            <div id="historical-evolution" style="width: 100%; height: 600px; position: relative;">
+                <div id="timeline-container" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
     </main>
     
     <!-- Chapter Navigation -->
@@ -179,5 +233,431 @@
     </nav>
     
     <script src="/components/navigation.js"></script>
+    <script src="/js/ensure-viz-load.js"></script>
+    
+    <!-- Visualization Scripts -->
+    <script>
+        // Visualization 1: The God-Man Mandala
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('mandala-svg');
+            const width = 800;
+            const height = 600;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // Create gradients
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            
+            // Divine gradient
+            const divineGrad = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+            divineGrad.setAttribute('id', 'divineGradient');
+            divineGrad.innerHTML = `
+                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#FFA500;stop-opacity:0.8" />
+                <stop offset="100%" style="stop-color:#FF6347;stop-opacity:0.3" />
+            `;
+            defs.appendChild(divineGrad);
+            
+            // Human gradient
+            const humanGrad = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+            humanGrad.setAttribute('id', 'humanGradient');
+            humanGrad.innerHTML = `
+                <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#654321;stop-opacity:0.3" />
+            `;
+            defs.appendChild(humanGrad);
+            
+            svg.appendChild(defs);
+            
+            // Outer circle (cosmos)
+            const cosmos = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            cosmos.setAttribute('cx', width/2);
+            cosmos.setAttribute('cy', height/2);
+            cosmos.setAttribute('r', 250);
+            cosmos.setAttribute('fill', 'none');
+            cosmos.setAttribute('stroke', '#333');
+            cosmos.setAttribute('stroke-width', '2');
+            svg.appendChild(cosmos);
+            
+            // Cross structure
+            const cross = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            cross.innerHTML = `
+                <line x1="${width/2}" y1="100" x2="${width/2}" y2="500" stroke="#D4AF37" stroke-width="3"/>
+                <line x1="200" y1="${height/2}" x2="600" y2="${height/2}" stroke="#D4AF37" stroke-width="3"/>
+            `;
+            svg.appendChild(cross);
+            
+            // Four evangelists symbols at cardinal points
+            const symbols = [
+                { x: width/2, y: 100, symbol: 'EAGLE', desc: 'John - Spirit' },
+                { x: 600, y: height/2, symbol: 'LION', desc: 'Mark - Courage' },
+                { x: width/2, y: 500, symbol: 'OX', desc: 'Luke - Sacrifice' },
+                { x: 200, y: height/2, symbol: 'MAN', desc: 'Matthew - Humanity' }
+            ];
+            
+            symbols.forEach(sym => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.innerHTML = `
+                    <circle cx="${sym.x}" cy="${sym.y}" r="40" fill="rgba(212, 175, 55, 0.2)" stroke="#D4AF37"/>
+                    <text x="${sym.x}" y="${sym.y - 5}" text-anchor="middle" fill="#D4AF37" font-size="12" font-weight="bold">${sym.symbol}</text>
+                    <text x="${sym.x}" y="${sym.y + 10}" text-anchor="middle" fill="#888" font-size="10">${sym.desc}</text>
+                `;
+                svg.appendChild(g);
+            });
+            
+            // Divine nature (upper circle)
+            const divineCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            divineCircle.setAttribute('cx', width/2);
+            divineCircle.setAttribute('cy', height/2 - 70);
+            divineCircle.setAttribute('r', 100);
+            divineCircle.setAttribute('fill', 'url(#divineGradient)');
+            divineCircle.setAttribute('opacity', '0.6');
+            svg.appendChild(divineCircle);
+            
+            // Human nature (lower circle)
+            const humanCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            humanCircle.setAttribute('cx', width/2);
+            humanCircle.setAttribute('cy', height/2 + 70);
+            humanCircle.setAttribute('r', 100);
+            humanCircle.setAttribute('fill', 'url(#humanGradient)');
+            humanCircle.setAttribute('opacity', '0.6');
+            svg.appendChild(humanCircle);
+            
+            // Central intersection (Christ consciousness)
+            const center = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            center.innerHTML = `
+                <circle cx="${width/2}" cy="${height/2}" r="50" fill="#fff" opacity="0.9"/>
+                <text x="${width/2}" y="${height/2 + 5}" text-anchor="middle" fill="#000" font-size="16" font-weight="bold">SELF</text>
+            `;
+            svg.appendChild(center);
+            
+            // Rotating halo
+            const halo = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            halo.setAttribute('transform-origin', `${width/2} ${height/2}`);
+            for (let i = 0; i < 12; i++) {
+                const ray = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                const angle = (i * 30) * Math.PI / 180;
+                const x1 = width/2 + Math.cos(angle) * 60;
+                const y1 = height/2 + Math.sin(angle) * 60;
+                const x2 = width/2 + Math.cos(angle) * 80;
+                const y2 = height/2 + Math.sin(angle) * 80;
+                ray.setAttribute('x1', x1);
+                ray.setAttribute('y1', y1);
+                ray.setAttribute('x2', x2);
+                ray.setAttribute('y2', y2);
+                ray.setAttribute('stroke', '#FFD700');
+                ray.setAttribute('stroke-width', '2');
+                ray.setAttribute('opacity', '0.6');
+                halo.appendChild(ray);
+            }
+            svg.appendChild(halo);
+            
+            // Title
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width/2);
+            title.setAttribute('y', 40);
+            title.setAttribute('text-anchor', 'middle');
+            title.setAttribute('fill', '#D4AF37');
+            title.setAttribute('font-size', '18');
+            title.textContent = 'The Quaternary of Christ: Divine-Human Unity';
+            svg.appendChild(title);
+            
+            // Animation
+            let rotation = 0;
+            function animateMandala() {
+                rotation += 0.5;
+                halo.setAttribute('transform', `rotate(${rotation} ${width/2} ${height/2})`);
+                requestAnimationFrame(animateMandala);
+            }
+            animateMandala();
+        });
+        
+        // Visualization 2: Death and Resurrection Cycle
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('cycle-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            const stages = [
+                { name: 'Life', color: '#90EE90', angle: 0 },
+                { name: 'Crucifixion', color: '#DC143C', angle: Math.PI/2 },
+                { name: 'Death/Descent', color: '#4B0082', angle: Math.PI },
+                { name: 'Resurrection', color: '#FFD700', angle: 3*Math.PI/2 }
+            ];
+            
+            let time = 0;
+            
+            function draw() {
+                const width = canvas.getBoundingClientRect().width;
+                const height = canvas.getBoundingClientRect().height;
+                
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                ctx.fillRect(0, 0, width, height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.35;
+                
+                // Draw cycle path
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw stages
+                stages.forEach((stage, i) => {
+                    const x = centerX + Math.cos(stage.angle) * radius;
+                    const y = centerY + Math.sin(stage.angle) * radius;
+                    
+                    // Stage circle
+                    ctx.beginPath();
+                    ctx.arc(x, y, 30, 0, Math.PI * 2);
+                    ctx.fillStyle = stage.color;
+                    ctx.globalAlpha = 0.7;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    ctx.strokeStyle = '#D4AF37';
+                    ctx.stroke();
+                    
+                    // Stage label
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '14px Georgia';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(stage.name, x, y + 50);
+                });
+                
+                // Animated point
+                const currentAngle = time * 0.02;
+                const pointX = centerX + Math.cos(currentAngle) * radius;
+                const pointY = centerY + Math.sin(currentAngle) * radius;
+                
+                // Glow effect
+                const gradient = ctx.createRadialGradient(pointX, pointY, 0, pointX, pointY, 30);
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.beginPath();
+                ctx.arc(pointX, pointY, 30, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // Core point
+                ctx.beginPath();
+                ctx.arc(pointX, pointY, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                
+                // Center cross
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX - 20, centerY);
+                ctx.lineTo(centerX + 20, centerY);
+                ctx.moveTo(centerX, centerY - 20);
+                ctx.lineTo(centerX, centerY + 20);
+                ctx.stroke();
+                
+                // Title
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = '16px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText('The Eternal Cycle of Transformation', centerX, 30);
+                
+                // Cycle description
+                ctx.fillStyle = '#888';
+                ctx.font = '12px Georgia';
+                ctx.fillText('Follow the light through death to rebirth - the pattern of individuation', centerX, height - 20);
+                
+                time++;
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+        
+        // Visualization 3: Light and Shadow Integration
+        window.initializeVisualization(function() {
+            const svg = document.getElementById('light-shadow-svg');
+            const width = 800;
+            const height = 500;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            
+            // Create gradients
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            
+            // Light gradient
+            const lightGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            lightGrad.setAttribute('id', 'lightGradient');
+            lightGrad.setAttribute('x1', '0%');
+            lightGrad.setAttribute('y1', '0%');
+            lightGrad.setAttribute('x2', '100%');
+            lightGrad.setAttribute('y2', '0%');
+            lightGrad.innerHTML = `
+                <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#FFD700;stop-opacity:1" />
+            `;
+            defs.appendChild(lightGrad);
+            
+            // Shadow gradient
+            const shadowGrad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+            shadowGrad.setAttribute('id', 'shadowGradient');
+            shadowGrad.setAttribute('x1', '0%');
+            shadowGrad.setAttribute('y1', '0%');
+            shadowGrad.setAttribute('x2', '100%');
+            shadowGrad.setAttribute('y2', '0%');
+            shadowGrad.innerHTML = `
+                <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#4B0082;stop-opacity:1" />
+            `;
+            defs.appendChild(shadowGrad);
+            
+            svg.appendChild(defs);
+            
+            // Background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('width', width);
+            bg.setAttribute('height', height);
+            bg.setAttribute('fill', '#0a0a0a');
+            svg.appendChild(bg);
+            
+            // Christ figure (light side)
+            const christGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            christGroup.innerHTML = `
+                <rect x="100" y="100" width="300" height="300" fill="url(#lightGradient)" opacity="0.8" rx="20"/>
+                <text x="250" y="250" text-anchor="middle" fill="#000" font-size="24" font-weight="bold">CHRIST</text>
+                <text x="250" y="280" text-anchor="middle" fill="#333" font-size="14">Light of the World</text>
+                <text x="250" y="300" text-anchor="middle" fill="#333" font-size="12">Conscious • Perfection • Good</text>
+            `;
+            svg.appendChild(christGroup);
+            
+            // Shadow side (implied but not integrated)
+            const shadowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            shadowGroup.innerHTML = `
+                <rect x="400" y="100" width="300" height="300" fill="url(#shadowGradient)" opacity="0.8" rx="20"/>
+                <text x="550" y="250" text-anchor="middle" fill="#fff" font-size="24" font-weight="bold">?</text>
+                <text x="550" y="280" text-anchor="middle" fill="#aaa" font-size="14">The Missing Shadow</text>
+                <text x="550" y="300" text-anchor="middle" fill="#aaa" font-size="12">Unconscious • Imperfection • Evil</text>
+            `;
+            svg.appendChild(shadowGroup);
+            
+            // Question mark in the middle
+            const question = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            question.setAttribute('x', width/2);
+            question.setAttribute('y', height/2);
+            question.setAttribute('text-anchor', 'middle');
+            question.setAttribute('fill', '#D4AF37');
+            question.setAttribute('font-size', '48');
+            question.setAttribute('opacity', '0.5');
+            question.textContent = '⟷';
+            svg.appendChild(question);
+            
+            // Title and description
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            title.setAttribute('x', width/2);
+            title.setAttribute('y', 50);
+            title.setAttribute('text-anchor', 'middle');
+            title.setAttribute('fill', '#D4AF37');
+            title.setAttribute('font-size', '20');
+            title.textContent = 'The Problem of Evil in the Christ Symbol';
+            svg.appendChild(title);
+            
+            const desc = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            desc.setAttribute('x', width/2);
+            desc.setAttribute('y', height - 30);
+            desc.setAttribute('text-anchor', 'middle');
+            desc.setAttribute('fill', '#888');
+            desc.setAttribute('font-size', '14');
+            desc.textContent = 'Christ as pure light raises the question: Where is the shadow for wholeness?';
+            svg.appendChild(desc);
+            
+            // Pulsing animation for question mark
+            let pulse = 0;
+            function animateQuestion() {
+                pulse += 0.05;
+                const scale = 1 + Math.sin(pulse) * 0.1;
+                question.setAttribute('transform', `scale(${scale} ${scale}) translate(${width/2 * (1-scale)}, ${height/2 * (1-scale)})`);
+                requestAnimationFrame(animateQuestion);
+            }
+            animateQuestion();
+        });
+        
+        // Visualization 4: Historical Evolution
+        window.initializeVisualization(function() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = `
+                <svg viewBox="0 0 900 600" style="width: 100%; height: 100%;">
+                    <!-- Timeline base -->
+                    <line x1="100" y1="500" x2="800" y2="500" stroke="#D4AF37" stroke-width="3"/>
+                    
+                    <!-- Era 1: Early Christianity -->
+                    <g transform="translate(150, 400)">
+                        <circle r="60" fill="rgba(139, 69, 19, 0.7)" stroke="#D4AF37" stroke-width="2"/>
+                        <text y="5" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">ICHTHYS</text>
+                        <text y="-80" text-anchor="middle" fill="#D4AF37" font-size="12">0-500 CE</text>
+                        <text y="-95" text-anchor="middle" fill="#888" font-size="10">Early Christianity</text>
+                        <path d="M -30 20 Q 0 10, 30 20 Q 0 30, -30 20" fill="none" stroke="#fff" stroke-width="2"/>
+                    </g>
+                    
+                    <!-- Era 2: Medieval -->
+                    <g transform="translate(350, 400)">
+                        <circle r="60" fill="rgba(212, 175, 55, 0.3)" stroke="#D4AF37" stroke-width="2"/>
+                        <text y="5" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">REX</text>
+                        <text y="-80" text-anchor="middle" fill="#D4AF37" font-size="12">500-1500 CE</text>
+                        <text y="-95" text-anchor="middle" fill="#888" font-size="10">Christ as King</text>
+                        <path d="M 0 -30 L -20 0 L -10 0 L -10 20 L 10 20 L 10 0 L 20 0 Z" fill="#FFD700" stroke="#D4AF37"/>
+                    </g>
+                    
+                    <!-- Era 3: Renaissance/Reformation -->
+                    <g transform="translate(550, 400)">
+                        <circle r="60" fill="rgba(255, 69, 0, 0.3)" stroke="#D4AF37" stroke-width="2"/>
+                        <text y="5" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">HOMO</text>
+                        <text y="-80" text-anchor="middle" fill="#D4AF37" font-size="12">1500-1900 CE</text>
+                        <text y="-95" text-anchor="middle" fill="#888" font-size="10">Human Christ</text>
+                        <circle r="20" fill="none" stroke="#fff" stroke-width="2"/>
+                        <circle cy="-10" r="8" fill="#fff"/>
+                        <line y1="-2" y2="15" stroke="#fff" stroke-width="2"/>
+                        <line x1="-15" y1="5" x2="15" y2="5" stroke="#fff" stroke-width="2"/>
+                    </g>
+                    
+                    <!-- Era 4: Modern/Psychological -->
+                    <g transform="translate(750, 400)">
+                        <circle r="60" fill="rgba(147, 112, 219, 0.3)" stroke="#D4AF37" stroke-width="2"/>
+                        <text y="5" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">SELF</text>
+                        <text y="-80" text-anchor="middle" fill="#D4AF37" font-size="12">1900+ CE</text>
+                        <text y="-95" text-anchor="middle" fill="#888" font-size="10">Psychological Christ</text>
+                        <circle r="25" fill="none" stroke="#fff" stroke-width="2"/>
+                        <circle r="15" fill="none" stroke="#fff" stroke-width="1"/>
+                        <circle r="5" fill="#fff"/>
+                    </g>
+                    
+                    <!-- Connecting arcs -->
+                    <path d="M 210 400 Q 280 300, 350 400" fill="none" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                    <path d="M 410 400 Q 480 300, 550 400" fill="none" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                    <path d="M 610 400 Q 680 300, 750 400" fill="none" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                    
+                    <!-- Title -->
+                    <text x="450" y="50" text-anchor="middle" fill="#D4AF37" font-size="22">Evolution of the Christ Symbol</text>
+                    <text x="450" y="80" text-anchor="middle" fill="#888" font-size="14">From Fish to Self: 2000 Years of Transformation</text>
+                    
+                    <!-- Descriptions -->
+                    <text x="150" y="550" text-anchor="middle" fill="#888" font-size="11">Secret Symbol</text>
+                    <text x="350" y="550" text-anchor="middle" fill="#888" font-size="11">Divine Authority</text>
+                    <text x="550" y="550" text-anchor="middle" fill="#888" font-size="11">Human Jesus</text>
+                    <text x="750" y="550" text-anchor="middle" fill="#888" font-size="11">Archetype</text>
+                </svg>
+            `;
+        });
+    </script>
 </body>
 </html>
