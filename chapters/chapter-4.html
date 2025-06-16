@@ -6,6 +6,27 @@
     <title>Chapter 4 - The Self - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
     <style>
+        /* Override full-width.css conflicts */
+        body {
+            margin-left: 0 !important;
+        }
+        
+        /* Ensure main content wrapper exists */
+        .main-content {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+            padding: 0;
+        }
+        
+        .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
         * {
             margin: 0;
             padding: 0;
@@ -261,7 +282,7 @@
             <h3>The Fish: Symbol of the Self Through Time</h3>
             <p>Explore how the fish symbol has represented the Self across different ages</p>
             <iframe 
-                src="/src/visualizations/chapters/chapter-4-fish/fish-timeline-showcase.html" 
+                src="/src/visualizations/chapters/chapter-4-fish/fish-timeline-showcase" 
                 style="width: 100%; height: 700px; border: none; border-radius: 8px;"
                 title="Fish Symbol Timeline"
                 sandbox="allow-scripts allow-same-origin">

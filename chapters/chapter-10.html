@@ -6,6 +6,27 @@
     <title>Chapter 10 - The Fish in Alchemy - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
     <style>
+        /* Override full-width.css conflicts */
+        body {
+            margin-left: 0 !important;
+        }
+        
+        /* Ensure main content wrapper exists */
+        .main-content {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+            padding: 0;
+        }
+        
+        .main-content.full-width {
+            margin-left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
         * {
             margin: 0;
             padding: 0;
@@ -263,7 +284,7 @@
             <h3>The Alchemical Laboratory</h3>
             <p>Explore an interactive alchemical workspace where psychological transformation occurs</p>
             <iframe 
-                src="/src/visualizations/alchemy/alchemy-lab-demo.html" 
+                src="/src/visualizations/alchemy/alchemy-lab-demo" 
                 style="width: 100%; height: 700px; border: none; border-radius: 8px;"
                 title="Alchemical Laboratory"
                 sandbox="allow-scripts allow-same-origin">
