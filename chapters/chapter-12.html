@@ -549,7 +549,7 @@
         // Create timeline SVG
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '400');
+        svg.setAttribute('height', '500');
         svg.style.display = 'block';
         container.appendChild(svg);
         
@@ -594,16 +594,38 @@
                                event.tradition === 'christian' ? '#fff' : '#888');
             svg.appendChild(circle);
             
-            // Event text
+            // Event text with rotation for better spacing
+            const textGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            textGroup.setAttribute('transform', `translate(${x}, ${y + (event.tradition === 'christian' ? -15 : 25)})`);
+            
+            // Rotate text for every other event to prevent overlap
+            if (index % 2 === 1) {
+                textGroup.setAttribute('transform', `translate(${x}, ${y + (event.tradition === 'christian' ? -15 : 25)}) rotate(-45)`);
+            }
+            
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', x);
-            text.setAttribute('y', y + (event.tradition === 'christian' ? -15 : 25));
-            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('text-anchor', index % 2 === 1 ? 'end' : 'middle');
             text.setAttribute('fill', '#ccc');
-            text.setAttribute('font-size', '12');
+            text.setAttribute('font-size', '10');
             text.setAttribute('font-family', 'Georgia');
-            text.textContent = `${event.year} - ${event.text}`;
-            svg.appendChild(text);
+            
+            // Split year and text into separate lines
+            const yearSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            yearSpan.setAttribute('x', '0');
+            yearSpan.setAttribute('dy', '0');
+            yearSpan.setAttribute('font-weight', 'bold');
+            yearSpan.textContent = event.year;
+            text.appendChild(yearSpan);
+            
+            const textSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            textSpan.setAttribute('x', '0');
+            textSpan.setAttribute('dy', '15');
+            textSpan.setAttribute('font-size', '9');
+            textSpan.textContent = event.text;
+            text.appendChild(textSpan);
+            
+            textGroup.appendChild(text);
+            svg.appendChild(textGroup);
         });
         
         // Labels

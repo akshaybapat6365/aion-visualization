@@ -282,12 +282,198 @@
         <div class="viz-section">
             <h3>The Fish: Symbol of the Self Through Time</h3>
             <p>Explore how the fish symbol has represented the Self across different ages</p>
-            <iframe 
-                src="/src/visualizations/chapters/chapter-4-fish/fish-timeline-showcase.html" 
-                style="width: 100%; height: 700px; border: none; border-radius: 8px;"
-                title="Fish Symbol Timeline"
-                sandbox="allow-scripts allow-same-origin">
-            </iframe>
+            
+            <!-- Embedded Fish Timeline Visualization -->
+            <div id="fishTimelineContainer" style="width: 100%; height: 700px; position: relative; background: #000; border-radius: 8px; overflow: hidden;">
+                <!-- Intro Screen -->
+                <div class="fish-intro-screen" id="fishIntro" style="min-height: 700px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; background: radial-gradient(circle at center, #0a0a0a, #000);">
+                    <h1 style="font-size: 2.5rem; color: #D4AF37; margin-bottom: 1rem; animation: fadeIn 2s ease;">The Fish Symbol Through Time</h1>
+                    <p style="font-size: 1.2rem; color: #888; margin-bottom: 2rem; animation: fadeIn 2s ease 0.5s both;">Understanding Jung's Aion Through the Evolution of a Symbol</p>
+                    <p style="max-width: 600px; font-size: 1rem; color: #ccc; margin-bottom: 2rem; animation: fadeIn 2s ease 1s both;">
+                        In "Aion," Carl Jung traces how the fish symbol transformed from an ancient fertility symbol 
+                        to the Christian Ichthys, and how this relates to the astrological ages.
+                    </p>
+                    <button class="fish-start-button" onclick="startFishJourney()" style="padding: 0.75rem 2rem; font-size: 1rem; background: transparent; border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; transition: all 0.3s ease; animation: fadeIn 2s ease 1.5s both;">Begin the Journey</button>
+                </div>
+                
+                <!-- Main Timeline -->
+                <div class="fish-timeline-container" id="fishTimeline" style="display: none; min-height: 700px; position: relative; background: #000;">
+                    <!-- Timeline Track -->
+                    <div style="position: absolute; top: 50px; left: 0; right: 0; height: 60px; background: linear-gradient(to right, #111 0%, #222 50%, #111 100%); z-index: 10;">
+                        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 4px; background: #333; transform: translateY(-50%);"></div>
+                        <div id="fishProgress" style="position: absolute; top: 50%; left: 0; height: 4px; background: #D4AF37; transform: translateY(-50%); width: 0%; transition: width 2s ease;"></div>
+                    </div>
+                    
+                    <!-- Era Display -->
+                    <div id="fishEraDisplay" style="position: absolute; top: 130px; left: 0; right: 0; bottom: 80px; overflow: hidden;">
+                        <!-- Era content will be dynamically inserted here -->
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 1rem; z-index: 100;">
+                        <button class="fish-nav-button" id="fishPrevBtn" onclick="previousFishEra()" style="padding: 0.5rem 1.5rem; background: rgba(0, 0, 0, 0.8); border: 1px solid #D4AF37; color: #D4AF37; cursor: pointer; transition: all 0.3s ease;">← Previous</button>
+                        <button class="fish-nav-button" onclick="showFishIntro()" style="padding: 0.5rem 1.5rem; background: rgba(0, 0, 0, 0.8); border: 1px solid #D4AF37; color: #D4AF37; cursor: pointer; transition: all 0.3s ease;">Introduction</button>
+                        <button class="fish-nav-button" id="fishNextBtn" onclick="nextFishEra()" style="padding: 0.5rem 1.5rem; background: rgba(0, 0, 0, 0.8); border: 1px solid #D4AF37; color: #D4AF37; cursor: pointer; transition: all 0.3s ease;">Next →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <style>
+                .fish-start-button:hover, .fish-nav-button:hover {
+                    background: #D4AF37 !important;
+                    color: #000 !important;
+                }
+                
+                .fish-nav-button:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                
+                .fish-era-section {
+                    padding: 2rem;
+                    opacity: 0;
+                    transform: translateY(30px);
+                    transition: all 1s ease;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                }
+                
+                .fish-era-section.active {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                
+                .fish-symbol {
+                    font-size: 80px;
+                    animation: swim 4s ease-in-out infinite;
+                    filter: drop-shadow(0 0 20px currentColor);
+                }
+                
+                @keyframes swim {
+                    0%, 100% { transform: translateX(0) rotateY(0); }
+                    50% { transform: translateX(20px) rotateY(180deg); }
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                @media (max-width: 768px) {
+                    .fish-era-content { 
+                        grid-template-columns: 1fr !important; 
+                        gap: 2rem !important;
+                    }
+                    .fish-symbol { font-size: 60px; }
+                }
+            </style>
+            
+            <script>
+                let currentFishEra = 0;
+                const totalFishEras = 5;
+                
+                const fishEraData = [
+                    {
+                        title: 'The Ancient Fish',
+                        years: '500 BCE - 0 CE',
+                        text: 'Before Christianity, the fish was already a powerful symbol. In ancient cultures, it represented fertility, the feminine principle, and the unconscious depths.',
+                        symbol: '🐟',
+                        color: '#4169E1',
+                        bg: 'linear-gradient(180deg, #000 0%, #001133 100%)'
+                    },
+                    {
+                        title: 'The Ichthys',
+                        years: '0 - 313 CE',
+                        text: 'Early Christians adopted the fish as their secret symbol. The Greek word for fish, ΙΧΘΥΣ (Ichthys), became an acronym: "Jesus Christ, Son of God, Savior."',
+                        symbol: '✝️🐠',
+                        color: '#FFD700',
+                        bg: 'linear-gradient(180deg, #000 0%, #332200 100%)'
+                    },
+                    {
+                        title: 'The Dual Fish',
+                        years: '313 - 1500 CE',
+                        text: 'As Christianity established itself, the fish symbol evolved. The two fish of Pisces came to represent Christ and Antichrist, good and evil, the conscious and unconscious.',
+                        symbol: '♓',
+                        color: '#8B4513',
+                        bg: 'linear-gradient(180deg, #000 0%, #1a0f0a 100%)'
+                    },
+                    {
+                        title: 'The Fading Fish',
+                        years: '1500 - 2000 CE',
+                        text: 'As we approach the end of the Age of Pisces, the fish symbol\'s power wanes. The rise of science and rationalism represents a shift in collective consciousness.',
+                        symbol: '🐠',
+                        color: '#00CED1',
+                        bg: 'linear-gradient(180deg, #000 0%, #003333 100%)',
+                        opacity: 0.6
+                    },
+                    {
+                        title: 'The Water Bearer',
+                        years: '2000 - 4000 CE',
+                        text: 'We stand at the threshold of the Age of Aquarius. The Water Bearer pours out the waters of consciousness, symbolizing a new level of human awareness.',
+                        symbol: '♒',
+                        color: '#9370DB',
+                        bg: 'linear-gradient(180deg, #000 0%, #330066 100%)'
+                    }
+                ];
+                
+                function startFishJourney() {
+                    document.getElementById('fishIntro').style.display = 'none';
+                    document.getElementById('fishTimeline').style.display = 'block';
+                    goToFishEra(1);
+                }
+                
+                function showFishIntro() {
+                    document.getElementById('fishTimeline').style.display = 'none';
+                    document.getElementById('fishIntro').style.display = 'flex';
+                    currentFishEra = 0;
+                }
+                
+                function goToFishEra(num) {
+                    currentFishEra = num;
+                    const era = fishEraData[num - 1];
+                    const display = document.getElementById('fishEraDisplay');
+                    
+                    // Update background
+                    display.style.background = era.bg;
+                    
+                    // Create era content
+                    display.innerHTML = `
+                        <div class="fish-era-section active" style="max-width: 1000px; margin: 0 auto;">
+                            <div class="fish-era-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; width: 100%;">
+                                <div>
+                                    <h2 style="font-size: 2rem; color: #D4AF37; margin-bottom: 0.5rem;">${era.title}</h2>
+                                    <p style="font-size: 1rem; color: #888; margin-bottom: 1.5rem;">${era.years}</p>
+                                    <p style="font-size: 1rem; color: #ccc; line-height: 1.6;">${era.text}</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div class="fish-symbol" style="color: ${era.color}; opacity: ${era.opacity || 1};">${era.symbol}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Update progress bar
+                    const progress = (num / totalFishEras) * 100;
+                    document.getElementById('fishProgress').style.width = progress + '%';
+                    
+                    // Update navigation buttons
+                    document.getElementById('fishPrevBtn').disabled = num === 1;
+                    document.getElementById('fishNextBtn').disabled = num === totalFishEras;
+                }
+                
+                function nextFishEra() {
+                    if (currentFishEra < totalFishEras) {
+                        goToFishEra(currentFishEra + 1);
+                    }
+                }
+                
+                function previousFishEra() {
+                    if (currentFishEra > 1) {
+                        goToFishEra(currentFishEra - 1);
+                    }
+                }
+            </script>
         </div>
 
         <section class="section">

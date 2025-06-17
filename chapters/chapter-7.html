@@ -392,16 +392,19 @@
                 ctx.fillText('"Les Propheties"', centerX, 40);
                 
                 // Mystical text around the ball
-                ctx.font = '12px Georgia';
+                ctx.font = '16px Georgia';
                 ctx.fillStyle = 'rgba(212, 175, 55, 0.6)';
                 const prophecyText = 'NOVUS ORDO SECLORUM';
+                const textRadius = radius + 70; // Increased radius for better spacing
                 for (let i = 0; i < prophecyText.length; i++) {
                     const angle = (i / prophecyText.length) * Math.PI * 2 - Math.PI / 2 + time * 0.0005;
-                    const x = centerX + Math.cos(angle) * (radius + 30);
-                    const y = centerY + Math.sin(angle) * (radius + 30);
+                    const x = centerX + Math.cos(angle) * textRadius;
+                    const y = centerY + Math.sin(angle) * textRadius;
                     ctx.save();
                     ctx.translate(x, y);
                     ctx.rotate(angle + Math.PI / 2);
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
                     ctx.fillText(prophecyText[i], 0, 0);
                     ctx.restore();
                 }
@@ -449,13 +452,21 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
                         <div>
                             <h4 style="color: #888; margin-bottom: 0.5rem; font-size: 14px;">Original French</h4>
-                            <div style="font-style: italic; color: #ccc; line-height: 1.6; white-space: pre-line;">${q.original}</div>
+                            <div style="font-style: italic; color: #ccc; line-height: 1.8; white-space: pre-line; font-size: 14px;">${q.original}</div>
                         </div>
                         <div>
                             <h4 style="color: #888; margin-bottom: 0.5rem; font-size: 14px;">English Translation</h4>
-                            <div style="color: #ccc; line-height: 1.6; white-space: pre-line;">${q.translation}</div>
+                            <div style="color: #ccc; line-height: 1.8; white-space: pre-line; font-size: 14px;">${q.translation}</div>
                         </div>
                     </div>
+                    
+                    <style>
+                        @media (max-width: 768px) {
+                            #decoder-content > div > div:first-of-type {
+                                grid-template-columns: 1fr !important;
+                            }
+                        }
+                    </style>
                     
                     <div style="background: rgba(212, 175, 55, 0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #D4AF37;">
                         <h4 style="color: #D4AF37; margin-bottom: 0.5rem;">Jungian Interpretation</h4>

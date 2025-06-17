@@ -30,7 +30,8 @@ function createNavigation() {
                 width: 250px;
                 height: 100vh;
                 background: rgba(0, 0, 0, 0.95);
-                border-right: 1px solid #333;
+                border-right: 1px solid rgba(212, 175, 55, 0.1);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
                 overflow-y: auto;
                 z-index: 1000;
                 transform: translateX(0);
@@ -65,7 +66,7 @@ function createNavigation() {
             
             .nav-header {
                 padding: 2rem 1.5rem;
-                border-bottom: 1px solid #333;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.1);
                 transition: background 0.3s ease;
             }
             
@@ -132,7 +133,7 @@ function createNavigation() {
             
             .nav-footer {
                 padding: 1.5rem;
-                border-top: 1px solid #333;
+                border-top: 1px solid rgba(212, 175, 55, 0.1);
                 margin-top: 2rem;
             }
             
