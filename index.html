@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aion - Journey Through Jung's Masterwork</title>
-    <meta name="description" content="Interactive exploration of Carl Jung's Aion">
-    <meta name="build-time" content="2025-06-17T00:00:00Z">
-    <link rel="stylesheet" href="/assets/css/ui-consistency.css">
+    <title>AION - Carl Jung's Masterwork</title>
+    <meta name="description" content="Interactive exploration of Carl Jung's Aion - Researches into the Phenomenology of the Self">
+    <meta name="version" content="2.0-clean">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         * {
             margin: 0;
@@ -19,134 +21,172 @@
             background: #000;
             color: #fff;
             overflow-x: hidden;
-        }
-        
-        /* Hero Section */
-        .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+        }
+        
+        .container {
             text-align: center;
-            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1), transparent),
-                        linear-gradient(180deg, #000 0%, #0a0a0a 100%);
-            position: relative;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
         }
         
-        .hero h1 {
-            font-size: 6rem;
+        h1 {
+            font-size: 5rem;
             font-weight: 300;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.4em;
             color: #D4AF37;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            animation: glow 3s ease-in-out infinite alternate;
         }
         
-        .hero .subtitle {
-            font-size: 1.5rem;
-            color: #888;
-            margin-bottom: 2rem;
-            letter-spacing: 0.1em;
+        @keyframes glow {
+            from { text-shadow: 0 0 40px rgba(212, 175, 55, 0.4); }
+            to { text-shadow: 0 0 60px rgba(212, 175, 55, 0.6); }
         }
         
-        .hero .description {
-            max-width: 800px;
-            font-size: 1.2rem;
+        .subtitle {
+            font-size: 1.4rem;
+            color: #999;
+            margin-bottom: 3rem;
+            letter-spacing: 0.15em;
+            font-style: italic;
+        }
+        
+        .description {
+            font-size: 1.15rem;
             line-height: 1.8;
             color: #ccc;
             margin-bottom: 3rem;
-            padding: 0 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        .cta-button {
+        .cta {
             display: inline-block;
-            padding: 1rem 3rem;
+            padding: 1.2rem 3.5rem;
             font-size: 1.1rem;
             color: #D4AF37;
             border: 2px solid #D4AF37;
             text-decoration: none;
-            transition: all 0.3s ease;
-            letter-spacing: 0.1em;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
         }
         
-        .cta-button:hover {
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
             background: #D4AF37;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+        
+        .cta:hover {
             color: #000;
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        .cta:hover::before {
+            left: 0;
         }
         
         /* Floating symbols */
+        .symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
         .symbol {
             position: absolute;
             color: #D4AF37;
-            opacity: 0.1;
-            font-size: 3rem;
-            animation: float 20s infinite ease-in-out;
+            opacity: 0.08;
+            font-size: 3.5rem;
+            animation: float 25s infinite ease-in-out;
         }
         
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+                opacity: 0;
+            }
+            10% { opacity: 0.08; }
+            50% { 
+                transform: translateY(-40px) rotate(180deg) scale(1.1); 
+                opacity: 0.08;
+            }
+            90% { opacity: 0.08; }
         }
         
-        .symbol:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .symbol:nth-child(2) { top: 20%; right: 15%; animation-delay: 5s; }
-        .symbol:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 10s; }
-        .symbol:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 15s; }
+        .symbol:nth-child(1) { top: 15%; left: 12%; animation-delay: 0s; }
+        .symbol:nth-child(2) { top: 25%; right: 18%; animation-delay: 6s; }
+        .symbol:nth-child(3) { bottom: 25%; left: 22%; animation-delay: 12s; }
+        .symbol:nth-child(4) { bottom: 35%; right: 12%; animation-delay: 18s; }
         
-        /* Footer */
-        footer {
-            padding: 3rem 2rem;
+        /* Simple footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
             text-align: center;
-            background: #000;
-            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
         
-        footer p {
-            color: #888;
-            margin-bottom: 1rem;
+        .footer-links {
+            margin-top: 1rem;
         }
         
-        footer a {
+        .footer-links a {
             color: #D4AF37;
             text-decoration: none;
-            margin: 0 1rem;
-            transition: color 0.3s ease;
+            margin: 0 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
         }
         
-        footer a:hover {
-            color: #fff;
+        .footer-links a:hover {
+            opacity: 1;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 3rem;
-                letter-spacing: 0.1em;
-            }
-            
-            .hero .subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .hero .description {
-                font-size: 1rem;
-            }
+            h1 { font-size: 3rem; letter-spacing: 0.2em; }
+            .subtitle { font-size: 1.1rem; }
+            .description { font-size: 1rem; }
+            .cta { padding: 1rem 2.5rem; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Floating Symbols -->
-    <div class="symbol">☉</div>
-    <div class="symbol">☽</div>
-    <div class="symbol">♓</div>
-    <div class="symbol">♒</div>
+    <!-- Floating Symbols Background -->
+    <div class="symbols">
+        <div class="symbol">☉</div>
+        <div class="symbol">☽</div>
+        <div class="symbol">♓</div>
+        <div class="symbol">♒</div>
+    </div>
     
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Main Content -->
+    <div class="container">
         <h1>AION</h1>
         <p class="subtitle">Researches into the Phenomenology of the Self</p>
         <p class="description">
@@ -154,18 +194,17 @@
             modern psychology. Experience the evolution of human consciousness through interactive 
             visualizations that illuminate the path from the Age of Pisces to the Age of Aquarius.
         </p>
-        <a href="/chapters/chapter-1.html" class="cta-button">Begin the Journey</a>
-    </section>
+        <a href="/chapters/chapter-1.html" class="cta">Begin the Journey</a>
+    </div>
     
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Aion Visualization - An Interactive Exploration of Jung's Psychology</p>
-        <div>
+    <div class="footer">
+        <div class="footer-links">
             <a href="/about.html">About</a>
             <a href="/chapters/chapter-1.html">Start Reading</a>
             <a href="https://github.com/akshaybapat6365/aion-visualization" target="_blank">GitHub</a>
         </div>
-    </footer>
+    </div>
     
     <script src="/components/navigation.js"></script>
 </body>
