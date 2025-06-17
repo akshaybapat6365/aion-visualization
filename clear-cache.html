@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - AION</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, sans-serif;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { color: #D4AF37; }
+        .button {
+            background: #D4AF37;
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0.5rem;
+        }
+        .button:hover {
+            background: #ffed4e;
+        }
+        .info {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clear Browser Cache</h1>
+    
+    <div class="info">
+        <p>If you're still seeing the old homepage content, your browser may have cached it. Here are several ways to force a refresh:</p>
+    </div>
+    
+    <h2>Method 1: Force Refresh</h2>
+    <p>Use these keyboard shortcuts while on the homepage:</p>
+    <ul>
+        <li><strong>Windows/Linux:</strong> <code>Ctrl + Shift + R</code> or <code>Ctrl + F5</code></li>
+        <li><strong>Mac:</strong> <code>Cmd + Shift + R</code></li>
+    </ul>
+    
+    <h2>Method 2: Clear Cache via JavaScript</h2>
+    <button class="button" onclick="clearCacheAndReload()">Clear Cache & Reload Homepage</button>
+    
+    <h2>Method 3: Open in Private/Incognito Mode</h2>
+    <p>Open a new private/incognito window and visit: <code>https://aion-jung.vercel.app</code></p>
+    
+    <h2>Method 4: Add Cache Buster</h2>
+    <a href="/?v=<?php echo time(); ?>" class="button">Open Homepage (No Cache)</a>
+    
+    <script>
+        function clearCacheAndReload() {
+            // Clear service worker cache if present
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Clear caches
+            if ('caches' in window) {
+                caches.keys().then(function(cacheNames) {
+                    return Promise.all(
+                        cacheNames.map(function(cacheName) {
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }).then(function() {
+                    // Force reload with timestamp
+                    window.location.href = '/?nocache=' + Date.now();
+                });
+            } else {
+                // Fallback: just reload with timestamp
+                window.location.href = '/?nocache=' + Date.now();
+            }
+        }
+    </script>
+</body>
+</html>
