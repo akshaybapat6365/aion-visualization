@@ -61,18 +61,16 @@
             50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
         
-        /* Container to center content accounting for sidebar */
+        /* Container to center content */
         .content-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 250px; /* Start after sidebar */
+            right: 0;
+            bottom: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-left: 250px; /* Account for sidebar width */
-            box-sizing: border-box;
             z-index: 2;
         }
         
@@ -80,13 +78,12 @@
             text-align: center;
             padding: 2rem;
             max-width: 900px;
-            position: relative;
             animation: fadeIn 1s ease-out;
         }
         
         @media (max-width: 768px) {
             .content-wrapper {
-                padding-left: 0;
+                left: 0;
             }
         }
         
@@ -243,8 +240,10 @@
     <script>
         // Add subtle mouse parallax effect
         document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
+            const wrapper = document.querySelector('.content-wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
             
             document.querySelector('.main-content').style.transform = 
                 `translate(${x * 10}px, ${y * 10}px)`;
