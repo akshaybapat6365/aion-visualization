@@ -8,85 +8,205 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3); }
+            50% { text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.5); }
+        }
+        
         body {
             background: #000;
             color: #fff;
             font-family: Georgia, serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Radial gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Subtle animated background */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
         
         .main-content {
             text-align: center;
             padding: 2rem;
-            max-width: 800px;
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
         }
         
         .title {
-            font-size: 6rem;
-            letter-spacing: 0.3em;
-            color: #D4AF37;
-            margin: 0 0 1rem 0;
+            font-size: 7rem;
+            letter-spacing: 0.5em;
+            color: transparent;
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            margin: 0 0 0.5rem 0;
             font-weight: normal;
+            animation: glow 3s ease-in-out infinite;
+            text-transform: uppercase;
         }
         
         .subtitle {
-            font-size: 1.5rem;
-            color: #999;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
             font-weight: normal;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            animation: fadeIn 1s ease-out 0.3s both;
         }
         
         .description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #ccc;
-            margin-bottom: 3rem;
-            max-width: 700px;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 3.5rem;
+            max-width: 750px;
             margin-left: auto;
             margin-right: auto;
+            animation: fadeIn 1s ease-out 0.6s both;
         }
         
         .journey-btn {
             display: inline-block;
             background: transparent;
             color: #D4AF37;
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             text-decoration: none;
             border: 2px solid #D4AF37;
             font-size: 1rem;
-            letter-spacing: 0.1em;
-            transition: all 0.3s;
+            letter-spacing: 0.2em;
+            transition: all 0.4s ease;
             text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out 0.9s both;
+        }
+        
+        .journey-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #D4AF37;
+            transition: left 0.4s ease;
+            z-index: -1;
         }
         
         .journey-btn:hover {
-            background: #D4AF37;
             color: #000;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .journey-btn:hover::before {
+            left: 0;
+        }
+        
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .particle::before {
+            content: '✦';
+            color: #D4AF37;
+            font-size: 1rem;
+            position: absolute;
+            animation: float-particle 15s infinite;
+        }
+        
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
         }
         
         @media (max-width: 768px) {
             .title {
                 font-size: 4rem;
-                letter-spacing: 0.2em;
+                letter-spacing: 0.3em;
             }
             
             .subtitle {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             
             .description {
                 font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .journey-btn {
+                padding: 1rem 2rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Floating particles -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 9s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 12s;"></div>
+    
     <div class="main-content">
         <h1 class="title">AION</h1>
         <h2 class="subtitle">Researches into the Phenomenology of the Self</h2>
@@ -100,5 +220,54 @@
     </div>
     
     <script src="/components/navigation.js"></script>
+    
+    <script>
+        // Add subtle mouse parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            document.querySelector('.main-content').style.transform = 
+                `translate(${x * 10}px, ${y * 10}px)`;
+        });
+        
+        // Add sparkle effect on button hover
+        document.querySelector('.journey-btn').addEventListener('mouseenter', function() {
+            const rect = this.getBoundingClientRect();
+            const sparkle = document.createElement('div');
+            sparkle.style.cssText = `
+                position: fixed;
+                left: ${rect.left + rect.width / 2}px;
+                top: ${rect.top + rect.height / 2}px;
+                width: 4px;
+                height: 4px;
+                background: #D4AF37;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 1000;
+                box-shadow: 0 0 10px #D4AF37;
+                animation: sparkle 0.6s ease-out forwards;
+            `;
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => sparkle.remove(), 600);
+        });
+        
+        // CSS for sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkle {
+                0% {
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
