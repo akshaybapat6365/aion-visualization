@@ -27,6 +27,9 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         /* Radial gradient background */
@@ -61,30 +64,13 @@
             50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
         
-        /* Container to center content */
-        .content-wrapper {
-            position: fixed;
-            top: 0;
-            left: 250px; /* Start after sidebar */
-            right: 0;
-            bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-        }
-        
         .main-content {
             text-align: center;
             padding: 2rem;
             max-width: 900px;
+            position: relative;
+            z-index: 2;
             animation: fadeIn 1s ease-out;
-        }
-        
-        @media (max-width: 768px) {
-            .content-wrapper {
-                left: 0;
-            }
         }
         
         .title {
@@ -221,18 +207,16 @@
     <div class="particle" style="left: 70%; animation-delay: 9s;"></div>
     <div class="particle" style="left: 90%; animation-delay: 12s;"></div>
     
-    <div class="content-wrapper">
-        <div class="main-content">
-            <h1 class="title">AION</h1>
-            <h2 class="subtitle">Researches into the Phenomenology of the Self</h2>
-            <p class="description">
-                Journey through Carl Jung's profound exploration of the Self, where ancient symbols 
-                meet modern psychology. Experience the evolution of human consciousness through 
-                interactive visualizations that illuminate the path from the Age of Pisces to the Age of 
-                Aquarius.
-            </p>
-            <a href="/chapters/chapter-1.html" class="journey-btn">Begin the Journey</a>
-        </div>
+    <div class="main-content">
+        <h1 class="title">AION</h1>
+        <h2 class="subtitle">Researches into the Phenomenology of the Self</h2>
+        <p class="description">
+            Journey through Carl Jung's profound exploration of the Self, where ancient symbols 
+            meet modern psychology. Experience the evolution of human consciousness through 
+            interactive visualizations that illuminate the path from the Age of Pisces to the Age of 
+            Aquarius.
+        </p>
+        <a href="/chapters/chapter-1.html" class="journey-btn">Begin the Journey</a>
     </div>
     
     <script src="/components/navigation.js"></script>
@@ -240,10 +224,8 @@
     <script>
         // Add subtle mouse parallax effect
         document.addEventListener('mousemove', (e) => {
-            const wrapper = document.querySelector('.content-wrapper');
-            const rect = wrapper.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
             
             document.querySelector('.main-content').style.transform = 
                 `translate(${x * 10}px, ${y * 10}px)`;
