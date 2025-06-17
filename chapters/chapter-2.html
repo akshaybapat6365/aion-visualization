@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 2 - The Shadow - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
+    <link rel="stylesheet" href="/assets/css/ui-consistency.css">
     <style>
         /* Override full-width.css conflicts */
         body {
@@ -223,11 +224,12 @@
         <!-- Visualization 2: Interactive Shadow Work -->
         <div class="viz-container">
             <h3>Interactive Shadow Integration</h3>
-            <iframe 
-                src="/src/visualizations/shadow/shadow-demo.html" 
-                style="width: 100%; height: 700px; border: none;"
-                title="Shadow Integration Visualization">
-            </iframe>
+            <div id="shadow-integration-viz" style="width: 100%; height: 600px; background: #0a0a0a; border-radius: 8px; position: relative; overflow: hidden;">
+                <canvas id="shadowCanvas" style="width: 100%; height: 100%;"></canvas>
+                <div id="shadow-info" style="position: absolute; top: 20px; left: 20px; color: #D4AF37; font-size: 16px;">
+                    <p>Click to reveal shadow aspects</p>
+                </div>
+            </div>
         </div>
         
         <section class="section">
@@ -275,6 +277,206 @@
     
     <!-- Visualization Scripts -->
     <script>
+        // Visualization 2: Interactive Shadow Integration
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('shadowCanvas');
+            const ctx = canvas.getContext('2d');
+            const info = document.getElementById('shadow-info');
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Shadow aspects that emerge when clicked
+            const shadowAspects = [
+                { name: 'Anger', color: '#8B0000', revealed: false },
+                { name: 'Fear', color: '#4B0082', revealed: false },
+                { name: 'Shame', color: '#2F4F4F', revealed: false },
+                { name: 'Desire', color: '#B22222', revealed: false },
+                { name: 'Power', color: '#FFD700', revealed: false },
+                { name: 'Vulnerability', color: '#4682B4', revealed: false },
+                { name: 'Greed', color: '#228B22', revealed: false },
+                { name: 'Jealousy', color: '#32CD32', revealed: false }
+            ];
+            
+            // Position aspects in a circle
+            shadowAspects.forEach((aspect, i) => {
+                const angle = (Math.PI * 2 / shadowAspects.length) * i;
+                const radius = Math.min(canvas.width, canvas.height) * 0.3;
+                aspect.x = canvas.width / 2 + Math.cos(angle) * radius;
+                aspect.y = canvas.height / 2 + Math.sin(angle) * radius;
+                aspect.targetAlpha = 0;
+                aspect.currentAlpha = 0;
+                aspect.particles = [];
+            });
+            
+            let mouseX = canvas.width / 2;
+            let mouseY = canvas.height / 2;
+            let clickEffect = { active: false, x: 0, y: 0, radius: 0 };
+            
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+            
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                clickEffect.x = e.clientX - rect.left;
+                clickEffect.y = e.clientY - rect.top;
+                clickEffect.radius = 0;
+                clickEffect.active = true;
+                
+                // Check if click is near any shadow aspect
+                shadowAspects.forEach(aspect => {
+                    const dist = Math.hypot(aspect.x - clickEffect.x, aspect.y - clickEffect.y);
+                    if (dist < 50 && !aspect.revealed) {
+                        aspect.revealed = true;
+                        aspect.targetAlpha = 1;
+                        updateInfo();
+                        
+                        // Create particles
+                        for (let i = 0; i < 20; i++) {
+                            aspect.particles.push({
+                                x: aspect.x,
+                                y: aspect.y,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: (Math.random() - 0.5) * 4,
+                                life: 1
+                            });
+                        }
+                    }
+                });
+            });
+            
+            function updateInfo() {
+                const revealed = shadowAspects.filter(a => a.revealed).length;
+                if (revealed === 0) {
+                    info.innerHTML = '<p>Click to reveal shadow aspects</p>';
+                } else if (revealed < shadowAspects.length) {
+                    info.innerHTML = `<p>Shadow Aspects Revealed: ${revealed}/${shadowAspects.length}</p><p style="font-size: 14px; color: #888;">Continue exploring...</p>`;
+                } else {
+                    info.innerHTML = '<p>All shadow aspects revealed!</p><p style="font-size: 14px; color: #888;">Integration begins with recognition</p>';
+                }
+            }
+            
+            function draw() {
+                // Fade effect
+                ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw center (conscious ego)
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+                ctx.fillStyle = '#D4AF37';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 16px Georgia';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('EGO', centerX, centerY);
+                
+                // Draw connection lines to shadow aspects
+                shadowAspects.forEach(aspect => {
+                    if (aspect.currentAlpha > 0.1) {
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(aspect.x, aspect.y);
+                        ctx.strokeStyle = `rgba(136, 136, 136, ${aspect.currentAlpha * 0.3})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                });
+                
+                // Draw shadow aspects
+                shadowAspects.forEach(aspect => {
+                    // Update alpha
+                    aspect.currentAlpha += (aspect.targetAlpha - aspect.currentAlpha) * 0.05;
+                    
+                    if (aspect.currentAlpha > 0.01) {
+                        // Shadow circle
+                        ctx.beginPath();
+                        ctx.arc(aspect.x, aspect.y, 40, 0, Math.PI * 2);
+                        ctx.fillStyle = aspect.color;
+                        ctx.globalAlpha = aspect.currentAlpha * 0.8;
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                        
+                        // Border
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${aspect.currentAlpha})`;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        
+                        // Text
+                        ctx.fillStyle = `rgba(255, 255, 255, ${aspect.currentAlpha})`;
+                        ctx.font = '14px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(aspect.name, aspect.x, aspect.y);
+                    }
+                    
+                    // Update and draw particles
+                    aspect.particles = aspect.particles.filter(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.life -= 0.02;
+                        
+                        if (p.life > 0) {
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(212, 175, 55, ${p.life})`;
+                            ctx.fill();
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+                
+                // Draw click effect
+                if (clickEffect.active) {
+                    ctx.beginPath();
+                    ctx.arc(clickEffect.x, clickEffect.y, clickEffect.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(212, 175, 55, ${1 - clickEffect.radius / 100})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    clickEffect.radius += 3;
+                    if (clickEffect.radius > 100) {
+                        clickEffect.active = false;
+                    }
+                }
+                
+                // Draw mouse follower
+                const dx = mouseX - centerX;
+                const dy = mouseY - centerY;
+                const dist = Math.hypot(dx, dy);
+                if (dist > 70) {
+                    const angle = Math.atan2(dy, dx);
+                    const x = centerX + Math.cos(angle) * 70;
+                    const y = centerY + Math.sin(angle) * 70;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.fill();
+                }
+                
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+        
         // Visualization 1: Shadow Projection
         window.initializeVisualization(function() {
             const svg = document.getElementById('projection-svg');

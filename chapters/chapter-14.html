@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 14 - The Structure and Dynamics of the Self - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
+    <link rel="stylesheet" href="/assets/css/ui-consistency.css">
     <style>
         /* Override full-width.css conflicts */
         body {
@@ -245,12 +246,18 @@
         <div class="viz-section">
             <h3>The Aion: Eternal Cycles of Time</h3>
             <p>Experience the Self as the archetype of time and transformation</p>
-            <iframe 
-                src="/src/visualizations/clock/aion-clock-demo.html" 
-                style="width: 100%; height: 700px; border: none; border-radius: 8px;"
-                title="Aion Clock"
-                sandbox="allow-scripts allow-same-origin">
-            </iframe>
+            <div id="aion-clock-container" style="background: #0a0a0a; border-radius: 8px; padding: 2rem;">
+                <svg id="aion-clock" width="800" height="800" style="width: 100%; height: auto; max-width: 800px; margin: 0 auto; display: block;"></svg>
+                
+                <div class="clock-controls" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <button id="playPause" style="background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 0.5rem 1rem; cursor: pointer; transition: all 0.3s;">Play</button>
+                    <button id="reset" style="background: transparent; border: 1px solid #D4AF37; color: #D4AF37; padding: 0.5rem 1rem; cursor: pointer; transition: all 0.3s;">Reset</button>
+                    <label style="color: #888;">Speed:</label>
+                    <input type="range" id="speed" min="1" max="100" value="10" style="width: 100px;">
+                    <label style="color: #888;">Year:</label>
+                    <input type="number" id="yearInput" value="2025" style="background: #0a0a0a; border: 1px solid #333; color: #D4AF37; padding: 0.5rem; width: 80px;">
+                </div>
+            </div>
         </div>
 
         <section class="section">
@@ -461,7 +468,202 @@
         
             drawSpiral();
         });
+        
+        // Aion Clock Implementation
+        window.initializeVisualization(function() {
+            const svg = d3.select('#aion-clock');
+            const width = 800;
+            const height = 800;
+            const innerRadius = 200;
+            const outerRadius = 350;
+            let currentYear = new Date().getFullYear();
+            let targetYear = currentYear;
+            let isPlaying = false;
+            let speed = 10;
+            
+            // Zodiac data
+            const zodiacSigns = [
+                { name: 'Aries', symbol: '♈', startDegree: 0 },
+                { name: 'Taurus', symbol: '♉', startDegree: 30 },
+                { name: 'Gemini', symbol: '♊', startDegree: 60 },
+                { name: 'Cancer', symbol: '♋', startDegree: 90 },
+                { name: 'Leo', symbol: '♌', startDegree: 120 },
+                { name: 'Virgo', symbol: '♍', startDegree: 150 },
+                { name: 'Libra', symbol: '♎', startDegree: 180 },
+                { name: 'Scorpio', symbol: '♏', startDegree: 210 },
+                { name: 'Sagittarius', symbol: '♐', startDegree: 240 },
+                { name: 'Capricorn', symbol: '♑', startDegree: 270 },
+                { name: 'Aquarius', symbol: '♒', startDegree: 300 },
+                { name: 'Pisces', symbol: '♓', startDegree: 330 }
+            ];
+            
+            // Create main group
+            const g = svg.append('g')
+                .attr('transform', `translate(${width/2}, ${height/2})`);
+            
+            // Create rings
+            g.append('circle')
+                .attr('r', outerRadius)
+                .attr('fill', 'none')
+                .attr('stroke', '#D4AF37')
+                .attr('stroke-width', 2);
+            
+            g.append('circle')
+                .attr('r', innerRadius)
+                .attr('fill', 'none')
+                .attr('stroke', '#333')
+                .attr('stroke-width', 1);
+            
+            // Create zodiac arcs
+            const arcGenerator = d3.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius)
+                .padAngle(0.01);
+            
+            const arcs = g.selectAll('.zodiac-arc')
+                .data(zodiacSigns)
+                .enter()
+                .append('g')
+                .attr('class', 'zodiac-group');
+            
+            arcs.append('path')
+                .attr('class', 'zodiac-arc')
+                .attr('d', (d, i) => {
+                    return arcGenerator({
+                        startAngle: (d.startDegree - 90) * Math.PI / 180,
+                        endAngle: (d.startDegree + 30 - 90) * Math.PI / 180
+                    });
+                })
+                .attr('fill', 'none')
+                .attr('stroke', '#222')
+                .attr('stroke-width', 1)
+                .on('mouseover', function() {
+                    d3.select(this).attr('stroke', '#D4AF37').attr('stroke-width', 2);
+                })
+                .on('mouseout', function() {
+                    d3.select(this).attr('stroke', '#222').attr('stroke-width', 1);
+                });
+            
+            // Add symbols
+            arcs.append('text')
+                .attr('class', 'zodiac-symbol')
+                .attr('transform', d => {
+                    const angle = (d.startDegree + 15 - 90) * Math.PI / 180;
+                    const r = (innerRadius + outerRadius) / 2;
+                    return `translate(${Math.cos(angle) * r}, ${Math.sin(angle) * r})`;
+                })
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#D4AF37')
+                .attr('font-size', '20px')
+                .text(d => d.symbol);
+            
+            // Add labels
+            arcs.append('text')
+                .attr('class', 'zodiac-label')
+                .attr('transform', d => {
+                    const angle = (d.startDegree + 15 - 90) * Math.PI / 180;
+                    const r = outerRadius + 20;
+                    return `translate(${Math.cos(angle) * r}, ${Math.sin(angle) * r})`;
+                })
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .attr('font-size', '14px')
+                .text(d => d.name);
+            
+            // Time marker
+            const timeMarker = g.append('line')
+                .attr('class', 'time-marker')
+                .attr('x1', 0)
+                .attr('y1', 0)
+                .attr('x2', 0)
+                .attr('y2', -outerRadius)
+                .attr('stroke', '#D4AF37')
+                .attr('stroke-width', 3)
+                .attr('stroke-linecap', 'round');
+            
+            // Center display
+            g.append('circle')
+                .attr('r', 80)
+                .attr('fill', 'rgba(0, 0, 0, 0.8)')
+                .attr('stroke', '#333');
+            
+            const yearText = g.append('text')
+                .attr('class', 'center-text')
+                .attr('y', -10)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#D4AF37')
+                .attr('font-size', '24px')
+                .text(currentYear);
+            
+            const ageText = g.append('text')
+                .attr('class', 'year-text')
+                .attr('y', 20)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#888')
+                .attr('font-size', '18px')
+                .text(getCurrentAge());
+            
+            function yearToAngle(year) {
+                const yearsInCycle = 25920;
+                const yearsSinceZero = year + 2150;
+                const progress = (yearsSinceZero % yearsInCycle) / yearsInCycle;
+                return (progress * 360);
+            }
+            
+            function getCurrentAge() {
+                const yearsPerAge = 2160;
+                const yearsSinceZero = currentYear + 2150;
+                const ageIndex = Math.floor((yearsSinceZero % 25920) / yearsPerAge);
+                const ages = ['Pisces', 'Aquarius', 'Capricorn', 'Sagittarius', 'Scorpio', 'Libra', 
+                             'Virgo', 'Leo', 'Cancer', 'Gemini', 'Taurus', 'Aries'];
+                return `Age of ${ages[ageIndex]}`;
+            }
+            
+            // Controls
+            d3.select('#playPause').on('click', function() {
+                isPlaying = !isPlaying;
+                d3.select(this).text(isPlaying ? 'Pause' : 'Play');
+            });
+            
+            d3.select('#reset').on('click', function() {
+                currentYear = new Date().getFullYear();
+                targetYear = currentYear;
+                d3.select('#yearInput').property('value', currentYear);
+            });
+            
+            d3.select('#speed').on('input', function() {
+                speed = +this.value;
+            });
+            
+            d3.select('#yearInput').on('change', function() {
+                targetYear = +this.value;
+            });
+            
+            // Animation loop
+            function animate() {
+                if (isPlaying) {
+                    targetYear += speed / 10;
+                }
+                
+                const diff = targetYear - currentYear;
+                currentYear += diff * 0.1;
+                
+                yearText.text(Math.round(currentYear));
+                ageText.text(getCurrentAge());
+                d3.select('#yearInput').property('value', Math.round(currentYear));
+                
+                const angle = yearToAngle(currentYear);
+                timeMarker.attr('transform', `rotate(${angle})`);
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
     </script>
+    
+    <!-- D3.js for Aion Clock -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     
     <!-- Chapter Navigation -->
     <nav class="chapter-nav">

@@ -66,6 +66,11 @@ function createNavigation() {
             .nav-header {
                 padding: 2rem 1.5rem;
                 border-bottom: 1px solid #333;
+                transition: background 0.3s ease;
+            }
+            
+            .nav-header:hover {
+                background: rgba(212, 175, 55, 0.05);
             }
             
             .nav-header h2 {
@@ -179,7 +184,7 @@ function createNavigation() {
         
         <button class="nav-toggle" onclick="toggleNav()">☰ Menu</button>
         
-        <div class="nav-header">
+        <div class="nav-header" onclick="window.location.href='/'" style="cursor: pointer;">
             <h2>AION</h2>
             <p>Carl Jung's Masterwork</p>
         </div>
@@ -189,7 +194,7 @@ function createNavigation() {
                 <div class="chapter-item" onclick="navigateToChapter(${chapter.number})">
                     <span class="chapter-number">${chapter.number}.</span>
                     <span class="chapter-title">${chapter.title}</span>
-                    ${chapter.visualization ? '<span class="viz-indicator">★</span>' : ''}
+                    ${chapter.visualization ? '<span class="viz-indicator">•</span>' : ''}
                 </div>
             `).join('')}
         </div>

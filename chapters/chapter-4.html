@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 4 - The Self - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
+    <link rel="stylesheet" href="/assets/css/ui-consistency.css">
     <style>
         /* Override full-width.css conflicts */
         body {
@@ -342,64 +343,6 @@
             <p>The Self acts as both the goal of this process and the force that guides it, creating a paradox that can only be resolved through direct experience rather than rational understanding.</p>
         </section>
     </main>
-
-    <script>
-        // Mandala Animation
-        window.initializeVisualization(function() {
-        const canvas = document.getElementById('mandalaCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        
-        let time = 0;
-        
-        function drawMandala() {
-            ctx.fillStyle = '#0a0a0a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
-            
-            // Draw multiple rotating circles
-            for (let i = 0; i < 8; i++) {
-                const angle = (Math.PI * 2 / 8) * i + time * 0.001;
-                const radius = maxRadius * 0.6;
-                const x = centerX + Math.cos(angle) * radius * 0.5;
-                const y = centerY + Math.sin(angle) * radius * 0.5;
-                
-                ctx.beginPath();
-                ctx.arc(x, y, radius * 0.3, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(212, 175, 55, ${0.3 + Math.sin(time * 0.002 + i) * 0.2})`;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-            
-            // Central circle
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 10, 0, Math.PI * 2);
-            ctx.fillStyle = '#D4AF37';
-            ctx.fill();
-            
-            // Outer circle
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, maxRadius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            time++;
-            requestAnimationFrame(drawMandala);
-        }
-        
-            drawMandala();
-        });
-    </script>
     
     <!-- Chapter Navigation -->
     <nav class="chapter-nav">
@@ -413,5 +356,107 @@
     
     <script src="/components/navigation.js"></script>
     <script src="/js/ensure-viz-load.js"></script>
+
+    <script>
+        // Mandala Animation
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('mandalaCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            let time = 0;
+            
+            function drawMandala() {
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+                
+                // Draw rotating petals
+                for (let layer = 0; layer < 3; layer++) {
+                    const layerRadius = maxRadius * (0.8 - layer * 0.2);
+                    const petalCount = 8 + layer * 4;
+                    
+                    for (let i = 0; i < petalCount; i++) {
+                        const angle = (Math.PI * 2 / petalCount) * i + time * 0.001 * (layer + 1);
+                        const x = centerX + Math.cos(angle) * layerRadius * 0.5;
+                        const y = centerY + Math.sin(angle) * layerRadius * 0.5;
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, layerRadius * 0.3, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(212, 175, 55, ${0.3 + Math.sin(time * 0.002 + i) * 0.2})`;
+                        ctx.lineWidth = 2 - layer * 0.5;
+                        ctx.stroke();
+                    }
+                }
+                
+                // Draw inner square
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(time * 0.0005);
+                ctx.beginPath();
+                ctx.rect(-maxRadius * 0.3, -maxRadius * 0.3, maxRadius * 0.6, maxRadius * 0.6);
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+                
+                // Draw diagonal cross
+                ctx.beginPath();
+                ctx.moveTo(centerX - maxRadius, centerY - maxRadius);
+                ctx.lineTo(centerX + maxRadius, centerY + maxRadius);
+                ctx.moveTo(centerX - maxRadius, centerY + maxRadius);
+                ctx.lineTo(centerX + maxRadius, centerY - maxRadius);
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                // Central circle (Self)
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#D4AF37';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Ego within Self
+                const egoAngle = time * 0.002;
+                const egoX = centerX + Math.cos(egoAngle) * 10;
+                const egoY = centerY + Math.sin(egoAngle) * 10;
+                ctx.beginPath();
+                ctx.arc(egoX, egoY, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                
+                // Outer circle
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, maxRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Labels
+                ctx.fillStyle = '#D4AF37';
+                ctx.font = '14px Georgia';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('SELF', centerX, centerY + 40);
+                
+                time++;
+                requestAnimationFrame(drawMandala);
+            }
+            
+            drawMandala();
+        });
+    </script>
 </body>
 </html>

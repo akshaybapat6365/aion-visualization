@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 3 - The Syzygy: Anima and Animus - Aion</title>
     <link rel="stylesheet" href="/styles/full-width.css">
+    <link rel="stylesheet" href="/assets/css/ui-consistency.css">
     <style>
         /* Override full-width.css conflicts */
         body {
@@ -231,12 +232,9 @@
         <!-- Visualization 3: Interactive Constellation -->
         <div class="viz-container">
             <h3>Archetypal Constellation Network</h3>
-            <iframe 
-                src="/src/visualizations/constellation/anima-animus-demo.html" 
-                style="width: 100%; height: 700px; border: none;"
-                title="Anima/Animus Constellation"
-                sandbox="allow-scripts allow-same-origin">
-            </iframe>
+            <div id="constellation-network" style="width: 100%; height: 600px; background: #0a0a0a; border-radius: 8px; position: relative;">
+                <canvas id="constellationCanvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
         </div>
         
         <section class="section">
@@ -622,6 +620,224 @@
                 ctx.textAlign = 'center';
                 ctx.fillText('Watch how we project our inner figures onto others, then withdraw them back to the Self', canvas.width / 2, canvas.height - 20);
                 
+                requestAnimationFrame(draw);
+            }
+            
+            draw();
+        });
+        
+        // Visualization 3: Interactive Constellation Network
+        window.initializeVisualization(function() {
+            const canvas = document.getElementById('constellationCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Constellation nodes
+            const nodes = [
+                { id: 'self', x: 0, y: 0, label: 'SELF', color: '#D4AF37', size: 30, fixed: true },
+                { id: 'anima', x: 0, y: 0, label: 'Anima', color: '#FF69B4', size: 25 },
+                { id: 'animus', x: 0, y: 0, label: 'Animus', color: '#4169E1', size: 25 },
+                { id: 'mother', x: 0, y: 0, label: 'Mother', color: '#8B4513', size: 20 },
+                { id: 'father', x: 0, y: 0, label: 'Father', color: '#2F4F4F', size: 20 },
+                { id: 'shadow', x: 0, y: 0, label: 'Shadow', color: '#800080', size: 22 },
+                { id: 'persona', x: 0, y: 0, label: 'Persona', color: '#FFD700', size: 18 },
+                { id: 'ego', x: 0, y: 0, label: 'Ego', color: '#FFA500', size: 20 },
+                { id: 'wise-old-man', x: 0, y: 0, label: 'Wise Old Man', color: '#4682B4', size: 20 },
+                { id: 'great-mother', x: 0, y: 0, label: 'Great Mother', color: '#8FBC8F', size: 20 }
+            ];
+            
+            // Connections between nodes
+            const connections = [
+                { from: 'self', to: 'anima', strength: 1 },
+                { from: 'self', to: 'animus', strength: 1 },
+                { from: 'self', to: 'shadow', strength: 0.8 },
+                { from: 'self', to: 'ego', strength: 0.9 },
+                { from: 'anima', to: 'mother', strength: 0.7 },
+                { from: 'anima', to: 'great-mother', strength: 0.6 },
+                { from: 'animus', to: 'father', strength: 0.7 },
+                { from: 'animus', to: 'wise-old-man', strength: 0.6 },
+                { from: 'ego', to: 'persona', strength: 0.8 },
+                { from: 'ego', to: 'shadow', strength: 0.5 },
+                { from: 'mother', to: 'great-mother', strength: 0.5 },
+                { from: 'father', to: 'wise-old-man', strength: 0.5 }
+            ];
+            
+            // Initialize node positions
+            nodes.forEach((node, i) => {
+                if (node.id === 'self') {
+                    node.x = canvas.width / 2;
+                    node.y = canvas.height / 2;
+                } else {
+                    const angle = (Math.PI * 2 / (nodes.length - 1)) * (i - 1);
+                    const radius = Math.min(canvas.width, canvas.height) * 0.3;
+                    node.x = canvas.width / 2 + Math.cos(angle) * radius;
+                    node.y = canvas.height / 2 + Math.sin(angle) * radius;
+                }
+                node.vx = 0;
+                node.vy = 0;
+            });
+            
+            let selectedNode = null;
+            let hoveredNode = null;
+            
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                hoveredNode = null;
+                nodes.forEach(node => {
+                    const dist = Math.hypot(node.x - mouseX, node.y - mouseY);
+                    if (dist < node.size) {
+                        hoveredNode = node;
+                        canvas.style.cursor = 'pointer';
+                    }
+                });
+                
+                if (!hoveredNode) {
+                    canvas.style.cursor = 'default';
+                }
+                
+                if (selectedNode && !selectedNode.fixed) {
+                    selectedNode.x = mouseX;
+                    selectedNode.y = mouseY;
+                }
+            });
+            
+            canvas.addEventListener('mousedown', (e) => {
+                if (hoveredNode && hoveredNode.id !== 'self') {
+                    selectedNode = hoveredNode;
+                }
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                selectedNode = null;
+            });
+            
+            function applyForces() {
+                // Apply spring forces for connections
+                connections.forEach(conn => {
+                    const nodeA = nodes.find(n => n.id === conn.from);
+                    const nodeB = nodes.find(n => n.id === conn.to);
+                    
+                    const dx = nodeB.x - nodeA.x;
+                    const dy = nodeB.y - nodeA.y;
+                    const dist = Math.hypot(dx, dy);
+                    const targetDist = 150;
+                    
+                    if (dist > 0) {
+                        const force = (dist - targetDist) * 0.01 * conn.strength;
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+                        
+                        if (!nodeA.fixed && nodeA !== selectedNode) {
+                            nodeA.vx += fx;
+                            nodeA.vy += fy;
+                        }
+                        if (!nodeB.fixed && nodeB !== selectedNode) {
+                            nodeB.vx -= fx;
+                            nodeB.vy -= fy;
+                        }
+                    }
+                });
+                
+                // Apply repulsion between all nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const nodeA = nodes[i];
+                        const nodeB = nodes[j];
+                        
+                        const dx = nodeB.x - nodeA.x;
+                        const dy = nodeB.y - nodeA.y;
+                        const dist = Math.hypot(dx, dy);
+                        
+                        if (dist > 0 && dist < 200) {
+                            const force = 1000 / (dist * dist);
+                            const fx = (dx / dist) * force;
+                            const fy = (dy / dist) * force;
+                            
+                            if (!nodeA.fixed && nodeA !== selectedNode) {
+                                nodeA.vx -= fx;
+                                nodeA.vy -= fy;
+                            }
+                            if (!nodeB.fixed && nodeB !== selectedNode) {
+                                nodeB.vx += fx;
+                                nodeB.vy += fy;
+                            }
+                        }
+                    }
+                }
+                
+                // Update positions
+                nodes.forEach(node => {
+                    if (!node.fixed && node !== selectedNode) {
+                        node.vx *= 0.95; // Damping
+                        node.vy *= 0.95;
+                        
+                        node.x += node.vx;
+                        node.y += node.vy;
+                        
+                        // Keep nodes within bounds
+                        node.x = Math.max(node.size, Math.min(canvas.width - node.size, node.x));
+                        node.y = Math.max(node.size, Math.min(canvas.height - node.size, node.y));
+                    }
+                });
+            }
+            
+            function draw() {
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw connections
+                connections.forEach(conn => {
+                    const nodeA = nodes.find(n => n.id === conn.from);
+                    const nodeB = nodes.find(n => n.id === conn.to);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(nodeA.x, nodeA.y);
+                    ctx.lineTo(nodeB.x, nodeB.y);
+                    ctx.strokeStyle = `rgba(136, 136, 136, ${conn.strength * 0.5})`;
+                    ctx.lineWidth = conn.strength * 2;
+                    ctx.stroke();
+                });
+                
+                // Draw nodes
+                nodes.forEach(node => {
+                    const isHovered = node === hoveredNode;
+                    const scale = isHovered ? 1.2 : 1;
+                    
+                    // Node circle
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.size * scale, 0, Math.PI * 2);
+                    ctx.fillStyle = node.color;
+                    ctx.fill();
+                    
+                    // Node border
+                    ctx.strokeStyle = isHovered ? '#fff' : 'rgba(255, 255, 255, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Node label
+                    ctx.fillStyle = '#fff';
+                    ctx.font = `${12 * scale}px Georgia`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(node.label, node.x, node.y);
+                });
+                
+                // Info text
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText('Drag nodes to explore the archetypal constellation', canvas.width / 2, canvas.height - 20);
+                
+                applyForces();
                 requestAnimationFrame(draw);
             }
             
