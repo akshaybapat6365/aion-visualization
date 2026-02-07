@@ -18,6 +18,23 @@ const CHAPTERS = [
     { number: 14, title: "The Structure and Dynamics of the Self", visualization: "clock" }
 ];
 
+const MODE_KEY = 'aionContentMode';
+const PROGRESS_KEY = 'aionLearningProgress';
+
+function getCurrentMode() {
+    return localStorage.getItem(MODE_KEY) || 'beginner';
+}
+
+function getModeProgress() {
+    try {
+        const allProgress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+        const mode = getCurrentMode();
+        return allProgress[mode] || { completedChapters: {}, conceptMastery: {} };
+    } catch (error) {
+        return { completedChapters: {}, conceptMastery: {} };
+    }
+}
+
 function createNavigation() {
     const nav = document.createElement('nav');
     nav.className = 'aion-nav';
@@ -86,6 +103,28 @@ function createNavigation() {
                 margin: 0.5rem 0 0 0;
                 color: #888;
                 font-size: 0.875rem;
+            }
+
+            .mode-select-wrap {
+                margin-top: 1rem;
+            }
+
+            .mode-select {
+                width: 100%;
+                background: #111;
+                color: #D4AF37;
+                border: 1px solid rgba(212, 175, 55, 0.4);
+                padding: 0.4rem 0.5rem;
+            }
+
+            .progress-pill {
+                display: inline-block;
+                margin-left: 0.35rem;
+                padding: 0.1rem 0.4rem;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                color: #000;
+                background: rgba(212, 175, 55, 0.85);
             }
             
             .chapter-list {
@@ -185,19 +224,36 @@ function createNavigation() {
         
         <button class="nav-toggle" onclick="toggleNav()">☰ Menu</button>
         
-        <div class="nav-header" onclick="window.location.href='/'" style="cursor: pointer;">
+        <div class="nav-header">
             <h2>AION</h2>
             <p>Carl Jung's Masterwork</p>
+            <div class="mode-select-wrap">
+                <label for="mode-select" style="font-size:0.75rem;color:#888;">Reading mode</label>
+                <select id="mode-select" class="mode-select">
+                    <option value="beginner">Beginner</option>
+                    <option value="scholar">Scholar</option>
+                    <option value="practitioner">Practitioner</option>
+                </select>
+            </div>
         </div>
         
         <div class="chapter-list">
-            ${CHAPTERS.map(chapter => `
+            ${(() => {
+                const progress = getModeProgress();
+                return CHAPTERS.map(chapter => {
+                const completed = progress.completedChapters[String(chapter.number)];
+                const mastery = progress.conceptMastery[String(chapter.number)] || 0;
+                const progressLabel = completed || mastery > 0 ? `<span class="progress-pill">${completed ? '✓' : ''}${mastery > 0 ? ` ${mastery}%` : ''}</span>` : '';
+                return `
                 <div class="chapter-item" onclick="navigateToChapter(${chapter.number})">
                     <span class="chapter-number">${chapter.number}.</span>
                     <span class="chapter-title">${chapter.title}</span>
+                    ${progressLabel}
                     ${chapter.visualization ? '<span class="viz-indicator">•</span>' : ''}
                 </div>
-            `).join('')}
+            `;
+                }).join('');
+            })()}
         </div>
         
         <div class="nav-footer">
@@ -226,6 +282,48 @@ function createNavigation() {
         const chapterNum = parseInt(chapterMatch[1]);
         document.querySelectorAll('.chapter-item')[chapterNum - 1]?.classList.add('active');
     }
+
+    const modeSelect = document.getElementById('mode-select');
+    if (modeSelect) {
+        modeSelect.value = getCurrentMode();
+        modeSelect.addEventListener('change', (event) => {
+            localStorage.setItem(MODE_KEY, event.target.value);
+            window.dispatchEvent(new CustomEvent('aion:mode-change', { detail: { mode: event.target.value } }));
+            refreshProgressPills();
+        });
+    }
+
+    if (!window.__aionProgressListenerBound) {
+        window.addEventListener('aion:progress-updated', refreshProgressPills);
+        window.__aionProgressListenerBound = true;
+    }
+
+    refreshProgressPills();
+
+    if (window.location.pathname.includes('/chapters/chapter-') && !document.querySelector('script[data-aion-learning="true"]')) {
+        const script = document.createElement('script');
+        script.src = '/components/chapter-learning.js';
+        script.dataset.aionLearning = 'true';
+        document.body.appendChild(script);
+    }
+}
+
+function refreshProgressPills() {
+    const progress = getModeProgress();
+    document.querySelectorAll('.chapter-item').forEach((item, index) => {
+        item.querySelector('.progress-pill')?.remove();
+        const chapterNumber = index + 1;
+        const completed = progress.completedChapters[String(chapterNumber)];
+        const mastery = progress.conceptMastery[String(chapterNumber)] || 0;
+        if (!completed && mastery === 0) {
+            return;
+        }
+
+        const pill = document.createElement('span');
+        pill.className = 'progress-pill';
+        pill.textContent = `${completed ? '✓' : ''}${mastery > 0 ? ` ${mastery}%` : ''}`.trim();
+        item.appendChild(pill);
+    });
 }
 
 function toggleNav() {
