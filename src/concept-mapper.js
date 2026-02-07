@@ -186,10 +186,12 @@ class ConceptMapper {
       .attr('class', 'link-group');
         
     this.links.append('line')
-      .attr('class', d => `link link-${d.type}`)
+      .attr('class', d => `link link-${d.type} semantic-${this.getMotionBehaviorForRelation(d.type)}`)
+      .attr('data-motion-behavior', d => this.getMotionBehaviorForRelation(d.type))
       .attr('stroke', '#999')
       .attr('stroke-opacity', d => d.strength * 0.6)
       .attr('stroke-width', d => Math.sqrt(d.strength * 10))
+      .attr('stroke-dasharray', d => this.getLinkDashPattern(d.type))
       .attr('marker-end', 'url(#arrowhead)');
         
     // Add link labels
@@ -241,6 +243,38 @@ class ConceptMapper {
     }
   }
     
+
+  getMotionBehaviorForRelation(relationType) {
+    if (window.AionMotionChoreographer) {
+      return window.AionMotionChoreographer.getMotionBehaviorForRelation(relationType);
+    }
+
+    const fallbackMap = {
+      opposes: 'opposition',
+      'integrates-into': 'integration',
+      'manifests-as': 'inflation',
+      'expresses-as': 'inflation',
+      represents: 'cyclical-return'
+    };
+
+    return fallbackMap[relationType] || 'integration';
+  }
+
+  getLinkDashPattern(relationType) {
+    const motionBehavior = this.getMotionBehaviorForRelation(relationType);
+
+    switch (motionBehavior) {
+    case 'opposition':
+      return '8 6';
+    case 'deflation':
+      return '2 6';
+    case 'cyclical-return':
+      return '10 4 2 4';
+    default:
+      return '';
+    }
+  }
+
   createDragBehavior() {
     return d3.drag()
       .on('start', (event, d) => {
