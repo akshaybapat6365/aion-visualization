@@ -72,6 +72,13 @@
             color: #ddd;
             margin-bottom: 1.5rem;
         }
+
+        .depth-content {
+            padding: 1rem;
+            border-left: 3px solid #D4AF37;
+            background: rgba(212, 175, 55, 0.08);
+            margin-bottom: 1rem;
+        }
         
         .quote-box {
             background: rgba(212, 175, 55, 0.05);
@@ -190,6 +197,19 @@
         <section class="section">
             <h2>Key Concepts</h2>
             <p>{{KEY_CONCEPTS}}</p>
+        </section>
+
+        <section class="section">
+            <h2>Learning Lenses</h2>
+            <div class="depth-content" data-depth="beginner">
+                <p>{{BEGINNER_SUMMARY}}</p>
+            </div>
+            <div class="depth-content" data-depth="scholar">
+                <p>{{SCHOLAR_NUANCE}}</p>
+            </div>
+            <div class="depth-content" data-depth="practitioner">
+                <p>{{PRACTITIONER_PROMPT}}</p>
+            </div>
         </section>
         
         <div class="quote-box">
