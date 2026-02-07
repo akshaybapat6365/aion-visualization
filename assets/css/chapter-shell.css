@@ -1,0 +1,93 @@
+:root {
+  --shell-gold: #d4af37;
+  --shell-bg: rgba(11, 11, 13, 0.92);
+  --shell-border: rgba(212, 175, 55, 0.28);
+}
+
+.chapter-shell {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: min(360px, calc(100vw - 1.5rem));
+  background: var(--shell-bg);
+  color: #f5f5f5;
+  border: 1px solid var(--shell-border);
+  border-radius: 14px;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+}
+.chapter-shell.collapsed .shell-body { display: none; }
+.chapter-shell.collapsed { width: auto; max-width: calc(100vw - 1rem); }
+.shell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.shell-title { font-size: 0.85rem; color: #e6d28a; margin: 0; }
+.shell-actions button {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.24);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+.shell-body { padding: 0.8rem; display: grid; gap: 0.8rem; }
+.shell-card { padding: 0.7rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; background: rgba(255,255,255,0.03); }
+.shell-card h3 { font-size: 0.82rem; margin: 0 0 0.45rem; color: #e7d8a0; }
+.shell-breadcrumbs { font-size: 0.8rem; line-height: 1.45; }
+.shell-breadcrumbs strong { color: var(--shell-gold); }
+.progress-bar { height: 8px; background: rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin-top: 0.45rem; }
+.progress-bar span { display: block; height: 100%; background: linear-gradient(90deg, #8f7526, #f1c850); }
+.progress-label { font-size: 0.75rem; opacity: 0.85; margin-top: 0.4rem; }
+.glossary-drawer { max-height: 0; overflow: hidden; transition: max-height 0.28s ease; }
+.glossary-drawer.open { max-height: 220px; overflow: auto; }
+.glossary-item { border-top: 1px solid rgba(255,255,255,0.1); padding: 0.45rem 0; font-size: 0.78rem; }
+.glossary-item strong { color: var(--shell-gold); }
+.term-highlight {
+  border-bottom: 1px dashed var(--shell-gold);
+  cursor: help;
+}
+.term-tooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: 260px;
+  background: #121212;
+  color: #f2f2f2;
+  border: 1px solid var(--shell-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.76rem;
+  pointer-events: none;
+}
+.shortcuts-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.68); z-index: 10001; display: none;
+  align-items: center; justify-content: center;
+}
+.shortcuts-overlay.open { display: flex; }
+.shortcuts-modal { background: #161616; color: #fff; padding: 1rem; border-radius: 12px; width: min(480px, 90vw); border: 1px solid var(--shell-border); }
+.shortcuts-modal h2 { margin-top: 0; font-size: 1rem; color: var(--shell-gold); }
+.shortcuts-modal li { margin: 0.35rem 0; font-size: 0.9rem; }
+.coachmark {
+  position: fixed;
+  z-index: 10002;
+  background: #171717;
+  color: #fff;
+  border: 1px solid var(--shell-border);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.75rem;
+  max-width: 210px;
+}
+@media (max-width: 900px) {
+  .chapter-shell { top: auto; bottom: 0.6rem; right: 0.5rem; left: 0.5rem; width: auto; }
+  .chapter-shell .shell-header { border-bottom: 0; }
+  .chapter-shell.auto-collapsed .shell-body { display: none; }
+}
