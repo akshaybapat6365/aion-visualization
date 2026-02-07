@@ -671,6 +671,27 @@
             svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
             svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             
+            const sourceAnchors = {
+                water: { chapter: 8, section: 'Origins of Fish Symbolism', note: 'Fish emerges from primordial waters as first principle imagery.' },
+                creation: { chapter: 8, section: 'Origins of Fish Symbolism', note: 'Creation myths connect fish to beginnings and generative order.' },
+                chaos: { chapter: 8, section: 'Origins of Fish Symbolism', note: 'Chaos and abyss motifs frame the fish as liminal and pre-formal.' },
+                gods: { chapter: 8, section: 'Religious Development', note: 'Fish deities encode sacred power in Mediterranean and Near Eastern traditions.' },
+                monster: { chapter: 8, section: 'Religious Development', note: 'Sea monster imagery tracks the feared and projected shadow dimension.' },
+                fertility: { chapter: 8, section: 'Religious Development', note: 'Fish functions as an enduring symbol of fertility and abundance.' },
+                christ: { chapter: 8, section: 'Christian Symbolic Layer', note: 'Ichthys and Christ symbolism centralize fish in early Christian identity.' },
+                leviathan: { chapter: 8, section: 'Christian Symbolic Layer', note: 'Leviathan represents antagonistic and apocalyptic psychic forces.' },
+                unconscious: { chapter: 8, section: 'Psychological Reading', note: 'Depth-water motifs map to Jungian unconscious dynamics.' },
+                savior: { chapter: 8, section: 'Christian Symbolic Layer', note: 'Redeemer motifs align fish symbolism with salvation narratives.' },
+                fisher: { chapter: 8, section: 'Psychological Reading', note: 'Fisher archetype frames mediation between consciousness and depth.' },
+                eucharist: { chapter: 8, section: 'Christian Symbolic Layer', note: 'Fish and meal symbolism contributes to transformation-through-participation imagery.' },
+                depths: { chapter: 8, section: 'Psychological Reading', note: 'Depth language marks descent into unconscious material.' },
+                evil: { chapter: 8, section: 'Shadow and Polarity', note: 'Fish-linked shadow motifs portray moral and psychic ambivalence.' },
+                transformation: { chapter: 8, section: 'Individuation Dynamics', note: 'Symbolic movement from division toward integration.' },
+                psychopomp: { chapter: 8, section: 'Individuation Dynamics', note: 'Guide-function symbolism for transitions across psychic thresholds.' },
+                integration: { chapter: 8, section: 'Individuation Dynamics', note: 'Shadow elements are assimilated into conscious structure.' },
+                wholeness: { chapter: 8, section: 'Individuation Dynamics', note: 'Self-symbol culmination as totality and regulatory center.' }
+            };
+
             // Create interactive nodes
             const nodes = [
                 // Ancient roots
@@ -703,6 +724,10 @@
                 { id: 'integration', x: 650, y: 600, label: 'Shadow Integration', type: 'integration', connections: ['wholeness'] },
                 { id: 'wholeness', x: 450, y: 650, label: 'Self/Wholeness', type: 'self', connections: [] }
             ];
+
+            nodes.forEach(node => {
+                node.source = sourceAnchors[node.id];
+            });
             
             // Color scheme for node types
             const colors = {
