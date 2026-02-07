@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alchemical Transformation Lab - Aion Visualization</title>
-    
+
     <style>
         body {
             margin: 0;
@@ -14,7 +14,7 @@
             font-family: 'Georgia', serif;
             color: #D4AF37;
         }
-        
+
         #visualization-container {
             width: 100vw;
             height: 100vh;
@@ -23,7 +23,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         /* Loading screen */
         .loading-screen {
             position: fixed;
@@ -39,31 +39,31 @@
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
-        
+
         .loading-screen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
-        
+
         .loading-symbol {
             font-size: 60px;
             color: #D4AF37;
             animation: rotate 2s linear infinite;
             margin-bottom: 20px;
         }
-        
+
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        
+
         .loading-text {
             color: #999999;
             font-family: 'Georgia', serif;
             font-size: 18px;
             letter-spacing: 2px;
         }
-        
+
         /* Main Lab Container */
         .alchemy-lab {
             width: 90%;
@@ -77,7 +77,7 @@
             gap: 20px;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
         }
-        
+
         /* Elements Panel */
         .elements-panel {
             width: 200px;
@@ -87,7 +87,7 @@
             padding: 15px;
             overflow-y: auto;
         }
-        
+
         .elements-panel h3 {
             margin: 0 0 15px 0;
             color: #D4AF37;
@@ -96,7 +96,7 @@
             letter-spacing: 2px;
             text-align: center;
         }
-        
+
         .element {
             width: 60px;
             height: 60px;
@@ -111,18 +111,18 @@
             transition: all 0.3s ease;
             background: radial-gradient(circle, rgba(212, 175, 55, 0.2), transparent);
         }
-        
+
         .element:hover {
             border-color: #D4AF37;
             transform: scale(1.1);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
-        
+
         .element.dragging {
             opacity: 0.5;
             transform: scale(0.8);
         }
-        
+
         /* Vessel Area */
         .vessel-area {
             flex: 1;
@@ -132,7 +132,7 @@
             justify-content: center;
             position: relative;
         }
-        
+
         .vessel {
             width: 300px;
             height: 300px;
@@ -145,23 +145,23 @@
             justify-content: center;
             transition: all 0.3s ease;
         }
-        
+
         .vessel.active {
             box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
             animation: pulse 2s ease-in-out infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        
+
         .vessel-content {
             font-size: 48px;
             color: #D4AF37;
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
         }
-        
+
         /* Progress Panel */
         .progress-panel {
             width: 250px;
@@ -170,7 +170,7 @@
             border-radius: 8px;
             padding: 15px;
         }
-        
+
         .progress-panel h3 {
             margin: 0 0 15px 0;
             color: #D4AF37;
@@ -178,7 +178,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        
+
         .stage {
             padding: 10px;
             margin: 10px 0;
@@ -186,28 +186,28 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
-        
+
         .stage.active {
             border-color: #D4AF37;
             background: rgba(212, 175, 55, 0.1);
         }
-        
+
         .stage.completed {
             border-color: #4CAF50;
             background: rgba(76, 175, 80, 0.1);
         }
-        
+
         .stage-name {
             font-weight: bold;
             color: #D4AF37;
             margin-bottom: 5px;
         }
-        
+
         .stage-description {
             font-size: 12px;
             color: #888;
         }
-        
+
         /* Instructions overlay */
         .instructions-overlay {
             position: fixed;
@@ -225,22 +225,22 @@
             z-index: 100;
             backdrop-filter: blur(10px);
         }
-        
+
         .instructions-overlay h3 {
             margin: 0 0 15px 0;
             color: #D4AF37;
             font-size: 16px;
         }
-        
+
         .instructions-overlay ul {
             margin: 0;
             padding-left: 20px;
         }
-        
+
         .instructions-overlay li {
             margin-bottom: 8px;
         }
-        
+
         .close-instructions {
             position: absolute;
             top: 10px;
@@ -250,11 +250,11 @@
             font-size: 20px;
             transition: color 0.3s ease;
         }
-        
+
         .close-instructions:hover {
             color: #D4AF37;
         }
-        
+
         /* Notification */
         .notification {
             position: fixed;
@@ -269,12 +269,12 @@
             display: none;
             z-index: 1000;
         }
-        
+
         .notification.show {
             display: block;
             animation: slideUp 0.3s ease-out;
         }
-        
+
         @keyframes slideUp {
             from {
                 transform: translateX(-50%) translateY(100%);
@@ -285,7 +285,7 @@
                 opacity: 1;
             }
         }
-        
+
         /* Title */
         .lab-title {
             position: absolute;
@@ -295,7 +295,7 @@
             text-align: center;
             z-index: 10;
         }
-        
+
         .lab-title h1 {
             margin: 0;
             font-size: 28px;
@@ -304,7 +304,7 @@
             letter-spacing: 4px;
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
-        
+
         .lab-title p {
             margin: 5px 0 0 0;
             color: #888;
@@ -319,13 +319,13 @@
         <div class="loading-symbol">☿</div>
         <div class="loading-text">Preparing the Alchemical Vessel...</div>
     </div>
-    
+
     <!-- Lab Title -->
     <div class="lab-title">
         <h1>Alchemical Laboratory</h1>
         <p>The Great Work of Transformation</p>
     </div>
-    
+
     <!-- Instructions Overlay -->
     <div class="instructions-overlay" id="instructionsOverlay">
         <span class="close-instructions" onclick="closeInstructions()">×</span>
@@ -344,7 +344,7 @@
             <li>Discover all compounds to complete the Work</li>
         </ul>
     </div>
-    
+
     <!-- Main Visualization Container -->
     <div id="visualization-container">
         <div class="alchemy-lab">
@@ -359,14 +359,14 @@
                 <div class="element" draggable="true" data-element="mercury">☿</div>
                 <div class="element" draggable="true" data-element="salt">🧂</div>
             </div>
-            
+
             <!-- Vessel Area -->
             <div class="vessel-area">
                 <div class="vessel" id="vessel">
                     <div class="vessel-content" id="vesselContent"></div>
                 </div>
             </div>
-            
+
             <!-- Progress Panel -->
             <div class="progress-panel">
                 <h3>The Great Work</h3>
@@ -386,7 +386,7 @@
                     <div class="stage-name">Rubedo</div>
                     <div class="stage-description">The Reddening - Completion</div>
                 </div>
-                
+
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
                     <h3>Discoveries</h3>
                     <div id="discoveries" style="font-size: 12px; color: #888;">
@@ -396,10 +396,10 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Notification -->
     <div class="notification" id="notification"></div>
-    
+
     <script>
         // Alchemy Lab Implementation
         class AlchemyLab {
@@ -409,7 +409,7 @@
                 this.currentElements = [];
                 this.discoveries = [];
                 this.currentStage = 'nigredo';
-                
+
                 // Define transformations
                 this.transformations = {
                     'fire,water': { result: '💨', name: 'Steam', stage: 'nigredo' },
@@ -428,11 +428,11 @@
                     'air,mercury': { result: '🌬️', name: 'Spirit', stage: 'citrinitas' },
                     'fire,water,earth,air': { result: '🌟', name: 'Quintessence', stage: 'rubedo' }
                 };
-                
+
                 this.setupDragAndDrop();
                 this.setupVesselInteraction();
                 this.updateStageDisplay();
-                
+
                 // Hide loading screen
                 setTimeout(() => {
                     const loadingScreen = document.getElementById('loadingScreen');
@@ -440,43 +440,43 @@
                     setTimeout(() => loadingScreen.remove(), 500);
                 }, 1500);
             }
-            
+
             setupDragAndDrop() {
                 const elements = document.querySelectorAll('.element');
-                
+
                 elements.forEach(element => {
                     element.addEventListener('dragstart', (e) => {
                         e.dataTransfer.setData('element', element.dataset.element);
                         e.dataTransfer.setData('symbol', element.textContent);
                         element.classList.add('dragging');
                     });
-                    
+
                     element.addEventListener('dragend', () => {
                         element.classList.remove('dragging');
                     });
                 });
-                
+
                 // Vessel drop handling
                 this.vessel.addEventListener('dragover', (e) => {
                     e.preventDefault();
                     this.vessel.classList.add('active');
                 });
-                
+
                 this.vessel.addEventListener('dragleave', () => {
                     this.vessel.classList.remove('active');
                 });
-                
+
                 this.vessel.addEventListener('drop', (e) => {
                     e.preventDefault();
                     this.vessel.classList.remove('active');
-                    
+
                     const element = e.dataTransfer.getData('element');
                     const symbol = e.dataTransfer.getData('symbol');
-                    
+
                     this.addElement(element, symbol);
                 });
             }
-            
+
             setupVesselInteraction() {
                 // Right-click to clear
                 this.vessel.addEventListener('contextmenu', (e) => {
@@ -484,45 +484,45 @@
                     this.clearVessel();
                 });
             }
-            
+
             addElement(element, symbol) {
                 if (this.currentElements.length >= 4) {
                     this.showNotification('The vessel is full! Right-click to clear.');
                     return;
                 }
-                
+
                 this.currentElements.push(element);
                 this.updateVesselDisplay();
-                
+
                 // Check for transformations
                 if (this.currentElements.length >= 2) {
                     this.checkTransformation();
                 }
             }
-            
+
             checkTransformation() {
                 const sorted = this.currentElements.slice().sort().join(',');
-                
+
                 if (this.transformations[sorted]) {
                     const transformation = this.transformations[sorted];
-                    
+
                     // Animate transformation
                     this.vessel.style.animation = 'none';
                     setTimeout(() => {
                         this.vessel.style.animation = 'pulse 1s ease-in-out';
                         this.vesselContent.textContent = transformation.result;
                         this.vesselContent.style.fontSize = '72px';
-                        
+
                         // Add to discoveries
                         if (!this.discoveries.includes(transformation.name)) {
                             this.discoveries.push(transformation.name);
                             this.updateDiscoveries();
                             this.showNotification(`Discovery: ${transformation.name}!`);
-                            
+
                             // Update stage progress
                             this.updateStageProgress(transformation.stage);
                         }
-                        
+
                         // Clear after delay
                         setTimeout(() => {
                             this.clearVessel();
@@ -530,7 +530,7 @@
                     }, 100);
                 }
             }
-            
+
             updateVesselDisplay() {
                 const symbols = {
                     fire: '🔥',
@@ -541,23 +541,23 @@
                     mercury: '☿',
                     salt: '🧂'
                 };
-                
+
                 const display = this.currentElements.map(e => symbols[e]).join(' ');
                 this.vesselContent.textContent = display;
                 this.vesselContent.style.fontSize = '48px';
             }
-            
+
             clearVessel() {
                 this.currentElements = [];
                 this.vesselContent.textContent = '';
                 this.vessel.style.animation = 'none';
             }
-            
+
             updateStageProgress(stage) {
                 const stages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'];
                 const stageIndex = stages.indexOf(stage);
                 const currentIndex = stages.indexOf(this.currentStage);
-                
+
                 if (stageIndex >= currentIndex) {
                     // Mark previous stages as completed
                     for (let i = 0; i <= stageIndex; i++) {
@@ -569,15 +569,15 @@
                             stageElement.classList.add('active');
                         }
                     }
-                    
+
                     this.currentStage = stage;
                 }
             }
-            
+
             updateStageDisplay() {
                 document.getElementById(`stage-${this.currentStage}`).classList.add('active');
             }
-            
+
             updateDiscoveries() {
                 const discoveriesElement = document.getElementById('discoveries');
                 if (this.discoveries.length === 0) {
@@ -587,38 +587,38 @@
                         .map(d => `<div style="margin: 5px 0;">✓ ${d}</div>`)
                         .join('');
                 }
-                
+
                 // Check for completion
                 if (this.discoveries.length === Object.keys(this.transformations).length) {
                     this.showNotification('🎉 The Great Work is Complete! 🎉');
                     document.getElementById('stage-rubedo').classList.add('completed');
                 }
             }
-            
+
             showNotification(message) {
                 const notification = document.getElementById('notification');
                 notification.textContent = message;
                 notification.classList.add('show');
-                
+
                 setTimeout(() => {
                     notification.classList.remove('show');
                 }, 3000);
             }
         }
-        
+
         // Initialize
         let alchemyLab;
-        
+
         window.addEventListener('DOMContentLoaded', () => {
             alchemyLab = new AlchemyLab();
         });
-        
+
         // Close instructions
         function closeInstructions() {
             const overlay = document.getElementById('instructionsOverlay');
             overlay.style.display = 'none';
         }
-        
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === '?' || e.key === 'h') {
@@ -627,6 +627,41 @@
             }
         });
     </script>
+
+    <script src="/core/visualization-module-wrapper.js"></script>
+    <script>
+        let alchemyModuleWrapper;
+        window.addEventListener('DOMContentLoaded', () => {
+            alchemyModuleWrapper = new VisualizationModuleWrapper({
+                moduleId: 'alchemy-lab',
+                chapterNumber: 11,
+                title: 'Alchemy Lab',
+                objective: 'the staged movement from prima materia toward symbolic integration through deliberate transformations.',
+                checklist: ['Element combinations that repeat across stages', 'When Nigredo turns into Albedo', 'How intention (right-click) changes outcomes'],
+                chapterLinks: { before: '/chapter10.html', after: '/chapter12.html' },
+                checkpoints: [
+                    { id: 'first-drop', label: 'Drop your first element into the vessel.', trigger: ({ action }) => action === 'element_drop' },
+                    { id: 'stage-shift', label: 'Trigger at least one alchemical stage shift.', trigger: ({ action }) => action === 'stage_change' },
+                    { id: 'intentional-transform', label: 'Use intentional transformation once.', trigger: ({ action }) => action === 'intentional_transformation' }
+                ]
+            });
+
+            document.querySelectorAll('.element').forEach((el) => {
+                el.addEventListener('dragend', () => alchemyModuleWrapper.trackInteraction('element_drop', { element: el.dataset.element }));
+            });
+            document.getElementById('vessel').addEventListener('contextmenu', () => alchemyModuleWrapper.trackInteraction('intentional_transformation'));
+            const originalUpdate = alchemyLab?.updateStage?.bind(alchemyLab);
+            if (originalUpdate) {
+                alchemyLab.updateStage = function(...args) {
+                    const before = this.currentStage;
+                    const result = originalUpdate(...args);
+                    if (this.currentStage !== before) alchemyModuleWrapper.trackInteraction('stage_change', { from: before, to: this.currentStage });
+                    return result;
+                };
+            }
+        });
+    </script>
+
     <script src="/components/navigation.js"></script>
 </body>
 </html>
