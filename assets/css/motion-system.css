@@ -1,0 +1,82 @@
+/* AION motion-system.css - semantic choreography */
+
+@keyframes motion-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance-md));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes motion-link-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--motion-distance-sm) * -1));
+    letter-spacing: 0.08em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.02em;
+  }
+}
+
+@keyframes motion-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 20px color-mix(in srgb, var(--accent-primary) 40%, transparent)); }
+}
+
+.motion-enter-concept {
+  animation: motion-fade-in-up var(--duration-slow) var(--ease-out-expo) both;
+}
+
+.motion-enter-soft {
+  animation: motion-fade-in var(--duration-normal) var(--ease-standard) both;
+}
+
+.motion-link-reveal {
+  animation: motion-link-reveal var(--duration-normal) var(--ease-out-expo) both;
+}
+
+.motion-glow-accent {
+  animation: motion-glow-pulse var(--duration-slower) var(--ease-in-out-expo) infinite;
+}
+
+.motion-hover-lift {
+  transition: transform var(--duration-normal) var(--ease-standard), box-shadow var(--duration-normal) var(--ease-standard);
+}
+
+.motion-hover-lift:hover {
+  transform: translateY(calc(var(--motion-distance-sm) * -1));
+  box-shadow: var(--shadow-lg);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-enter-concept,
+  .motion-enter-soft,
+  .motion-link-reveal,
+  .motion-glow-accent {
+    animation-duration: var(--duration-fast);
+    animation-iteration-count: 1;
+  }
+
+  .motion-hover-lift,
+  .motion-hover-lift:hover {
+    transition-duration: var(--duration-fast);
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+}
