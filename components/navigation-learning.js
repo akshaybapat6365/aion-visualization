@@ -76,7 +76,8 @@
     }
 
     function loadChapterLearning() {
-        if (!window.location.pathname.includes('/chapters/chapter-')) {
+        const pathname = window.location.pathname;
+        if (!pathname.includes('/chapters/chapter-') && !pathname.includes('/journey/chapter-') && !/chapter-?\d+/.test(pathname)) {
             return;
         }
 
