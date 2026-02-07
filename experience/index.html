@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aion Experience Entry</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: radial-gradient(circle at top, #2a1b35, #07080f 55%);
+      color: #f5f2ee;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.2rem 4rem; }
+    .intro {
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(8px);
+      background: rgba(8,10,20,.56);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .intro-complete { opacity: .55; transform: scale(.98); }
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 0 0 1rem; }
+    .caption {
+      min-height: 3rem;
+      font-size: 1.05rem;
+      color: #ffddab;
+      margin: 1.2rem 0;
+    }
+    .caption-note { color: #aeb5c7; font-size: .92rem; }
+    .btn {
+      background: linear-gradient(90deg, #8c68ff, #4d8dff);
+      color: white;
+      border: 0;
+      border-radius: 999px;
+      padding: .8rem 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    #experience-main { margin-top: 2rem; display: grid; gap: 1rem; grid-template-columns: 1.2fr 1fr; }
+    .panel {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 1rem;
+      background: rgba(4,6,12,.5);
+    }
+    #concept-galaxy { width: 100%; height: 450px; display: block; }
+    .preset-list { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+    .preset {
+      border: 1px solid rgba(255,255,255,.24);
+      background: transparent;
+      color: #f8e9cd;
+      border-radius: 10px;
+      padding: .65rem;
+      cursor: pointer;
+    }
+    .preset.active { background: rgba(142, 111, 255, 0.3); border-color: #ac93ff; }
+    .handoff { display: flex; gap: .7rem; margin-top: 1rem; }
+    .handoff button { flex: 1; }
+    .subtle { color: #b9c0cf; font-size: .95rem; }
+    @media (max-width: 900px) { #experience-main { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="intro">
+      <p class="subtle">/experience</p>
+      <h1>Cinematic Entry to Aion</h1>
+      <p>Begin with voiceover-style narrative captions, then move into an interactive concept galaxy and a personalized path recommendation.</p>
+      <p id="voiceover-caption" class="caption" aria-live="polite"></p>
+      <p class="caption-note">Narrative voiceover captions are text-first in this release (sound track can be layered in later).</p>
+      <button id="begin-experience" class="btn" type="button">Enter the Concept Galaxy</button>
+    </section>
+
+    <main id="experience-main">
+      <section class="panel">
+        <h2>Interactive Concept Galaxy</h2>
+        <p class="subtle">Chapter nodes and concept edges are rendered from the canonical graph.</p>
+        <canvas id="concept-galaxy"></canvas>
+        <p id="galaxy-hint" class="subtle">Hover a star to inspect chapter nodes from the canonical graph.</p>
+      </section>
+
+      <aside class="panel">
+        <h2>Path Presets</h2>
+        <div id="preset-list" class="preset-list"></div>
+        <div id="recommendation"></div>
+        <p id="resume-intent" class="subtle"></p>
+
+        <div class="handoff">
+          <button id="handoff-journey" class="btn" type="button">Continue in Journey Mode</button>
+          <button id="handoff-atlas" class="btn" type="button">Switch to Atlas Mode</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="/assets/js/experience/experience-entry.js"></script>
+</body>
+</html>
