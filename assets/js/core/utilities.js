@@ -304,6 +304,31 @@ class AionUtils {
   }
 }
 
+
+
+function bootstrapChapterShell() {
+  if (typeof document === 'undefined') return;
+  const path = window.location.pathname;
+  const isTargetPage = path === '/' || path.endsWith('/index.html') || path.includes('/chapters/');
+  if (!isTargetPage) return;
+
+  if (!document.querySelector('link[data-shell="chapter-shell"], link[href*="chapter-shell.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/assets/css/chapter-shell.css';
+    link.setAttribute('data-shell', 'chapter-shell');
+    document.head.appendChild(link);
+  }
+
+  if (!document.querySelector('script[data-shell="chapter-shell"], script[src*="chapter-shell.js"]')) {
+    const script = document.createElement('script');
+    script.src = '/assets/js/chapter-shell.js';
+    script.defer = true;
+    script.setAttribute('data-shell', 'chapter-shell');
+    document.head.appendChild(script);
+  }
+}
+
 // Create global instance
 const aionUtils = new AionUtils();
 
@@ -315,4 +340,5 @@ if (typeof module !== 'undefined' && module.exports) {
 // Add to global scope
 if (typeof window !== 'undefined') {
   window.aionUtils = aionUtils;
+  bootstrapChapterShell();
 }
