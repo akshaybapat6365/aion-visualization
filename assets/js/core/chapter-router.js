@@ -123,6 +123,7 @@ class ChapterRouter {
     }
 
     const route = this.routes.get(path);
+    const previousRoute = this.currentRoute;
     if (!route) {
       console.warn(`Route not found: ${path}`);
       return false;
@@ -146,7 +147,12 @@ class ChapterRouter {
       document.title = route.title;
 
       // Trigger route change event
-      this.dispatchRouteChange(route);
+      this.dispatchRouteChange(route, previousRoute);
+
+      if (window.AionMotionChoreographer) {
+        const semantic = window.AionMotionChoreographer.applyChapterTransition(previousRoute, route);
+        this.dispatchEvent('chapterTransitionApplied', { semantic, from: previousRoute, to: route });
+      }
 
       // Handle specific route types
       await this.handleRouteType(route);
@@ -387,8 +393,8 @@ class ChapterRouter {
   }
 
   // Event system
-  dispatchRouteChange(route) {
-    this.dispatchEvent('routeChange', { route, router: this });
+  dispatchRouteChange(route, previousRoute = null) {
+    this.dispatchEvent('routeChange', { route, previousRoute, router: this });
   }
 
   dispatchEvent(eventName, detail) {
