@@ -19,7 +19,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .fish-timeline-section::before {
             content: '';
             position: absolute;
@@ -30,14 +30,14 @@
             background: linear-gradient(90deg, #8B7355 0%, #6B46C1 50%, #00CED1 100%);
             opacity: 0.6;
         }
-        
+
         #fish-timeline-viz {
             width: 100%;
             height: 400px;
             margin: 2rem 0;
             position: relative;
         }
-        
+
         .timeline-legend {
             display: flex;
             flex-wrap: wrap;
@@ -48,7 +48,7 @@
             background: var(--surface-secondary);
             border-radius: 0.5rem;
         }
-        
+
         .legend-item {
             display: flex;
             align-items: center;
@@ -56,21 +56,21 @@
             font-size: 0.875rem;
             color: var(--text-secondary);
         }
-        
+
         .legend-color {
             width: 20px;
             height: 20px;
             border-radius: 50%;
             border: 2px solid white;
         }
-        
+
         .fish-insights {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
-        
+
         .insight-card {
             background: var(--surface-secondary);
             border: 1px solid var(--border-default);
@@ -80,7 +80,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .insight-card::before {
             content: '';
             position: absolute;
@@ -92,45 +92,45 @@
             transform: scaleY(0);
             transition: transform 0.3s ease;
         }
-        
+
         .insight-card:hover::before {
             transform: scaleY(1);
         }
-        
+
         .insight-card h4 {
             margin: 0 0 0.5rem 0;
             color: var(--text-primary);
         }
-        
+
         .insight-card p {
             margin: 0;
             color: var(--text-secondary);
             font-size: 0.875rem;
             line-height: 1.5;
         }
-        
+
         /* Animation for fish symbols */
         @keyframes swim {
             0%, 100% { transform: translateX(0) rotate(0deg); }
             25% { transform: translateX(10px) rotate(5deg); }
             75% { transform: translateX(-10px) rotate(-5deg); }
         }
-        
+
         .swimming-fish {
             animation: swim 4s ease-in-out infinite;
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .fish-timeline-section {
                 padding: 1.5rem;
                 margin: 2rem 0;
             }
-            
+
             #fish-timeline-viz {
                 height: 300px;
             }
-            
+
             .timeline-legend {
                 gap: 0.5rem;
                 font-size: 0.75rem;
@@ -167,9 +167,9 @@
             <div class="visualization-intro">
                 <p>Explore the evolution of the fish symbol across 2000+ years, from ancient fertility symbol to the Christian ichthys, through medieval alchemy to modern psychological understanding.</p>
             </div>
-            
+
             <div id="fish-timeline-viz"></div>
-            
+
             <div class="timeline-legend">
                 <div class="legend-item">
                     <div class="legend-color" style="background: #8B7355;"></div>
@@ -192,7 +192,7 @@
                     <span>Modern Era</span>
                 </div>
             </div>
-            
+
             <div class="fish-insights">
                 <div class="insight-card">
                     <h4>Ichthys Acronym</h4>
@@ -300,7 +300,7 @@
 
     <!-- Load Fish Timeline Visualization -->
     <script src="./fish-timeline-simple.js"></script>
-    
+
     <!-- Existing visualization scripts -->
     <script>
         // Initialize Fish Timeline when DOM loads
@@ -308,9 +308,35 @@
             // The fish-timeline-simple.js will auto-initialize
             console.log('Chapter 4 Enhanced loaded with Fish Timeline');
         });
-        
+
         // Placeholder for other visualizations
         // You can add the astrological clock and fish duality visualizations here
     </script>
+
+    <script src="/core/visualization-module-wrapper.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = new VisualizationModuleWrapper({
+                moduleId: 'chapter-4-fish',
+                chapterNumber: 4,
+                title: 'Sign of the Fishes',
+                objective: 'how fish symbolism evolves historically and psychologically when you actively manipulate timeline and duality controls.',
+                checklist: ['Pre-Christian vs Christian symbol shifts', 'Precessional age transitions', 'Duality motifs in opposite fish movement'],
+                chapterLinks: { before: '/chapter3.html', after: '/chapter5.html' },
+                checkpoints: [
+                    { id: 'timeline-engage', label: 'Engage with fish timeline.', trigger: ({ action }) => action === 'timeline_engage' },
+                    { id: 'precession-control', label: 'Use astrological clock controls.', trigger: ({ action }) => ['precession_play', 'precession_pause', 'precession_reset'].includes(action) },
+                    { id: 'duality-control', label: 'Use dual fish controls.', trigger: ({ action }) => ['toggle_fish', 'symbolic_meaning'].includes(action) }
+                ]
+            });
+            document.getElementById('fish-timeline-viz')?.addEventListener('click', () => wrapper.trackInteraction('timeline_engage'));
+            document.getElementById('play-precession')?.addEventListener('click', () => wrapper.trackInteraction('precession_play'));
+            document.getElementById('pause-precession')?.addEventListener('click', () => wrapper.trackInteraction('precession_pause'));
+            document.getElementById('reset-precession')?.addEventListener('click', () => wrapper.trackInteraction('precession_reset'));
+            document.getElementById('toggle-fish-animation')?.addEventListener('click', () => wrapper.trackInteraction('toggle_fish'));
+            document.getElementById('show-symbolic-meaning')?.addEventListener('click', () => wrapper.trackInteraction('symbolic_meaning'));
+        });
+    </script>
+
 </body>
 </html>
