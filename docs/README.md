@@ -7,6 +7,7 @@ This folder collects plans, reports and helper files for the Aion Visualization 
 - **BUG_REPORT.md** - Initial bug report and test results.
 - **COMPLETE_UPDATE_SUMMARY.md** - Overview of all updates across phases.
 - **COMPREHENSIVE_BUG_REPORT.md** - Detailed bug analysis and missing features.
+- **CORE_REVAMP_EXECUTION_BLUEPRINT.md** - Deep diagnosis and execution-grade blueprint for fundamental product, content, and visualization revamp.
 - **DETAILED_BUG_REPORT.md** - More granular bug findings.
 - **EXECUTE_NOW.md** - Manual instructions to immediately push Phase 3 changes.
 - **EXECUTE_PHASE3_PUSH.md** - Step-by-step commands to push Phase 3 to GitHub.
