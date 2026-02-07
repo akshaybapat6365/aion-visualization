@@ -59,9 +59,9 @@
 
     function refreshProgressPills() {
         const progress = getModeProgress();
-        document.querySelectorAll('.aion-nav .chapter-item').forEach((item) => {
+        document.querySelectorAll('.aion-nav .chapter-item').forEach((item, index) => {
             item.querySelector('.progress-pill')?.remove();
-            const chapterNumber = item.getAttribute('data-chapter-number');
+            const chapterNumber = String(index + 1);
             const completed = progress.completedChapters[chapterNumber];
             const mastery = progress.conceptMastery[chapterNumber] || 0;
             if (!completed && mastery === 0) {

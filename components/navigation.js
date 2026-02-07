@@ -37,11 +37,11 @@ function createNavigation() {
                 transform: translateX(0);
                 transition: transform 0.3s ease;
             }
-
+            
             .aion-nav.collapsed {
                 transform: translateX(-250px);
             }
-
+            
             .nav-toggle {
                 position: fixed;
                 left: 260px;
@@ -54,26 +54,26 @@ function createNavigation() {
                 z-index: 1001;
                 transition: all 0.3s ease;
             }
-
+            
             .nav-toggle:hover {
                 background: #D4AF37;
                 color: #000;
             }
-
+            
             .nav-toggle.shifted {
                 left: 10px;
             }
-
+            
             .nav-header {
                 padding: 2rem 1.5rem;
                 border-bottom: 1px solid rgba(212, 175, 55, 0.1);
                 transition: background 0.3s ease;
             }
-
+            
             .nav-header:hover {
                 background: rgba(212, 175, 55, 0.05);
             }
-
+            
             .nav-header h2 {
                 margin: 0;
                 color: #D4AF37;
@@ -81,62 +81,62 @@ function createNavigation() {
                 font-weight: 300;
                 letter-spacing: 2px;
             }
-
+            
             .nav-header p {
                 margin: 0.5rem 0 0 0;
                 color: #888;
                 font-size: 0.875rem;
             }
-
+            
             .chapter-list {
                 padding: 1rem 0;
             }
-
+            
             .chapter-item {
                 padding: 0.75rem 1.5rem;
                 cursor: pointer;
                 transition: all 0.3s ease;
                 border-left: 3px solid transparent;
             }
-
+            
             .chapter-item:hover {
                 background: rgba(212, 175, 55, 0.1);
                 border-left-color: #D4AF37;
             }
-
+            
             .chapter-item.active {
                 background: rgba(212, 175, 55, 0.2);
                 border-left-color: #D4AF37;
             }
-
+            
             .chapter-number {
                 color: #D4AF37;
                 font-weight: bold;
                 margin-right: 0.5rem;
             }
-
+            
             .chapter-title {
                 color: #ccc;
                 font-size: 0.9rem;
             }
-
+            
             .chapter-item.active .chapter-title {
                 color: #fff;
             }
-
+            
             .viz-indicator {
                 display: inline-block;
                 margin-left: 0.5rem;
                 color: #D4AF37;
                 font-size: 0.8rem;
             }
-
+            
             .nav-footer {
                 padding: 1.5rem;
                 border-top: 1px solid rgba(212, 175, 55, 0.1);
                 margin-top: 2rem;
             }
-
+            
             .nav-footer a {
                 color: #888;
                 text-decoration: none;
@@ -145,11 +145,11 @@ function createNavigation() {
                 margin: 0.5rem 0;
                 transition: color 0.3s ease;
             }
-
+            
             .nav-footer a:hover {
                 color: #D4AF37;
             }
-
+            
             /* Main content offset */
             .main-content {
                 margin-left: 250px;
@@ -157,58 +157,59 @@ function createNavigation() {
                 min-height: 100vh;
                 padding: 2rem;
             }
-
+            
             .main-content.full-width {
                 margin-left: 0;
             }
-
+            
             /* Mobile responsive */
             @media (max-width: 768px) {
                 .aion-nav {
                     width: 100%;
                     transform: translateX(-100%);
                 }
-
+                
                 .aion-nav.mobile-open {
                     transform: translateX(0);
                 }
-
+                
                 .nav-toggle {
                     left: 10px;
                 }
-
+                
                 .main-content {
                     margin-left: 0;
                 }
             }
         </style>
-
+        
         <button class="nav-toggle" onclick="toggleNav()">☰ Menu</button>
-
+        
         <div class="nav-header" onclick="window.location.href='/'" style="cursor: pointer;">
             <h2>AION</h2>
             <p>Carl Jung's Masterwork</p>
         </div>
-
+        
         <div class="chapter-list">
             ${CHAPTERS.map(chapter => `
-                <div class="chapter-item" onclick="navigateToChapter(${chapter.number})" data-chapter-number="${chapter.number}">
+                <div class="chapter-item" onclick="navigateToChapter(${chapter.number})">
                     <span class="chapter-number">${chapter.number}.</span>
                     <span class="chapter-title">${chapter.title}</span>
                     ${chapter.visualization ? '<span class="viz-indicator">•</span>' : ''}
                 </div>
             `).join('')}
         </div>
-
+        
         <div class="nav-footer">
             <a href="/">Home</a>
             <a href="/about.html">About</a>
             <a href="https://github.com/akshaybapat6365/aion-visualization" target="_blank">GitHub</a>
         </div>
     `;
-
+    
     document.body.insertBefore(nav, document.body.firstChild);
-
+    
+    // Add main content wrapper if it doesn't exist
     if (!document.querySelector('.main-content')) {
         const mainContent = document.createElement('div');
         mainContent.className = 'main-content';
@@ -217,7 +218,8 @@ function createNavigation() {
         }
         document.body.appendChild(mainContent);
     }
-
+    
+    // Set active chapter
     const currentPath = window.location.pathname;
     const chapterMatch = currentPath.match(/chapter-?(\d+)/);
     if (chapterMatch) {
@@ -227,6 +229,7 @@ function createNavigation() {
 
     loadLearningEnhancements();
 }
+
 
 function loadLearningEnhancements() {
     if (document.querySelector('script[data-aion-nav-learning="true"]')) {
@@ -243,7 +246,7 @@ function toggleNav() {
     const nav = document.querySelector('.aion-nav');
     const toggle = document.querySelector('.nav-toggle');
     const mainContent = document.querySelector('.main-content');
-
+    
     nav.classList.toggle('collapsed');
     nav.classList.toggle('mobile-open');
     toggle.classList.toggle('shifted');
@@ -251,10 +254,14 @@ function toggleNav() {
 }
 
 function navigateToChapter(chapterNumber) {
+    // Navigate to chapter page
     window.location.href = `/chapters/chapter-${chapterNumber}.html`;
 }
 
+// Initialize navigation when DOM is ready
+// Don't show navigation if page is in an iframe
 if (window.self === window.top) {
+    // Show sidebar navigation on all pages
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', createNavigation);
     } else {
