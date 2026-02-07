@@ -10,6 +10,10 @@ const THREE = window.THREE;
 import { NodeSystem } from './NodeSystem.js';
 import { ConnectionRenderer } from './ConnectionRenderer.js';
 import { CameraController } from './SimpleCameraController.js';
+import {
+  VISUALIZATION_PERFORMANCE_BUDGETS,
+  getDeviceClass
+} from '../../performance/visualizationBudgets.js';
 
 export class ConstellationEngine {
   constructor(container, conceptData) {
@@ -18,7 +22,9 @@ export class ConstellationEngine {
     this.nodes = new Map();
     this.connections = [];
     this.isInitialized = false;
+    this.isPaused = false;
     this.animationFrameId = null;
+    this.sceneInitDurationMs = 0;
     
     // Performance monitoring
     this.stats = {
@@ -26,7 +32,14 @@ export class ConstellationEngine {
       frameTime: 0,
       drawCalls: 0,
       triangles: 0,
-      memory: 0
+      memory: 0,
+      targetFps: 60,
+      sceneInitDurationMs: 0,
+      overBudget: {
+        initTime: false,
+        gpuMemory: false,
+        fps: false
+      }
     };
     
     // Configuration
@@ -38,6 +51,7 @@ export class ConstellationEngine {
       quality: 'high' // 'low', 'medium', 'high', 'ultra'
     };
     
+    this.boundHandlers = {};
     this.init();
   }
   
@@ -45,24 +59,35 @@ export class ConstellationEngine {
    * Initialize the WebGL scene
    */
   init() {
+    if (this.isInitialized) {
+      return;
+    }
+
+    const initStart = performance.now();
+
     // Scene setup
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
     this.scene.fog = new THREE.Fog(0x000000, 10, 50);
     
     // Renderer setup with optimizations
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: this.config.quality !== 'low',
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
-    
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-    this.renderer.shadowMap.enabled = this.config.quality === 'ultra';
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    
-    this.container.appendChild(this.renderer.domElement);
+    try {
+      this.renderer = new THREE.WebGLRenderer({
+        antialias: this.config.quality !== 'low',
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+      this.renderer.shadowMap.enabled = this.config.quality === 'ultra';
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      this.container.appendChild(this.renderer.domElement);
+    } catch (error) {
+      this.activateFallbackMode(error);
+      return;
+    }
     
     // Camera setup
     this.camera = new THREE.PerspectiveCamera(
@@ -89,6 +114,21 @@ export class ConstellationEngine {
     
     // Start render loop
     this.isInitialized = true;
+    this.isPaused = false;
+    this.clock.start();
+    this.sceneInitDurationMs = performance.now() - initStart;
+    this.stats.sceneInitDurationMs = this.sceneInitDurationMs;
+    this.stats.targetFps = VISUALIZATION_PERFORMANCE_BUDGETS
+      .targetFpsByDeviceClass[getDeviceClass()];
+    this.evaluateBudgets();
+
+    this.container.dispatchEvent(new CustomEvent('sceneLifecycle', {
+      detail: {
+        phase: 'init',
+        initDurationMs: this.sceneInitDurationMs
+      }
+    }));
+
     this.animate();
   }
   
@@ -162,20 +202,75 @@ export class ConstellationEngine {
    */
   setupEventListeners() {
     // Window resize
-    window.addEventListener('resize', this.onWindowResize.bind(this));
+    this.boundHandlers.resize = this.onWindowResize.bind(this);
+    this.boundHandlers.click = this.onMouseClick.bind(this);
+    this.boundHandlers.mousemove = this.onMouseMove.bind(this);
+    this.boundHandlers.keydown = this.onKeyDown.bind(this);
+    this.boundHandlers.touchstart = this.onTouchStart.bind(this);
+    this.boundHandlers.touchmove = this.onTouchMove.bind(this);
+
+    window.addEventListener('resize', this.boundHandlers.resize);
     
     // Mouse interactions
-    this.renderer.domElement.addEventListener('click', this.onMouseClick.bind(this));
-    this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+    this.renderer.domElement.addEventListener('click', this.boundHandlers.click);
+    this.renderer.domElement.addEventListener('mousemove', this.boundHandlers.mousemove);
     
     // Keyboard shortcuts
-    document.addEventListener('keydown', this.onKeyDown.bind(this));
+    document.addEventListener('keydown', this.boundHandlers.keydown);
     
     // Touch support
-    this.renderer.domElement.addEventListener('touchstart', this.onTouchStart.bind(this));
-    this.renderer.domElement.addEventListener('touchmove', this.onTouchMove.bind(this));
+    this.renderer.domElement.addEventListener('touchstart', this.boundHandlers.touchstart);
+    this.renderer.domElement.addEventListener('touchmove', this.boundHandlers.touchmove);
+  }
+
+  pause() {
+    if (!this.isInitialized || this.isPaused) {
+      return;
+    }
+
+    this.isPaused = true;
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+    this.clock.stop();
+
+    this.container.dispatchEvent(new CustomEvent('sceneLifecycle', {
+      detail: { phase: 'pause' }
+    }));
+  }
+
+  resume() {
+    if (!this.isInitialized || !this.isPaused) {
+      return;
+    }
+
+    this.isPaused = false;
+    this.clock.start();
+    this.container.dispatchEvent(new CustomEvent('sceneLifecycle', {
+      detail: { phase: 'resume' }
+    }));
+    this.animate();
   }
   
+
+  activateFallbackMode(error) {
+    const fallbackCanvas = document.createElement('canvas');
+    this.container.appendChild(fallbackCanvas);
+
+    if (window.webglUtils && typeof window.webglUtils.showFallback === 'function') {
+      window.webglUtils.showFallback(fallbackCanvas, error);
+    }
+
+    this.container.dispatchEvent(new CustomEvent('sceneLifecycle', {
+      detail: {
+        phase: 'fallback',
+        mode: 'static-image-guided-explanation',
+        reason: error?.message || 'WebGL initialization failed'
+      }
+    }));
+  }
+
   /**
    * Handle window resize
    */
@@ -334,7 +429,7 @@ export class ConstellationEngine {
    * Main animation loop
    */
   animate() {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized || this.isPaused) return;
     
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     
@@ -364,6 +459,13 @@ export class ConstellationEngine {
     this.stats.triangles = this.renderer.info.render.triangles;
     this.stats.memory = this.renderer.info.memory.geometries + 
                        this.renderer.info.memory.textures;
+    this.evaluateBudgets();
+  }
+
+  evaluateBudgets() {
+    this.stats.overBudget.initTime = this.sceneInitDurationMs > VISUALIZATION_PERFORMANCE_BUDGETS.scene.initTimeMs;
+    this.stats.overBudget.gpuMemory = this.stats.memory > VISUALIZATION_PERFORMANCE_BUDGETS.scene.maxGpuMemoryUnits;
+    this.stats.overBudget.fps = this.stats.fps < this.stats.targetFps;
   }
   
   /**
@@ -390,17 +492,18 @@ export class ConstellationEngine {
    * Clean up resources
    */
   dispose() {
+    this.pause();
     this.isInitialized = false;
-    
-    // Cancel animation frame
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
     
     // Dispose subsystems
     this.nodeSystem.dispose();
     this.connectionRenderer.dispose();
     this.cameraController.dispose();
+
+    const disposalAudit = {
+      nodeSystem: this.nodeSystem.getDisposalAuditReport(),
+      connectionRenderer: this.connectionRenderer.getDisposalAuditReport()
+    };
     
     // Dispose Three.js resources
     this.renderer.dispose();
@@ -415,12 +518,29 @@ export class ConstellationEngine {
       }
     });
     
+    // Remove event listeners
+    window.removeEventListener('resize', this.boundHandlers.resize);
+    document.removeEventListener('keydown', this.boundHandlers.keydown);
+    this.renderer.domElement.removeEventListener('click', this.boundHandlers.click);
+    this.renderer.domElement.removeEventListener('mousemove', this.boundHandlers.mousemove);
+    this.renderer.domElement.removeEventListener('touchstart', this.boundHandlers.touchstart);
+    this.renderer.domElement.removeEventListener('touchmove', this.boundHandlers.touchmove);
+
     // Remove DOM element
-    this.container.removeChild(this.renderer.domElement);
+    if (this.renderer.domElement.parentNode === this.container) {
+      this.container.removeChild(this.renderer.domElement);
+    }
     
     // Clear references
     this.nodes.clear();
     this.connections = [];
+
+    this.container.dispatchEvent(new CustomEvent('sceneLifecycle', {
+      detail: {
+        phase: 'dispose',
+        disposalAudit
+      }
+    }));
   }
   
   /**

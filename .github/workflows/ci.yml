@@ -6,16 +6,26 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  lint-and-performance:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run ESLint
         run: npm run lint
+
+      - name: Lighthouse CI
+        run: npm run perf:lighthouse
+
+      - name: Bundle size delta check
+        run: npm run perf:bundle-delta

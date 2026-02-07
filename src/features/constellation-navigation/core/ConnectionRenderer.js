@@ -7,6 +7,8 @@
 // Use CDN version of Three.js
 const THREE = window.THREE;
 
+import { WebGLResourceAuditor } from '../../shared/WebGLResourceAuditor.js';
+
 export class ConnectionRenderer {
   constructor(scene, config) {
     this.scene = scene;
@@ -14,33 +16,34 @@ export class ConnectionRenderer {
     this.connections = [];
     this.particles = [];
     this.highlightedConnections = new Set();
+    this.resourceAuditor = new WebGLResourceAuditor('ConnectionRenderer');
     
     // Materials
     this.materials = {
-      default: new THREE.LineBasicMaterial({
+      default: this.resourceAuditor.track(new THREE.LineBasicMaterial({
         color: 0x404040,
         transparent: true,
         opacity: 0.3,
         linewidth: 1
-      }),
-      highlighted: new THREE.LineBasicMaterial({
+      }), 'connection-default', 'material'),
+      highlighted: this.resourceAuditor.track(new THREE.LineBasicMaterial({
         color: 0xffffff,
         transparent: true,
         opacity: 0.8,
         linewidth: 2
-      }),
-      particle: new THREE.PointsMaterial({
+      }), 'connection-highlighted', 'material'),
+      particle: this.resourceAuditor.track(new THREE.PointsMaterial({
         color: 0xffffff,
         size: 0.05,
         transparent: true,
         opacity: 0.8,
         blending: THREE.AdditiveBlending,
         map: this.createParticleTexture()
-      })
+      }), 'connection-particle', 'material')
     };
     
     // Particle system
-    this.particleGeometry = new THREE.BufferGeometry();
+    this.particleGeometry = this.resourceAuditor.track(new THREE.BufferGeometry(), 'connection-particle-geometry', 'geometry');
     this.particleSystem = null;
     this.initParticleSystem();
   }
@@ -62,7 +65,7 @@ export class ConnectionRenderer {
     context.fillStyle = gradient;
     context.fillRect(0, 0, 32, 32);
     
-    return new THREE.CanvasTexture(canvas);
+    return this.resourceAuditor.track(new THREE.CanvasTexture(canvas), 'connection-particle-texture', 'texture');
   }
   
   /**
@@ -128,10 +131,10 @@ export class ConnectionRenderer {
     
     // Generate points along curve
     const points = curve.getPoints(50);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const geometry = this.resourceAuditor.track(new THREE.BufferGeometry().setFromPoints(points), `connection-${sourceNode.userData.id}-${targetNode.userData.id}-geometry`, 'geometry');
     
     // Create line
-    const material = this.materials.default.clone();
+    const material = this.resourceAuditor.track(this.materials.default.clone(), `connection-${sourceNode.userData.id}-${targetNode.userData.id}-material`, 'material');
     material.opacity = 0.2 + strength * 0.4;
     
     const line = new THREE.Line(geometry, material);
@@ -231,7 +234,8 @@ export class ConnectionRenderer {
    * Highlight a specific connection
    */
   highlightConnection(connection) {
-    connection.line.material = this.materials.highlighted.clone();
+    this.resourceAuditor.dispose(connection.line.material);
+    connection.line.material = this.resourceAuditor.track(this.materials.highlighted.clone(), `connection-highlight-${connection.source.id}-${connection.target.id}`, 'material');
     connection.line.material.opacity = 0.6 + connection.strength * 0.4;
     this.highlightedConnections.add(connection);
     
@@ -246,7 +250,8 @@ export class ConnectionRenderer {
    */
   resetHighlights() {
     this.highlightedConnections.forEach(connection => {
-      connection.line.material = this.materials.default.clone();
+      this.resourceAuditor.dispose(connection.line.material);
+      connection.line.material = this.resourceAuditor.track(this.materials.default.clone(), `connection-reset-${connection.source.id}-${connection.target.id}`, 'material');
       connection.line.material.opacity = 0.2 + connection.strength * 0.4;
       
       // Reset particle size
@@ -314,27 +319,25 @@ export class ConnectionRenderer {
    * Clean up resources
    */
   dispose() {
-    // Remove connections from scene
+    // Remove scene references
     this.connections.forEach(connection => {
       this.scene.remove(connection.line);
-      connection.line.geometry.dispose();
-      connection.line.material.dispose();
     });
-    
-    // Dispose particle system
+
     if (this.particleSystem) {
       this.scene.remove(this.particleSystem);
-      this.particleGeometry.dispose();
     }
-    
-    // Dispose materials
-    Object.values(this.materials).forEach(material => {
-      material.dispose();
-    });
+
+    // Dispose tracked WebGL resources
+    this.resourceAuditor.disposeAll();
     
     // Clear arrays
     this.connections = [];
     this.particles = [];
     this.highlightedConnections.clear();
+  }
+
+  getDisposalAuditReport() {
+    return this.resourceAuditor.report();
   }
 }

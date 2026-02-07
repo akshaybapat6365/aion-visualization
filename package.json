@@ -25,7 +25,9 @@
     "optimize": "node optimize-bundle.js",
     "audit": "node src/performance-audit.js",
     "visual-test": "node src/visual-testing.js",
-    "pre-deploy": "npm run test:checklist && npm run optimize"
+    "pre-deploy": "npm run test:checklist && npm run optimize",
+    "perf:lighthouse": "lhci autorun --config=./lighthouserc.json",
+    "perf:bundle-delta": "node scripts/performance/check-bundle-size-delta.js"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",

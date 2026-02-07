@@ -19,6 +19,9 @@ export class TransitionOrchestrator {
     this.groups = new Map();
     this.queue = [];
     this.isPlaying = false;
+    this.isInitialized = false;
+    this.isPaused = false;
+    this.rafId = null;
     
     // Timeline tracking
     this.timeline = [];
@@ -31,6 +34,35 @@ export class TransitionOrchestrator {
     // Callbacks
     this.onComplete = null;
     this.onProgress = null;
+
+    this.init();
+  }
+
+  init() {
+    this.isInitialized = true;
+    this.isPaused = false;
+  }
+
+  pause() {
+    if (!this.isPlaying) {
+      return;
+    }
+
+    this.isPaused = true;
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+  }
+
+  resume() {
+    if (!this.isInitialized || !this.isPaused) {
+      return;
+    }
+
+    this.isPaused = false;
+    this.lastFrame = performance.now();
+    this.animate();
   }
   
   /**
@@ -93,6 +125,10 @@ export class TransitionOrchestrator {
    */
   play() {
     return new Promise((resolve, reject) => {
+      if (!this.isInitialized) {
+        this.init();
+      }
+
       if (this.isPlaying) {
         reject(new Error('Transitions already playing'));
         return;
@@ -177,6 +213,10 @@ export class TransitionOrchestrator {
    * Main animation loop
    */
   animate() {
+    if (!this.isInitialized || this.isPaused) {
+      return;
+    }
+
     const now = performance.now();
     const deltaTime = now - this.lastFrame;
     this.lastFrame = now;
@@ -222,7 +262,7 @@ export class TransitionOrchestrator {
     
     // Continue or complete
     if (!allComplete) {
-      requestAnimationFrame(() => this.animate());
+      this.rafId = requestAnimationFrame(() => this.animate());
     } else {
       this.complete();
     }
@@ -435,6 +475,9 @@ export class TransitionOrchestrator {
    */
   complete() {
     this.isPlaying = false;
+    this.isInitialized = false;
+    this.isPaused = false;
+    this.rafId = null;
     
     // Ensure all transitions are in final state
     this.timeline.forEach(transition => {
@@ -458,6 +501,9 @@ export class TransitionOrchestrator {
    */
   stop() {
     this.isPlaying = false;
+    this.isInitialized = false;
+    this.isPaused = false;
+    this.rafId = null;
     this.timeline.forEach(transition => {
       if (transition.state === 'active') {
         transition.state = 'stopped';
@@ -478,5 +524,11 @@ export class TransitionOrchestrator {
     this.queue = [];
     this.timeline = [];
     this.currentTime = 0;
+  }
+
+  dispose() {
+    this.reset();
+    this.isInitialized = false;
+    this.isPaused = false;
   }
 }

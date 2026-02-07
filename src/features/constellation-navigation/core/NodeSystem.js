@@ -7,6 +7,8 @@
 // Use CDN version of Three.js
 const THREE = window.THREE;
 
+import { WebGLResourceAuditor } from '../../shared/WebGLResourceAuditor.js';
+
 export class NodeSystem {
   constructor(scene, config) {
     this.scene = scene;
@@ -15,6 +17,8 @@ export class NodeSystem {
     this.hoveredNode = null;
     this.selectedNode = null;
     
+    this.resourceAuditor = new WebGLResourceAuditor('NodeSystem');
+
     // Materials cache
     this.materials = new Map();
     this.setupMaterials();
@@ -33,37 +37,37 @@ export class NodeSystem {
    */
   setupMaterials() {
     // Base node material
-    this.materials.set('base', new THREE.MeshPhongMaterial({
+    this.materials.set('base', this.resourceAuditor.track(new THREE.MeshPhongMaterial({
       color: 0xffffff,
       emissive: 0x404040,
       emissiveIntensity: 0.3,
       shininess: 100,
       transparent: true,
       opacity: 0.9
-    }));
+    }), 'base-material', 'material'));
     
     // Hover material
-    this.materials.set('hover', new THREE.MeshPhongMaterial({
+    this.materials.set('hover', this.resourceAuditor.track(new THREE.MeshPhongMaterial({
       color: 0xffffff,
       emissive: 0xffffff,
       emissiveIntensity: 0.5,
       shininess: 150,
       transparent: true,
       opacity: 1
-    }));
+    }), 'hover-material', 'material'));
     
     // Selected material
-    this.materials.set('selected', new THREE.MeshPhongMaterial({
+    this.materials.set('selected', this.resourceAuditor.track(new THREE.MeshPhongMaterial({
       color: 0xffffff,
       emissive: 0xffffff,
       emissiveIntensity: 0.8,
       shininess: 200,
       transparent: true,
       opacity: 1
-    }));
+    }), 'selected-material', 'material'));
     
     // Glow material for outer sphere
-    this.materials.set('glow', new THREE.ShaderMaterial({
+    this.materials.set('glow', this.resourceAuditor.track(new THREE.ShaderMaterial({
       uniforms: {
         c: { value: 0.5 },
         p: { value: 4.5 },
@@ -95,7 +99,7 @@ export class NodeSystem {
       side: THREE.FrontSide,
       blending: THREE.AdditiveBlending,
       transparent: true
-    }));
+    }), 'glow-material', 'material'));
   }
   
   /**
@@ -111,7 +115,7 @@ export class NodeSystem {
     };
     
     Object.entries(qualities).forEach(([quality, { segments }]) => {
-      this.geometries.set(quality, new THREE.SphereGeometry(1, segments, segments));
+      this.geometries.set(quality, this.resourceAuditor.track(new THREE.SphereGeometry(1, segments, segments), `sphere-${quality}`, 'geometry'));
     });
   }
   
@@ -127,7 +131,7 @@ export class NodeSystem {
     
     // Core sphere
     const geometry = this.geometries.get(this.config.quality);
-    const material = this.materials.get('base').clone();
+    const material = this.resourceAuditor.track(this.materials.get('base').clone(), `node-${conceptData.id}-material`, 'material');
     material.color = new THREE.Color(conceptData.color);
     
     const mesh = new THREE.Mesh(geometry, material);
@@ -137,7 +141,7 @@ export class NodeSystem {
     
     // Glow effect for important nodes
     if (conceptData.importance >= 7) {
-      const glowMaterial = this.materials.get('glow').clone();
+      const glowMaterial = this.resourceAuditor.track(this.materials.get('glow').clone(), `node-${conceptData.id}-glow-material`, 'material');
       glowMaterial.uniforms.glowColor.value = new THREE.Color(conceptData.color);
       
       const glowMesh = new THREE.Mesh(geometry, glowMaterial);
@@ -203,18 +207,22 @@ export class NodeSystem {
    */
   setNodeState(node, state) {
     node.state = state;
+
+    if (node.mesh.material && node.mesh.material.dispose) {
+      this.resourceAuditor.dispose(node.mesh.material);
+    }
     
     switch(state) {
       case 'default':
-        node.mesh.material = this.materials.get('base').clone();
+        node.mesh.material = this.resourceAuditor.track(this.materials.get('base').clone(), `node-${node.data.id}-default-material`, 'material');
         node.mesh.material.color = new THREE.Color(node.data.color);
         break;
       case 'hover':
-        node.mesh.material = this.materials.get('hover').clone();
+        node.mesh.material = this.resourceAuditor.track(this.materials.get('hover').clone(), `node-${node.data.id}-hover-material`, 'material');
         node.mesh.material.color = new THREE.Color(node.data.color);
         break;
       case 'selected':
-        node.mesh.material = this.materials.get('selected').clone();
+        node.mesh.material = this.resourceAuditor.track(this.materials.get('selected').clone(), `node-${node.data.id}-selected-material`, 'material');
         node.mesh.material.color = new THREE.Color(node.data.color);
         break;
     }
@@ -270,12 +278,12 @@ export class NodeSystem {
     context.fillText(text, 128, 32);
     
     // Create sprite
-    const texture = new THREE.CanvasTexture(canvas);
-    const material = new THREE.SpriteMaterial({
+    const texture = this.resourceAuditor.track(new THREE.CanvasTexture(canvas), `label-${text}-texture`, 'texture');
+    const material = this.resourceAuditor.track(new THREE.SpriteMaterial({
       map: texture,
       transparent: true,
       opacity: 0.9
-    });
+    }), `label-${text}-material`, 'material');
     
     const sprite = new THREE.Sprite(material);
     sprite.scale.set(2, 0.5, 1);
@@ -326,7 +334,6 @@ export class NodeSystem {
     const geometry = this.geometries.get(quality);
     
     this.nodes.forEach(node => {
-      node.mesh.geometry.dispose();
       node.mesh.geometry = geometry;
       
       // Update glow mesh too
@@ -368,11 +375,8 @@ export class NodeSystem {
    * Clean up resources
    */
   dispose() {
-    // Dispose geometries
-    this.geometries.forEach(geometry => geometry.dispose());
-    
-    // Dispose materials
-    this.materials.forEach(material => material.dispose());
+    // Dispose tracked resources
+    this.resourceAuditor.disposeAll();
     
     // Remove nodes from scene
     this.nodes.forEach(node => {
@@ -382,5 +386,9 @@ export class NodeSystem {
     // Clear arrays
     this.nodes = [];
     this.labels.clear();
+  }
+
+  getDisposalAuditReport() {
+    return this.resourceAuditor.report();
   }
 }

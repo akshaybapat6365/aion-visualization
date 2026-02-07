@@ -18,6 +18,9 @@ export class MorphEngine {
     // Animation state
     this.animations = new Map();
     this.animationId = 0;
+    this.isInitialized = false;
+    this.isPaused = false;
+    this.rafId = null;
     
     // Easing functions
     this.easingFunctions = {
@@ -62,6 +65,38 @@ export class MorphEngine {
       totalAnimations: 0,
       averageFrameTime: 0
     };
+
+    this.init();
+  }
+
+  init() {
+    this.isInitialized = true;
+    this.isPaused = false;
+  }
+
+  pause() {
+    this.isPaused = true;
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+  }
+
+  resume() {
+    if (!this.isInitialized || !this.isPaused) {
+      return;
+    }
+
+    this.isPaused = false;
+    if (this.animations.size > 0) {
+      this.animate();
+    }
+  }
+
+  dispose() {
+    this.pause();
+    this.stopAll();
+    this.isInitialized = false;
   }
   
   /**
@@ -347,6 +382,10 @@ export class MorphEngine {
    * Main animation loop
    */
   animate() {
+    if (!this.isInitialized || this.isPaused) {
+      return;
+    }
+
     const now = performance.now();
     
     this.animations.forEach((animation, id) => {
@@ -375,7 +414,7 @@ export class MorphEngine {
     
     // Continue loop if animations remain
     if (this.animations.size > 0) {
-      requestAnimationFrame(() => this.animate());
+      this.rafId = requestAnimationFrame(() => this.animate());
     }
   }
   

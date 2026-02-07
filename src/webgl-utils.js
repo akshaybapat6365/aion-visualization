@@ -152,8 +152,33 @@ class WebGLUtils {
     const container = canvas.parentElement;
     if (!container) return;
 
-    const fallback = this.createInteractiveFallback(canvas);
+    const fallback = this.createFailureModeFallback(canvas, error);
     container.replaceChild(fallback, canvas);
+  }
+
+  createFailureModeFallback(canvas, error) {
+    const shouldUseStatic = /not supported|context|hardware/i.test(error?.message || '');
+    return shouldUseStatic
+      ? this.createStaticGuidedFallback(canvas, error)
+      : this.createInteractiveFallback(canvas);
+  }
+
+  createStaticGuidedFallback(canvas, error) {
+    const fallback = this.createStaticFallback(canvas);
+    const guidance = document.createElement('div');
+    guidance.className = 'fallback-guidance';
+    guidance.innerHTML = `
+      <p><strong>Guided explanation</strong></p>
+      <ol>
+        <li>The interactive 3D scene could not be initialized.</li>
+        <li>You are seeing a static representation of the same concept space.</li>
+        <li>Try enabling hardware acceleration or using a newer browser for full interaction.</li>
+      </ol>
+      ${error?.message ? `<p class="fallback-error-detail">Reason: ${error.message}</p>` : ''}
+    `;
+
+    fallback.appendChild(guidance);
+    return fallback;
   }
 
   // Create static fallback image
