@@ -18,6 +18,29 @@ const CHAPTERS = [
     { number: 14, title: "The Structure and Dynamics of the Self", visualization: "clock" }
 ];
 
+
+function bootstrapChapterShell() {
+    const path = window.location.pathname;
+    const isTargetPage = path === '/' || path.endsWith('/index.html') || path.includes('/chapters/');
+    if (!isTargetPage) return;
+
+    if (!document.querySelector('link[data-shell="chapter-shell"], link[href*="chapter-shell.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/assets/css/chapter-shell.css';
+        link.setAttribute('data-shell', 'chapter-shell');
+        document.head.appendChild(link);
+    }
+
+    if (!document.querySelector('script[data-shell="chapter-shell"], script[src*="chapter-shell.js"]')) {
+        const script = document.createElement('script');
+        script.src = '/assets/js/chapter-shell.js';
+        script.defer = true;
+        script.setAttribute('data-shell', 'chapter-shell');
+        document.head.appendChild(script);
+    }
+}
+
 function createNavigation() {
     const nav = document.createElement('nav');
     nav.className = 'aion-nav';
@@ -243,6 +266,8 @@ function navigateToChapter(chapterNumber) {
     // Navigate to chapter page
     window.location.href = `/chapters/chapter-${chapterNumber}.html`;
 }
+
+bootstrapChapterShell();
 
 // Initialize navigation when DOM is ready
 // Don't show navigation if page is in an iframe
