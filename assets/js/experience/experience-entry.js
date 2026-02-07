@@ -138,7 +138,8 @@ function renderRecommendation() {
     <p>Start chapter: <strong>${state.selectedChapter}</strong>. Suggested mode: <strong>${state.selectedPreset.mode}</strong>.</p>
   `;
 
-  document.getElementById('voiceover-caption').textContent = `Narrative cue: ${state.selectedPreset.narrative}`;
+  const recommendationCue = document.getElementById('recommendation-cue');
+  if (recommendationCue) recommendationCue.textContent = `Narrative cue: ${state.selectedPreset.narrative}`;
   renderGalaxy();
 }
 
@@ -180,13 +181,18 @@ function persistIntent(modeOverride) {
 }
 
 function buildModeUrl(mode, intent) {
-  const query = `entry=experience&chapter=${intent.startingChapter}&preset=${intent.preset}`;
+  const params = new URLSearchParams({
+    entry: 'experience',
+    chapter: String(intent.startingChapter),
+    preset: intent.preset
+  });
 
   if (mode === 'atlas') {
-    return `../src/chapters.html?view=atlas&${query}`;
+    params.set('view', 'atlas');
+    return `../src/chapters.html?${params.toString()}`;
   }
 
-  return `../src/journey.html?${query}`;
+  return `../src/journey.html?${params.toString()}`;
 }
 
 function setupHandoff() {
