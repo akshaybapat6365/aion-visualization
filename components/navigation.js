@@ -117,7 +117,7 @@ function createNavigation() {
 
   const header = nav.querySelector('.nav-header');
   header?.addEventListener('click', event => {
-    if (event.target.closest('.mode-switcher')) return;
+    if (event.target.closest('.mode-switcher') || event.target.closest('.mode-select-wrap')) return;
     window.location.href = '/';
   });
 

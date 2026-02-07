@@ -127,9 +127,17 @@
     }
 
     function setupCompletionTracking() {
-        let recorded = false;
+        const recordedByMode = {};
+
         window.addEventListener('scroll', () => {
-            if (recorded) {
+            const mode = getCurrentMode();
+            if (recordedByMode[mode]) {
+                return;
+            }
+
+            const modeProgress = ensureModeProgress(getProgress(), mode);
+            if (modeProgress.completedChapters[String(chapterNumber)]) {
+                recordedByMode[mode] = true;
                 return;
             }
 
@@ -140,10 +148,22 @@
 
             const ratio = window.scrollY / totalHeight;
             if (ratio > 0.85) {
-                recorded = true;
+                recordedByMode[mode] = true;
                 markChapterComplete();
             }
         }, { passive: true });
+
+        window.addEventListener('aion:mode-change', (event) => {
+            const mode = event.detail?.mode || getCurrentMode();
+            if (recordedByMode[mode]) {
+                return;
+            }
+
+            const modeProgress = ensureModeProgress(getProgress(), mode);
+            if (modeProgress.completedChapters[String(chapterNumber)]) {
+                recordedByMode[mode] = true;
+            }
+        });
     }
 
     function renderAssessment() {
