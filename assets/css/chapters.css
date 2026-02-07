@@ -1,3 +1,6 @@
+@import url('./tokens.css');
+@import url('./motion-system.css');
+
 /* Chapter Styles - Navigation and Content */
 
 /* ========== Chapter Navigation ========== */
@@ -9,7 +12,7 @@
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 15px 30px;
+    padding: var(--space-4) var(--space-7);
     z-index: var(--z-fixed);
     display: flex;
     justify-content: space-between;
@@ -21,7 +24,7 @@
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-3);
     transition: color var(--duration-normal) ease;
     font-size: 0.95rem;
 }
@@ -33,14 +36,14 @@
 .chapter-progress-mini {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: var(--space-4);
 }
 
 .progress-bar-mini {
     width: 200px;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    background: var(--surface-overlay);
+    border-radius: var(--radius-sm);
     overflow: hidden;
 }
 
@@ -48,7 +51,7 @@
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-    transition: width 0.5s ease;
+    transition: width var(--duration-slow) var(--ease-standard);
 }
 
 .progress-text-mini {
@@ -62,7 +65,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 100px 20px 40px;
-    animation: fadeInUp 0.8s ease-out;
+    animation: fadeInUp var(--duration-slower) var(--ease-out-expo);
 }
 
 .chapter-content {
@@ -74,8 +77,8 @@
 /* ========== Chapter Header ========== */
 .chapter-header {
     text-align: center;
-    margin-bottom: 80px;
-    animation: fadeInUp 0.8s ease-out;
+    margin-bottom: var(--space-9);
+    animation: fadeInUp var(--duration-slower) var(--ease-out-expo);
 }
 
 .chapter-title {
@@ -156,8 +159,8 @@
 
 .progress-bar {
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    background: var(--surface-overlay);
+    border-radius: var(--radius-sm);
     overflow: hidden;
     margin-bottom: 10px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -167,8 +170,8 @@
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
-    border-radius: 4px;
-    transition: width 0.5s ease-out;
+    border-radius: var(--radius-sm);
+    transition: width var(--duration-slow) var(--ease-out-expo);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
 }
 
@@ -180,13 +183,13 @@
 
 /* ========== Chapter Sections ========== */
 .chapter-section {
-    margin-bottom: 80px;
+    margin-bottom: var(--space-9);
 }
 
 .section-title {
     font-size: 1.8rem;
     color: var(--accent-primary);
-    margin-bottom: 30px;
+    margin-bottom: var(--space-6);
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
@@ -205,13 +208,13 @@
 }
 
 .concept-section {
-    margin-bottom: 80px;
-    animation: fadeIn 0.6s ease-out;
+    margin-bottom: var(--space-9);
+    animation: fadeIn var(--duration-slow) var(--ease-out-expo);
 }
 
 .concept-section h2 {
     font-size: 2rem;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
     color: var(--accent-primary);
     position: relative;
     padding-bottom: 15px;
@@ -231,7 +234,7 @@
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-primary);
-    margin-bottom: 30px;
+    margin-bottom: var(--space-6);
 }
 
 /* ========== Chapter Grid and Cards ========== */
@@ -247,9 +250,9 @@
 }
 
 .chapter-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    background: var(--surface-overlay-subtle);
+    border: 1px solid var(--surface-overlay);
+    border-radius: var(--radius-xl);
     padding: 30px;
     cursor: pointer;
     position: relative;
@@ -266,7 +269,7 @@
     right: -2px;
     bottom: -2px;
     background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     opacity: 0;
     z-index: -1;
     transition: opacity var(--duration-normal) ease;
@@ -274,7 +277,7 @@
 
 .chapter-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-overlay-subtle);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -296,13 +299,13 @@
     font-size: 0.95rem;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
 }
 
 /* ========== Chapter Progress ========== */
 .chapter-progress {
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-overlay);
     border-radius: 2px;
     overflow: hidden;
     position: relative;
@@ -317,7 +320,7 @@
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
     border-radius: 2px;
     width: var(--progress, 0%);
-    transition: width 0.5s ease;
+    transition: width var(--duration-slow) var(--ease-standard);
 }
 
 /* ========== Chapter States ========== */
@@ -361,16 +364,16 @@
 
 /* ========== Interactive Elements ========== */
 .interactive-demo {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    background: var(--surface-overlay-subtle);
+    border: 1px solid var(--surface-overlay);
+    border-radius: var(--radius-xl);
     padding: 30px;
     margin: 40px 0;
 }
 
 .interactive-demo h3 {
     font-size: 1.3rem;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
     color: var(--accent-secondary);
 }
 
@@ -389,7 +392,7 @@
 .demo-controls label {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--space-3);
     flex: 1;
     min-width: 200px;
 }
@@ -402,8 +405,8 @@
 .demo-controls input[type="range"] {
     width: 100%;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    background: var(--surface-overlay);
+    border-radius: var(--radius-sm);
     outline: none;
     -webkit-appearance: none;
 }
@@ -421,7 +424,7 @@
 /* ========== Visualization Containers ========== */
 .visualization-container {
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 16px;
+    border-radius: var(--radius-xl);
     padding: 40px;
     margin: 30px 0;
     min-height: 400px;
@@ -437,7 +440,7 @@
     background: radial-gradient(ellipse at center, 
         rgba(255, 215, 0, 0.1) 0%, 
         rgba(0, 0, 0, 0.8) 100%);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     cursor: crosshair;
 }
 
@@ -450,9 +453,9 @@
 }
 
 .function-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: var(--surface-overlay-subtle);
+    border: 1px solid var(--surface-overlay);
+    border-radius: var(--radius-lg);
     padding: 25px;
     text-align: center;
     transition: all var(--duration-normal) ease;
@@ -460,7 +463,7 @@
 
 .function-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-overlay-subtle);
     border-color: var(--accent-primary);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
@@ -493,15 +496,15 @@
 }
 
 .exercise-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    background: var(--surface-overlay-subtle);
+    border: 1px solid var(--surface-overlay);
+    border-radius: var(--radius-xl);
     padding: 30px;
 }
 
 .exercise-card h3 {
     font-size: 1.4rem;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-5);
     color: var(--accent-primary);
 }
 
@@ -520,7 +523,7 @@
     color: white;
     border: none;
     padding: 12px 30px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-size: 1rem;
     cursor: pointer;
     transition: all var(--duration-normal) ease;
@@ -550,8 +553,8 @@
     align-items: center;
     gap: 10px;
     padding: 12px 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid var(--surface-overlay);
+    border-radius: var(--radius-md);
     transition: all var(--duration-normal) ease;
 }
 
@@ -559,7 +562,7 @@
 .nav-next:hover {
     color: var(--accent-primary);
     border-color: var(--accent-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-overlay-subtle);
 }
 
 /* ========== Symbol Animations ========== */
@@ -977,7 +980,7 @@
 
 .chapter-grid .chapter-progress {
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-overlay);
     border-radius: 2px;
     overflow: hidden;
 }

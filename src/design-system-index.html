@@ -1,103 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aion Design System - Premium Design Excellence</title>
-    <link rel="stylesheet" href="design-system/core/reset.css">
-    <link rel="stylesheet" href="design-system/core/colors.css">
-    <link rel="stylesheet" href="design-system/core/typography.css">
-    <link rel="stylesheet" href="design-system/core/spacing.css">
-    <link rel="stylesheet" href="design-system/core/layout.css">
-    <style>
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: var(--font-primary);
-            line-height: 1.6;
-            padding: var(--space-32);
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            font-size: var(--text-size-display);
-            font-weight: 300;
-            margin-bottom: var(--space-16);
-        }
-        .links {
-            list-style: none;
-            padding: 0;
-        }
-        .links li {
-            margin-bottom: var(--space-8);
-        }
-        .links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            display: inline-block;
-            padding: var(--space-4) 0;
-        }
-        .links a:hover {
-            color: var(--text-primary);
-        }
-        .section {
-            margin-bottom: var(--space-32);
-            padding-bottom: var(--space-32);
-            border-bottom: 1px solid var(--border-default);
-        }
-        .section:last-child {
-            border-bottom: none;
-        }
-        h2 {
-            font-size: var(--text-size-h2);
-            margin-bottom: var(--space-12);
-            font-weight: 300;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aion Design System Index</title>
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/motion-system.css" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/chapters.css" />
+  <link rel="stylesheet" href="visualizations/alchemy/alchemy.css" />
+  <link rel="stylesheet" href="visualizations/clock/clock.css" />
+  <style>
+    body { padding: var(--space-7); }
+    .guide { max-width: 1200px; margin: 0 auto; display: grid; gap: var(--space-8); }
+    .panel { background: var(--bg-secondary); border: 1px solid var(--surface-overlay); border-radius: var(--radius-xl); padding: var(--space-7); }
+    .token-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: var(--space-4); }
+    .swatch { border-radius: var(--radius-md); padding: var(--space-4); min-height: 110px; border: 1px solid var(--surface-overlay); }
+    .example-row { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: var(--space-5); align-items: start; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Aion Design System</h1>
-        
-        <div class="section">
-            <h2>Core Components</h2>
-            <ul class="links">
-                <li><a href="test-design-system.html">Design System Test Page</a></li>
-                <li><a href="design-system/documentation/examples/navigation-demo.html">Navigation System Demo</a></li>
-                <li><a href="design-preview.html">Design Preview</a></li>
-            </ul>
+  <main class="guide">
+    <section class="panel motion-enter-concept">
+      <h1 class="heading-display heading-2">Aion Live Design System</h1>
+      <p class="body-base">Tokenized color, type, spacing, and motion reference with live chapter + visualization patterns.</p>
+    </section>
+
+    <section class="panel">
+      <h2 class="heading-4">Core Tokens</h2>
+      <div class="token-grid">
+        <div class="swatch" style="background:var(--bg-primary)">bg-primary</div>
+        <div class="swatch" style="background:var(--bg-secondary)">bg-secondary</div>
+        <div class="swatch" style="background:var(--accent-primary); color:var(--text-inverse)">accent-primary</div>
+        <div class="swatch" style="background:var(--accent-secondary); color:var(--text-inverse)">accent-secondary</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="heading-4">Chapter Components</h2>
+      <div class="chapter-card motion-hover-lift" style="max-width:520px;">
+        <div class="chapter-symbol"></div>
+        <h3 class="chapter-title" style="font-size:var(--text-2xl)">Individuation Path</h3>
+        <p class="chapter-subtitle">Example chapter card pulled from chapter styles.</p>
+        <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+        <p class="progress-text">65% complete</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="heading-4">Visualization Components</h2>
+      <div class="example-row">
+        <div class="alchemy-lab" style="height:auto; min-height:260px;">
+          <div class="alchemy-header"><h2>Alchemy Header</h2><div class="score-display"><span class="score-label">Score</span><span class="score-value">42</span></div></div>
+          <div class="stage-progression"><div class="stage-node active"><span class="stage-symbol">🜂</span><span class="stage-label">Calcination</span></div></div>
         </div>
-        
-        <div class="section">
-            <h2>CSS Resources</h2>
-            <ul class="links">
-                <li><a href="design-system/core/colors.css">Colors (20-shade monochromatic palette)</a></li>
-                <li><a href="design-system/core/typography.css">Typography (Golden ratio scale)</a></li>
-                <li><a href="design-system/core/spacing.css">Spacing (8px grid system)</a></li>
-                <li><a href="design-system/core/layout.css">Layout utilities</a></li>
-                <li><a href="design-system/core/reset.css">CSS Reset</a></li>
-            </ul>
+        <div class="aion-clock-container">
+          <svg class="aion-clock-svg" width="280" height="180" viewBox="0 0 280 180"><circle cx="140" cy="90" r="68" fill="none" stroke="currentColor"/></svg>
+          <p class="caption">Clock container + SVG shell tokenized.</p>
         </div>
-        
-        <div class="section">
-            <h2>Navigation Components</h2>
-            <ul class="links">
-                <li><a href="design-system/navigation/core/concept-constellation.js">Concept Constellation (D3.js)</a></li>
-                <li><a href="design-system/navigation/core/keyboard-shortcuts.js">Keyboard Shortcuts</a></li>
-                <li><a href="design-system/navigation/interactions/magnetic-cursor.js">Magnetic Cursor</a></li>
-                <li><a href="design-system/navigation/transitions/liquid-morphing.css">Liquid Morphing Transitions</a></li>
-            </ul>
-        </div>
-        
-        <div class="section">
-            <h2>Quality Control</h2>
-            <ul class="links">
-                <li><a href="design-system/quality-control/scripts/screenshot-test.js">Screenshot Test Script</a></li>
-            </ul>
-        </div>
-    </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="heading-4">Motion System</h2>
+      <p class="motion-link-reveal">.motion-link-reveal: semantic text reveal.</p>
+      <button class="btn btn-primary motion-hover-lift">Motion Hover Lift</button>
+    </section>
+  </main>
 </body>
 </html>
