@@ -114,6 +114,16 @@ create_standard_chapter() {
                     </ul>
                 </div>
             </section>
+
+            <section class="chapter-section" id="related-concepts-section" data-chapter-id="chCHAPTER_NUM">
+                <h2>Related Concepts</h2>
+                <ul id="related-concepts-list"></ul>
+            </section>
+
+            <section class="chapter-section" id="related-chapters-section" data-chapter-id="chCHAPTER_NUM">
+                <h2>Related Chapters</h2>
+                <ul id="related-chapters-list"></ul>
+            </section>
         </div>
 
         <nav class="chapter-navigation">
@@ -125,6 +135,53 @@ create_standard_chapter() {
 
     <script src="../../assets/js/core/navigation.js"></script>
     <script src="../../assets/js/core/utilities.js"></script>
+    <script type="module">
+        const chapterId = document.getElementById('related-concepts-section')?.dataset.chapterId;
+        const conceptList = document.getElementById('related-concepts-list');
+        const chapterList = document.getElementById('related-chapters-list');
+
+        async function renderRelatedSections() {
+            const [chaptersResponse, conceptsResponse] = await Promise.all([
+                fetch('../../src/data/aion-graph/chapters.json'),
+                fetch('../../src/data/aion-graph/concepts.json')
+            ]);
+
+            const [chapters, concepts] = await Promise.all([
+                chaptersResponse.json(),
+                conceptsResponse.json()
+            ]);
+
+            const chapterById = new Map(chapters.map((chapter) => [chapter.id, chapter]));
+            const conceptById = new Map(concepts.map((concept) => [concept.id, concept]));
+            const chapter = chapterId ? chapterById.get(chapterId) : null;
+
+            if (!chapter || !conceptList || !chapterList) {
+                return;
+            }
+
+            chapter.keyConceptIds
+                .map((conceptId) => conceptById.get(conceptId))
+                .filter(Boolean)
+                .forEach((concept) => {
+                    const li = document.createElement('li');
+                    li.textContent = `${concept.label}: ${concept.definition}`;
+                    conceptList.appendChild(li);
+                });
+
+            chapter.relatedChapterIds
+                .map((relatedId) => chapterById.get(relatedId))
+                .filter(Boolean)
+                .forEach((relatedChapter) => {
+                    const li = document.createElement('li');
+                    li.textContent = `Chapter ${relatedChapter.order}: ${relatedChapter.title}`;
+                    chapterList.appendChild(li);
+                });
+        }
+
+        renderRelatedSections().catch((error) => {
+            console.error('Unable to render related graph sections', error);
+        });
+    </script>
     <script>
         // Basic chapter functionality
         function navigateToChapter(chapter) {

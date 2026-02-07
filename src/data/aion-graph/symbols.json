@@ -1,0 +1,8 @@
+[
+  {"id":"fish","motif":"Piscean fish pair","historicPeriod":"Early Christian era","conceptIds":["archetype","self","shadow"]},
+  {"id":"mandala","motif":"Quaternary mandala","historicPeriod":"Late antique to modern analytic symbolism","conceptIds":["self","individuation","ego","archetype"]},
+  {"id":"dragon","motif":"Dragon / serpent adversary","historicPeriod":"Apocalyptic and alchemical traditions","conceptIds":["shadow","archetype"]},
+  {"id":"sophia","motif":"Sophia / wisdom figure","historicPeriod":"Gnostic and medieval currents","conceptIds":["anima","coniunctio"]},
+  {"id":"sword","motif":"Discerning logos blade","historicPeriod":"Patristic and scholastic symbolism","conceptIds":["animus"]},
+  {"id":"lapis","motif":"Lapis philosophorum","historicPeriod":"Medieval and Renaissance alchemy","conceptIds":["coniunctio","individuation"]}
+]
