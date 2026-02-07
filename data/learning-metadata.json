@@ -1,0 +1,522 @@
+{
+  "depths": {
+    "beginner": {
+      "label": "Beginner",
+      "description": "Plain-language summaries focused on core ideas."
+    },
+    "scholar": {
+      "label": "Scholar",
+      "description": "Textual and structural nuance anchored in Jung's argument."
+    },
+    "practitioner": {
+      "label": "Practitioner",
+      "description": "Reflection and application prompts for lived integration."
+    }
+  },
+  "chapters": {
+    "1": {
+      "concepts": [
+        "The Ego",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 1 introduces the ego in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 1 traces how the ego is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 1 invites you to examine where the ego appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "1-q1",
+          "question": "Which statement best captures the central focus of Chapter 1?",
+          "options": [
+            "The Ego as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "1-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "2": {
+      "concepts": [
+        "The Shadow",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 2 introduces the shadow in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 2 traces how the shadow is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 2 invites you to examine where the shadow appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "2-q1",
+          "question": "Which statement best captures the central focus of Chapter 2?",
+          "options": [
+            "The Shadow as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "2-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "3": {
+      "concepts": [
+        "The Syzygy",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 3 introduces the syzygy: anima and animus in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 3 traces how the syzygy: anima and animus is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 3 invites you to examine where the syzygy: anima and animus appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "3-q1",
+          "question": "Which statement best captures the central focus of Chapter 3?",
+          "options": [
+            "The Syzygy: Anima and Animus as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "3-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "4": {
+      "concepts": [
+        "The Self",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 4 introduces the self in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 4 traces how the self is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 4 invites you to examine where the self appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "4-q1",
+          "question": "Which statement best captures the central focus of Chapter 4?",
+          "options": [
+            "The Self as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "4-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "5": {
+      "concepts": [
+        "Christ, A Symbol of the Self",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 5 introduces christ, a symbol of the self in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 5 traces how christ, a symbol of the self is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 5 invites you to examine where christ, a symbol of the self appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "5-q1",
+          "question": "Which statement best captures the central focus of Chapter 5?",
+          "options": [
+            "Christ, A Symbol of the Self as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "5-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "6": {
+      "concepts": [
+        "The Sign of the Fishes",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 6 introduces the sign of the fishes in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 6 traces how the sign of the fishes is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 6 invites you to examine where the sign of the fishes appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "6-q1",
+          "question": "Which statement best captures the central focus of Chapter 6?",
+          "options": [
+            "The Sign of the Fishes as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "6-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "7": {
+      "concepts": [
+        "The Prophecies of Nostradamus",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 7 introduces the prophecies of nostradamus in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 7 traces how the prophecies of nostradamus is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 7 invites you to examine where the prophecies of nostradamus appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "7-q1",
+          "question": "Which statement best captures the central focus of Chapter 7?",
+          "options": [
+            "The Prophecies of Nostradamus as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "7-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "8": {
+      "concepts": [
+        "The Historical Significance of the Fish",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 8 introduces the historical significance of the fish in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 8 traces how the historical significance of the fish is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 8 invites you to examine where the historical significance of the fish appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "8-q1",
+          "question": "Which statement best captures the central focus of Chapter 8?",
+          "options": [
+            "The Historical Significance of the Fish as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "8-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "9": {
+      "concepts": [
+        "The Ambivalence of the Fish Symbol",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 9 introduces the ambivalence of the fish symbol in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 9 traces how the ambivalence of the fish symbol is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 9 invites you to examine where the ambivalence of the fish symbol appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "9-q1",
+          "question": "Which statement best captures the central focus of Chapter 9?",
+          "options": [
+            "The Ambivalence of the Fish Symbol as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "9-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "10": {
+      "concepts": [
+        "The Fish in Alchemy",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 10 introduces the fish in alchemy in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 10 traces how the fish in alchemy is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 10 invites you to examine where the fish in alchemy appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "10-q1",
+          "question": "Which statement best captures the central focus of Chapter 10?",
+          "options": [
+            "The Fish in Alchemy as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "10-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "11": {
+      "concepts": [
+        "The Alchemical Interpretation of the Fish",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 11 introduces the alchemical interpretation of the fish in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 11 traces how the alchemical interpretation of the fish is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 11 invites you to examine where the alchemical interpretation of the fish appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "11-q1",
+          "question": "Which statement best captures the central focus of Chapter 11?",
+          "options": [
+            "The Alchemical Interpretation of the Fish as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "11-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "12": {
+      "concepts": [
+        "Background to the Psychology of Christian Alchemical Symbolism",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 12 introduces background to the psychology of christian alchemical symbolism in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 12 traces how background to the psychology of christian alchemical symbolism is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 12 invites you to examine where background to the psychology of christian alchemical symbolism appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "12-q1",
+          "question": "Which statement best captures the central focus of Chapter 12?",
+          "options": [
+            "Background to the Psychology of Christian Alchemical Symbolism as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "12-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "13": {
+      "concepts": [
+        "Gnostic Symbols of the Self",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 13 introduces gnostic symbols of the self in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 13 traces how gnostic symbols of the self is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 13 invites you to examine where gnostic symbols of the self appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "13-q1",
+          "question": "Which statement best captures the central focus of Chapter 13?",
+          "options": [
+            "Gnostic Symbols of the Self as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "13-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    },
+    "14": {
+      "concepts": [
+        "The Structure and Dynamics of the Self",
+        "individuation",
+        "symbolic interpretation"
+      ],
+      "depthContent": {
+        "beginner": "Chapter 14 introduces the structure and dynamics of the self in accessible terms, clarifying what Jung wants readers to notice before moving deeper.",
+        "scholar": "At a scholarly level, Chapter 14 traces how the structure and dynamics of the self is organized rhetorically, linking symbols, historical motifs, and psyche structure.",
+        "practitioner": "For practice, Chapter 14 invites you to examine where the structure and dynamics of the self appears in your own experience and how conscious attention might shift your response."
+      },
+      "assessment": [
+        {
+          "id": "14-q1",
+          "question": "Which statement best captures the central focus of Chapter 14?",
+          "options": [
+            "The Structure and Dynamics of the Self as a core psychological lens",
+            "A purely historical chronology",
+            "A rejection of symbolic thinking"
+          ],
+          "answer": 0,
+          "explanation": "Jung uses each chapter's theme as a lens for interpreting psyche and symbol."
+        },
+        {
+          "id": "14-q2",
+          "question": "How does this chapter support individuation work?",
+          "options": [
+            "It links conscious insight with unconscious material",
+            "It avoids engagement with symbols",
+            "It replaces reflection with fixed doctrine"
+          ],
+          "answer": 0,
+          "explanation": "The chapter contributes by integrating conscious and unconscious perspectives."
+        }
+      ]
+    }
+  }
+}
