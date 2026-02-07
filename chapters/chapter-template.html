@@ -265,30 +265,45 @@
     <script type="module">
       const chapterRoot = document.getElementById('related-concepts-section');
       const conceptList = document.getElementById('related-concepts-list');
+      const chapterSection = document.getElementById('related-chapters-list')?.closest('section');
       const chapterList = document.getElementById('related-chapters-list');
+
+      async function safeJson(url) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) return null;
+          return response.json();
+        } catch {
+          return null;
+        }
+      }
 
       async function renderRelatedSections() {
         if (!chapterRoot || !conceptList || !chapterList) return;
 
         const chapterId = Number(chapterRoot.dataset.chapterId);
-        const [chaptersResponse, conceptsResponse] = await Promise.all([
-          fetch('../src/data/aion-graph/chapters.json'),
-          fetch('../src/data/aion-graph/concepts.json')
-        ]);
-
-        if (!chaptersResponse.ok || !conceptsResponse.ok) return;
-
         const [chapters, concepts] = await Promise.all([
-          chaptersResponse.json(),
-          conceptsResponse.json()
+          safeJson('../src/data/aion-graph/chapters.json'),
+          safeJson('../src/data/aion-graph/concepts.json')
         ]);
+
+        if (!Array.isArray(chapters) || !Array.isArray(concepts)) {
+          chapterRoot.hidden = true;
+          if (chapterSection) chapterSection.hidden = true;
+          return;
+        }
 
         const chapterById = new Map(chapters.map((chapter) => [Number(chapter.id), chapter]));
         const conceptById = new Map(concepts.map((concept) => [concept.id, concept]));
         const chapter = chapterById.get(chapterId);
 
-        if (!chapter) return;
+        if (!chapter) {
+          chapterRoot.hidden = true;
+          if (chapterSection) chapterSection.hidden = true;
+          return;
+        }
 
+        let renderedConcepts = 0;
         (chapter.keyConceptIds || [])
           .map((conceptId) => conceptById.get(conceptId))
           .filter(Boolean)
@@ -296,8 +311,10 @@
             const li = document.createElement('li');
             li.textContent = `${concept.label}: ${concept.definition}`;
             conceptList.appendChild(li);
+            renderedConcepts += 1;
           });
 
+        let renderedChapters = 0;
         (chapter.relatedChapterIds || [])
           .map((relatedId) => chapterById.get(Number(relatedId)))
           .filter(Boolean)
@@ -305,12 +322,14 @@
             const li = document.createElement('li');
             li.textContent = `Chapter ${relatedChapter.order}: ${relatedChapter.title}`;
             chapterList.appendChild(li);
+            renderedChapters += 1;
           });
+
+        if (!renderedConcepts) chapterRoot.hidden = true;
+        if (!renderedChapters && chapterSection) chapterSection.hidden = true;
       }
 
-      renderRelatedSections().catch((error) => {
-        console.error('Unable to render related graph sections', error);
-      });
+      renderRelatedSections();
     </script>
 </body>
 </html>
