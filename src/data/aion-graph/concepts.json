@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ego",
+    "label": "The Ego",
+    "definition": "The center of conscious identity and agency in Jungian psychology.",
+    "chapterRefs": ["ch1", "ch6"],
+    "symbolRefs": ["mandala"],
+    "difficulty": "foundational",
+    "prerequisites": []
+  },
+  {
+    "id": "shadow",
+    "label": "The Shadow",
+    "definition": "Rejected or disowned psychic contents that seek recognition and integration.",
+    "chapterRefs": ["ch2", "ch6", "ch10"],
+    "symbolRefs": ["dragon", "fish"],
+    "difficulty": "intermediate",
+    "prerequisites": ["ego"]
+  },
+  {
+    "id": "anima",
+    "label": "Anima",
+    "definition": "The inner feminine image in the male psyche, mediating relation to the unconscious.",
+    "chapterRefs": ["ch3", "ch12"],
+    "symbolRefs": ["sophia"],
+    "difficulty": "intermediate",
+    "prerequisites": ["ego"]
+  },
+  {
+    "id": "animus",
+    "label": "Animus",
+    "definition": "The inner masculine image in the female psyche, shaping judgment and logos-orientation.",
+    "chapterRefs": ["ch4", "ch12"],
+    "symbolRefs": ["sword"],
+    "difficulty": "intermediate",
+    "prerequisites": ["ego"]
+  },
+  {
+    "id": "self",
+    "label": "The Self",
+    "definition": "The totality archetype that orders psyche toward wholeness and integration.",
+    "chapterRefs": ["ch5", "ch11", "ch14"],
+    "symbolRefs": ["mandala", "fish"],
+    "difficulty": "advanced",
+    "prerequisites": ["ego", "shadow"]
+  },
+  {
+    "id": "individuation",
+    "label": "Individuation",
+    "definition": "The lifelong process of integrating conscious and unconscious contents into wholeness.",
+    "chapterRefs": ["ch6", "ch10", "ch13", "ch14"],
+    "symbolRefs": ["lapis", "mandala"],
+    "difficulty": "advanced",
+    "prerequisites": ["ego", "shadow", "anima", "animus"]
+  },
+  {
+    "id": "archetype",
+    "label": "Archetype",
+    "definition": "A universal structural pattern of the collective unconscious expressed in symbols and myths.",
+    "chapterRefs": ["ch7", "ch9"],
+    "symbolRefs": ["fish", "dragon", "mandala"],
+    "difficulty": "intermediate",
+    "prerequisites": ["ego"]
+  },
+  {
+    "id": "coniunctio",
+    "label": "Coniunctio",
+    "definition": "The symbolic union of opposites represented in alchemical transformation imagery.",
+    "chapterRefs": ["ch10", "ch12", "ch14"],
+    "symbolRefs": ["lapis", "sophia"],
+    "difficulty": "advanced",
+    "prerequisites": ["shadow", "anima", "animus"]
+  }
+]
