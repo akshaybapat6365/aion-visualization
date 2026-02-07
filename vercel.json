@@ -11,6 +11,24 @@
   },
   "trailingSlash": false,
   "cleanUrls": false,
+  "rewrites": [
+    {
+      "source": "/journey/chapter-:chapter",
+      "destination": "/chapters/chapter-:chapter.html"
+    },
+    {
+      "source": "/journey/:path*",
+      "destination": "/chapters/:path*"
+    },
+    {
+      "source": "/atlas",
+      "destination": "/src/atlas/index.html"
+    },
+    {
+      "source": "/atlas/:path*",
+      "destination": "/src/atlas/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
