@@ -1,6 +1,33 @@
 // Interactive Concept Mapping System
 // Visualizes Jungian concepts and their relationships
 
+const RELATION_TAXONOMY_LOOKUP = {
+  complements: { label: 'complements', motionBehavior: 'integration' },
+  supports: { label: 'supports', motionBehavior: 'deflation' },
+  converges_with: { label: 'converges with', motionBehavior: 'integration' },
+  orients: { label: 'orients', motionBehavior: 'integration' },
+  illuminates: { label: 'illuminates', motionBehavior: 'inflation' },
+  precedes: { label: 'precedes', motionBehavior: 'deflation' },
+  culminates_in: { label: 'culminates in', motionBehavior: 'cyclical-return' },
+  symbolizes: { label: 'symbolizes', motionBehavior: 'cyclical-return' },
+  opposes: { label: 'opposes', motionBehavior: 'opposition' },
+  develops_toward: { label: 'develops toward', motionBehavior: 'integration' },
+  relates_to: { label: 'relates to', motionBehavior: 'integration' },
+  integrates_into: { label: 'integrates into', motionBehavior: 'integration' },
+  manifests_as: { label: 'manifests as', motionBehavior: 'inflation' },
+  expresses_as: { label: 'expresses as', motionBehavior: 'inflation' },
+  symbolized_by: { label: 'symbolized by', motionBehavior: 'cyclical-return' },
+  structured_as: { label: 'structured as', motionBehavior: 'cyclical-return' },
+  achieved_through: { label: 'achieved through', motionBehavior: 'integration' },
+  requires: { label: 'requires', motionBehavior: 'deflation' },
+  resolved_by: { label: 'resolved by', motionBehavior: 'deflation' },
+  completed_by: { label: 'completed by', motionBehavior: 'cyclical-return' },
+  represents: { label: 'represents', motionBehavior: 'cyclical-return' },
+  enacts: { label: 'enacts', motionBehavior: 'inflation' },
+  guides_to: { label: 'guides to', motionBehavior: 'integration' },
+  aspect_of: { label: 'aspect of', motionBehavior: 'deflation' }
+};
+
 class ConceptMapper {
   constructor(containerId, options = {}) {
     this.container = document.getElementById(containerId);
@@ -119,41 +146,41 @@ class ConceptMapper {
     const relationships = [
       // Ego relationships
       { source: 'ego', target: 'shadow', type: 'opposes', strength: 0.9 },
-      { source: 'ego', target: 'self', type: 'develops-toward', strength: 0.8 },
-      { source: 'ego', target: 'anima', type: 'relates-to', strength: 0.7 },
-      { source: 'ego', target: 'animus', type: 'relates-to', strength: 0.7 },
+      { source: 'ego', target: 'self', type: 'develops_toward', strength: 0.8 },
+      { source: 'ego', target: 'anima', type: 'relates_to', strength: 0.7 },
+      { source: 'ego', target: 'animus', type: 'relates_to', strength: 0.7 },
             
       // Shadow relationships
-      { source: 'shadow', target: 'self', type: 'integrates-into', strength: 0.8 },
-      { source: 'shadow', target: 'projection', type: 'manifests-as', strength: 0.9 },
-      { source: 'shadow', target: 'trickster', type: 'expresses-as', strength: 0.7 },
+      { source: 'shadow', target: 'self', type: 'integrates_into', strength: 0.8 },
+      { source: 'shadow', target: 'projection', type: 'manifests_as', strength: 0.9 },
+      { source: 'shadow', target: 'trickster', type: 'expresses_as', strength: 0.7 },
             
       // Anima/Animus relationships
-      { source: 'anima', target: 'self', type: 'integrates-into', strength: 0.8 },
-      { source: 'animus', target: 'self', type: 'integrates-into', strength: 0.8 },
-      { source: 'anima', target: 'mother', type: 'related-to', strength: 0.6 },
-      { source: 'animus', target: 'father', type: 'related-to', strength: 0.6 },
+      { source: 'anima', target: 'self', type: 'integrates_into', strength: 0.8 },
+      { source: 'animus', target: 'self', type: 'integrates_into', strength: 0.8 },
+      { source: 'anima', target: 'mother', type: 'relates_to', strength: 0.6 },
+      { source: 'animus', target: 'father', type: 'relates_to', strength: 0.6 },
             
       // Self relationships
-      { source: 'self', target: 'mandala', type: 'symbolized-by', strength: 0.9 },
-      { source: 'self', target: 'quaternity', type: 'structured-as', strength: 0.8 },
-      { source: 'self', target: 'individuation', type: 'achieved-through', strength: 0.9 },
+      { source: 'self', target: 'mandala', type: 'symbolized_by', strength: 0.9 },
+      { source: 'self', target: 'quaternity', type: 'structured_as', strength: 0.8 },
+      { source: 'self', target: 'individuation', type: 'achieved_through', strength: 0.9 },
             
       // Process relationships
       { source: 'individuation', target: 'integration', type: 'requires', strength: 0.9 },
-      { source: 'projection', target: 'integration', type: 'resolved-by', strength: 0.8 },
+      { source: 'projection', target: 'integration', type: 'resolved_by', strength: 0.8 },
       { source: 'compensation', target: 'individuation', type: 'supports', strength: 0.7 },
             
       // Symbol relationships
-      { source: 'trinity', target: 'quaternity', type: 'completed-by', strength: 0.8 },
+      { source: 'trinity', target: 'quaternity', type: 'completed_by', strength: 0.8 },
       { source: 'ouroboros', target: 'self', type: 'represents', strength: 0.7 },
-      { source: 'coniunctio', target: 'individuation', type: 'culminates-in', strength: 0.9 },
+      { source: 'coniunctio', target: 'individuation', type: 'culminates_in', strength: 0.9 },
             
       // Archetype relationships
       { source: 'hero', target: 'individuation', type: 'enacts', strength: 0.8 },
-      { source: 'wise-old-man', target: 'self', type: 'guides-to', strength: 0.7 },
-      { source: 'mother', target: 'anima', type: 'aspect-of', strength: 0.6 },
-      { source: 'father', target: 'animus', type: 'aspect-of', strength: 0.6 }
+      { source: 'wise-old-man', target: 'self', type: 'guides_to', strength: 0.7 },
+      { source: 'mother', target: 'anima', type: 'aspect_of', strength: 0.6 },
+      { source: 'father', target: 'animus', type: 'aspect_of', strength: 0.6 }
     ];
         
     // Build the graph
@@ -201,7 +228,7 @@ class ConceptMapper {
       .attr('dy', -5)
       .style('font-size', '10px')
       .style('fill', '#666')
-      .text(d => d.type.replace(/-/g, ' '));
+      .text(d => this.getRelationLabel(d.type));
         
     // Create nodes
     this.nodes = this.nodeLayer.selectAll('.node')
@@ -249,15 +276,11 @@ class ConceptMapper {
       return window.AionMotionChoreographer.getMotionBehaviorForRelation(relationType);
     }
 
-    const fallbackMap = {
-      opposes: 'opposition',
-      'integrates-into': 'integration',
-      'manifests-as': 'inflation',
-      'expresses-as': 'inflation',
-      represents: 'cyclical-return'
-    };
+    return RELATION_TAXONOMY_LOOKUP[relationType]?.motionBehavior || 'integration';
+  }
 
-    return fallbackMap[relationType] || 'integration';
+  getRelationLabel(relationType) {
+    return RELATION_TAXONOMY_LOOKUP[relationType]?.label || relationType.replace(/_/g, ' ');
   }
 
   getLinkDashPattern(relationType) {
