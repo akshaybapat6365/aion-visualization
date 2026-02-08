@@ -6,7 +6,9 @@
       "startServerReadyPattern": "Serving HTTP on",
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/src/index.html"
+        "http://localhost:3000/chapters/",
+        "http://localhost:3000/chapters/enhanced/1/",
+        "http://localhost:3000/chapters/standard/1/"
       ]
     },
     "assert": {
@@ -17,7 +19,8 @@
       }
     },
     "upload": {
-      "target": "temporary-public-storage"
+      "target": "filesystem",
+      "outputDir": "./tests/reports/lighthouse/current"
     }
   }
 }

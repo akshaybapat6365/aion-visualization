@@ -4,6 +4,13 @@ export const VISUALIZATION_PERFORMANCE_BUDGETS = {
     cls: 0.1,
     tbtMs: 300
   },
+  payload: {
+    maxJsKb: 350
+  },
+  runtime: {
+    minFps: 45,
+    maxMemoryMb: 160
+  },
   scene: {
     initTimeMs: 1200,
     maxGpuMemoryUnits: 300

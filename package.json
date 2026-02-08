@@ -27,7 +27,12 @@
     "visual-test": "node src/visual-testing.js",
     "pre-deploy": "npm run test:checklist && npm run optimize",
     "perf:lighthouse": "lhci autorun --config=./lighthouserc.json",
-    "perf:bundle-delta": "node scripts/performance/check-bundle-size-delta.js"
+    "perf:bundle-delta": "node scripts/performance/check-bundle-size-delta.js",
+    "perf:runtime": "node scripts/performance/collect-runtime-metrics.js",
+    "perf:cleanup": "node scripts/performance/verify-viz-cleanup.js",
+    "perf:report": "node scripts/performance/generate-route-performance-report.js",
+    "perf:trends": "node scripts/performance/check-route-performance-trends.js",
+    "perf:ci": "npm run perf:lighthouse && npm run perf:runtime && npm run perf:cleanup && npm run perf:report && npm run perf:trends"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",

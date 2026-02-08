@@ -1,0 +1,20 @@
+{
+  "routes": [
+    "/",
+    "/chapters/",
+    "/chapters/enhanced/1/",
+    "/chapters/standard/1/"
+  ],
+  "webVitals": {
+    "lcpMs": 2500,
+    "tbtMs": 300,
+    "cls": 0.1
+  },
+  "payload": {
+    "jsKb": 350
+  },
+  "runtime": {
+    "minFps": 45,
+    "maxMemoryMb": 160
+  }
+}

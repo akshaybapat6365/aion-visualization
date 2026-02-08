@@ -21,11 +21,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Run ESLint
         run: npm run lint
 
-      - name: Lighthouse CI
-        run: npm run perf:lighthouse
+      - name: Lighthouse + Playwright performance budget gate
+        run: npm run perf:ci
 
       - name: Bundle size delta check
         run: npm run perf:bundle-delta
+
+      - name: Upload route performance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-performance-reports
+          path: |
+            tests/reports/lighthouse/current
+            tests/reports/performance
+            tests/reports/performance-history
