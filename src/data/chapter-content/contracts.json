@@ -1,0 +1,170 @@
+[
+  {
+    "id": "ch1",
+    "whyThisMatters": "The ego frames conscious identity; understanding its limits is the first safeguard against inflation during individuation.",
+    "coreTerms": ["ego", "self"],
+    "conceptChecks": [
+      "How does Jung distinguish the ego from the Self?",
+      "Why is ego-inflation psychologically risky?"
+    ],
+    "reflectionPrompt": "Where in your life do you confuse control with wholeness?",
+    "relatedChapterIds": ["ch2", "ch5"],
+    "relatedConceptIds": ["ego", "self", "individuation"]
+  },
+  {
+    "id": "ch2",
+    "whyThisMatters": "Shadow work transforms moral projection into psychological responsibility.",
+    "coreTerms": ["shadow", "ego"],
+    "conceptChecks": [
+      "What is projection and how does it reveal shadow content?",
+      "How can shadow integration increase ethical maturity?"
+    ],
+    "reflectionPrompt": "What trait in others repeatedly upsets you, and what might it mirror in yourself?",
+    "relatedChapterIds": ["ch1", "ch6"],
+    "relatedConceptIds": ["shadow", "ego", "individuation"]
+  },
+  {
+    "id": "ch3",
+    "whyThisMatters": "The anima mediates feeling, imagination, and relation to the unconscious.",
+    "coreTerms": ["anima", "syzygy"],
+    "conceptChecks": [
+      "How does anima projection shape relationships?",
+      "What differentiates anima integration from idealization?"
+    ],
+    "reflectionPrompt": "How do your inner images influence your expectations of intimacy?",
+    "relatedChapterIds": ["ch4", "ch12"],
+    "relatedConceptIds": ["anima", "animus", "syzygy"]
+  },
+  {
+    "id": "ch4",
+    "whyThisMatters": "Animus dynamics illuminate how inner convictions can either clarify or rigidify judgment.",
+    "coreTerms": ["animus", "syzygy"],
+    "conceptChecks": [
+      "How can animus possession appear in dialogue?",
+      "What practices help transform rigid opinions into reflective discernment?"
+    ],
+    "reflectionPrompt": "When do your convictions become defensive rather than dialogical?",
+    "relatedChapterIds": ["ch3", "ch12"],
+    "relatedConceptIds": ["animus", "anima", "syzygy"]
+  },
+  {
+    "id": "ch5",
+    "whyThisMatters": "The Self reorients development from ego success toward symbolic wholeness.",
+    "coreTerms": ["self", "quaternity"],
+    "conceptChecks": [
+      "Why does Jung treat the Self as both center and circumference?",
+      "How do quaternity symbols communicate psychic balance?"
+    ],
+    "reflectionPrompt": "Which symbols of order or totality recur in your inner life?",
+    "relatedChapterIds": ["ch1", "ch11"],
+    "relatedConceptIds": ["self", "quaternity", "individuation"]
+  },
+  {
+    "id": "ch6",
+    "whyThisMatters": "Individuation provides the developmental arc that integrates ego, shadow, and archetypal opposites.",
+    "coreTerms": ["individuation", "shadow"],
+    "conceptChecks": [
+      "How is individuation different from self-improvement?",
+      "Why must individuation include shadow confrontation?"
+    ],
+    "reflectionPrompt": "What tension in your life might be a developmental task rather than a problem to erase?",
+    "relatedChapterIds": ["ch2", "ch10", "ch13"],
+    "relatedConceptIds": ["individuation", "shadow", "self"]
+  },
+  {
+    "id": "ch7",
+    "whyThisMatters": "Symbols carry meaning that cannot be reduced to literal explanation.",
+    "coreTerms": ["archetype", "psychopomp"],
+    "conceptChecks": [
+      "How does symbolic meaning differ from a fixed sign?",
+      "What role does the psychopomp play in transitional states?"
+    ],
+    "reflectionPrompt": "Which recurring image in dreams or art seems to organize your current life questions?",
+    "relatedChapterIds": ["ch8", "ch9"],
+    "relatedConceptIds": ["archetype", "psychopomp", "self"]
+  },
+  {
+    "id": "ch8",
+    "whyThisMatters": "Dreams offer direct symbolic communication from unconscious processes.",
+    "coreTerms": ["archetype", "psychopomp"],
+    "conceptChecks": [
+      "Why should dream images be amplified rather than immediately decoded?",
+      "How can a dream compensate one-sided conscious attitudes?"
+    ],
+    "reflectionPrompt": "What dream image has stayed with you, and what tension might it compensate?",
+    "relatedChapterIds": ["ch7", "ch9"],
+    "relatedConceptIds": ["archetype", "psychopomp", "shadow"]
+  },
+  {
+    "id": "ch9",
+    "whyThisMatters": "Archetypes structure recurring mythic and psychological patterns across cultures.",
+    "coreTerms": ["archetype", "pleroma"],
+    "conceptChecks": [
+      "How can archetypes shape experience without determining behavior?",
+      "What does Jung mean by the danger of archetypal possession?"
+    ],
+    "reflectionPrompt": "Where do you notice yourself cast in a familiar mythic role?",
+    "relatedChapterIds": ["ch7", "ch10"],
+    "relatedConceptIds": ["archetype", "pleroma", "ego"]
+  },
+  {
+    "id": "ch10",
+    "whyThisMatters": "Transformation emerges through the sustained tension of opposites rather than premature resolution.",
+    "coreTerms": ["coniunctio", "individuation"],
+    "conceptChecks": [
+      "What is the coniunctio and why is it paradoxical?",
+      "How does symbolic containment support transformation?"
+    ],
+    "reflectionPrompt": "Which inner opposition are you tempted to collapse instead of hold consciously?",
+    "relatedChapterIds": ["ch6", "ch12", "ch14"],
+    "relatedConceptIds": ["coniunctio", "individuation", "shadow"]
+  },
+  {
+    "id": "ch11",
+    "whyThisMatters": "Wholeness reframes psychic life as an ordered plurality instead of a single conscious center.",
+    "coreTerms": ["self", "quaternity"],
+    "conceptChecks": [
+      "How do mandala images express psychic totality?",
+      "Why does wholeness include conflict rather than remove it?"
+    ],
+    "reflectionPrompt": "How might your current conflict belong to a larger pattern of ordering?",
+    "relatedChapterIds": ["ch5", "ch14"],
+    "relatedConceptIds": ["self", "quaternity", "coniunctio"]
+  },
+  {
+    "id": "ch12",
+    "whyThisMatters": "Integration links complementary opposites into a more adaptive and ethical personality.",
+    "coreTerms": ["coniunctio", "syzygy"],
+    "conceptChecks": [
+      "How is integration different from suppression or compromise?",
+      "What does syzygy reveal about relational polarity?"
+    ],
+    "reflectionPrompt": "Which opposite tendency in you needs dialogue instead of domination?",
+    "relatedChapterIds": ["ch3", "ch4", "ch10"],
+    "relatedConceptIds": ["coniunctio", "anima", "animus", "syzygy"]
+  },
+  {
+    "id": "ch13",
+    "whyThisMatters": "The journey motif organizes individuation as a staged encounter with psychic thresholds.",
+    "coreTerms": ["individuation", "psychopomp"],
+    "conceptChecks": [
+      "What recurring stages appear in individuation narratives?",
+      "How can setbacks function as symbolic initiations?"
+    ],
+    "reflectionPrompt": "What threshold are you currently approaching, and what guide-symbol appears with it?",
+    "relatedChapterIds": ["ch6", "ch14"],
+    "relatedConceptIds": ["individuation", "psychopomp", "self"]
+  },
+  {
+    "id": "ch14",
+    "whyThisMatters": "Completion in Jung is never final closure; it is a renewed orientation to cyclical integration.",
+    "coreTerms": ["self", "coniunctio", "individuation"],
+    "conceptChecks": [
+      "Why does symbolic completion imply renewed responsibility?",
+      "How does coniunctio reappear across developmental cycles?"
+    ],
+    "reflectionPrompt": "What in your development feels complete enough to consolidate before the next cycle?",
+    "relatedChapterIds": ["ch10", "ch11", "ch13"],
+    "relatedConceptIds": ["self", "coniunctio", "individuation", "quaternity"]
+  }
+]
