@@ -377,3 +377,4 @@ class AionClock {
         requestAnimationFrame(() => this.animate());
     }
 }
+export default AionClock;
