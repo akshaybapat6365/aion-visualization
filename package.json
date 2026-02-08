@@ -27,7 +27,8 @@
     "visual-test": "node src/visual-testing.js",
     "pre-deploy": "npm run test:checklist && npm run optimize",
     "perf:lighthouse": "lhci autorun --config=./lighthouserc.json",
-    "perf:bundle-delta": "node scripts/performance/check-bundle-size-delta.js"
+    "perf:bundle-delta": "node scripts/performance/check-bundle-size-delta.js",
+    "lint:styles": "stylelint 'src/styles/**/*.css' 'src/chapter1.html' 'src/chapter2.html' 'src/visualizations/chapters/chapter-4-fish/chapter-4-enhanced.html' --custom-syntax postcss-html"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
@@ -48,7 +49,10 @@
     "tesseract.js": "^5.0.4",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
-    "webpack-bundle-analyzer": "^4.10.1"
+    "webpack-bundle-analyzer": "^4.10.1",
+    "stylelint": "^16.15.0",
+    "stylelint-config-standard": "^36.0.1",
+    "postcss-html": "^1.7.0"
   },
   "dependencies": {
     "d3": "^7.8.5",
