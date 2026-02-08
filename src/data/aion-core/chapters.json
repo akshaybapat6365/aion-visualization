@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "chapters": [
+    {"id":"ch1","order":1,"title":"The Ego","summary":"The organizing center of conscious life.","keyConceptIds":["ego"],"relatedChapterIds":["ch2","ch5"],"learningObjectIds":["lo-ch1-concept-check","lo-ch1-reflection"]},
+    {"id":"ch2","order":2,"title":"The Shadow","summary":"Encountering disowned psychic content.","keyConceptIds":["shadow"],"relatedChapterIds":["ch1","ch6"],"learningObjectIds":["lo-ch2-concept-check","lo-ch2-reflection"]},
+    {"id":"ch3","order":3,"title":"The Anima","summary":"Inner image and soul relation.","keyConceptIds":["anima"],"relatedChapterIds":["ch4","ch12"],"learningObjectIds":["lo-ch3-concept-check","lo-ch3-reflection"]},
+    {"id":"ch4","order":4,"title":"The Animus","summary":"Inner logos and discernment.","keyConceptIds":["animus"],"relatedChapterIds":["ch3","ch12"],"learningObjectIds":["lo-ch4-concept-check","lo-ch4-reflection"]},
+    {"id":"ch5","order":5,"title":"The Self","summary":"Wholeness as archetypal center.","keyConceptIds":["self"],"relatedChapterIds":["ch1","ch11"],"learningObjectIds":["lo-ch5-concept-check","lo-ch5-reflection"]},
+    {"id":"ch6","order":6,"title":"Individuation","summary":"Integrative development across the lifespan.","keyConceptIds":["individuation","shadow"],"relatedChapterIds":["ch2","ch10","ch13"],"learningObjectIds":["lo-ch6-concept-check","lo-ch6-reflection"]},
+    {"id":"ch7","order":7,"title":"Symbols","summary":"Symbolic language of transformation.","keyConceptIds":["archetype"],"relatedChapterIds":["ch8","ch9"],"learningObjectIds":["lo-ch7-concept-check","lo-ch7-reflection"]},
+    {"id":"ch8","order":8,"title":"Dreams","summary":"Dream imagery as unconscious communication.","keyConceptIds":["archetype"],"relatedChapterIds":["ch7","ch9"],"learningObjectIds":["lo-ch8-concept-check","lo-ch8-reflection"]},
+    {"id":"ch9","order":9,"title":"Archetypes","summary":"Patterns shaping myth and psyche.","keyConceptIds":["archetype"],"relatedChapterIds":["ch7","ch10"],"learningObjectIds":["lo-ch9-concept-check","lo-ch9-reflection"]},
+    {"id":"ch10","order":10,"title":"Transformation","summary":"Psychic change through tension of opposites.","keyConceptIds":["coniunctio","individuation"],"relatedChapterIds":["ch6","ch12","ch14"],"learningObjectIds":["lo-ch10-concept-check","lo-ch10-reflection"]},
+    {"id":"ch11","order":11,"title":"Wholeness","summary":"Images and structures of psychic totality.","keyConceptIds":["self"],"relatedChapterIds":["ch5","ch14"],"learningObjectIds":["lo-ch11-concept-check","lo-ch11-reflection"]},
+    {"id":"ch12","order":12,"title":"Integration","summary":"Union of complementary psychic dynamics.","keyConceptIds":["coniunctio","anima","animus"],"relatedChapterIds":["ch3","ch4","ch10"],"learningObjectIds":["lo-ch12-concept-check","lo-ch12-reflection"]},
+    {"id":"ch13","order":13,"title":"The Journey","summary":"Narrative arc of individuation.","keyConceptIds":["individuation"],"relatedChapterIds":["ch6","ch14"],"learningObjectIds":["lo-ch13-concept-check","lo-ch13-reflection"]},
+    {"id":"ch14","order":14,"title":"Completion","summary":"The symbolic culmination of integration.","keyConceptIds":["self","coniunctio","individuation"],"relatedChapterIds":["ch10","ch11","ch13"],"learningObjectIds":["lo-ch14-concept-check","lo-ch14-reflection"]}
+  ]
+}
