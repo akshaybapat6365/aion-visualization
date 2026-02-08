@@ -9,17 +9,34 @@
 <body>
   <div id="chapter-root"></div>
 
-  <script type="module">
-    import { renderChapterById } from '/src/features/chapter-engine/ChapterRenderer.js';
+	  <script type="module">
+	    import { renderChapterById } from '/src/features/chapter-engine/ChapterRenderer.js';
 
-    const pathParts = window.location.pathname.split('/').filter(Boolean);
-    const idFromPath = pathParts[pathParts.length - 1];
-    const idFromQuery = new URLSearchParams(window.location.search).get('id');
-    const chapterId = idFromPath === 'chapter' ? idFromQuery : idFromPath;
+	    const DEFAULT_CHAPTER_ID = 'ch1';
 
-    renderChapterById(chapterId, document.getElementById('chapter-root')).catch((error) => {
-      document.getElementById('chapter-root').innerHTML = `<main><h1>Chapter unavailable</h1><p>${error.message}</p></main>`;
-    });
-  </script>
+	    const normalizeChapterId = (raw) => {
+	      if (!raw) return null;
+	      const trimmed = String(raw).trim();
+
+	      if (/^ch\\d+$/.test(trimmed)) return trimmed;
+
+	      const matchChapterDash = trimmed.match(/^chapter-(\\d+)$/);
+	      if (matchChapterDash) return `ch${matchChapterDash[1]}`;
+
+	      const matchNumeric = trimmed.match(/^(\\d+)$/);
+	      if (matchNumeric) return `ch${matchNumeric[1]}`;
+
+	      return null;
+	    };
+
+	    const idFromQuery = normalizeChapterId(new URLSearchParams(window.location.search).get('id'));
+	    const pathParts = window.location.pathname.split('/').filter(Boolean);
+	    const idFromPath = normalizeChapterId(pathParts[pathParts.length - 1]);
+	    const chapterId = idFromQuery || idFromPath || DEFAULT_CHAPTER_ID;
+
+	    renderChapterById(chapterId, document.getElementById('chapter-root')).catch((error) => {
+	      document.getElementById('chapter-root').innerHTML = `<main><h1>Chapter unavailable</h1><p>${error.message}</p></main>`;
+	    });
+	  </script>
 </body>
 </html>
