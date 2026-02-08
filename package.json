@@ -13,6 +13,7 @@
     "test:comprehensive": "./scripts/run-tests.sh comprehensive",
     "test:checklist": "./scripts/run-tests.sh checklist",
     "test:all": "./scripts/run-tests.sh all",
+    "test:accessibility": "node scripts/accessibility-runner.js",
     "test:before-deploy": "./scripts/test-before-deploy.sh",
     "migrate-paths": "node scripts/migrate-paths.js",
     "quick-fix": "node scripts/quick-path-fix.js",
