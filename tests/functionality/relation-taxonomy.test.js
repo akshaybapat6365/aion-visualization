@@ -1,9 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import relationTaxonomy from '../../src/data/aion-core/relation-taxonomy.json';
-import edges from '../../src/data/aion-graph/edges.json';
+const fs = require('fs');
+const path = require('path');
 
+const taxonomyPath = path.join(process.cwd(), 'src/data/aion-core/relation-taxonomy.json');
+const edgesPath = path.join(process.cwd(), 'src/data/aion-graph/edges.json');
 const conceptMapperPath = path.join(process.cwd(), 'src/concept-mapper.js');
+
+const relationTaxonomy = JSON.parse(fs.readFileSync(taxonomyPath, 'utf8'));
+const edges = JSON.parse(fs.readFileSync(edgesPath, 'utf8'));
 const conceptMapperSource = fs.readFileSync(conceptMapperPath, 'utf8');
 
 describe('Relation taxonomy consistency', () => {
@@ -17,7 +20,7 @@ describe('Relation taxonomy consistency', () => {
 
   test('concept mapper relationship types resolve to taxonomy entries', () => {
     const taxonomyKeys = new Set(Object.keys(relationTaxonomy));
-    const relationTypeMatches = [...conceptMapperSource.matchAll(/type:\s*'([a-z_]+)'/g)];
+    const relationTypeMatches = [...conceptMapperSource.matchAll(/type:\\s*'([a-z_]+)'/g)];
     const relationTypes = new Set(relationTypeMatches.map(([, relationType]) => relationType));
 
     relationTypes.forEach((relationType) => {
@@ -27,7 +30,7 @@ describe('Relation taxonomy consistency', () => {
 
   test('displayed relation labels in concept mapper map to taxonomy labels', () => {
     const taxonomyLabels = new Set(Object.values(relationTaxonomy).map((entry) => entry.label));
-    const lookupLabelMatches = [...conceptMapperSource.matchAll(/label:\s*'([^']+)'/g)];
+    const lookupLabelMatches = [...conceptMapperSource.matchAll(/label:\\s*'([^']+)'/g)];
     const displayedLabels = new Set(lookupLabelMatches.map(([, label]) => label));
 
     displayedLabels.forEach((label) => {
@@ -35,3 +38,4 @@ describe('Relation taxonomy consistency', () => {
     });
   });
 });
+

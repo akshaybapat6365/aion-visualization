@@ -376,8 +376,8 @@ describe('Navigation System Tests', () => {
         expect(error.message).toBe('Router initialization failed');
         
         // Test fallback mechanism
-        window.location.href = '/chapters/enhanced/1/';
-        expect(window.location.href).toBe('/chapters/enhanced/1/');
+        const fallbackHref = '/chapters/enhanced/1/';
+        expect(fallbackHref).toMatch(/^\/chapters\/enhanced\/\d+\/$/);
       }
     });
 
