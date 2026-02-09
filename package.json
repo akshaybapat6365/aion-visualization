@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "python -m http.server 3000",
-    "serve": "python -m http.server 3000",
+    "dev": "python3 -m http.server 3000 || python -m http.server 3000",
+    "serve": "python3 -m http.server 3000 || python -m http.server 3000",
     "test": "jest --passWithNoTests",
     "test:morning": "./phase6-morning-testing.sh",
     "test:afternoon": "./phase6-afternoon-testing.sh",
@@ -13,6 +13,7 @@
     "test:comprehensive": "./scripts/run-tests.sh comprehensive",
     "test:checklist": "./scripts/run-tests.sh checklist",
     "test:all": "./scripts/run-tests.sh all",
+    "test:accessibility": "node scripts/accessibility-runner.js",
     "test:before-deploy": "./scripts/test-before-deploy.sh",
     "migrate-paths": "node scripts/migrate-paths.js",
     "quick-fix": "node scripts/quick-path-fix.js",

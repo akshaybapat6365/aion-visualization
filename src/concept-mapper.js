@@ -245,6 +245,10 @@ class ConceptMapper {
     
 
   getMotionBehaviorForRelation(relationType) {
+    if (window.AionMotionGrammar) {
+      return window.AionMotionGrammar.getMotionBehaviorForRelation(relationType);
+    }
+
     if (window.AionMotionChoreographer) {
       return window.AionMotionChoreographer.getMotionBehaviorForRelation(relationType);
     }
@@ -252,8 +256,8 @@ class ConceptMapper {
     const fallbackMap = {
       opposes: 'opposition',
       'integrates-into': 'integration',
-      'manifests-as': 'inflation',
-      'expresses-as': 'inflation',
+      'manifests-as': 'transformation',
+      'expresses-as': 'transformation',
       represents: 'cyclical-return'
     };
 
