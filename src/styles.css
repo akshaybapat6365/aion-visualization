@@ -33,7 +33,8 @@
   /* Text */
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-400);
-  --text-tertiary: var(--gray-600);
+  /* WCAG AA on black: grey-600 is too low-contrast for body UI copy. */
+  --text-tertiary: var(--gray-500);
   
   /* Borders */
   --border-subtle: rgba(255, 255, 255, 0.06);
@@ -320,7 +321,8 @@ a:hover {
 .chapter-number {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--text-tertiary);
+  /* Small labels still need AA contrast on dark backgrounds. */
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -383,7 +385,7 @@ a:hover {
 
 .chapter-card-description {
   font-size: var(--text-sm);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 

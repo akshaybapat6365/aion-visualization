@@ -29,7 +29,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters - Aion Visualization</title>
-    <link rel="stylesheet" href="../assets/css/bundle.min.css">
+    <link rel="stylesheet" href="../src/styles.min.css">
+    <link rel="stylesheet" href="../src/responsive-utils.min.css">
     <link rel="stylesheet" href="../assets/css/minimalist-background.min.css">
 
 </head>
@@ -41,9 +42,9 @@
     <!-- Clean minimalist background via CSS -->
     
     <!-- Navigation -->
-    <nav class="nav">
+    <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
-            <a href="../index.html" class="nav-link">Home</a>
+            <a href="../src/index.html" class="nav-link">Home</a>
             <a href="index.html" class="nav-link active" data-transition="chapter">Chapters</a>
             <a href="../src/timeline.html" class="nav-link">Timeline</a>
             <a href="../src/symbols.html" class="nav-link">Symbols</a>
@@ -53,7 +54,7 @@
     </nav>
     
     <!-- Content -->
-    <main style="padding-top: calc(var(--nav-height) + var(--space-8));">
+    <main id="main-content" style="padding-top: calc(var(--nav-height) + var(--space-8));">
         <div class="container">
             <div class="text-center mb-8">
                 <span class="chapter-number">Journey Through</span>

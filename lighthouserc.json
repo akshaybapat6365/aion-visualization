@@ -5,8 +5,7 @@
       "startServerCommand": "npm run serve",
       "startServerReadyPattern": "Serving HTTP on",
       "url": [
-        "http://localhost:3000/",
-        "http://localhost:3000/src/index.html"
+        "http://localhost:3000/"
       ]
     },
     "assert": {

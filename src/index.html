@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AION - Researches into the Phenomenology of the Self</title>
-    
-    <!-- Premium Design System -->
-    <link rel="stylesheet" href="design-system/premium/colors.css">
-    <link rel="stylesheet" href="design-system/premium/typography.css">
-    <link rel="stylesheet" href="design-system/premium/layout.css">
-    
-    <!-- Legacy styles for compatibility -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="responsive-utils.css">
+
+    <!-- Core styles (keep this route self-contained for CI + GitHub Pages) -->
+    <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="responsive-utils.min.css">
     
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -115,28 +110,30 @@
     <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
     
     <!-- Navigation -->
-    <nav class="nav">
+    <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
             <a href="./index.html" class="nav-link active">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
-            <a href="src/timeline.html" class="nav-link">Timeline</a>
-            <a href="src/symbols.html" class="nav-link">Symbols</a>
-            <a href="src/about.html" class="nav-link">About</a>
+            <a href="../chapters/index.html" class="nav-link">Chapters</a>
+            <a href="./timeline.html" class="nav-link">Timeline</a>
+            <a href="./symbols.html" class="nav-link">Symbols</a>
+            <a href="./about.html" class="nav-link">About</a>
         </div>
     </nav>
     
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Aion</h1>
-            <p class="hero-subtitle">A Visual Journey Through Jung's Masterwork</p>
-            <div class="mt-8 hero-buttons">
-                <a href="chapters/index.html" class="button button-primary">Begin Journey</a>
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Aion</h1>
+                <p class="hero-subtitle">A Visual Journey Through Jung's Masterwork</p>
+                <div class="mt-8 hero-buttons">
+                    <a href="../chapters/index.html" class="button button-primary">Begin Journey</a>
+                </div>
             </div>
-        </div>
-    </section>
-    <!-- Promo CTA loaded on demand -->
-    <div id="promo-cta" data-load-fn="dynamicExample" data-module="dynamic-example.js" class="sr-only"></div>
+        </section>
+        <!-- Promo CTA loaded on demand -->
+        <div id="promo-cta" data-load-fn="dynamicExample" data-module="dynamic-example.js" class="sr-only"></div>
+    </main>
     
     <!-- Minimal Shader Background -->
     <script>
@@ -205,7 +202,7 @@
         
         animate();
     </script>
-    <script src="assets/js/core/utilities.js"></script>
+    <script src="../assets/js/core/utilities.js"></script>
     <script src="advanced-animations.js"></script>
     <script src="apply-visual-polish.js"></script>
     <script src="contextual-help.js"></script>
