@@ -37,12 +37,6 @@ function getContrastRatio(fg, bg) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-function parseRgb(color) {
-  const matched = color.match(/\d+(\.\d+)?/g);
-  if (!matched || matched.length < 3) return [0, 0, 0];
-  return matched.slice(0, 3).map((v) => Number(v));
-}
-
 async function startServer() {
   const server = spawn('python3', ['-m', 'http.server', '4173'], { cwd: ROOT, stdio: 'pipe' });
   await new Promise((resolve) => setTimeout(resolve, 1200));
@@ -108,22 +102,79 @@ async function checkCoreRoute(page, route) {
   });
 
   const contrastSamples = await page.$$eval('p,li,a,button,h1,h2,h3,span', (nodes) => {
+    const parseRgba = (color) => {
+      if (!color || color === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
+      const matched = color.match(/\d+(\.\d+)?/g);
+      if (!matched || matched.length < 3) return { r: 0, g: 0, b: 0, a: 0 };
+      const [r, g, b] = matched.slice(0, 3).map((v) => Number(v));
+      const a = matched.length >= 4 ? Number(matched[3]) : 1;
+      return { r, g, b, a: Number.isFinite(a) ? a : 1 };
+    };
+
+    const blend = (fg, bg) => {
+      // Porter-Duff "over": fg over bg
+      const outA = fg.a + bg.a * (1 - fg.a);
+      if (outA <= 0) return { r: 0, g: 0, b: 0, a: 0 };
+      const r = (fg.r * fg.a + bg.r * bg.a * (1 - fg.a)) / outA;
+      const g = (fg.g * fg.a + bg.g * bg.a * (1 - fg.a)) / outA;
+      const b = (fg.b * fg.a + bg.b * bg.a * (1 - fg.a)) / outA;
+      return { r, g, b, a: outA };
+    };
+
+    const getRootBackground = () => {
+      const bodyBg = parseRgba(window.getComputedStyle(document.body).backgroundColor);
+      if (bodyBg.a > 0) return bodyBg;
+      const htmlBg = parseRgba(window.getComputedStyle(document.documentElement).backgroundColor);
+      if (htmlBg.a > 0) return htmlBg;
+      return { r: 255, g: 255, b: 255, a: 1 };
+    };
+
+    const rootBg = getRootBackground();
+
+    const getEffectiveBackground = (node) => {
+      const stack = [];
+      let current = node;
+      while (current && current.nodeType === Node.ELEMENT_NODE) {
+        const bg = parseRgba(window.getComputedStyle(current).backgroundColor);
+        if (bg.a > 0) stack.push(bg);
+        current = current.parentElement;
+      }
+
+      let composite = rootBg;
+      for (let i = stack.length - 1; i >= 0; i -= 1) {
+        composite = blend(stack[i], composite);
+      }
+
+      // Ensure we return an opaque background for contrast math.
+      if (composite.a < 1) composite = blend({ r: 255, g: 255, b: 255, a: 1 }, composite);
+      return composite;
+    };
+
     return nodes.slice(0, 80).map((node) => {
+      const rawText = (node.textContent || '').trim();
+      if (!rawText) return null;
+
       const style = window.getComputedStyle(node);
-      const text = node.textContent?.trim()?.slice(0, 80) || node.tagName;
+      const fontSize = parseFloat(style.fontSize) || 16;
+      const fontWeight = Number(style.fontWeight) || 400;
+
+      const bg = getEffectiveBackground(node);
+      const fg = parseRgba(style.color);
+      const effectiveFg = fg.a < 1 ? blend(fg, bg) : fg;
+
       return {
-        text,
-        color: style.color,
-        background: style.backgroundColor,
-        fontSize: parseFloat(style.fontSize) || 16,
-        fontWeight: Number(style.fontWeight) || 400
+        text: rawText.slice(0, 80),
+        color: [Math.round(effectiveFg.r), Math.round(effectiveFg.g), Math.round(effectiveFg.b)],
+        background: [Math.round(bg.r), Math.round(bg.g), Math.round(bg.b)],
+        fontSize,
+        fontWeight
       };
-    }).filter((x) => x.text.length > 0);
+    }).filter(Boolean);
   });
 
   const contrastFailures = contrastSamples
     .map((sample) => {
-      const ratio = getContrastRatio(parseRgb(sample.color), parseRgb(sample.background));
+      const ratio = getContrastRatio(sample.color, sample.background);
       const isLarge = sample.fontSize >= 24 || (sample.fontSize >= 18.66 && sample.fontWeight >= 700);
       const threshold = isLarge ? 3 : 4.5;
       return { ...sample, ratio, threshold };
