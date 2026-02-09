@@ -1,38 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <!-- Performance Optimization -->
-    <script>
-      // Early performance hints
-      if ('connection' in navigator) {
-        const connection = navigator.connection;
-        if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-          document.documentElement.classList.add('reduced-data-mode');
-        }
-      }
-      
-      // Preload critical resources
-      const criticalResources = [
-        '/assets/css/main.css',
-        '/assets/js/core/github-pages-router.js'
-      ];
-      
-      criticalResources.forEach(resource => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.href = resource;
-        link.as = resource.endsWith('.css') ? 'style' : 'script';
-        document.head.appendChild(link);
-      });
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters - Aion Visualization</title>
-    <link rel="stylesheet" href="../src/styles.min.css">
-    <link rel="stylesheet" href="../src/responsive-utils.min.css">
-    <link rel="stylesheet" href="../assets/css/minimalist-background.min.css">
-
+    <base href="../">
+    <link rel="preload" href="assets/fonts/Fraunces-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="src/styles.css">
+    <link rel="stylesheet" href="src/responsive-utils.min.css">
+    <link rel="stylesheet" href="assets/css/minimalist-background.min.css">
 </head>
 <body>
 
@@ -44,12 +20,13 @@
     <!-- Navigation -->
     <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
-            <a href="../src/index.html" class="nav-link">Home</a>
-            <a href="index.html" class="nav-link active" data-transition="chapter">Chapters</a>
-            <a href="../src/timeline.html" class="nav-link">Timeline</a>
-            <a href="../src/symbols.html" class="nav-link">Symbols</a>
-            <a href="../showcase.html" class="nav-link">Showcase</a>
-            <a href="../src/about.html" class="nav-link">About</a>
+            <a href="./" class="nav-link">Home</a>
+            <a href="chapters/index.html" class="nav-link active" data-transition="chapter">Chapters</a>
+            <a href="src/atlas/index.html" class="nav-link">Atlas</a>
+            <a href="src/timeline.html" class="nav-link">Timeline</a>
+            <a href="src/symbols.html" class="nav-link">Symbols</a>
+            <a href="showcase.html" class="nav-link">Showcase</a>
+            <a href="about.html" class="nav-link">About</a>
         </div>
     </nav>
     
@@ -66,128 +43,128 @@
             <!-- Chapter Grid -->
             <div class="chapter-grid">
                 <!-- Chapter 1 -->
-                <a href="standard/chapter-1.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch1" class="card chapter-card">
                     <div class="chapter-card-number">01</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Ego</h3>
-                        <p class="chapter-card-description">The center of consciousness</p>
+                        <p class="chapter-card-description">The conscious standpoint and its limits</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 2 -->
-                <a href="standard/chapter-2.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch2" class="card chapter-card">
                     <div class="chapter-card-number">02</div>
                     <div class="chapter-card-content">
                         <h3 class="chapter-card-title">The Shadow</h3>
-                        <p class="chapter-card-description">The dark brother within</p>
+                        <p class="chapter-card-description">Disowned material and projection</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 3 -->
-                <a href="standard/chapter-3.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch3" class="card chapter-card">
                     <div class="chapter-card-number">03</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Syzygy</h3>
-                        <p class="chapter-card-description">Anima and Animus</p>
+                        <h3 class="chapter-card-title">The Syzygy: Anima and Animus</h3>
+                        <p class="chapter-card-description">The inner pair of opposites</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 4 -->
-                <a href="standard/chapter-4.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch4" class="card chapter-card">
                     <div class="chapter-card-number">04</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Sign of the Fishes</h3>
-                        <p class="chapter-card-description">The astrological symbolism</p>
+                        <h3 class="chapter-card-title">The Self</h3>
+                        <p class="chapter-card-description">Wholeness as archetypal center</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 5 -->
-                <a href="standard/chapter-5.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch5" class="card chapter-card">
                     <div class="chapter-card-number">05</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">Christ as Archetype</h3>
-                        <p class="chapter-card-description">The Self manifested</p>
+                        <h3 class="chapter-card-title">Christ, a Symbol of the Self</h3>
+                        <p class="chapter-card-description">Symbolic wholeness and excluded opposites</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 6 -->
-                <a href="standard/chapter-6.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch6" class="card chapter-card">
                     <div class="chapter-card-number">06</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Antichrist</h3>
-                        <p class="chapter-card-description">Shadow of the Christian aeon</p>
+                        <h3 class="chapter-card-title">The Sign of the Fishes</h3>
+                        <p class="chapter-card-description">Aeon symbolism and the fish motif</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 7 -->
-                <a href="standard/chapter-7.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch7" class="card chapter-card">
                     <div class="chapter-card-number">07</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Pleroma</h3>
-                        <p class="chapter-card-description">Divine fullness</p>
+                        <h3 class="chapter-card-title">The Prophecies of Nostradamus</h3>
+                        <p class="chapter-card-description">Collective images and prophetic meaning</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 8 -->
-                <a href="standard/chapter-8.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch8" class="card chapter-card">
                     <div class="chapter-card-number">08</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">Sophia</h3>
-                        <p class="chapter-card-description">Divine wisdom</p>
+                        <h3 class="chapter-card-title">The Historical Significance of the Fish</h3>
+                        <p class="chapter-card-description">How a motif gathers meaning over time</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 9 -->
-                <a href="standard/chapter-9.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch9" class="card chapter-card">
                     <div class="chapter-card-number">09</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Naassenes</h3>
-                        <p class="chapter-card-description">Serpent wisdom</p>
+                        <h3 class="chapter-card-title">The Ambivalence of the Fish Symbol</h3>
+                        <p class="chapter-card-description">Paradox, opposites, and shadow</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 10 -->
-                <a href="standard/chapter-10.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch10" class="card chapter-card">
                     <div class="chapter-card-number">10</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Lapis</h3>
-                        <p class="chapter-card-description">The philosopher's stone</p>
+                        <h3 class="chapter-card-title">The Fish in Alchemy</h3>
+                        <p class="chapter-card-description">Transformation imagery of the opus</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 11 -->
-                <a href="standard/chapter-11.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch11" class="card chapter-card">
                     <div class="chapter-card-number">11</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">Mercurius</h3>
-                        <p class="chapter-card-description">Spirit of transformation</p>
+                        <h3 class="chapter-card-title">The Alchemical Interpretation</h3>
+                        <p class="chapter-card-description">Meaning of alchemical symbols</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 12 -->
-                <a href="standard/chapter-12.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch12" class="card chapter-card">
                     <div class="chapter-card-number">12</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Coniunctio</h3>
-                        <p class="chapter-card-description">Sacred marriage</p>
+                        <h3 class="chapter-card-title">Background to the Psychology of Christian Alchemical Symbolism</h3>
+                        <p class="chapter-card-description">Method and symbolic framework</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 13 -->
-                <a href="standard/chapter-13.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch13" class="card chapter-card">
                     <div class="chapter-card-number">13</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Quaternary</h3>
-                        <p class="chapter-card-description">Fourfold wholeness</p>
+                        <h3 class="chapter-card-title">Gnostic Symbols of the Self</h3>
+                        <p class="chapter-card-description">Gnosis, wisdom figures, and paradox</p>
                     </div>
                 </a>
                 
                 <!-- Chapter 14 -->
-                <a href="standard/chapter-14.html" class="card chapter-card">
+                <a href="journey/chapter/index.html?id=ch14" class="card chapter-card">
                     <div class="chapter-card-number">14</div>
                     <div class="chapter-card-content">
-                        <h3 class="chapter-card-title">The Self</h3>
-                        <p class="chapter-card-description">The archetype of wholeness</p>
+                        <h3 class="chapter-card-title">The Structure and Dynamics of the Self</h3>
+                        <p class="chapter-card-description">A culminating view of wholeness</p>
                     </div>
                 </a>
             </div>
