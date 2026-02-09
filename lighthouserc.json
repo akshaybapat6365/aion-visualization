@@ -5,7 +5,8 @@
       "startServerCommand": "npm run serve",
       "startServerReadyPattern": "Serving HTTP on",
       "url": [
-        "http://localhost:3000/"
+        "http://localhost:3000/",
+        "http://localhost:3000/journey/chapter/index.html?id=ch1"
       ]
     },
     "assert": {
@@ -16,7 +17,8 @@
       }
     },
     "upload": {
-      "target": "temporary-public-storage"
+      "target": "filesystem",
+      "outputDir": "./tests/reports/lighthouse/current"
     }
   }
 }

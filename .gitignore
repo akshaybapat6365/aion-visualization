@@ -42,5 +42,8 @@ PHASES_*_BACKUP_*/
 performance-audit-report.json
 test-results/
 tests/reports/accessibility/
+tests/reports/lighthouse/current/
+tests/reports/performance/
+tests/reports/performance-history/
 .lighthouseci/
 .vercel

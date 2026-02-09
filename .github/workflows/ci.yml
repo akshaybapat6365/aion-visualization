@@ -27,8 +27,21 @@ jobs:
       - name: Validate Aion core consistency
         run: npm run validate:consistency
 
-      - name: Lighthouse CI
-        run: npm run perf:lighthouse
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Route performance budgets (Lighthouse + runtime + cleanup)
+        run: npm run perf:ci
 
       - name: Bundle size delta check
         run: npm run perf:bundle-delta
+
+      - name: Upload route performance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: route-performance-reports
+          path: |
+            tests/reports/lighthouse/current
+            tests/reports/performance
+            tests/reports/performance-history

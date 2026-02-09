@@ -1,7 +1,7 @@
 // Simple Visualization Loader for Aion Project
-export async function loadVisualization(chapterId, container) {
-  // Map chapters to their visualizations
-  const vizMap = {
+const DEFAULT_INTENT_MESSAGE = 'Load interactive visualization';
+
+const vizMap = {
     'chapter-2': {
       path: '/src/visualizations/shadow/ShadowIntegration.js',
       className: 'ShadowIntegration',
@@ -32,9 +32,55 @@ export async function loadVisualization(chapterId, container) {
       className: 'AionClock',
       deps: ['d3']
     }
+};
+
+let activeVisualization = null;
+let currentIntentCleanup = null;
+
+function getVizMap() {
+  if (typeof window !== 'undefined' && window.__AION_VIZ_MAP__) {
+    return window.__AION_VIZ_MAP__;
+  }
+
+  return vizMap;
+}
+
+function setLifecycleState(nextState) {
+  if (typeof window === 'undefined') return;
+  const current = window.__aionVizLifecycle || {
+    disposeCalls: 0,
+    routeCleanupCalls: 0,
+    intentListeners: 0
   };
-  
-  const config = vizMap[chapterId];
+
+  window.__aionVizLifecycle = {
+    ...current,
+    ...nextState
+  };
+}
+
+function clearIntentListenerCleanup() {
+  if (typeof currentIntentCleanup === 'function') {
+    currentIntentCleanup();
+    currentIntentCleanup = null;
+  }
+  setLifecycleState({ intentListeners: 0 });
+}
+
+export function disposeActiveVisualization() {
+  clearIntentListenerCleanup();
+
+  if (activeVisualization && typeof activeVisualization.dispose === 'function') {
+    activeVisualization.dispose();
+    const disposeCalls = (typeof window !== 'undefined' ? window.__aionVizLifecycle?.disposeCalls : 0) || 0;
+    setLifecycleState({ disposeCalls: disposeCalls + 1 });
+  }
+
+  activeVisualization = null;
+}
+
+export async function loadVisualization(chapterId, container) {
+  const config = getVizMap()[chapterId];
   if (!config) {
     console.log(`No visualization configured for ${chapterId}`);
     return null;
@@ -55,21 +101,23 @@ export async function loadVisualization(chapterId, container) {
     // Initialize based on module type
     if (config.init && module[config.init]) {
       // Function-based initialization
-      return module[config.init](container);
+      activeVisualization = await module[config.init](container);
     } else if (config.className && module[config.className]) {
       // Class-based initialization
       const VizClass = module[config.className];
-      return new VizClass(container);
+      activeVisualization = new VizClass(container);
     } else if (module.default) {
       // Default export
       if (typeof module.default === 'function') {
-        return module.default(container);
+        activeVisualization = await module.default(container);
       } else {
-        return new module.default(container);
+        activeVisualization = new module.default(container);
       }
+    } else {
+      throw new Error('Could not find initialization method');
     }
-    
-    throw new Error('Could not find initialization method');
+
+    return activeVisualization;
   } catch (error) {
     console.error(`Failed to load visualization for ${chapterId}:`, error);
     if (container) {
@@ -79,10 +127,50 @@ export async function loadVisualization(chapterId, container) {
   }
 }
 
+export function setupVisualizationIntent(chapterId, container) {
+  if (!container || !chapterId) return;
+
+  clearIntentListenerCleanup();
+  container.innerHTML = '';
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'viz-intent-trigger';
+  button.textContent = container.dataset.intentLabel || DEFAULT_INTENT_MESSAGE;
+  button.setAttribute('aria-label', `Initialize visualization for ${chapterId}`);
+  container.appendChild(button);
+
+  const activate = async () => {
+    button.disabled = true;
+    await loadVisualization(chapterId, container);
+    clearIntentListenerCleanup();
+  };
+
+  const onClick = () => {
+    activate();
+  };
+
+  const onKeydown = event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      activate();
+    }
+  };
+
+  button.addEventListener('click', onClick);
+  button.addEventListener('keydown', onKeydown);
+  setLifecycleState({ intentListeners: 2 });
+
+  currentIntentCleanup = () => {
+    button.removeEventListener('click', onClick);
+    button.removeEventListener('keydown', onKeydown);
+  };
+}
+
 // Helper to check if we should load visualization for current page
 export function shouldLoadVisualization() {
   const path = window.location.pathname;
-  const match = path.match(/chapter-(\d+)/);
+  const match = path.match(/chapter-?(\d+)/);
   return match ? `chapter-${match[1]}` : null;
 }
 
@@ -93,8 +181,14 @@ if (typeof document !== 'undefined') {
     if (vizContainer) {
       const chapterId = shouldLoadVisualization();
       if (chapterId) {
-        await loadVisualization(chapterId, vizContainer);
+        setupVisualizationIntent(chapterId, vizContainer);
       }
     }
+  });
+
+  document.addEventListener('aion:routeChange', () => {
+    disposeActiveVisualization();
+    const routeCleanupCalls = (typeof window !== 'undefined' ? window.__aionVizLifecycle?.routeCleanupCalls : 0) || 0;
+    setLifecycleState({ routeCleanupCalls: routeCleanupCalls + 1 });
   });
 }

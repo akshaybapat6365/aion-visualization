@@ -1,0 +1,18 @@
+{
+  "routes": [
+    "/",
+    "/journey/chapter/index.html"
+  ],
+  "webVitals": {
+    "lcpMs": 2500,
+    "tbtMs": 300,
+    "cls": 0.1
+  },
+  "payload": {
+    "jsKb": 350
+  },
+  "runtime": {
+    "minFps": 45,
+    "maxMemoryMb": 160
+  }
+}

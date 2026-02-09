@@ -340,15 +340,35 @@ class WebGLManager {
   }
 }
 
-// Create global instance
-const webglManager = new WebGLManager();
+let webglManagerInstance = null;
+
+function getWebGLManager() {
+  if (!webglManagerInstance) {
+    webglManagerInstance = new WebGLManager();
+  }
+
+  return webglManagerInstance;
+}
+
+const webglManager = {
+  get instance() {
+    return getWebGLManager();
+  }
+};
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { WebGLManager, webglManager };
+  module.exports = { WebGLManager, getWebGLManager, webglManager };
 }
 
 // Add to global scope
 if (typeof window !== 'undefined') {
-  window.webglManager = webglManager;
+  Object.defineProperty(window, 'webglManager', {
+    configurable: true,
+    get() {
+      return getWebGLManager();
+    }
+  });
+
+  window.getWebGLManager = getWebGLManager;
 }
