@@ -38,7 +38,8 @@
     "validate:aion-core": "node scripts/validate-aion-core.js",
     "validate:consistency": "npm run validate:aion-core && node scripts/validate-aion-graph.js",
     "lint:relation-taxonomy": "node scripts/consistency/check-relation-taxonomy.js",
-    "lint:styles": "stylelint 'src/styles/**/*.css' 'src/chapter1.html' 'src/chapter2.html' 'src/visualizations/chapters/chapter-4-fish/chapter-4-enhanced.html' --custom-syntax postcss-html"
+    "lint:styles": "stylelint 'src/styles/**/*.css' 'src/chapter1.html' 'src/chapter2.html' 'src/visualizations/chapters/chapter-4-fish/chapter-4-enhanced.html' --custom-syntax postcss-html",
+    "check:term-canonicality": "node scripts/consistency/check-term-canonicality.js"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
