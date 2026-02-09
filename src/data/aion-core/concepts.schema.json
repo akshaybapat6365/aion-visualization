@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aion-core/concepts.schema.json",
+  "type": "object",
+  "required": ["version", "concepts"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "concepts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "definition", "chapterRefs", "symbolRefs", "difficulty", "prerequisites"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "definition": { "type": "string", "minLength": 1 },
+          "chapterRefs": { "type": "array", "items": { "type": "string", "pattern": "^ch[0-9]+$" }, "minItems": 1, "uniqueItems": true },
+          "symbolRefs": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "uniqueItems": true },
+          "difficulty": { "type": "string", "enum": ["foundational", "intermediate", "advanced"] },
+          "prerequisites": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "uniqueItems": true }
+        }
+      }
+    }
+  }
+}

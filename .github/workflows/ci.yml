@@ -24,6 +24,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Validate Aion core consistency
+        run: npm run validate:consistency
+
       - name: Lighthouse CI
         run: npm run perf:lighthouse
 
