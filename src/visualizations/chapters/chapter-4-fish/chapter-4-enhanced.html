@@ -6,137 +6,12 @@
     <title>Chapter 4: The Sign of the Fishes - Aion Visualization</title>
     <link rel="stylesheet" href="../../../assets/css/main.css">
     <link rel="stylesheet" href="../../../assets/css/chapters.css">
+    <link rel="stylesheet" href="../../../styles/tokens.css">
+    <link rel="stylesheet" href="../../../styles/shared-components.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
-    <style>
-        /* Enhanced styles for Fish Timeline */
-        .fish-timeline-section {
-            background: var(--surface-glass);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin: 3rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .fish-timeline-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #8B7355 0%, #6B46C1 50%, #00CED1 100%);
-            opacity: 0.6;
-        }
-
-        #fish-timeline-viz {
-            width: 100%;
-            height: 400px;
-            margin: 2rem 0;
-            position: relative;
-        }
-
-        .timeline-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            background: var(--surface-secondary);
-            border-radius: 0.5rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .fish-insights {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .insight-card {
-            background: var(--surface-secondary);
-            border: 1px solid var(--border-default);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .insight-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--accent);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-        }
-
-        .insight-card:hover::before {
-            transform: scaleY(1);
-        }
-
-        .insight-card h4 {
-            margin: 0 0 0.5rem 0;
-            color: var(--text-primary);
-        }
-
-        .insight-card p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-
-        /* Animation for fish symbols */
-        @keyframes swim {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            25% { transform: translateX(10px) rotate(5deg); }
-            75% { transform: translateX(-10px) rotate(-5deg); }
-        }
-
-        .swimming-fish {
-            animation: swim 4s ease-in-out infinite;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .fish-timeline-section {
-                padding: 1.5rem;
-                margin: 2rem 0;
-            }
-
-            #fish-timeline-viz {
-                height: 300px;
-            }
-
-            .timeline-legend {
-                gap: 0.5rem;
-                font-size: 0.75rem;
-            }
-        }
-    </style>
+    
 </head>
 <body>
     <!-- Navigation -->
@@ -172,23 +47,23 @@
 
             <div class="timeline-legend">
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #8B7355;"></div>
+                    <div class="legend-color fish-period-ancient"></div>
                     <span>Ancient Period</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #FFD700;"></div>
+                    <div class="legend-color fish-period-christian"></div>
                     <span>Early Christianity</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #6B46C1;"></div>
+                    <div class="legend-color fish-period-medieval"></div>
                     <span>Medieval Period</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #FF8C00;"></div>
+                    <div class="legend-color fish-period-renaissance"></div>
                     <span>Renaissance</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #00CED1;"></div>
+                    <div class="legend-color fish-period-modern"></div>
                     <span>Modern Era</span>
                 </div>
             </div>

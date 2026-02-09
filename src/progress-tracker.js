@@ -486,6 +486,7 @@ const progressStyles = `
     border: none;
     font-size: 1.25rem;
     cursor: pointer;
+    color: var(--text-primary);
     padding: 0.5rem;
     border-radius: 50%;
     transition: all 0.3s ease;

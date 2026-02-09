@@ -233,9 +233,9 @@ class KeyboardShortcuts {
     this.commandPalette.className = 'command-palette';
     this.commandPalette.innerHTML = `
             <div class="command-palette-backdrop"></div>
-            <div class="command-palette-content">
-                <div class="command-search">
-                    <input type="text" placeholder="Type a command..." class="command-input">
+                <div class="command-palette-content">
+                    <div class="command-search">
+                    <input type="text" placeholder="Type a command..." class="command-input" aria-label="Command palette" autocomplete="off">
                 </div>
                 <div class="command-results"></div>
             </div>

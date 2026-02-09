@@ -4,52 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jung's Journey Through Time - Aion Visualization</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="responsive-utils.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="timeline-component.js"></script>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="nav">
+    <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
-            <a href="src/timeline.html" class="nav-link active">Timeline</a>
-            <a href="src/symbols.html" class="nav-link">Symbols</a>
-            <a href="src/about.html" class="nav-link">About</a>
+            <a href="../chapters/index.html" class="nav-link">Chapters</a>
+            <a href="./timeline.html" class="nav-link active">Timeline</a>
+            <a href="./symbols.html" class="nav-link">Symbols</a>
+            <a href="./about.html" class="nav-link">About</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-small">
-        <h1 class="hero-title">Jung's Journey Through Time</h1>
-        <p class="hero-subtitle">Explore the life and work of Carl Gustav Jung</p>
-    </section>
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-small">
+            <h1 class="hero-title">Jung's Journey Through Time</h1>
+            <p class="hero-subtitle">Explore the life and work of Carl Gustav Jung</p>
+        </section>
 
-    <!-- Timeline Container -->
-    <div class="timeline-container">
-        <div id="timeline-viz"></div>
-        <div class="timeline-controls">
-            <button id="zoom-in">+</button>
-            <button id="zoom-out">-</button>
-            <button id="reset-view">Reset</button>
-            <select id="filter-category">
-                <option value="all">All Events</option>
-                <option value="personal">Personal Life</option>
-                <option value="publications">Publications</option>
-                <option value="meetings">Important Meetings</option>
-                <option value="concepts">Concept Development</option>
-            </select>
+        <!-- Timeline Container -->
+        <div class="timeline-container">
+            <div id="timeline-viz"></div>
+            <div class="timeline-controls">
+                <button id="zoom-in">+</button>
+                <button id="zoom-out">-</button>
+                <button id="reset-view">Reset</button>
+                <select id="filter-category">
+                    <option value="all">All Events</option>
+                    <option value="personal">Personal Life</option>
+                    <option value="publications">Publications</option>
+                    <option value="meetings">Important Meetings</option>
+                    <option value="concepts">Concept Development</option>
+                </select>
+            </div>
         </div>
-    </div>
 
-    <!-- Event Details -->
-    <div id="event-details" class="event-details hidden">
-        <h3 id="event-title"></h3>
-        <p id="event-date"></p>
-        <p id="event-description"></p>
-        <div id="event-image"></div>
-    </div>
+        <!-- Event Details -->
+        <div id="event-details" class="event-details hidden">
+            <h3 id="event-title"></h3>
+            <p id="event-date"></p>
+            <p id="event-description"></p>
+            <div id="event-image"></div>
+        </div>
+    </main>
 
     <style>
         .hero-small {

@@ -1,0 +1,38 @@
+name: Accessibility Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  accessibility-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run critical accessibility checks
+        run: npm run test:accessibility
+
+      - name: Upload accessibility checklist artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-accessibility-checklist
+          path: |
+            tests/reports/accessibility/accessibility-report.json
+            tests/reports/accessibility/release-accessibility-checklist.md
