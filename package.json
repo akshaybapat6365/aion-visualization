@@ -32,7 +32,7 @@
     "ci:chapter-shell": "node scripts/ci/ensure-chapter-shell.mjs"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.13.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.52.0",
     "@types/three": "^0.160.0",
     "axios": "^1.6.7",
