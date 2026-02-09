@@ -3,57 +3,123 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 8",
-      "title": "Aion Chapter 8",
-      "thesis": "Chapter 8 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 8: Aeon & Fish",
+      "title": "The Historical Significance of the Fish",
+      "thesis": "How the fish motif accumulates meaning across time and becomes a carrier of psychic transformation."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "fish-symbol",
+          "term": "Fish Symbol",
+          "definitionTier": "beginner",
+          "definition": "A historically layered motif in Aion that carries paradoxical meanings of totality, salvation, and shadow."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "archetype",
+          "term": "Archetype",
+          "definitionTier": "beginner",
+          "definition": "A universal structural pattern of the psyche expressed through symbols, myths, and recurring motifs."
+        },
+        {
+          "termId": "collective-unconscious",
+          "term": "Collective Unconscious",
+          "definitionTier": "beginner",
+          "definition": "A transpersonal layer of psyche expressed through archetypal patterns, symbols, and shared images."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "fish-symbol",
+            "label": "Fish Symbol",
+            "type": "concept"
+          },
+          {
+            "id": "archetype",
+            "label": "Archetype",
+            "type": "concept"
+          },
+          {
+            "id": "collective-unconscious",
+            "label": "Collective Unconscious",
+            "type": "concept"
+          },
+          {
+            "id": "fish",
+            "label": "Fish",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "fish",
+            "to": "fish-symbol",
+            "relationType": "represents"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Historical Significance of the Fish\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Historical Significance of the Fish\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Fish Symbol · Archetype · Collective Unconscious"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Fish"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "cyclical-return"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 8 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: How the fish motif accumulates meaning across time and becomes a carrier of psychic transformation. Next, \"The Ambivalence of the Fish Symbol\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 9", "href": "/journey/chapter/ch9" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Previous: The Prophecies of Nostradamus",
+          "href": "/journey/chapter/ch7"
+        },
+        {
+          "label": "Next: The Ambivalence of the Fish Symbol",
+          "href": "/journey/chapter/ch9"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

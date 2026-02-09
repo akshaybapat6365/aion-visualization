@@ -3,57 +3,138 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 9",
-      "title": "Aion Chapter 9",
-      "thesis": "Chapter 9 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 9: Aeon & Fish",
+      "title": "The Ambivalence of the Fish Symbol",
+      "thesis": "The fish motif as a paradoxical image holding opposites, shadow, and eschatological tension."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "fish-symbol",
+          "term": "Fish Symbol",
+          "definitionTier": "beginner",
+          "definition": "A historically layered motif in Aion that carries paradoxical meanings of totality, salvation, and shadow."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "opposites",
+          "term": "Opposites",
+          "definitionTier": "beginner",
+          "definition": "The tension of contrary psychic tendencies whose containment can generate transformation."
+        },
+        {
+          "termId": "antichrist",
+          "term": "Antichrist Motif",
+          "definitionTier": "beginner",
+          "definition": "A symbolic counter-pole to the Christ image, expressing excluded shadow aspects within a totality frame."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "fish-symbol",
+            "label": "Fish Symbol",
+            "type": "concept"
+          },
+          {
+            "id": "opposites",
+            "label": "Opposites",
+            "type": "concept"
+          },
+          {
+            "id": "antichrist",
+            "label": "Antichrist Motif",
+            "type": "concept"
+          },
+          {
+            "id": "fish",
+            "label": "Fish",
+            "type": "symbol"
+          },
+          {
+            "id": "ouroboros",
+            "label": "Ouroboros",
+            "type": "symbol"
+          },
+          {
+            "id": "dragon",
+            "label": "Dragon",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "fish",
+            "to": "fish-symbol",
+            "relationType": "represents"
+          },
+          {
+            "from": "ouroboros",
+            "to": "opposites",
+            "relationType": "symbolizes"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Ambivalence of the Fish Symbol\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Ambivalence of the Fish Symbol\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Fish Symbol · Opposites · Antichrist Motif"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Fish · Ouroboros · Dragon"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "cyclical-return"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 9 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: The fish motif as a paradoxical image holding opposites, shadow, and eschatological tension. Next, \"The Fish in Alchemy\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 10", "href": "/journey/chapter/ch10" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Previous: The Historical Significance of the Fish",
+          "href": "/journey/chapter/ch8"
+        },
+        {
+          "label": "Next: The Fish in Alchemy",
+          "href": "/journey/chapter/ch10"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

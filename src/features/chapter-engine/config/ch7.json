@@ -3,57 +3,128 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 7",
-      "title": "Aion Chapter 7",
-      "thesis": "Chapter 7 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 7: Aeon & Fish",
+      "title": "The Prophecies of Nostradamus",
+      "thesis": "Collective images, historical anxiety, and the psychological mechanisms that generate prophetic meaning."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "prophecy",
+          "term": "Prophecy",
+          "definitionTier": "beginner",
+          "definition": "Collective meaning-making that can constellate around crisis, symbolism, and projection in historical time."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "collective-unconscious",
+          "term": "Collective Unconscious",
+          "definitionTier": "beginner",
+          "definition": "A transpersonal layer of psyche expressed through archetypal patterns, symbols, and shared images."
+        },
+        {
+          "termId": "projection",
+          "term": "Projection",
+          "definitionTier": "beginner",
+          "definition": "The displacement of unconscious contents onto people, groups, or events, distorting perception."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "prophecy",
+            "label": "Prophecy",
+            "type": "concept"
+          },
+          {
+            "id": "collective-unconscious",
+            "label": "Collective Unconscious",
+            "type": "concept"
+          },
+          {
+            "id": "projection",
+            "label": "Projection",
+            "type": "concept"
+          },
+          {
+            "id": "zodiac",
+            "label": "Zodiac",
+            "type": "symbol"
+          },
+          {
+            "id": "fish",
+            "label": "Fish",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "projection",
+            "to": "collective-unconscious",
+            "relationType": "relates_to"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Prophecies of Nostradamus\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Prophecies of Nostradamus\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Prophecy · Collective Unconscious · Projection"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Zodiac · Fish"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "integration"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 7 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: Collective images, historical anxiety, and the psychological mechanisms that generate prophetic meaning. Next, \"The Historical Significance of the Fish\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 8", "href": "/journey/chapter/ch8" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Previous: The Sign of the Fishes",
+          "href": "/journey/chapter/ch6"
+        },
+        {
+          "label": "Next: The Historical Significance of the Fish",
+          "href": "/journey/chapter/ch8"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

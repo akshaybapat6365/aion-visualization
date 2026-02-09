@@ -5,197 +5,197 @@
       "id": "lo-ch1-concept-check",
       "chapterId": "ch1",
       "type": "concept-check",
-      "title": "The Ego: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Ego and connect it to one related concept."
+      "title": "Concept Check: The Ego",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Ego\" and connect it to one related concept."
     },
     {
       "id": "lo-ch1-reflection",
       "chapterId": "ch1",
       "type": "reflection-prompt",
-      "title": "The Ego: Reflection Prompt",
-      "prompt": "How does The Ego expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Ego",
+      "prompt": "How does \"The Ego\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch2-concept-check",
       "chapterId": "ch2",
       "type": "concept-check",
-      "title": "The Shadow: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Shadow and connect it to one related concept."
+      "title": "Concept Check: The Shadow",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Shadow\" and connect it to one related concept."
     },
     {
       "id": "lo-ch2-reflection",
       "chapterId": "ch2",
       "type": "reflection-prompt",
-      "title": "The Shadow: Reflection Prompt",
-      "prompt": "How does The Shadow expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Shadow",
+      "prompt": "How does \"The Shadow\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch3-concept-check",
       "chapterId": "ch3",
       "type": "concept-check",
-      "title": "The Anima: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Anima and connect it to one related concept."
+      "title": "Concept Check: The Syzygy: Anima and Animus",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Syzygy: Anima and Animus\" and connect it to one related concept."
     },
     {
       "id": "lo-ch3-reflection",
       "chapterId": "ch3",
       "type": "reflection-prompt",
-      "title": "The Anima: Reflection Prompt",
-      "prompt": "How does The Anima expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Syzygy: Anima and Animus",
+      "prompt": "How does \"The Syzygy: Anima and Animus\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch4-concept-check",
       "chapterId": "ch4",
       "type": "concept-check",
-      "title": "The Animus: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Animus and connect it to one related concept."
+      "title": "Concept Check: The Self",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Self\" and connect it to one related concept."
     },
     {
       "id": "lo-ch4-reflection",
       "chapterId": "ch4",
       "type": "reflection-prompt",
-      "title": "The Animus: Reflection Prompt",
-      "prompt": "How does The Animus expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Self",
+      "prompt": "How does \"The Self\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch5-concept-check",
       "chapterId": "ch5",
       "type": "concept-check",
-      "title": "The Self: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Self and connect it to one related concept."
+      "title": "Concept Check: Christ, a Symbol of the Self",
+      "prompt": "Identify the central dynamic or symbol developed in \"Christ, a Symbol of the Self\" and connect it to one related concept."
     },
     {
       "id": "lo-ch5-reflection",
       "chapterId": "ch5",
       "type": "reflection-prompt",
-      "title": "The Self: Reflection Prompt",
-      "prompt": "How does The Self expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: Christ, a Symbol of the Self",
+      "prompt": "How does \"Christ, a Symbol of the Self\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch6-concept-check",
       "chapterId": "ch6",
       "type": "concept-check",
-      "title": "Individuation: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Individuation and connect it to one related concept."
+      "title": "Concept Check: The Sign of the Fishes",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Sign of the Fishes\" and connect it to one related concept."
     },
     {
       "id": "lo-ch6-reflection",
       "chapterId": "ch6",
       "type": "reflection-prompt",
-      "title": "Individuation: Reflection Prompt",
-      "prompt": "How does Individuation expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Sign of the Fishes",
+      "prompt": "How does \"The Sign of the Fishes\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch7-concept-check",
       "chapterId": "ch7",
       "type": "concept-check",
-      "title": "Symbols: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Symbols and connect it to one related concept."
+      "title": "Concept Check: The Prophecies of Nostradamus",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Prophecies of Nostradamus\" and connect it to one related concept."
     },
     {
       "id": "lo-ch7-reflection",
       "chapterId": "ch7",
       "type": "reflection-prompt",
-      "title": "Symbols: Reflection Prompt",
-      "prompt": "How does Symbols expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Prophecies of Nostradamus",
+      "prompt": "How does \"The Prophecies of Nostradamus\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch8-concept-check",
       "chapterId": "ch8",
       "type": "concept-check",
-      "title": "Dreams: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Dreams and connect it to one related concept."
+      "title": "Concept Check: The Historical Significance of the Fish",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Historical Significance of the Fish\" and connect it to one related concept."
     },
     {
       "id": "lo-ch8-reflection",
       "chapterId": "ch8",
       "type": "reflection-prompt",
-      "title": "Dreams: Reflection Prompt",
-      "prompt": "How does Dreams expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Historical Significance of the Fish",
+      "prompt": "How does \"The Historical Significance of the Fish\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch9-concept-check",
       "chapterId": "ch9",
       "type": "concept-check",
-      "title": "Archetypes: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Archetypes and connect it to one related concept."
+      "title": "Concept Check: The Ambivalence of the Fish Symbol",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Ambivalence of the Fish Symbol\" and connect it to one related concept."
     },
     {
       "id": "lo-ch9-reflection",
       "chapterId": "ch9",
       "type": "reflection-prompt",
-      "title": "Archetypes: Reflection Prompt",
-      "prompt": "How does Archetypes expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Ambivalence of the Fish Symbol",
+      "prompt": "How does \"The Ambivalence of the Fish Symbol\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch10-concept-check",
       "chapterId": "ch10",
       "type": "concept-check",
-      "title": "Transformation: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Transformation and connect it to one related concept."
+      "title": "Concept Check: The Fish in Alchemy",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Fish in Alchemy\" and connect it to one related concept."
     },
     {
       "id": "lo-ch10-reflection",
       "chapterId": "ch10",
       "type": "reflection-prompt",
-      "title": "Transformation: Reflection Prompt",
-      "prompt": "How does Transformation expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Fish in Alchemy",
+      "prompt": "How does \"The Fish in Alchemy\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch11-concept-check",
       "chapterId": "ch11",
       "type": "concept-check",
-      "title": "Wholeness: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Wholeness and connect it to one related concept."
+      "title": "Concept Check: The Alchemical Interpretation",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Alchemical Interpretation\" and connect it to one related concept."
     },
     {
       "id": "lo-ch11-reflection",
       "chapterId": "ch11",
       "type": "reflection-prompt",
-      "title": "Wholeness: Reflection Prompt",
-      "prompt": "How does Wholeness expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Alchemical Interpretation",
+      "prompt": "How does \"The Alchemical Interpretation\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch12-concept-check",
       "chapterId": "ch12",
       "type": "concept-check",
-      "title": "Integration: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Integration and connect it to one related concept."
+      "title": "Concept Check: Background to the Psychology of Christian Alchemical Symbolism",
+      "prompt": "Identify the central dynamic or symbol developed in \"Background to the Psychology of Christian Alchemical Symbolism\" and connect it to one related concept."
     },
     {
       "id": "lo-ch12-reflection",
       "chapterId": "ch12",
       "type": "reflection-prompt",
-      "title": "Integration: Reflection Prompt",
-      "prompt": "How does Integration expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: Background to the Psychology of Christian Alchemical Symbolism",
+      "prompt": "How does \"Background to the Psychology of Christian Alchemical Symbolism\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch13-concept-check",
       "chapterId": "ch13",
       "type": "concept-check",
-      "title": "The Journey: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in The Journey and connect it to one related concept."
+      "title": "Concept Check: Gnostic Symbols of the Self",
+      "prompt": "Identify the central dynamic or symbol developed in \"Gnostic Symbols of the Self\" and connect it to one related concept."
     },
     {
       "id": "lo-ch13-reflection",
       "chapterId": "ch13",
       "type": "reflection-prompt",
-      "title": "The Journey: Reflection Prompt",
-      "prompt": "How does The Journey expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: Gnostic Symbols of the Self",
+      "prompt": "How does \"Gnostic Symbols of the Self\" change your understanding when you relate it to another chapter or symbol?"
     },
     {
       "id": "lo-ch14-concept-check",
       "chapterId": "ch14",
       "type": "concept-check",
-      "title": "Completion: Concept Check",
-      "prompt": "Identify the central Jungian dynamic developed in Completion and connect it to one related concept."
+      "title": "Concept Check: The Structure and Dynamics of the Self",
+      "prompt": "Identify the central dynamic or symbol developed in \"The Structure and Dynamics of the Self\" and connect it to one related concept."
     },
     {
       "id": "lo-ch14-reflection",
       "chapterId": "ch14",
       "type": "reflection-prompt",
-      "title": "Completion: Reflection Prompt",
-      "prompt": "How does Completion expand your understanding of individuation when linked to another chapter?"
+      "title": "Reflection: The Structure and Dynamics of the Self",
+      "prompt": "How does \"The Structure and Dynamics of the Self\" change your understanding when you relate it to another chapter or symbol?"
     }
   ]
 }

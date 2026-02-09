@@ -1,11 +1,14 @@
 {
   "version": "1.0.0",
   "symbols": [
-    {"id":"fish","label":"Fish","motif":"Piscean fish pair","historicPeriod":"Early Christian era","conceptIds":["archetype","self","shadow"]},
-    {"id":"mandala","label":"Mandala","motif":"Quaternary mandala","historicPeriod":"Late antique to modern analytic symbolism","conceptIds":["self","individuation","ego","archetype"]},
-    {"id":"dragon","label":"Dragon","motif":"Dragon / serpent adversary","historicPeriod":"Apocalyptic and alchemical traditions","conceptIds":["shadow","archetype"]},
-    {"id":"sophia","label":"Sophia","motif":"Sophia / wisdom figure","historicPeriod":"Gnostic and medieval currents","conceptIds":["anima","coniunctio"]},
-    {"id":"sword","label":"Sword","motif":"Discerning logos blade","historicPeriod":"Patristic and scholastic symbolism","conceptIds":["animus"]},
-    {"id":"lapis","label":"Lapis","motif":"Lapis philosophorum","historicPeriod":"Medieval and Renaissance alchemy","conceptIds":["coniunctio","individuation"]}
+    {"id":"fish","label":"Fish","motif":"Piscean fish pair","historicPeriod":"Early Christian era","conceptIds":["fish-symbol","self","shadow","archetype","aeon"]},
+    {"id":"mandala","label":"Mandala","motif":"Quaternary mandala","historicPeriod":"Late antique to modern analytic symbolism","conceptIds":["self","individuation","ego","archetype","quaternity","symbolic-interpretation"]},
+    {"id":"dragon","label":"Dragon","motif":"Dragon / serpent adversary","historicPeriod":"Apocalyptic and alchemical traditions","conceptIds":["shadow","archetype","antichrist"]},
+    {"id":"sophia","label":"Sophia","motif":"Sophia / wisdom figure","historicPeriod":"Gnostic and medieval currents","conceptIds":["anima","coniunctio","gnosticism","syzygy"]},
+    {"id":"sword","label":"Sword","motif":"Discerning logos blade","historicPeriod":"Patristic and scholastic symbolism","conceptIds":["animus","syzygy"]},
+    {"id":"lapis","label":"Lapis","motif":"Lapis philosophorum","historicPeriod":"Medieval and Renaissance alchemy","conceptIds":["lapis-philosophorum","coniunctio","alchemy","individuation","prima-materia"]},
+    {"id":"cross","label":"Cross","motif":"Cruciform sign","historicPeriod":"Early and medieval Christianity","conceptIds":["christ-symbol","self","quaternity"]},
+    {"id":"ouroboros","label":"Ouroboros","motif":"Serpent biting its tail","historicPeriod":"Gnostic and alchemical traditions","conceptIds":["opposites","alchemy","individuation","mercurius","prima-materia","antichrist"]},
+    {"id":"zodiac","label":"Zodiac","motif":"Astrological age wheel","historicPeriod":"Hellenistic astrology to modern esoteric reception","conceptIds":["aeon","fish-symbol","prophecy"]}
   ]
 }
