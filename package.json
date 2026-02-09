@@ -32,7 +32,8 @@
     "ci:chapter-shell": "node scripts/ci/ensure-chapter-shell.mjs",
     "validate:aion-core": "node scripts/validate-aion-core.js",
     "validate:consistency": "npm run validate:aion-core && node scripts/validate-aion-graph.js",
-    "lint:relation-taxonomy": "node scripts/consistency/check-relation-taxonomy.js"
+    "lint:relation-taxonomy": "node scripts/consistency/check-relation-taxonomy.js",
+    "lint:styles": "stylelint 'src/styles/**/*.css' 'src/chapter1.html' 'src/chapter2.html' 'src/visualizations/chapters/chapter-4-fish/chapter-4-enhanced.html' --custom-syntax postcss-html"
   },
   "devDependencies": {
     "@lhci/cli": "^0.13.0",
@@ -55,7 +56,10 @@
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
     "webpack-bundle-analyzer": "^4.10.1",
-    "ajv": "^8.17.1"
+    "ajv": "^8.17.1",
+    "stylelint": "^16.15.0",
+    "stylelint-config-standard": "^36.0.1",
+    "postcss-html": "^1.7.0"
   },
   "dependencies": {
     "d3": "^7.8.5",

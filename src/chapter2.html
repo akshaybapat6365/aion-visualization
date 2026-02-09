@@ -30,86 +30,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 2: The Shadow - Aion Visualization</title>
     <link rel="stylesheet" href="assets/css/main.css">
-    <style>
-        .chapter-hero {
-            height: 100vh;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .chapter-hero-content {
-            text-align: center;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeInUp 1.2s ease-out 0.5s forwards;
-        }
-        
-        .chapter-content {
-            padding: var(--space-16) 0;
-        }
-        
-        .content-block {
-            max-width: 800px;
-            margin: 0 auto var(--space-16);
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        
-        .content-block.visible {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        
-        .visualization-container {
-            height: 60vh;
-            margin: var(--space-8) 0;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--surface-glass);
-            border: 1px solid var(--border-subtle);
-        }
-        
-        .quote {
-            font-size: var(--text-2xl);
-            font-weight: 300;
-            font-style: italic;
-            color: var(--text-secondary);
-            text-align: center;
-            margin: var(--space-8) auto;
-            max-width: 800px;
-            opacity: 0.8;
-        }
-        
-        .author {
-            display: block;
-            font-size: var(--text-base);
-            font-style: normal;
-            margin-top: var(--space-2);
-            color: var(--text-tertiary);
-        }
-        
-        .shadow-aspects {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-4);
-            margin-top: var(--space-6);
-        }
-        
-        .shadow-card {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: var(--space-6);
-            border-radius: 8px;
-            transition: all var(--transition-base);
-        }
-        
-        .shadow-card:hover {
-            background: rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/tokens.css">
+    <link rel="stylesheet" href="./styles/shared-components.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <!-- Phase 4: Polish Features -->
@@ -149,13 +72,13 @@
     
     <!-- Chapter Hero -->
     <section class="chapter-hero">
-        <canvas id="shadow-visualization" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        <canvas id="shadow-visualization" class="chapter-shell-canvas"></canvas>
         <div class="chapter-hero-content">
             <span class="chapter-number">Chapter 02</span>
-            <h1 style="font-size: var(--text-7xl); font-weight: 200; margin: var(--space-4) 0;">
+            <h1 class="chapter-shell-title">
                 The Shadow
             </h1>
-            <p style="font-size: var(--text-xl); color: var(--text-secondary);">
+            <p class="chapter-shell-subtitle">
                 The dark brother within
             </p>
         </div>
@@ -172,7 +95,7 @@
             </div>
             
             <div class="content-block">
-                <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
+                <h2 class="content-heading-lg">
                     Understanding the Shadow
                 </h2>
                 <p>
@@ -180,20 +103,20 @@
                     not only our unacceptable impulses and weaknesses but also undeveloped aspects 
                     of the personality that have been pushed into the unconscious.
                 </p>
-                <p style="margin-top: var(--space-3);">
+                <p class="content-block-offset">
                     In Aion, Jung explores how the shadow manifests both personally and collectively, 
                     particularly through the figure of the Antichrist as the shadow of the Christian ideal.
                 </p>
             </div>
             
             <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                <h3 class="content-heading-md">
                     Shadow Dynamics
                 </h3>
                 <div class="visualization-container" data-error-boundary="true">
                     <canvas id="shadow-dynamics"></canvas>
                 </div>
-                <p style="margin-top: var(--space-4);">
+                <p class="checkpoint-block">
                     The shadow operates through projection—we see in others what we cannot accept 
                     in ourselves. Recognition and integration of the shadow is essential for 
                     psychological wholeness.
@@ -201,31 +124,31 @@
             </div>
             
             <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                <h3 class="content-heading-md">
                     Aspects of the Shadow
                 </h3>
-                <div class="shadow-aspects">
-                    <div class="shadow-card">
-                        <h4 style="margin-bottom: var(--space-2);">Personal Shadow</h4>
-                        <p style="font-size: var(--text-base);">
+                <div class="relation-panel">
+                    <div class="relation-panel-card">
+                        <h4 class="concept-card-title">Personal Shadow</h4>
+                        <p class="concept-card-body">
                             Individual repressed contents unique to one's life history
                         </p>
                     </div>
-                    <div class="shadow-card">
-                        <h4 style="margin-bottom: var(--space-2);">Collective Shadow</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="relation-panel-card">
+                        <h4 class="concept-card-title">Collective Shadow</h4>
+                        <p class="concept-card-body">
                             Cultural and societal rejected elements shared by groups
                         </p>
                     </div>
-                    <div class="shadow-card">
-                        <h4 style="margin-bottom: var(--space-2);">Positive Shadow</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="relation-panel-card">
+                        <h4 class="concept-card-title">Positive Shadow</h4>
+                        <p class="concept-card-body">
                             Hidden potentials and undeveloped talents
                         </p>
                     </div>
-                    <div class="shadow-card">
-                        <h4 style="margin-bottom: var(--space-2);">Archetypal Shadow</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="relation-panel-card">
+                        <h4 class="concept-card-title">Archetypal Shadow</h4>
+                        <p class="concept-card-body">
                             Universal dark aspects of human nature
                         </p>
                     </div>
@@ -233,7 +156,7 @@
             </div>
             
             <!-- Navigation -->
-            <div style="display: flex; justify-content: space-between; margin-top: var(--space-16);">
+            <div class="viz-control-dock">
                 <a href="chapter1.html" class="button" data-transition="chapter">← Chapter 1: The Ego</a>
                 <a href="chapter3.html" class="button" data-transition="chapter">Chapter 3: The Syzygy →</a>
             </div>
