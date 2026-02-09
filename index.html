@@ -13,11 +13,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3); }
-            50% { text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.5); }
-        }
-        
         body {
             background: #000;
             color: #fff;
@@ -45,7 +40,7 @@
             z-index: 1;
         }
         
-        /* Subtle animated background */
+        /* Subtle background */
         body::after {
             content: '';
             position: fixed;
@@ -54,14 +49,8 @@
             right: -50%;
             bottom: -50%;
             background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
-            animation: pulse 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
-            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
         
         .main-content {
@@ -82,8 +71,8 @@
             background-clip: text;
             margin: 0 0 0.5rem 0;
             font-weight: normal;
-            animation: glow 3s ease-in-out infinite;
             text-transform: uppercase;
+            text-shadow: 0 0 26px rgba(212, 175, 55, 0.18);
         }
         
         .subtitle {
@@ -219,53 +208,6 @@
         <a href="/journey/chapter/ch1" class="journey-btn">Begin the Journey</a>
     </div>
     
-    <script>
-        // Add subtle mouse parallax effect
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
-            
-            document.querySelector('.main-content').style.transform = 
-                `translate(${x * 10}px, ${y * 10}px)`;
-        });
-        
-        // Add sparkle effect on button hover
-        document.querySelector('.journey-btn').addEventListener('mouseenter', function() {
-            const rect = this.getBoundingClientRect();
-            const sparkle = document.createElement('div');
-            sparkle.style.cssText = `
-                position: fixed;
-                left: ${rect.left + rect.width / 2}px;
-                top: ${rect.top + rect.height / 2}px;
-                width: 4px;
-                height: 4px;
-                background: #D4AF37;
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 1000;
-                box-shadow: 0 0 10px #D4AF37;
-                animation: sparkle 0.6s ease-out forwards;
-            `;
-            document.body.appendChild(sparkle);
-            
-            setTimeout(() => sparkle.remove(), 600);
-        });
-        
-        // CSS for sparkle animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes sparkle {
-                0% {
-                    transform: translate(-50%, -50%) scale(0);
-                    opacity: 1;
-                }
-                100% {
-                    transform: translate(-50%, -50%) scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+    <!-- Intentionally JS-light: keeps Lighthouse TBT stable on CI while preserving visual polish. -->
 </body>
 </html>
