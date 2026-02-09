@@ -4,66 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Symbol Encyclopedia - Aion Visualization</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="responsive-utils.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="nav">
+    <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
-            <a href="src/timeline.html" class="nav-link">Timeline</a>
-            <a href="src/symbols.html" class="nav-link active">Symbols</a>
-            <a href="src/about.html" class="nav-link">About</a>
+            <a href="../chapters/index.html" class="nav-link">Chapters</a>
+            <a href="./timeline.html" class="nav-link">Timeline</a>
+            <a href="./symbols.html" class="nav-link active">Symbols</a>
+            <a href="./about.html" class="nav-link">About</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-small">
-        <h1 class="hero-title">Jungian Symbol Encyclopedia</h1>
-        <p class="hero-subtitle">Explore the archetypal language of the psyche</p>
-    </section>
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-small">
+            <h1 class="hero-title">Jungian Symbol Encyclopedia</h1>
+            <p class="hero-subtitle">Explore the archetypal language of the psyche</p>
+        </section>
 
-    <!-- Symbol Categories -->
-    <div class="symbol-categories">
-        <button class="category-btn active" data-category="all">All Symbols</button>
-        <button class="category-btn" data-category="self">The Self</button>
-        <button class="category-btn" data-category="shadow">Shadow</button>
-        <button class="category-btn" data-category="anima">Anima/Animus</button>
-        <button class="category-btn" data-category="archetype">Archetypes</button>
-        <button class="category-btn" data-category="alchemical">Alchemical</button>
-        <button class="category-btn" data-category="religious">Religious</button>
-    </div>
+        <!-- Symbol Categories -->
+        <div class="symbol-categories">
+            <button class="category-btn active" data-category="all">All Symbols</button>
+            <button class="category-btn" data-category="self">The Self</button>
+            <button class="category-btn" data-category="shadow">Shadow</button>
+            <button class="category-btn" data-category="anima">Anima/Animus</button>
+            <button class="category-btn" data-category="archetype">Archetypes</button>
+            <button class="category-btn" data-category="alchemical">Alchemical</button>
+            <button class="category-btn" data-category="religious">Religious</button>
+        </div>
 
-    <!-- Search Bar -->
-    <div class="symbol-search">
-        <input type="text" id="symbol-search" placeholder="Search symbols..." />
-    </div>
+        <!-- Search Bar -->
+        <div class="symbol-search">
+            <label for="symbol-search" class="sr-only">Search symbols</label>
+            <input type="text" id="symbol-search" placeholder="Search symbols..." />
+        </div>
 
-    <!-- Symbol Grid -->
-    <div class="symbol-grid" id="symbol-grid">
-        <!-- Symbols will be dynamically inserted here -->
-    </div>
+        <!-- Symbol Grid -->
+        <div class="symbol-grid" id="symbol-grid">
+            <!-- Symbols will be dynamically inserted here -->
+        </div>
 
-    <!-- Symbol Detail Modal -->
-    <div id="symbol-modal" class="symbol-modal hidden">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="symbol-3d-view"></div>
-            <h2 id="modal-symbol-name"></h2>
-            <div id="modal-symbol-glyph"></div>
-            <p id="modal-symbol-description"></p>
-            <div class="symbol-attributes">
-                <h3>Attributes</h3>
-                <ul id="modal-attributes"></ul>
-            </div>
-            <div class="symbol-connections">
-                <h3>Related Symbols</h3>
-                <div id="modal-connections"></div>
+        <!-- Symbol Detail Modal -->
+        <div id="symbol-modal" class="symbol-modal hidden">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="symbol-3d-view"></div>
+                <h2 id="modal-symbol-name"></h2>
+                <div id="modal-symbol-glyph"></div>
+                <p id="modal-symbol-description"></p>
+                <div class="symbol-attributes">
+                    <h3>Attributes</h3>
+                    <ul id="modal-attributes"></ul>
+                </div>
+                <div class="symbol-connections">
+                    <h3>Related Symbols</h3>
+                    <div id="modal-connections"></div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <style>
         .hero-small {

@@ -2,10 +2,18 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-const chapters = require('./chapters.json');
-const concepts = require('./concepts.json');
-const symbols = require('./symbols.json');
-const edges = require('./edges.json');
+const { chapters } = require('../aion-core/chapters.json');
+const { concepts } = require('../aion-core/concepts.json');
+const { symbols } = require('../aion-core/symbols.json');
+const { relationships } = require('../aion-core/relationships.json');
+
+const edges = relationships.map((relationship) => ({
+  source: relationship.source,
+  target: relationship.target,
+  relationType: relationship.relationType,
+  weight: relationship.weight,
+  narrativeNotes: relationship.narrativeNotes
+}));
 
 const chapterById = new Map(chapters.map((chapter) => [chapter.id, chapter]));
 const conceptById = new Map(concepts.map((concept) => [concept.id, concept]));

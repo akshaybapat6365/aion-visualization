@@ -5,6 +5,7 @@
 
 /* CSS Variables - Dark Theme Only */
 @import url('./styles/tokens.css');
+@import url('./styles/shared-components.css');
 
 /* Reset */
 *, *::before, *::after {
@@ -238,7 +239,8 @@ a:hover {
 .chapter-number {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--text-tertiary);
+  /* Small labels still need AA contrast on dark backgrounds. */
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -301,7 +303,7 @@ a:hover {
 
 .chapter-card-description {
   font-size: var(--text-sm);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 

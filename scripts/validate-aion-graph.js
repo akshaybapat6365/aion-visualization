@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 import { chapters, concepts, symbols, edges } from '../src/data/aion-graph/index.js';
+import { relationTaxonomy } from '../src/data/aion-core/relation-taxonomy.js';
 
 const chapterIds = new Set(chapters.map((chapter) => chapter.id));
 const conceptIds = new Set(concepts.map((concept) => concept.id));
 const symbolIds = new Set(symbols.map((symbol) => symbol.id));
 const allowedDifficulty = new Set(['foundational', 'intermediate', 'advanced']);
+const relationTypes = new Set(Object.keys(relationTaxonomy));
 
 const errors = [];
 
@@ -52,6 +54,7 @@ edges.forEach((edge, index) => {
   assert(allNodeIds.has(edge.source), `Edge[${index}] references missing source ${edge.source}`);
   assert(allNodeIds.has(edge.target), `Edge[${index}] references missing target ${edge.target}`);
   assert(typeof edge.relationType === 'string' && edge.relationType.length > 0, `Edge[${index}] missing relationType`);
+  assert(relationTypes.has(edge.relationType), `Edge[${index}] has unknown relationType ${edge.relationType}`);
   assert(typeof edge.weight === 'number' && edge.weight >= 0 && edge.weight <= 1, `Edge[${index}] has invalid weight`);
 });
 

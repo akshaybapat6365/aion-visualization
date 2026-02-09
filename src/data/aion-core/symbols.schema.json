@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aion-core/symbols.schema.json",
+  "type": "object",
+  "required": ["version", "symbols"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "symbols": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "motif", "historicPeriod", "conceptIds"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "label": { "type": "string", "minLength": 1 },
+          "motif": { "type": "string", "minLength": 1 },
+          "historicPeriod": { "type": "string", "minLength": 1 },
+          "conceptIds": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "minItems": 1, "uniqueItems": true }
+        }
+      }
+    }
+  }
+}

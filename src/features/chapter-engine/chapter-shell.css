@@ -1,0 +1,50 @@
+.chapter-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  color: #e8e8ef;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.chapter-shell__header h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  margin: 0;
+}
+
+.chapter-shell__thesis {
+  font-size: 1.125rem;
+  opacity: 0.9;
+}
+
+.chapter-shell__section {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: rgba(24, 24, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.chapter-shell__terms {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.chapter-shell__viz iframe {
+  width: 100%;
+  min-height: 560px;
+  border: 0;
+  border-radius: 10px;
+  background: #0f0f1f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.chapter-shell__viz-fallback { padding: 1rem; border: 1px dashed rgba(255,255,255,0.24); border-radius: 8px; background: rgba(0,0,0,0.2); }
