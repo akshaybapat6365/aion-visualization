@@ -30,67 +30,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 1: The Ego - Aion Visualization</title>
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="./styles/tokens.css">
+    <link rel="stylesheet" href="./styles/shared-components.css">
     <!-- Phase 3 Enhancements -->
-    <style>
-        .chapter-hero {
-            height: 100vh;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .chapter-hero-content {
-            text-align: center;
-            z-index: 10;
-            opacity: 0;
-            animation: fadeInUp 1.2s ease-out 0.5s forwards;
-        }
-        
-        .chapter-content {
-            padding: var(--space-16) 0;
-        }
-        
-        .content-block {
-            max-width: 800px;
-            margin: 0 auto var(--space-16);
-            opacity: 0;
-            transform: translateY(40px);
-        }
-        
-        .content-block.visible {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        
-        .visualization-container {
-            height: 60vh;
-            margin: var(--space-8) 0;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--surface-glass);
-            border: 1px solid var(--border-subtle);
-        }
-        
-        .quote {
-            font-size: var(--text-2xl);
-            font-weight: 300;
-            font-style: italic;
-            color: var(--text-secondary);
-            text-align: center;
-            margin: var(--space-8) auto;
-            max-width: 800px;
-            opacity: 0.8;
-        }
-        
-        .author {
-            display: block;
-            font-size: var(--text-base);
-            font-style: normal;
-            margin-top: var(--space-2);
-            color: var(--text-tertiary);
-        }
-    </style>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="visualization-loader.js"></script>
     <script type="module" src="lazy-visualizations.js"></script>
@@ -111,6 +54,8 @@
         });
       }
     </script>
+    <link rel="stylesheet" href="core/app-shell/app-shell.css">
+    <script type="module" src="core/app-shell/app-shell.js"></script>
 </head>
 <body>
 
@@ -129,13 +74,13 @@
     </nav>
     
     <!-- Chapter Hero -->
-    <section class="chapter-hero" style="background: linear-gradient(180deg, rgba(107, 70, 193, 0.1) 0%, transparent 50%);">
+    <section class="chapter-hero chapter-shell-hero-gradient">
         <div class="chapter-hero-content">
             <span class="chapter-number">Chapter 01</span>
-            <h1 style="font-size: var(--text-7xl); font-weight: 200; margin: var(--space-4) 0;">
+            <h1 class="chapter-shell-title">
                 The Ego
             </h1>
-            <p style="font-size: var(--text-xl); color: var(--text-secondary);">
+            <p class="chapter-shell-subtitle">
                 The center of consciousness
             </p>
         </div>
@@ -152,7 +97,7 @@
             </div>
             
             <div class="content-block">
-                <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
+                <h2 class="content-heading-lg">
                     Understanding the Ego
                 </h2>
                 <p>
@@ -160,20 +105,20 @@
                     that we identify with in our daily lives. It is the organizing principle of 
                     the conscious mind, responsible for our sense of identity and continuity.
                 </p>
-                <p style="margin-top: var(--space-3);">
+                <p class="content-block-offset">
                     The ego emerges from the Self, serving as a necessary focal point for 
                     consciousness, yet it represents only a small portion of the total psyche.
                 </p>
             </div>
             
             <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                <h3 class="content-heading-md">
                     The Ego-Self Axis
                 </h3>
                 <div class="visualization-container" data-error-boundary="true">
                     <canvas id="ego-self-axis"></canvas>
                 </div>
-                <p style="margin-top: var(--space-4);">
+                <p class="checkpoint-block">
                     The relationship between ego and Self forms the central axis of psychological 
                     development. While the ego provides necessary boundaries and identity, it must 
                     remain connected to the greater Self to maintain psychological health.
@@ -181,31 +126,31 @@
             </div>
             
             <div class="content-block">
-                <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-4);">
+                <h3 class="content-heading-md">
                     Functions of the Ego
                 </h3>
-                <div class="grid grid-cols-2" style="gap: var(--space-3); margin-top: var(--space-6);">
-                    <div class="card" style="padding: var(--space-6);">
-                        <h4 style="margin-bottom: var(--space-2);">Identity</h4>
-                        <p style="font-size: var(--text-base);">
+                <div class="grid grid-cols-2 concept-grid">
+                    <div class="card concept-card">
+                        <h4 class="concept-card-title">Identity</h4>
+                        <p class="concept-card-body">
                             Maintains continuity of the self across time and experience
                         </p>
                     </div>
-                    <div class="card" style="padding: var(--space-6);">
-                        <h4 style="margin-bottom: var(--space-2);">Reality Testing</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="card concept-card">
+                        <h4 class="concept-card-title">Reality Testing</h4>
+                        <p class="concept-card-body">
                             Distinguishes between inner and outer reality
                         </p>
                     </div>
-                    <div class="card" style="padding: var(--space-6);">
-                        <h4 style="margin-bottom: var(--space-2);">Defense</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="card concept-card">
+                        <h4 class="concept-card-title">Defense</h4>
+                        <p class="concept-card-body">
                             Protects consciousness from overwhelming content
                         </p>
                     </div>
-                    <div class="card" style="padding: var(--space-6);">
-                        <h4 style="margin-bottom: var(--space-2);">Executive Function</h4>
-                        <p style="font-size: var(--text-base);">
+                    <div class="card concept-card">
+                        <h4 class="concept-card-title">Executive Function</h4>
+                        <p class="concept-card-body">
                             Directs conscious will and decision-making
                         </p>
                     </div>
@@ -213,7 +158,7 @@
             </div>
             
             <!-- Navigation -->
-            <div style="display: flex; justify-content: space-between; margin-top: var(--space-16);">
+            <div class="viz-control-dock">
                 <a href="chapters/index.html" class="button" data-transition="chapter">← Back to Chapters</a>
                 <a href="chapter2.html" class="button" data-transition="chapter">Chapter 2: The Shadow →</a>
             </div>

@@ -1,9 +1,7 @@
 {
   "routes": [
     "/",
-    "/chapters/",
-    "/chapters/enhanced/1/",
-    "/chapters/standard/1/"
+    "/journey/chapter/index.html"
   ],
   "webVitals": {
     "lcpMs": 2500,

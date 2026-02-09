@@ -21,13 +21,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
       - name: Run ESLint
         run: npm run lint
 
-      - name: Lighthouse + Playwright performance budget gate
+      - name: Validate Aion core consistency
+        run: npm run validate:consistency
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Route performance budgets (Lighthouse + runtime + cleanup)
         run: npm run perf:ci
 
       - name: Bundle size delta check

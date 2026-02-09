@@ -13,8 +13,16 @@
   "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/journey/chapter-:chapter",
-      "destination": "/chapters/chapter-:chapter.html"
+      "source": "/journey/chapter-:n(\\d+)",
+      "destination": "/journey/chapter/index.html"
+    },
+    {
+      "source": "/journey/chapter/:id",
+      "destination": "/journey/chapter/index.html?id=:id"
+    },
+    {
+      "source": "/journey/chapter",
+      "destination": "/journey/chapter/index.html"
     },
     {
       "source": "/journey/:path*",

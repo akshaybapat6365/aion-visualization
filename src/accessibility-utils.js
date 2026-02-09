@@ -393,6 +393,7 @@ const accessibilityStyles = `
     border-radius: 50%;
     background: var(--surface-glass);
     border: 2px solid var(--border-default);
+    color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
     z-index: 100;

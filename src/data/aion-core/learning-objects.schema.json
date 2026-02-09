@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aion-core/learning-objects.schema.json",
+  "type": "object",
+  "required": ["version", "learningObjects"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "learningObjects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "chapterId", "type", "title", "prompt"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^lo-ch[0-9]+-[a-z-]+$" },
+          "chapterId": { "type": "string", "pattern": "^ch[0-9]+$" },
+          "type": { "type": "string", "enum": ["concept-check", "reflection-prompt", "insight-checkpoint", "exit-summary"] },
+          "title": { "type": "string", "minLength": 1 },
+          "prompt": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

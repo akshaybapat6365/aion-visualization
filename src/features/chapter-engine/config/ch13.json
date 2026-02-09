@@ -1,0 +1,60 @@
+{
+  "id": "ch13",
+  "sections": [
+    {
+      "key": "header-thesis",
+      "chapterLabel": "Chapter 13",
+      "title": "Aion Chapter 13",
+      "thesis": "Chapter 13 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+    },
+    {
+      "key": "why-this-matters",
+      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+    },
+    {
+      "key": "core-terms",
+      "terms": [
+        {
+          "term": "Shadow",
+          "definition": "Disowned aspects of personality that seek integration rather than repression."
+        },
+        {
+          "term": "Individuation",
+          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+        }
+      ]
+    },
+    {
+      "key": "primary-visualization",
+      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
+      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+    },
+    {
+      "key": "insight-checks",
+      "items": [
+        "Can you identify the psychic opposition named in this chapter?",
+        "How does this chapter reframe the tension as transformative?"
+      ]
+    },
+    {
+      "key": "symbol-relationship-panel",
+      "items": [
+        "Primary symbol: Fish / Anthropos motif",
+        "Relationship axis: Ego ↔ Self",
+        "Taxonomy note: Opposition → Integration"
+      ]
+    },
+    {
+      "key": "synthesis",
+      "body": "Synthesis: chapter 13 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+    },
+    {
+      "key": "reflection-next-links",
+      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "nextLinks": [
+        { "label": "Continue to chapter 14", "href": "/journey/chapter/ch14" },
+        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+      ]
+    }
+  ]
+}

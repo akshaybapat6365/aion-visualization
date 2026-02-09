@@ -6,9 +6,7 @@
       "startServerReadyPattern": "Serving HTTP on",
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/chapters/",
-        "http://localhost:3000/chapters/enhanced/1/",
-        "http://localhost:3000/chapters/standard/1/"
+        "http://localhost:3000/journey/chapter/index.html?id=ch1"
       ]
     },
     "assert": {
