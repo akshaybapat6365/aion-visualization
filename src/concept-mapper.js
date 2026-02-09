@@ -272,15 +272,23 @@ class ConceptMapper {
     
 
   getMotionBehaviorForRelation(relationType) {
+    const typeForGrammar = relationType.replace(/_/g, '-');
+
+    if (window.AionMotionGrammar) {
+      return window.AionMotionGrammar.getMotionBehaviorForRelation(typeForGrammar);
+    }
+
     if (window.AionMotionChoreographer) {
       return window.AionMotionChoreographer.getMotionBehaviorForRelation(relationType);
     }
 
-    return RELATION_TAXONOMY_LOOKUP[relationType]?.motionBehavior || 'integration';
+    const typeForTaxonomy = relationType.replace(/-/g, '_');
+    return RELATION_TAXONOMY_LOOKUP[typeForTaxonomy]?.motionBehavior || 'integration';
   }
 
   getRelationLabel(relationType) {
-    return RELATION_TAXONOMY_LOOKUP[relationType]?.label || relationType.replace(/_/g, ' ');
+    const typeForTaxonomy = relationType.replace(/-/g, '_');
+    return RELATION_TAXONOMY_LOOKUP[typeForTaxonomy]?.label || typeForTaxonomy.replace(/_/g, ' ');
   }
 
   getLinkDashPattern(relationType) {

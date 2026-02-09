@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Aion Visualization</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="responsive-utils.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
@@ -12,18 +13,18 @@
     <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
     
     <!-- Navigation -->
-    <nav class="nav">
+    <nav id="navigation" class="nav" aria-label="Main navigation">
         <div class="nav-container">
             <a href="./index.html" class="nav-link">Home</a>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
-            <a href="src/timeline.html" class="nav-link">Timeline</a>
-            <a href="src/symbols.html" class="nav-link">Symbols</a>
-            <a href="src/about.html" class="nav-link active">About</a>
+            <a href="../chapters/index.html" class="nav-link">Chapters</a>
+            <a href="./timeline.html" class="nav-link">Timeline</a>
+            <a href="./symbols.html" class="nav-link">Symbols</a>
+            <a href="./about.html" class="nav-link active">About</a>
         </div>
     </nav>
     
     <!-- Content -->
-    <main style="padding-top: calc(var(--nav-height) + var(--space-8));">
+    <main id="main-content" style="padding-top: calc(var(--nav-height) + var(--space-8));">
         <div class="container">
             <div style="max-width: 800px; margin: 0 auto;">
                 <h1 style="font-size: var(--text-5xl); font-weight: 200; margin-bottom: var(--space-8);">
@@ -129,6 +130,6 @@
         
         animate();
     </script>
-    <script src="assets/js/core/utilities.js"></script>
+    <script src="../assets/js/core/utilities.js"></script>
 </body>
 </html>

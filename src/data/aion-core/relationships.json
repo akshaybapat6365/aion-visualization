@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "relationships": [
+    {"id":"rel-ego-shadow","source":"ego","target":"shadow","relationType":"complements","weight":0.88,"narrativeNotes":"Ego consciousness is expanded through shadow integration."},
+    {"id":"rel-shadow-individuation","source":"shadow","target":"individuation","relationType":"supports","weight":0.93,"narrativeNotes":"Owning shadow material is a pivotal individuation movement."},
+    {"id":"rel-anima-coniunctio","source":"anima","target":"coniunctio","relationType":"converges_with","weight":0.77,"narrativeNotes":"Relational eros contributes to symbolic union."},
+    {"id":"rel-animus-coniunctio","source":"animus","target":"coniunctio","relationType":"converges_with","weight":0.77,"narrativeNotes":"Discerning logos contributes to symbolic union."},
+    {"id":"rel-self-individuation","source":"self","target":"individuation","relationType":"orients","weight":0.96,"narrativeNotes":"The Self acts as telos and ordering center."},
+    {"id":"rel-archetype-self","source":"archetype","target":"self","relationType":"illuminates","weight":0.72,"narrativeNotes":"Archetypal images mediate approach to totality."},
+    {"id":"rel-ch2-ch6","source":"ch2","target":"ch6","relationType":"precedes","weight":0.66,"narrativeNotes":"Shadow encounter anticipates integrative work."},
+    {"id":"rel-ch10-ch14","source":"ch10","target":"ch14","relationType":"culminates_in","weight":0.9,"narrativeNotes":"Transformation themes culminate in completion motifs."},
+    {"id":"rel-fish-self","source":"fish","target":"self","relationType":"symbolizes","weight":0.71,"narrativeNotes":"Fish symbolism holds paradoxical totality imagery."},
+    {"id":"rel-lapis-coniunctio","source":"lapis","target":"coniunctio","relationType":"symbolizes","weight":0.84,"narrativeNotes":"The lapis expresses the coniunctio as completed opus."}
+  ]
+}

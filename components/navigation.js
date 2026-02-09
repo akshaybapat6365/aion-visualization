@@ -24,8 +24,10 @@ const MODE_JOURNEY = 'journey';
 const MODE_ATLAS = 'atlas';
 
 function getCurrentChapterNumber(pathname = window.location.pathname) {
-  const chapterMatch = pathname.match(/chapter-?(\d+)/);
-  return chapterMatch ? Number(chapterMatch[1]) : null;
+  const match =
+    pathname.match(/\/journey\/chapter\/ch(\d+)/) ||
+    pathname.match(/chapter-(\d+)/);
+  return match ? Number(match[1]) : null;
 }
 
 function getRouteMode(pathname = window.location.pathname) {
@@ -38,7 +40,7 @@ function getRouteMode(pathname = window.location.pathname) {
 }
 
 function buildJourneyPath(chapterNumber) {
-  return `/journey/chapter-${chapterNumber}`;
+  return `/journey/chapter/ch${chapterNumber}`;
 }
 
 function trackNavigationEvent(eventType, details = {}) {

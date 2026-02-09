@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aion-core/relationships.schema.json",
+  "type": "object",
+  "required": ["version", "relationships"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "relationships": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "target", "relationType", "weight", "narrativeNotes"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^rel-[a-z0-9-]+$" },
+          "source": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 },
+          "relationType": { "type": "string", "minLength": 1 },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "narrativeNotes": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
