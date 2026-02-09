@@ -1,0 +1,122 @@
+{
+  "complements": {
+    "label": "complements",
+    "description": "Two concepts reciprocally complete one another without collapsing their distinctness.",
+    "motionBehavior": "integration"
+  },
+  "supports": {
+    "label": "supports",
+    "description": "One concept stabilizes, enables, or strengthens the development of another.",
+    "motionBehavior": "deflation"
+  },
+  "converges_with": {
+    "label": "converges with",
+    "description": "Distinct symbolic or conceptual streams move toward shared meaning.",
+    "motionBehavior": "integration"
+  },
+  "orients": {
+    "label": "orients",
+    "description": "A concept provides direction, telos, or organizing perspective for another.",
+    "motionBehavior": "integration"
+  },
+  "illuminates": {
+    "label": "illuminates",
+    "description": "A concept clarifies or reveals dimensions of another concept.",
+    "motionBehavior": "inflation"
+  },
+  "precedes": {
+    "label": "precedes",
+    "description": "A chapter or motif appears earlier in the narrative and prepares what follows.",
+    "motionBehavior": "deflation"
+  },
+  "culminates_in": {
+    "label": "culminates in",
+    "description": "A trajectory reaches a decisive synthesis or endpoint in another concept.",
+    "motionBehavior": "cyclical-return"
+  },
+  "symbolizes": {
+    "label": "symbolizes",
+    "description": "A symbol concretely images a psychological process, structure, or totality.",
+    "motionBehavior": "cyclical-return"
+  },
+  "opposes": {
+    "label": "opposes",
+    "description": "Two concepts stand in productive tension or polarity.",
+    "motionBehavior": "opposition"
+  },
+  "develops_toward": {
+    "label": "develops toward",
+    "description": "A concept matures in the direction of a broader or more integrated form.",
+    "motionBehavior": "integration"
+  },
+  "relates_to": {
+    "label": "relates to",
+    "description": "Concepts are meaningfully associated without strict hierarchy.",
+    "motionBehavior": "integration"
+  },
+  "integrates_into": {
+    "label": "integrates into",
+    "description": "A previously differentiated element is assimilated into a larger whole.",
+    "motionBehavior": "integration"
+  },
+  "manifests_as": {
+    "label": "manifests as",
+    "description": "Latent psychic content appears in a specific experiential or symbolic form.",
+    "motionBehavior": "inflation"
+  },
+  "expresses_as": {
+    "label": "expresses as",
+    "description": "A dynamic is outwardly expressed through a particular archetypal pattern.",
+    "motionBehavior": "inflation"
+  },
+  "symbolized_by": {
+    "label": "symbolized by",
+    "description": "A concept is represented through a recurring symbol.",
+    "motionBehavior": "cyclical-return"
+  },
+  "structured_as": {
+    "label": "structured as",
+    "description": "A concept takes form according to a specific symbolic architecture.",
+    "motionBehavior": "cyclical-return"
+  },
+  "achieved_through": {
+    "label": "achieved through",
+    "description": "A state or goal is reached by means of a process.",
+    "motionBehavior": "integration"
+  },
+  "requires": {
+    "label": "requires",
+    "description": "A process depends on another as a necessary condition.",
+    "motionBehavior": "deflation"
+  },
+  "resolved_by": {
+    "label": "resolved by",
+    "description": "A psychological tension is worked through via another process.",
+    "motionBehavior": "deflation"
+  },
+  "completed_by": {
+    "label": "completed by",
+    "description": "An incomplete symbolic structure reaches wholeness through another element.",
+    "motionBehavior": "cyclical-return"
+  },
+  "represents": {
+    "label": "represents",
+    "description": "A symbol or motif stands for a broader psychic reality.",
+    "motionBehavior": "cyclical-return"
+  },
+  "enacts": {
+    "label": "enacts",
+    "description": "An archetypal figure dramatizes or performs a process in narrative form.",
+    "motionBehavior": "inflation"
+  },
+  "guides_to": {
+    "label": "guides to",
+    "description": "A figure or idea directs movement toward a psychological objective.",
+    "motionBehavior": "integration"
+  },
+  "aspect_of": {
+    "label": "aspect of",
+    "description": "A concept expresses one dimension of a larger archetypal pattern.",
+    "motionBehavior": "deflation"
+  }
+}
