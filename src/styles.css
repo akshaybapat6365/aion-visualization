@@ -1,7 +1,7 @@
 /* Aion Visualization - Minimalist Design System */
 
-/* Import Premium Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
+/* Fonts (self-hosted or system-stable) */
+@import url('./styles/fonts.css');
 
 /* CSS Variables - Dark Theme Only */
 @import url('./styles/tokens.css');

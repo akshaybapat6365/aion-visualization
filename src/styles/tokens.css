@@ -11,9 +11,11 @@
   --color-gray-700: #404040;
   --color-gray-800: #262626;
   --color-gray-900: #171717;
-  --color-accent: #6b46c1;
-  --color-accent-light: #7c3aed;
-  --color-accent-dark: #5b21b6;
+  /* Accent system: warm "alchemical gold" + cool counterpoint. */
+  --color-accent: #d4af37;
+  --color-accent-light: #ffd37a;
+  --color-accent-dark: #a67c00;
+  --color-accent-cool: #22d3ee;
   --color-fish-ancient: #8b7355;
   --color-fish-christian: #ffd700;
   --color-fish-medieval: #6b46c1;
@@ -22,7 +24,7 @@
 
   /* legacy aliases */
   --black: var(--color-black);
-  --dark: #0a0a0a;
+  --dark: #0b0b0e;
   --white: var(--color-white);
   --gray-100: var(--color-gray-100);
   --gray-200: var(--color-gray-200);
@@ -34,8 +36,8 @@
   --gray-800: var(--color-gray-800);
   --gray-900: var(--color-gray-900);
   /* semantic color aliases */
-  --surface-primary: var(--color-black);
-  --surface-secondary: #0a0a0a;
+  --surface-primary: #0b0b0e;
+  --surface-secondary: #11111a;
   --surface-glass: rgba(255, 255, 255, 0.03);
   --surface-glass-hover: rgba(255, 255, 255, 0.05);
   --text-primary: var(--color-gray-100);
@@ -47,10 +49,12 @@
   --accent: var(--color-accent);
   --accent-light: var(--color-accent-light);
   --accent-dark: var(--color-accent-dark);
+  --accent-cool: var(--color-accent-cool);
 
   /* type */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces', ui-serif, 'Iowan Old Style', 'Palatino Linotype', serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
