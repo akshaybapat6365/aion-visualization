@@ -129,7 +129,7 @@ function showDetails(node) {
   if (!title || !body) return;
 
   title.textContent = `Chapter ${node.id}: ${node.title}`;
-  body.innerHTML = `<strong>Cluster:</strong> ${node.cluster}<br/><strong>Pathways forward:</strong> ${outbound}<br/><strong>Route:</strong> <a href="/journey/chapter-${node.id}">Open chapter view</a>`;
+  body.innerHTML = `<strong>Cluster:</strong> ${node.cluster}<br/><strong>Pathways forward:</strong> ${outbound}<br/><strong>Route:</strong> <a href="/journey/chapter/ch${node.id}">Open chapter view</a>`;
 
   if (window.learningAnalytics && typeof window.learningAnalytics.trackEvent === 'function') {
     window.learningAnalytics.trackEvent('atlas_node_selected', { chapterNumber: node.id, cluster: node.cluster });
