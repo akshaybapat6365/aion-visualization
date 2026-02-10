@@ -1,0 +1,126 @@
+/* HUD - Head Up Display */
+#hud-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    /* Let clicks pass through to viz/content */
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+    font-family: var(--font-sans, system-ui);
+    color: rgba(255, 255, 255, 0.8);
+    transition: opacity 0.5s ease;
+}
+
+/* Zen Mode: Hide HUD elements except exit trigger? Or dim them? */
+body.zen-mode #hud-layer {
+    opacity: 0.3;
+}
+
+body.zen-mode .chapter-shell {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+/* Top Bar */
+.hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.hud-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-decoration: none;
+    pointer-events: auto;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.hud-logo:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Bottom Bar */
+.hud-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.hud-chapter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.hud-chapter-number {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+}
+
+.hud-chapter-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.hud-controls {
+    display: flex;
+    gap: 1.5rem;
+    pointer-events: auto;
+}
+
+.hud-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.hud-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.hud-btn.active {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.8);
+    color: #ffd700;
+}
+
+/* Progress Line */
+.hud-progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hud-progress-bar {
+    height: 100%;
+    background: #ffd700;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
