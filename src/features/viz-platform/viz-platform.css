@@ -1,0 +1,222 @@
+/* ═══════════════════════════════════════════════════════════════
+   Viz-Platform Components — Phase 2 Styles
+   Fallback panel, learning overlay, reduced-motion panel
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Fallback Panel ─── */
+.viz-fallback-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    min-height: 280px;
+    background: var(--surface-card, rgba(255, 255, 255, 0.025));
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-xl, 1rem);
+    color: var(--text-secondary, #a3a3a3);
+    font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+.viz-fallback__icon {
+    font-size: 2.5rem;
+    color: var(--text-tertiary, #525252);
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.viz-fallback__title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-display, 'Fraunces', serif);
+    font-variation-settings: 'wght' 550;
+    font-size: var(--text-xl, 1.25rem);
+    color: var(--text-primary, #f5f5f5);
+    letter-spacing: 0.02em;
+}
+
+.viz-fallback__reason {
+    margin: 0 0 1rem;
+    font-size: var(--text-sm, 0.875rem);
+    line-height: 1.6;
+    max-width: 48ch;
+}
+
+.viz-fallback__note {
+    margin: 0 0 1.5rem;
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--text-tertiary, #525252);
+    max-width: 48ch;
+}
+
+.viz-fallback__link {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid var(--border-accent, rgba(212, 175, 55, 0.3));
+    border-radius: var(--radius-md, 0.5rem);
+    color: var(--color-accent-light, #ffd37a);
+    font-size: var(--text-sm, 0.875rem);
+    text-decoration: none;
+    transition: all 200ms ease;
+}
+
+.viz-fallback__link:hover {
+    background: rgba(212, 175, 55, 0.16);
+    border-color: var(--border-accent-hover, rgba(212, 175, 55, 0.5));
+    box-shadow: var(--glow-gold, 0 0 30px rgba(212, 175, 55, 0.15));
+}
+
+/* ─── Learning Overlay ─── */
+.viz-learning-overlay {
+    position: relative;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--surface-card, rgba(255, 255, 255, 0.025));
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-lg, 0.75rem);
+    backdrop-filter: blur(12px);
+    font-family: var(--font-sans, system-ui, sans-serif);
+    color: var(--text-secondary, #a3a3a3);
+}
+
+.viz-overlay__section {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+}
+
+.viz-overlay__section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.viz-overlay__heading {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-display, 'Fraunces', serif);
+    font-variation-settings: 'wght' 500;
+    font-size: var(--text-sm, 0.875rem);
+    color: var(--text-primary, #f5f5f5);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.viz-overlay__icon {
+    display: inline-block;
+    width: 1.2em;
+    color: var(--color-accent, #d4af37);
+}
+
+.viz-overlay__text {
+    margin: 0;
+    font-size: var(--text-sm, 0.875rem);
+    line-height: 1.65;
+}
+
+.viz-overlay__list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.4rem;
+}
+
+.viz-overlay__list li {
+    font-size: var(--text-sm, 0.875rem);
+    line-height: 1.5;
+}
+
+/* ─── Checkpoints ─── */
+.viz-overlay__checkpoints {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.viz-overlay__checkpoint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: var(--text-sm, 0.875rem);
+    transition: all 300ms ease;
+}
+
+.viz-overlay__checkpoint--complete {
+    border-color: var(--border-accent, rgba(212, 175, 55, 0.3));
+    background: rgba(212, 175, 55, 0.06);
+}
+
+.viz-overlay__check-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-tertiary, #525252);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: all 300ms ease;
+}
+
+.viz-overlay__checkpoint--complete .viz-overlay__check-badge {
+    border-color: var(--color-accent, #d4af37);
+    color: var(--color-accent, #d4af37);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.viz-overlay__section--summary {
+    background: var(--surface-glass, rgba(255, 255, 255, 0.03));
+    margin: 0 -1.5rem -1.5rem;
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+    border-radius: 0 0 var(--radius-lg, 0.75rem) var(--radius-lg, 0.75rem);
+}
+
+/* ─── Reduced Motion Panel ─── */
+.viz-reduced-motion-panel {
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    background: var(--surface-card, rgba(255, 255, 255, 0.025));
+    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-lg, 0.75rem);
+    font-family: var(--font-sans, system-ui, sans-serif);
+    color: var(--text-secondary, #a3a3a3);
+}
+
+.viz-reduced-motion-panel p {
+    margin: 0 0 0.75rem;
+    font-size: var(--text-sm, 0.875rem);
+}
+
+.viz-reduced-motion-panel button {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    background: var(--surface-glass, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.1));
+    border-radius: var(--radius-md, 0.5rem);
+    color: var(--text-primary, #f5f5f5);
+    font-size: var(--text-sm, 0.875rem);
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+.viz-reduced-motion-panel button:hover {
+    background: var(--surface-glass-hover, rgba(255, 255, 255, 0.06));
+    border-color: var(--border-accent, rgba(212, 175, 55, 0.3));
+}
+
+/* ─── Reduced Motion Override ─── */
+@media (prefers-reduced-motion: reduce) {
+
+    .viz-overlay__checkpoint,
+    .viz-overlay__check-badge {
+        transition-duration: 0ms;
+    }
+}
