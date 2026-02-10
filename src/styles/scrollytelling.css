@@ -1,0 +1,153 @@
+/* ═══════════════════════════════════════════════════════
+   Aion — Scrollytelling Layout (Phase 6)
+   High-Fidelity "Root Level" Styles.
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Global Viz Layer ─── */
+#viz-layer {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    background: #050505;
+    /* Fallback */
+    pointer-events: auto;
+    /* Allow interaction */
+}
+
+/* ─── Content Layer ─── */
+#chapter-root {
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+    /* Layout wrapper doesn't block clicks */
+}
+
+/* ─── Transparent Shell ─── */
+.chapter-shell {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 50vh 1rem 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ─── Floating Cards (Glassmorphism) ─── */
+.chapter-shell__section {
+    pointer-events: auto;
+    /* Cards are interactive */
+    width: 100%;
+    max-width: 650px;
+    /* Optimal reading width */
+
+    /* Glass Effect */
+    background: rgba(12, 12, 16, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    /* Borders & Shadows */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 1.5rem;
+
+    /* Layout */
+    padding: 3rem;
+    margin-bottom: 50vh;
+
+    /* Animation State: Default (Inactive) */
+    opacity: 0.3;
+    transform: translateY(30px) scale(0.98);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.4s;
+}
+
+/* Active State */
+.chapter-shell__section.active,
+.chapter-shell__section:hover {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    background: rgba(12, 12, 16, 0.85);
+    border-color: rgba(212, 175, 55, 0.3);
+    /* Gold hint */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ─── Typography (Instrument Serif) ─── */
+
+/* Header - Special Treatment (No Card) */
+.chapter-shell__section--header-thesis {
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 70vh;
+    text-align: center;
+    opacity: 1;
+    transform: none;
+    width: 100%;
+    max-width: 900px;
+}
+
+.chapter-shell__eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.chapter-shell__title {
+    font-family: var(--font-display, 'Times New Roman', serif);
+    font-size: clamp(3rem, 8vw, 7rem);
+    /* Intense Scale */
+    font-weight: 400;
+    font-style: italic;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    margin-bottom: 2rem;
+}
+
+.chapter-shell__thesis {
+    font-family: var(--font-body);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+/* Section Headings */
+.chapter-shell__section-title {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    color: #fff;
+}
+
+/* Body Copy */
+.chapter-shell p {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+}
+
+/* ─── Hidden Elements ─── */
+.chapter-shell__section--primary-visualization {
+    display: none !important;
+}
+
+.chapter-shell-topbar {
+    opacity: 0;
+    /* Hide nav for immersive feel (Phase 6 HUD will replace) */
+    pointer-events: none;
+}
