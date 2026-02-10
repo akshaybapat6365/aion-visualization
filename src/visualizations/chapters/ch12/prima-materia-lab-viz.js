@@ -1,19 +1,13 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Prima Materia Lab — Chapter 12: Background to the Psychology of Alchemy
- *
- * Drag raw elemental symbols (Earth, Water, Fire, Air) into a central
- * vessel to trigger reactions. As elements combine, the vessel fills
- * and changes color according to the alchemical stages.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class PrimaMateriaLabViz {
+export default class PrimaMateriaLabViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
-
+        super(container);
         this.elements = [
             { id: 'earth', symbol: '🜃', name: 'Earth', color: '#27ae60', x: 0, y: 0, placed: false },
             { id: 'water', symbol: '🜄', name: 'Water', color: '#3498db', x: 0, y: 0, placed: false },
@@ -26,39 +20,30 @@ export default class PrimaMateriaLabViz {
         this.reactions = 0;
         this.vesselGlow = 0;
 
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;cursor:grab;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
-
-        this._layoutElements(w, h);
-
         this._onMouseDown = (e) => this._handleDown(e.clientX, e.clientY);
         this._onMouseMove = (e) => this._handleMove(e.clientX, e.clientY);
         this._onMouseUp = () => this._handleUp();
-        this._onResize = () => {
-            const nw = container.clientWidth, nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-            this._layoutElements(nw, nh);
-        };
+    }
 
-        this.canvas.addEventListener('mousedown', this._onMouseDown);
-        this.canvas.addEventListener('mousemove', this._onMouseMove);
-        this.canvas.addEventListener('mouseup', this._onMouseUp);
-        this.canvas.addEventListener('mouseleave', this._onMouseUp);
-        window.addEventListener('resize', this._onResize);
+    async init() {
+        // Initial layout
+        const rect = this.container.getBoundingClientRect();
+        this._layoutElements(rect.width, rect.height);
+
+        this.container.style.cursor = 'grab';
+        // Bind events to container for robustness
+        this.container.addEventListener('mousedown', this._onMouseDown);
+        this.container.addEventListener('mousemove', this._onMouseMove);
+        this.container.addEventListener('mouseup', this._onMouseUp);
+        this.container.addEventListener('mouseleave', this._onMouseUp);
 
         this._createUI();
-        this._animate();
+    }
+
+    _handleResize() {
+        super._handleResize(); // Call BaseViz resize to update canvas
+        const rect = this.container.getBoundingClientRect();
+        this._layoutElements(rect.width, rect.height);
     }
 
     _layoutElements(w, h) {
@@ -85,11 +70,12 @@ export default class PrimaMateriaLabViz {
 
         for (const el of this.elements) {
             if (el.placed) continue;
+            // Note: el.x/y are in CSS pixels relative to container
             const dist = Math.sqrt((mx - el.x) ** 2 + (my - el.y) ** 2);
             if (dist < 22) {
                 this.dragging = el;
                 this.dragOffset = { x: mx - el.x, y: my - el.y };
-                this.canvas.style.cursor = 'grabbing';
+                this.container.style.cursor = 'grabbing';
                 return;
             }
         }
@@ -105,9 +91,11 @@ export default class PrimaMateriaLabViz {
     _handleUp() {
         if (!this.dragging) return;
         const el = this.dragging;
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const width = this.canvas.width / this.dpr;
+        const height = this.canvas.height / this.dpr;
+        const cx = width / 2;
+        const cy = height / 2;
+
         const dist = Math.sqrt((el.x - cx) ** 2 + (el.y - cy) ** 2);
 
         if (dist < 50) {
@@ -122,43 +110,43 @@ export default class PrimaMateriaLabViz {
         }
 
         this.dragging = null;
-        this.canvas.style.cursor = 'grab';
+        this.container.style.cursor = 'grab';
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         overlay.innerHTML = `
-      <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
-        font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#e67e22;">
-        Prima Materia Lab
-      </span>
-      <span style="position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
-        font-size:0.55rem;opacity:0.3;">drag elements into the vessel</span>
-    `;
-        this.container.style.position = 'relative';
+          <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
+            font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#e67e22;">
+            Prima Materia Lab
+          </span>
+          <span style="position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+            font-size:0.55rem;opacity:0.3;">drag elements into the vessel</span>
+        `;
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
+    update(dt) {
+        this.time += dt;
         this.vesselGlow *= 0.97;
-        this._draw();
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const w = width / this.dpr;
+        const h = height / this.dpr;
+        const cx = w / 2;
+        const cy = h / 2;
         const t = this.time;
 
         ctx.fillStyle = '#050508';
@@ -258,16 +246,13 @@ export default class PrimaMateriaLabViz {
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
-        this.canvas.removeEventListener('mousedown', this._onMouseDown);
-        this.canvas.removeEventListener('mousemove', this._onMouseMove);
-        this.canvas.removeEventListener('mouseup', this._onMouseUp);
-        this.canvas.removeEventListener('mouseleave', this._onMouseUp);
-        window.removeEventListener('resize', this._onResize);
+    destroy() {
+        this.container.removeEventListener('mousedown', this._onMouseDown);
+        this.container.removeEventListener('mousemove', this._onMouseMove);
+        this.container.removeEventListener('mouseup', this._onMouseUp);
+        this.container.removeEventListener('mouseleave', this._onMouseUp);
+        this.container.style.cursor = '';
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }
