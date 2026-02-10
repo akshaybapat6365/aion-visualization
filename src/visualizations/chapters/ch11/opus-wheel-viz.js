@@ -1,18 +1,13 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Opus Wheel — Chapter 11: The Alchemical Interpretation of the Fish
- *
- * Circular process diagram showing the alchemical opus stages as
- * a wheel. Animated material flows between stages in a continuous
- * cycle. Hover each stage for a description of the process.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class OpusWheelViz {
+export default class OpusWheelViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
+        super(container);
         this.mouse = { x: 0, y: 0 };
         this.hoveredStage = -1;
 
@@ -26,73 +21,56 @@ export default class OpusWheelViz {
             { name: 'Coniunctio', color: '#d4af37', desc: 'Sacred marriage — union of opposites into the lapis' },
         ];
 
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
-
         this._onMouseMove = (e) => {
             const rect = this.container.getBoundingClientRect();
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
         };
-        this._onResize = () => {
-            const nw = container.clientWidth, nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-        };
-        container.addEventListener('mousemove', this._onMouseMove);
-        window.addEventListener('resize', this._onResize);
+    }
+
+    async init() {
+        this.container.addEventListener('mousemove', this._onMouseMove);
         this._createUI();
-        this._animate();
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         overlay.innerHTML = `
-      <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
-        font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#d4af37;">
-        Opus Wheel — The Alchemical Process
-      </span>
-    `;
+          <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
+            font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#d4af37;">
+            Opus Wheel — The Alchemical Process
+          </span>
+        `;
         this._infoEl = document.createElement('div');
         this._infoEl.style.cssText = `
-      position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
-      font-size:0.6rem;text-align:center;max-width:280px;opacity:0;
-      transition:opacity 0.3s;color:#ccc;
-    `;
+          position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
+          font-size:0.6rem;text-align:center;max-width:280px;opacity:0;
+          transition:opacity 0.3s;color:#ccc;
+        `;
         overlay.appendChild(this._infoEl);
-        this.container.style.position = 'relative';
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
-        this._draw();
+    update(dt) {
+        this.time += dt;
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const w = width / this.dpr;
+        const h = height / this.dpr;
+        const cx = w / 2;
+        const cy = h / 2;
         const t = this.time;
         const radius = Math.min(w, h) * 0.32;
         const count = this.stages.length;
@@ -200,13 +178,9 @@ export default class OpusWheelViz {
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
+    destroy() {
         this.container.removeEventListener('mousemove', this._onMouseMove);
-        window.removeEventListener('resize', this._onResize);
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }

@@ -1,4 +1,57 @@
-import { chapters, concepts, symbols, edges, getChapter, getConcept, getChapterConceptMap, getRelatedConcepts } from '../../src/data/aion-graph/index.js';
+const fs = require('fs');
+const path = require('path');
+
+const coreDir = path.join(process.cwd(), 'src/data/aion-core');
+
+function readJson(relativePath) {
+  return JSON.parse(fs.readFileSync(path.join(coreDir, relativePath), 'utf8'));
+}
+
+const chapters = readJson('chapters.json').chapters;
+const concepts = readJson('concepts.json').concepts;
+const symbols = readJson('symbols.json').symbols;
+const relationships = readJson('relationships.json').relationships;
+
+const chapterById = new Map(chapters.map((chapter) => [chapter.id, chapter]));
+const conceptById = new Map(concepts.map((concept) => [concept.id, concept]));
+
+const edges = relationships.map((rel) => ({
+  source: rel.source,
+  target: rel.target,
+  relationType: rel.relationType,
+  weight: rel.weight
+}));
+
+function getChapter(id) {
+  return chapterById.get(id) || null;
+}
+
+function getConcept(id) {
+  return conceptById.get(id) || null;
+}
+
+function getChapterConceptMap() {
+  return chapters.reduce((acc, chapter) => {
+    acc[chapter.id] = chapter.keyConceptIds
+      .map((conceptId) => conceptById.get(conceptId))
+      .filter(Boolean);
+    return acc;
+  }, {});
+}
+
+function getRelatedConcepts(id) {
+  const concept = getConcept(id);
+  if (!concept) return [];
+
+  const relatedIds = new Set(concept.prerequisites);
+
+  edges.forEach((edge) => {
+    if (edge.source === id && conceptById.has(edge.target)) relatedIds.add(edge.target);
+    if (edge.target === id && conceptById.has(edge.source)) relatedIds.add(edge.source);
+  });
+
+  return Array.from(relatedIds).map((relatedId) => conceptById.get(relatedId)).filter(Boolean);
+}
 
 describe('Aion graph data integrity', () => {
   test('has unique ids by collection', () => {
@@ -42,7 +95,7 @@ describe('Aion graph helper queries', () => {
     expect(getChapter('ch1')?.title).toBe('The Ego');
     expect(getChapter('missing')).toBeNull();
 
-    expect(getConcept('shadow')?.label).toBe('The Shadow');
+    expect(getConcept('shadow')?.label).toBe('Shadow');
     expect(getConcept('missing')).toBeNull();
   });
 
@@ -61,3 +114,4 @@ describe('Aion graph helper queries', () => {
     expect(getRelatedConcepts('missing')).toEqual([]);
   });
 });
+

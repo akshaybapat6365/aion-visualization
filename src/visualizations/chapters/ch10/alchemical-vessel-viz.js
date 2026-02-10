@@ -1,20 +1,13 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Alchemical Vessel — Chapter 10: The Fish in Alchemy
- *
- * A 4-stage alchemical vessel showing the opus transformation:
- *   nigredo (black) → albedo (white) → citrinitas (yellow) → rubedo (red)
- *
- * Click the vessel to advance through stages. Each stage shows
- * different colored particles bubbling and transforming within.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class AlchemicalVesselViz {
+export default class AlchemicalVesselViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
+        super(container);
         this.stage = 0; // 0-3
         this.stageProgress = 0;
 
@@ -24,17 +17,6 @@ export default class AlchemicalVesselViz {
             { name: 'Citrinitas', color: '#2d2a1a', accent: '#d4af37', particles: '#ffd37a', desc: 'Illumination — the dawning of solar consciousness' },
             { name: 'Rubedo', color: '#2e1a1a', accent: '#c0392b', particles: '#e74c3c', desc: 'Completion — the philosopher\'s stone achieved' },
         ];
-
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;cursor:pointer;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
 
         // Bubbles
         this.bubbles = [];
@@ -52,87 +34,81 @@ export default class AlchemicalVesselViz {
             this.stage = (this.stage + 1) % 4;
             this.stageProgress = 0;
         };
-        this.canvas.addEventListener('click', this._onClick);
+    }
 
-        this._onResize = () => {
-            const nw = container.clientWidth, nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-        };
-        window.addEventListener('resize', this._onResize);
+    async init() {
+        this.container.addEventListener('click', this._onClick);
+        this.container.style.cursor = 'pointer';
         this._createUI();
-        this._animate();
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         this._stageLabel = document.createElement('span');
         this._stageLabel.style.cssText = `
-      position:absolute;top:5%;left:50%;transform:translateX(-50%);
-      font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;
-      transition:color 0.5s;
-    `;
+          position:absolute;top:5%;left:50%;transform:translateX(-50%);
+          font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;
+          transition:color 0.5s;
+        `;
         this._descLabel = document.createElement('span');
         this._descLabel.style.cssText = `
-      position:absolute;top:10%;left:50%;transform:translateX(-50%);
-      font-size:0.55rem;opacity:0.4;transition:opacity 0.5s;
-    `;
+          position:absolute;top:10%;left:50%;transform:translateX(-50%);
+          font-size:0.55rem;opacity:0.4;transition:opacity 0.5s;
+        `;
         overlay.appendChild(this._stageLabel);
         overlay.appendChild(this._descLabel);
 
         const hint = document.createElement('span');
         hint.style.cssText = `
-      position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
-      font-size:0.55rem;opacity:0.3;
-    `;
+          position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
+          font-size:0.55rem;opacity:0.3;
+        `;
         hint.textContent = 'click vessel to advance transformation';
         overlay.appendChild(hint);
 
         // Stage dots
         const dotsWrap = document.createElement('div');
         dotsWrap.style.cssText = `
-      position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
-      display:flex;gap:8px;
-    `;
+          position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
+          display:flex;gap:8px;
+        `;
         this._dots = [];
         for (let i = 0; i < 4; i++) {
             const dot = document.createElement('div');
             dot.style.cssText = `
-        width:8px;height:8px;border-radius:50%;
-        border:1px solid rgba(255,255,255,0.2);
-        transition:background 0.3s;
-      `;
+            width:8px;height:8px;border-radius:50%;
+            border:1px solid rgba(255,255,255,0.2);
+            transition:background 0.3s;
+          `;
             dotsWrap.appendChild(dot);
             this._dots.push(dot);
         }
         overlay.appendChild(dotsWrap);
 
-        this.container.style.position = 'relative';
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
-        this.stageProgress = Math.min(1, this.stageProgress + 0.01);
-        this._draw();
+    update(dt) {
+        this.time += dt;
+        this.stageProgress = Math.min(1, this.stageProgress + dt * 0.6); // Slightly slower progression for smoothness
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const w = width / this.dpr;
+        const h = height / this.dpr;
+        const cx = w / 2;
+        const cy = h / 2;
         const t = this.time;
         const s = this.stages[this.stage];
 
@@ -141,12 +117,14 @@ export default class AlchemicalVesselViz {
         ctx.fillRect(0, 0, w, h);
 
         // Update UI
-        this._stageLabel.style.color = s.accent;
-        this._stageLabel.textContent = s.name;
-        this._descLabel.textContent = s.desc;
-        this._dots.forEach((dot, i) => {
-            dot.style.background = i === this.stage ? s.accent : 'transparent';
-        });
+        if (this._stageLabel) {
+            this._stageLabel.style.color = s.accent;
+            this._stageLabel.textContent = s.name;
+            this._descLabel.textContent = s.desc;
+            this._dots.forEach((dot, i) => {
+                dot.style.background = i === this.stage ? s.accent : 'transparent';
+            });
+        }
 
         // Vessel body — flask shape
         const vw = w * 0.35;
@@ -231,13 +209,10 @@ export default class AlchemicalVesselViz {
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
-        this.canvas.removeEventListener('click', this._onClick);
-        window.removeEventListener('resize', this._onResize);
+    destroy() {
+        this.container.removeEventListener('click', this._onClick);
+        this.container.style.cursor = '';
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }

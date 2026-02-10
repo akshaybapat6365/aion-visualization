@@ -3,57 +3,133 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 11",
-      "title": "Aion Chapter 11",
-      "thesis": "Chapter 11 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 11: Alchemy",
+      "title": "The Alchemical Interpretation",
+      "thesis": "Psychological meaning of alchemical symbols and their relation to the union of opposites."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "mercurius",
+          "term": "Mercurius",
+          "definitionTier": "beginner",
+          "definition": "A duplex mediator archetype in alchemy: ambivalent spirit-matter principle linking opposites."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "coniunctio",
+          "term": "Coniunctio",
+          "definitionTier": "beginner",
+          "definition": "A symbolic union of opposites, central to alchemical imagery and to psychological integration work."
+        },
+        {
+          "termId": "lapis-philosophorum",
+          "term": "Lapis Philosophorum",
+          "definitionTier": "beginner",
+          "definition": "The philosopher's stone as an image of realized transformation and stabilized union of opposites."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "mercurius",
+            "label": "Mercurius",
+            "type": "concept"
+          },
+          {
+            "id": "coniunctio",
+            "label": "Coniunctio",
+            "type": "concept"
+          },
+          {
+            "id": "lapis-philosophorum",
+            "label": "Lapis Philosophorum",
+            "type": "concept"
+          },
+          {
+            "id": "ouroboros",
+            "label": "Ouroboros",
+            "type": "symbol"
+          },
+          {
+            "id": "lapis",
+            "label": "Lapis",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "lapis",
+            "to": "lapis-philosophorum",
+            "relationType": "represents"
+          },
+          {
+            "from": "lapis",
+            "to": "coniunctio",
+            "relationType": "symbolizes"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Alchemical Interpretation\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Alchemical Interpretation\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Mercurius · Coniunctio · Lapis Philosophorum"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Ouroboros · Lapis"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "cyclical-return"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 11 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: Psychological meaning of alchemical symbols and their relation to the union of opposites. Next, \"Background to the Psychology of Christian Alchemical Symbolism\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 12", "href": "/journey/chapter/ch12" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Previous: The Fish in Alchemy",
+          "href": "/journey/chapter/ch10"
+        },
+        {
+          "label": "Next: Background to the Psychology of Christian Alchemical Symbolism",
+          "href": "/journey/chapter/ch12"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

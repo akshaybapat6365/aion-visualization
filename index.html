@@ -7,6 +7,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <link rel="preload" href="assets/fonts/Fraunces-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="src/styles/fonts.css">
+    <link rel="stylesheet" href="src/styles/tokens.css">
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -14,9 +17,9 @@
         }
         
         body {
-            background: #000;
-            color: #fff;
-            font-family: Georgia, serif;
+            background: var(--surface-primary, #000);
+            color: var(--text-primary, #fff);
+            font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -63,14 +66,15 @@
         }
         
         .title {
-            font-size: 7rem;
-            letter-spacing: 0.5em;
+            font-family: var(--font-display, Georgia, serif);
+            font-size: 6.5rem;
+            letter-spacing: 0.22em;
             color: transparent;
             background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
             -webkit-background-clip: text;
             background-clip: text;
             margin: 0 0 0.5rem 0;
-            font-weight: normal;
+            font-variation-settings: 'wght' 650;
             text-transform: uppercase;
             text-shadow: 0 0 26px rgba(212, 175, 55, 0.18);
         }
@@ -98,10 +102,10 @@
         .journey-btn {
             display: inline-block;
             background: transparent;
-            color: #D4AF37;
+            color: var(--accent, #D4AF37);
             padding: 1.2rem 3rem;
             text-decoration: none;
-            border: 2px solid #D4AF37;
+            border: 2px solid var(--accent, #D4AF37);
             font-size: 1rem;
             letter-spacing: 0.2em;
             transition: all 0.4s ease;
@@ -118,7 +122,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: #D4AF37;
+            background: var(--accent, #D4AF37);
             transition: left 0.4s ease;
             z-index: -1;
         }
@@ -143,7 +147,7 @@
         
         .particle::before {
             content: '✦';
-            color: #D4AF37;
+            color: var(--accent, #D4AF37);
             font-size: 1rem;
             position: absolute;
             animation: float-particle 15s infinite;
@@ -169,7 +173,7 @@
         @media (max-width: 768px) {
             .title {
                 font-size: 4rem;
-                letter-spacing: 0.3em;
+                letter-spacing: 0.18em;
             }
             
             .subtitle {
@@ -205,7 +209,7 @@
             interactive visualizations that illuminate the path from the Age of Pisces to the Age of 
             Aquarius.
         </p>
-        <a href="/journey/chapter/ch1" class="journey-btn">Begin the Journey</a>
+        <a href="journey/chapter/index.html?id=ch1" class="journey-btn">Begin the Journey</a>
     </div>
     
     <!-- Intentionally JS-light: keeps Lighthouse TBT stable on CI while preserving visual polish. -->

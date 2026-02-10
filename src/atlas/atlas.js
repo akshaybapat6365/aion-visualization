@@ -1,139 +1,375 @@
-const CLUSTER_COLORS = {
-  Identity: '#E4C568',
-  'Relational Psyche': '#9CC9E8',
-  Selfhood: '#8DDEB8',
-  Symbolism: '#B5A0FF',
-  Alchemy: '#FFA98F',
-  Cosmology: '#F6E6A7'
+const CORE_PATHS = {
+  chapters: 'src/data/aion-core/chapters.json',
+  concepts: 'src/data/aion-core/concepts.json',
+  relationships: 'src/data/aion-core/relationships.json'
 };
 
-const NODES = [
-  { id: 1, title: 'The Ego', cluster: 'Identity' },
-  { id: 2, title: 'The Shadow', cluster: 'Identity' },
-  { id: 3, title: 'The Syzygy', cluster: 'Relational Psyche' },
-  { id: 4, title: 'The Self', cluster: 'Selfhood' },
-  { id: 5, title: 'Christ as Symbol', cluster: 'Selfhood' },
-  { id: 6, title: 'Sign of the Fishes', cluster: 'Symbolism' },
-  { id: 7, title: 'Nostradamus', cluster: 'Symbolism' },
-  { id: 8, title: 'Historical Fish Symbol', cluster: 'Symbolism' },
-  { id: 9, title: 'Ambivalence of Fish', cluster: 'Symbolism' },
-  { id: 10, title: 'Fish in Alchemy', cluster: 'Alchemy' },
-  { id: 11, title: 'Alchemical Interpretation', cluster: 'Alchemy' },
-  { id: 12, title: 'Psychology of Alchemy', cluster: 'Alchemy' },
-  { id: 13, title: 'Gnostic Symbols', cluster: 'Cosmology' },
-  { id: 14, title: 'Dynamics of the Self', cluster: 'Cosmology' }
-];
+function cssVar(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
 
-const LINKS = [
-  ...NODES.slice(0, -1).map((node, index) => ({ source: node.id, target: NODES[index + 1].id, type: 'journey' })),
-  { source: 2, target: 4, type: 'integration' },
-  { source: 3, target: 5, type: 'integration' },
-  { source: 6, target: 10, type: 'symbolic' },
-  { source: 9, target: 13, type: 'symbolic' },
-  { source: 11, target: 14, type: 'synthesis' }
-];
+function isReducedMotion() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function chapterUrl(chapterId) {
+  return `journey/chapter/index.html?id=${encodeURIComponent(chapterId)}`;
+}
+
+async function loadCore() {
+  const [chaptersRes, conceptsRes, relationshipsRes] = await Promise.all([
+    fetch(CORE_PATHS.chapters),
+    fetch(CORE_PATHS.concepts),
+    fetch(CORE_PATHS.relationships)
+  ]);
+
+  if (!chaptersRes.ok) throw new Error('Failed to load chapters dataset');
+  if (!conceptsRes.ok) throw new Error('Failed to load concepts dataset');
+  if (!relationshipsRes.ok) throw new Error('Failed to load relationships dataset');
+
+  const chaptersJson = await chaptersRes.json();
+  const conceptsJson = await conceptsRes.json();
+  const relationshipsJson = await relationshipsRes.json();
+
+  return {
+    chapters: chaptersJson.chapters,
+    concepts: conceptsJson.concepts,
+    relationships: relationshipsJson.relationships
+  };
+}
 
 function initAtlas() {
   const svg = d3.select('#atlas');
   if (svg.empty()) return;
 
   const width = 1200;
-  const height = 700;
+  const height = 720;
+  const reduceMotion = isReducedMotion();
 
-  const linkGroup = svg.append('g').attr('stroke-opacity', 0.45);
-  const nodeGroup = svg.append('g');
+  const accent = cssVar('--accent', '#d4af37');
+  const accentCool = cssVar('--accent-cool', '#22d3ee');
+  const borderSubtle = cssVar('--border-subtle', 'rgba(255,255,255,0.06)');
+  const textSecondary = cssVar('--text-secondary', '#a3a3a3');
 
-  const simulation = d3.forceSimulation(NODES)
-    .force('link', d3.forceLink(LINKS).id(d => d.id).distance(l => (l.type === 'journey' ? 90 : 140)).strength(0.85))
-    .force('charge', d3.forceManyBody().strength(-330))
-    .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('x', d3.forceX(width / 2).strength(0.04))
-    .force('y', d3.forceY(height / 2).strength(0.06));
+  const clusterColors = new Map([
+    ['Identity', accent],
+    ['Relational Psyche', accentCool],
+    ['Selfhood', '#8dddb8'],
+    ['Aeon & Fish', '#ffd37a'],
+    ['Alchemy', '#ffa98f'],
+    ['Gnosis', '#9cc9e8'],
+    ['Synthesis', '#e5e5e5']
+  ]);
 
-  const links = linkGroup.selectAll('path')
-    .data(LINKS)
-    .enter()
-    .append('path')
-    .attr('fill', 'none')
-    .attr('stroke-width', d => (d.type === 'journey' ? 2.3 : 1.5))
-    .attr('stroke', d => (d.type === 'journey' ? '#D4AF37' : '#7AA6C8'));
+  const zoomRoot = svg.append('g').attr('class', 'atlas-zoom-root');
+  const linkLayer = zoomRoot.append('g').attr('class', 'atlas-links');
+  const nodeLayer = zoomRoot.append('g').attr('class', 'atlas-nodes');
 
-  const nodes = nodeGroup.selectAll('g')
-    .data(NODES)
-    .enter()
-    .append('g')
-    .call(d3.drag()
-      .on('start', dragStarted)
-      .on('drag', dragged)
-      .on('end', dragEnded));
+  const zoom = d3.zoom().scaleExtent([0.7, 2.4]).on('zoom', (event) => {
+    zoomRoot.attr('transform', event.transform);
+  });
+  svg.call(zoom);
 
-  nodes.append('circle')
-    .attr('r', 17)
-    .attr('fill', d => CLUSTER_COLORS[d.cluster] || '#ddd')
-    .attr('stroke', '#1a1a1a')
-    .attr('stroke-width', 2.5)
-    .on('click', (_, d) => showDetails(d));
+  const state = {
+    core: null,
+    chapters: [],
+    conceptsById: new Map(),
+    chapterById: new Map(),
+    baseLinks: [],
+    selectedChapterId: null
+  };
 
-  nodes.append('text')
-    .text(d => d.id)
-    .attr('fill', '#111')
-    .attr('font-size', 11)
-    .attr('font-weight', 700)
-    .attr('text-anchor', 'middle')
-    .attr('dy', 4)
-    .style('pointer-events', 'none');
+  const controls = {
+    search: document.getElementById('atlas-search'),
+    reset: document.getElementById('atlas-reset')
+  };
 
-  simulation.on('tick', () => {
-    links.attr('d', d => {
-      const dx = d.target.x - d.source.x;
-      const dy = d.target.y - d.source.y;
-      const dr = Math.sqrt(dx * dx + dy * dy) * 1.2;
-      return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+  const detailsEls = {
+    title: document.getElementById('detail-title'),
+    body: document.getElementById('detail-body')
+  };
+
+  function linkKey(link) {
+    const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+    const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+    return `${sourceId}=>${targetId}|${link.kind || ''}|${link.relationType || ''}`;
+  }
+
+  function buildBaseLinks(chapters, relationships) {
+    const links = [];
+    const orderById = new Map(chapters.map((chapter) => [chapter.id, chapter.order]));
+
+    for (let i = 1; i < chapters.length; i += 1) {
+      links.push({ source: `ch${i}`, target: `ch${i + 1}`, kind: 'journey' });
+    }
+
+    const seen = new Set(links.map(linkKey));
+    chapters.forEach((chapter) => {
+      (chapter.relatedChapterIds || []).forEach((related) => {
+        const relatedOrder = orderById.get(related);
+        if (typeof relatedOrder === 'number' && Math.abs(relatedOrder - chapter.order) <= 1) return;
+        const candidate = { source: chapter.id, target: related, kind: 'related' };
+        const key = linkKey(candidate);
+        if (!seen.has(key)) {
+          seen.add(key);
+          links.push(candidate);
+        }
+      });
     });
 
-    nodes.attr('transform', d => `translate(${d.x}, ${d.y})`);
-  });
+    relationships.forEach((rel) => {
+      if (!String(rel.source).startsWith('ch') || !String(rel.target).startsWith('ch')) return;
+      const candidate = { source: rel.source, target: rel.target, kind: 'taxonomy', relationType: rel.relationType };
+      const key = linkKey(candidate);
+      if (!seen.has(key)) {
+        seen.add(key);
+        links.push(candidate);
+      }
+    });
 
-  const chapterParam = Number(new URLSearchParams(window.location.search).get('chapter'));
-  if (chapterParam) {
-    const matching = NODES.find(node => node.id === chapterParam);
-    if (matching) showDetails(matching);
+    return links;
   }
 
-  function dragStarted(event) {
-    if (!event.active) simulation.alphaTarget(0.2).restart();
-    event.subject.fx = event.subject.x;
-    event.subject.fy = event.subject.y;
+  function renderDetails(chapter) {
+    if (!detailsEls.title || !detailsEls.body) return;
+    if (!chapter) {
+      detailsEls.title.textContent = 'Select a chapter';
+      detailsEls.body.innerHTML = '<p>Click any chapter node to see a summary, key concepts, and direct links.</p>';
+      return;
+    }
+
+    const conceptLabels = (chapter.keyConceptIds || [])
+      .map((id) => state.conceptsById.get(id)?.label)
+      .filter(Boolean);
+
+    detailsEls.title.textContent = `Chapter ${chapter.order}: ${chapter.title}`;
+    detailsEls.body.innerHTML = `
+      <p><strong>Cluster:</strong> ${chapter.cluster}</p>
+      <p>${chapter.summary}</p>
+      <div class="atlas-badges" aria-label="Key concepts">
+        ${conceptLabels.map((label) => `<span class="atlas-badge">${label}</span>`).join('')}
+      </div>
+      <a class="atlas-open" href="${chapterUrl(chapter.id)}">Open chapter view</a>
+    `;
   }
 
-  function dragged(event) {
-    event.subject.fx = event.x;
-    event.subject.fy = event.y;
+  function buildGraphForSelection(selectedChapterId) {
+    const chapterNodes = state.chapters.map((chapter) => ({
+      id: chapter.id,
+      kind: 'chapter',
+      order: chapter.order,
+      title: chapter.title,
+      cluster: chapter.cluster,
+      summary: chapter.summary,
+      keyConceptIds: chapter.keyConceptIds,
+      relatedChapterIds: chapter.relatedChapterIds
+    }));
+
+    const nodes = [...chapterNodes];
+    const links = [...state.baseLinks];
+
+    if (selectedChapterId) {
+      const selected = state.chapterById.get(selectedChapterId);
+      if (selected) {
+        const conceptNodes = (selected.keyConceptIds || [])
+          .map((id) => state.conceptsById.get(id))
+          .filter(Boolean)
+          .slice(0, 6)
+          .map((concept) => ({
+            id: `concept:${concept.id}`,
+            kind: 'concept',
+            label: concept.label
+          }));
+
+        nodes.push(...conceptNodes);
+        conceptNodes.forEach((concept) => {
+          links.push({
+            source: selected.id,
+            target: concept.id,
+            kind: 'concept-link'
+          });
+        });
+      }
+    }
+
+    return { nodes, links };
   }
 
-  function dragEnded(event) {
-    if (!event.active) simulation.alphaTarget(0);
-    event.subject.fx = null;
-    event.subject.fy = null;
+  function setHighlighted(ids) {
+    nodeLayer.selectAll('.atlas-node').classed('is-dimmed', (d) => ids && ids.size > 0 && !ids.has(d.id));
   }
-}
 
-function showDetails(node) {
-  const outbound = LINKS
-    .filter(link => link.source.id === node.id || link.source === node.id)
-    .map(link => link.target.id || link.target)
-    .join(', ') || 'None';
+  let activeSimulation = null;
+  function renderGraph(nodes, links) {
+    if (activeSimulation) {
+      activeSimulation.stop();
+      activeSimulation = null;
+    }
 
-  const title = document.getElementById('detail-title');
-  const body = document.getElementById('detail-body');
-  if (!title || !body) return;
+    const simulation = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id((d) => d.id).distance((link) => {
+        if (link.kind === 'journey') return 95;
+        if (link.kind === 'concept-link') return 88;
+        return 140;
+      }).strength((link) => (link.kind === 'journey' ? 0.85 : 0.6)))
+      .force('charge', d3.forceManyBody().strength((d) => (d.kind === 'concept' ? -140 : -320)))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius((d) => (d.kind === 'concept' ? 18 : 30)));
 
-  title.textContent = `Chapter ${node.id}: ${node.title}`;
-  body.innerHTML = `<strong>Cluster:</strong> ${node.cluster}<br/><strong>Pathways forward:</strong> ${outbound}<br/><strong>Route:</strong> <a href="/journey/chapter/ch${node.id}">Open chapter view</a>`;
+    const linkSel = linkLayer.selectAll('line')
+      .data(links, linkKey)
+      .join((enter) => enter.append('line'))
+      .attr('stroke', (link) => {
+        if (link.kind === 'journey') return accent;
+        if (link.kind === 'concept-link') return accentCool;
+        return 'rgba(255,255,255,0.18)';
+      })
+      .attr('stroke-width', (link) => (link.kind === 'journey' ? 2.2 : 1.3))
+      .attr('stroke-dasharray', (link) => (link.kind === 'concept-link' ? '4 4' : null))
+      .attr('opacity', (link) => (link.kind === 'journey' ? 0.42 : 0.3));
 
-  if (window.learningAnalytics && typeof window.learningAnalytics.trackEvent === 'function') {
-    window.learningAnalytics.trackEvent('atlas_node_selected', { chapterNumber: node.id, cluster: node.cluster });
+    const nodeSel = nodeLayer.selectAll('g')
+      .data(nodes, (d) => d.id)
+      .join((enter) => {
+        const g = enter.append('g').attr('class', 'atlas-node');
+
+        g.append('circle')
+          .attr('r', (d) => (d.kind === 'concept' ? 10 : 18))
+          .attr('fill', (d) => {
+            if (d.kind === 'concept') return 'rgba(0,0,0,0.25)';
+            return clusterColors.get(d.cluster) || accent;
+          })
+          .attr('stroke', borderSubtle)
+          .attr('stroke-width', (d) => (d.kind === 'concept' ? 1.6 : 2.4));
+
+        g.append('text')
+          .attr('text-anchor', (d) => (d.kind === 'concept' ? 'start' : 'middle'))
+          .attr('dy', (d) => (d.kind === 'concept' ? 4 : 5))
+          .attr('dx', (d) => (d.kind === 'concept' ? 16 : 0))
+          .attr('fill', (d) => (d.kind === 'concept' ? textSecondary : '#111'))
+          .attr('font-size', (d) => (d.kind === 'concept' ? 12 : 11))
+          .attr('font-weight', (d) => (d.kind === 'concept' ? 500 : 700))
+          .text((d) => (d.kind === 'concept' ? d.label : d.order));
+
+        g.attr('tabindex', 0)
+          .on('keydown', (event, d) => {
+            if (event.key === 'Enter' && d.kind === 'chapter') window.location.href = chapterUrl(d.id);
+          })
+          .on('click', (_, d) => {
+            if (d.kind !== 'chapter') return;
+            selectChapter(d.id);
+          })
+          .on('dblclick', (_, d) => {
+            if (d.kind !== 'chapter') return;
+            window.location.href = chapterUrl(d.id);
+          });
+
+        return g;
+      });
+
+    const tick = () => {
+      linkSel
+        .attr('x1', (d) => d.source.x)
+        .attr('y1', (d) => d.source.y)
+        .attr('x2', (d) => d.target.x)
+        .attr('y2', (d) => d.target.y);
+
+      nodeSel.attr('transform', (d) => `translate(${d.x},${d.y})`);
+    };
+
+    simulation.on('tick', tick);
+    activeSimulation = simulation;
+
+    if (reduceMotion) {
+      for (let i = 0; i < 240; i += 1) simulation.tick();
+      simulation.stop();
+      activeSimulation = null;
+      tick();
+      return;
+    }
+
+    const stopTimer = window.setTimeout(() => {
+      simulation.stop();
+      activeSimulation = null;
+    }, 1400);
+    simulation.on('end', () => {
+      window.clearTimeout(stopTimer);
+      activeSimulation = null;
+    });
   }
+
+  function selectChapter(chapterId) {
+    state.selectedChapterId = chapterId;
+    const chapter = state.chapterById.get(chapterId);
+    renderDetails(chapter);
+
+    const { nodes, links } = buildGraphForSelection(chapterId);
+    renderGraph(nodes, links);
+
+    if (window.learningAnalytics && typeof window.learningAnalytics.trackEvent === 'function') {
+      window.learningAnalytics.trackEvent('atlas_node_selected', { chapterId });
+    }
+  }
+
+  function applySearch(query) {
+    const q = String(query || '').trim().toLowerCase();
+    if (!q) {
+      setHighlighted(null);
+      return;
+    }
+
+    const matches = new Set();
+    state.chapters.forEach((chapter) => {
+      const titleMatch = chapter.title.toLowerCase().includes(q);
+      const conceptMatch = (chapter.keyConceptIds || [])
+        .map((id) => state.conceptsById.get(id)?.label?.toLowerCase() || '')
+        .some((label) => label.includes(q));
+
+      if (titleMatch || conceptMatch) matches.add(chapter.id);
+    });
+
+    setHighlighted(matches);
+  }
+
+  function reset() {
+    state.selectedChapterId = null;
+    renderDetails(null);
+
+    const { nodes, links } = buildGraphForSelection(null);
+    renderGraph(nodes, links);
+
+    setHighlighted(null);
+    if (controls.search) controls.search.value = '';
+
+    svg.transition().duration(reduceMotion ? 0 : 350).call(zoom.transform, d3.zoomIdentity);
+  }
+
+  loadCore()
+    .then((core) => {
+      state.core = core;
+      state.chapters = core.chapters.slice().sort((a, b) => a.order - b.order);
+      state.chapterById = new Map(state.chapters.map((chapter) => [chapter.id, chapter]));
+      state.conceptsById = new Map(core.concepts.map((concept) => [concept.id, concept]));
+      state.baseLinks = buildBaseLinks(state.chapters, core.relationships);
+
+      const initialParam = String(new URLSearchParams(window.location.search).get('chapter') || '').trim();
+      const fromParam = initialParam ? `ch${Number(initialParam)}` : null;
+      const initialChapterId = state.chapterById.has(fromParam) ? fromParam : null;
+
+      const { nodes, links } = buildGraphForSelection(initialChapterId);
+      renderGraph(nodes, links);
+
+      if (initialChapterId) selectChapter(initialChapterId);
+
+      controls.search?.addEventListener('input', () => applySearch(controls.search.value));
+      controls.reset?.addEventListener('click', reset);
+    })
+    .catch((error) => {
+      console.error('Atlas initialization failed:', error);
+      renderDetails(null);
+      if (detailsEls.body) detailsEls.body.innerHTML = `<p>Atlas failed to load: ${error.message}</p>`;
+    });
 }
 
 window.addEventListener('DOMContentLoaded', initAtlas);

@@ -3,57 +3,138 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 10",
-      "title": "Aion Chapter 10",
-      "thesis": "Chapter 10 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 10: Alchemy",
+      "title": "The Fish in Alchemy",
+      "thesis": "Alchemical imagery as a symbolic language for transformation, with the fish as a motif of the opus."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "alchemy",
+          "term": "Alchemy",
+          "definitionTier": "beginner",
+          "definition": "A symbolic tradition whose images can be read as dramatizations of psychological transformation processes."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "prima-materia",
+          "term": "Prima Materia",
+          "definitionTier": "beginner",
+          "definition": "The \"raw material\" of transformation: undifferentiated, chaotic, or conflicted psychic content at the start of the opus."
+        },
+        {
+          "termId": "fish-symbol",
+          "term": "Fish Symbol",
+          "definitionTier": "beginner",
+          "definition": "A historically layered motif in Aion that carries paradoxical meanings of totality, salvation, and shadow."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "alchemy",
+            "label": "Alchemy",
+            "type": "concept"
+          },
+          {
+            "id": "prima-materia",
+            "label": "Prima Materia",
+            "type": "concept"
+          },
+          {
+            "id": "fish-symbol",
+            "label": "Fish Symbol",
+            "type": "concept"
+          },
+          {
+            "id": "lapis",
+            "label": "Lapis",
+            "type": "symbol"
+          },
+          {
+            "id": "ouroboros",
+            "label": "Ouroboros",
+            "type": "symbol"
+          },
+          {
+            "id": "fish",
+            "label": "Fish",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "fish",
+            "to": "fish-symbol",
+            "relationType": "represents"
+          },
+          {
+            "from": "ouroboros",
+            "to": "alchemy",
+            "relationType": "symbolizes"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Fish in Alchemy\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Fish in Alchemy\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Alchemy · Prima Materia · Fish Symbol"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Lapis · Ouroboros · Fish"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "cyclical-return"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 10 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: Alchemical imagery as a symbolic language for transformation, with the fish as a motif of the opus. Next, \"The Alchemical Interpretation\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 11", "href": "/journey/chapter/ch11" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Previous: The Ambivalence of the Fish Symbol",
+          "href": "/journey/chapter/ch9"
+        },
+        {
+          "label": "Next: The Alchemical Interpretation",
+          "href": "/journey/chapter/ch11"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

@@ -3,57 +3,108 @@
   "sections": [
     {
       "key": "header-thesis",
-      "chapterLabel": "Chapter 1",
-      "title": "Aion Chapter 1",
-      "thesis": "Chapter 1 advances the developmental arc of Jung's Aion by linking symbolic tension with psychic integration."
+      "chapterLabel": "Chapter 1: Identity",
+      "title": "The Ego",
+      "thesis": "The ego as the center of conscious identity, and its limits in relation to the greater psyche."
     },
     {
       "key": "why-this-matters",
-      "body": "This chapter matters because it reframes personal conflict as participation in a larger symbolic process."
+      "body": "This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation."
     },
     {
       "key": "core-terms",
       "terms": [
         {
-          "term": "Shadow",
-          "definition": "Disowned aspects of personality that seek integration rather than repression."
+          "termId": "ego",
+          "term": "Ego",
+          "definitionTier": "beginner",
+          "definition": "The center of conscious identity and agency; the standpoint of \"I\" in experience."
         },
         {
-          "term": "Individuation",
-          "definition": "A lifelong process of differentiating and integrating opposites in the psyche."
+          "termId": "self",
+          "term": "Self",
+          "definitionTier": "beginner",
+          "definition": "The archetype of wholeness and psychic totality that orders life beyond the ego standpoint."
         }
       ]
     },
     {
       "key": "primary-visualization",
-      "instructions": "Primary visualization migration is in progress. Use chapter maps and insight checks below to continue learning without interruption.",
-      "body": "Fallback mode active: rich chapter visualizations are being re-mounted inside the unified ChapterShell route family."
+      "instructions": "Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.",
+      "map": {
+        "caption": "Constellation: key motifs and how they connect.",
+        "nodes": [
+          {
+            "id": "ego",
+            "label": "Ego",
+            "type": "concept"
+          },
+          {
+            "id": "self",
+            "label": "Self",
+            "type": "concept"
+          },
+          {
+            "id": "mandala",
+            "label": "Mandala",
+            "type": "symbol"
+          }
+        ],
+        "edges": [
+          {
+            "from": "mandala",
+            "to": "self",
+            "relationType": "symbolizes"
+          }
+        ]
+      }
     },
     {
       "key": "insight-checks",
-      "items": [
-        "Can you identify the psychic opposition named in this chapter?",
-        "How does this chapter reframe the tension as transformative?"
+      "checks": [
+        {
+          "question": "Identify the central dynamic or symbol developed in \"The Ego\" and connect it to one related concept.",
+          "hint": "Use the constellation map: pick one connection and explain it in your own words."
+        },
+        {
+          "question": "How does \"The Ego\" change your understanding when you relate it to another chapter or symbol?",
+          "hint": "Try writing one concrete example, then identify the opposite value you resist holding with it."
+        }
       ]
     },
     {
       "key": "symbol-relationship-panel",
-      "items": [
-        "Primary symbol: Fish / Anthropos motif",
-        "Relationship axis: Ego ↔ Self",
-        "Taxonomy note: Opposition → Integration"
+      "facts": [
+        {
+          "label": "Key concepts",
+          "value": "Ego · Self"
+        },
+        {
+          "label": "Primary symbols",
+          "value": "Mandala"
+        },
+        {
+          "label": "Motion grammar",
+          "value": "cyclical-return"
+        }
       ]
     },
     {
       "key": "synthesis",
-      "body": "Synthesis: chapter 1 binds symbolic motifs to the broader historical-psychological narrative of Aion."
+      "body": "Synthesis: The ego as the center of conscious identity, and its limits in relation to the greater psyche. Next, \"The Shadow\" extends the same symbolic field under a new historical and conceptual register."
     },
     {
       "key": "reflection-next-links",
-      "prompt": "Reflection: where do you observe this symbolic pattern in contemporary life?",
+      "prompt": "Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.",
       "nextLinks": [
-        { "label": "Continue to chapter 2", "href": "/journey/chapter/ch2" },
-        { "label": "Return to chapter index", "href": "/chapters/index.html" }
+        {
+          "label": "Next: The Shadow",
+          "href": "/journey/chapter/ch2"
+        },
+        {
+          "label": "All chapters",
+          "href": "/chapters/index.html"
+        }
       ]
     }
   ]

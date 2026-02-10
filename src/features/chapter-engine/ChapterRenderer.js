@@ -16,15 +16,23 @@ function normalizeChapterId(raw) {
 
 export async function renderChapterById(rawChapterId, mountNode) {
   const chapterId = normalizeChapterId(rawChapterId);
-  const response = await fetch(`/src/features/chapter-engine/config/${chapterId}.json`);
+  const response = await fetch(`src/features/chapter-engine/config/${chapterId}.json`);
 
   if (!response.ok) {
     throw new Error(`Could not load chapter config for ${chapterId}`);
   }
 
   const config = await response.json();
+  return renderChapterConfig(config, mountNode);
+}
+
+export function renderChapterConfig(config, mountNode) {
   validateChapterConfig(config);
 
   mountNode.innerHTML = renderChapterShell(config);
-  return chapterId;
+  const header = config.sections.find((section) => section.key === 'header-thesis');
+  if (header?.title) {
+    document.title = `${header.title} - Aion Journey`;
+  }
+  return config.id || '';
 }

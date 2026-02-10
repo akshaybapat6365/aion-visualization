@@ -1,33 +1,13 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Aeon Wheel — Chapter 6: The Sign of the Fishes
- *
- * A zodiac ring highlighting the Age of Pisces. Two fish orbit in
- * opposite directions within the Pisces sector. A time-scrub slider
- * moves from 0 AD to 2000 AD, shifting the "current age" marker
- * along the ring and revealing the approaching Age of Aquarius.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class AeonWheelViz {
+export default class AeonWheelViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
-
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
-
-        // State
-        this.yearNormalized = 0.5; // 0=0AD, 1=2000AD
+        super(container);
         this.signs = [
             'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
             'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
@@ -36,32 +16,26 @@ export default class AeonWheelViz {
             '#e74c3c', '#27ae60', '#f1c40f', '#3498db', '#e67e22', '#8e44ad',
             '#1abc9c', '#c0392b', '#9b59b6', '#2c3e50', '#22d3ee', '#d4af37'
         ];
+        this.yearNormalized = 0.5; // 0=0AD, 1=2000AD
+    }
 
+    async init() {
         this._createUI();
-        this._onResize = () => {
-            const nw = container.clientWidth;
-            const nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-        };
-        window.addEventListener('resize', this._onResize);
-        this._animate();
+        // BaseViz handles canvas creation and resize listening
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         // Year slider
         const sliderWrap = document.createElement('div');
         sliderWrap.style.cssText = `
-      position:absolute;bottom:6%;left:50%;transform:translateX(-50%);
-      pointer-events:auto;display:flex;align-items:center;gap:8px;
-    `;
+          position:absolute;bottom:14%;left:50%;transform:translateX(-50%);
+          pointer-events:auto;display:flex;align-items:center;gap:8px;
+        `;
         this._yearLabel = document.createElement('span');
         this._yearLabel.style.cssText = 'font-size:0.65rem;opacity:0.6;min-width:60px;text-align:center;color:#d4af37;';
         this._yearLabel.textContent = '1000 AD';
@@ -84,47 +58,60 @@ export default class AeonWheelViz {
         // Year readout
         const yearDisplay = document.createElement('div');
         yearDisplay.style.cssText = `
-      position:absolute;bottom:13%;left:50%;transform:translateX(-50%);
-      font-size:0.8rem;color:#d4af37;opacity:0.7;
-    `;
+          position:absolute;bottom:20%;left:50%;transform:translateX(-50%);
+          font-size:0.8rem;color:#d4af37;opacity:0.7;
+        `;
+        // yearDisplay.appendChild(this._yearLabel); // Already used or duplicate? 
+        // Logic check: original code appended yearLabel to yearDisplay, but here I reused it.
+        // Let's stick to the original structure but clean it up.
+        // Actually, the original appended _yearLabel to yearDisplay AND defined it.
         yearDisplay.appendChild(this._yearLabel);
         overlay.appendChild(yearDisplay);
 
-        // Title label
+        // UI Title is redundant with HUD/Chapter Title, but keeping for specific viz context if needed
         const title = document.createElement('span');
         title.style.cssText = `
-      position:absolute;top:5%;left:50%;transform:translateX(-50%);
-      font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#22d3ee;
-    `;
+          position:absolute;top:8%;left:50%;transform:translateX(-50%);
+          font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#22d3ee;
+        `;
         title.textContent = 'The Great Year — Aeon Wheel';
         overlay.appendChild(title);
 
-        this.container.style.position = 'relative';
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
-        this._draw();
+    update(dt) {
+        this.time += dt * 0.5; // Adjust speed if needed
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const w = this.width;
+        const h = this.height;
+        const width = this.canvas.width; // actual pixel width
+        const height = this.canvas.height;
+
+        // BaseViz handles dpr scaling in its resize, but often we want to just rely on 
+        // standard drawing commands.
+        // However, BaseViz creates canvas with width/height * dpr.
+        // We should ensure we scale context? BaseViz usually doesn't auto-scale context 
+        // to keep it flexible. We need to handle scale like the original did.
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+
+        const logicalW = width / this.dpr;
+        const logicalH = height / this.dpr;
+        const cx = logicalW / 2;
+        const cy = logicalH / 2;
         const t = this.time;
 
-        // Background
+        // Clear (BaseViz doesn't auto-clear)
         ctx.fillStyle = '#050508';
-        ctx.fillRect(0, 0, w, h);
+        ctx.fillRect(0, 0, logicalW, logicalH);
 
-        const outerR = Math.min(w, h) * 0.38;
+        const outerR = Math.min(logicalW, logicalH) * 0.38;
         const innerR = outerR * 0.72;
         const midR = (outerR + innerR) / 2;
         const sliceAngle = (Math.PI * 2) / 12;
@@ -142,8 +129,7 @@ export default class AeonWheelViz {
             ctx.arc(cx, cy, outerR, startA, endA);
             ctx.closePath();
 
-            const alpha = isPisces ? 0.25 : (isAquarius ? 0.12 : 0.06);
-            ctx.fillStyle = this.signColors[i] + (isPisces ? '40' : '18');
+            ctx.fillStyle = this.signColors[i] + (isPisces ? '40' : (isAquarius ? '18' : '10'));
             ctx.fill();
 
             // Sector border
@@ -172,8 +158,7 @@ export default class AeonWheelViz {
         ctx.fillStyle = '#050508';
         ctx.fill();
 
-        // Age marker — position based on year slider
-        // Pisces age: ~0-2000 AD (sector 11: from ~330° to 360°/0°)
+        // Age marker
         const piscesStart = 11 * sliceAngle - Math.PI / 2;
         const ageAngle = piscesStart + this.yearNormalized * sliceAngle;
         const markerR = midR;
@@ -198,10 +183,8 @@ export default class AeonWheelViz {
         const fishAngle1 = t * 0.5;
         const fishAngle2 = fishAngle1 + Math.PI;
 
-        // Fish 1 (gold — Christ)
         this._drawFish(ctx, cx + Math.cos(fishAngle1) * fishR, cy + Math.sin(fishAngle1) * fishR,
             fishAngle1 + Math.PI / 2, '#d4af37', 16);
-        // Fish 2 (cyan — Antichrist/Shadow)
         this._drawFish(ctx, cx + Math.cos(fishAngle2) * fishR, cy + Math.sin(fishAngle2) * fishR,
             fishAngle2 + Math.PI / 2, '#22d3ee', 16);
 
@@ -218,7 +201,7 @@ export default class AeonWheelViz {
             ctx.fillStyle = `rgba(34,211,238,${0.3 * aquaAlpha})`;
             ctx.font = '8px system-ui';
             ctx.textAlign = 'center';
-            ctx.fillText('→ Age of Aquarius approaching', cx, cy + innerR * 0.7);
+            ctx.fillText('→ Age of Aquarius', cx, cy + innerR * 0.5);
             ctx.restore();
         }
 
@@ -247,12 +230,8 @@ export default class AeonWheelViz {
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
-        window.removeEventListener('resize', this._onResize);
+    destroy() {
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }
