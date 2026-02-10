@@ -1,33 +1,16 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Paradox Mirror — Chapter 9: The Ambivalence of the Fish Symbol
- *
- * Two mirrored fish connected by a central fulcrum. Dragging the
- * balance point tilts the field between light and dark, showing
- * how the fish symbol holds both Christ and Antichrist simultaneously.
- * The paradox: you cannot have one without the other.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class ParadoxMirrorViz {
+export default class ParadoxMirrorViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
+        super(container);
         this.balance = 0.5; // 0=full dark, 1=full light
         this.targetBalance = 0.5;
         this._isDragging = false;
-
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;cursor:grab;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
 
         // Particles for each domain
         this.particles = [];
@@ -41,65 +24,68 @@ export default class ParadoxMirrorViz {
             });
         }
 
-        this._onMouseDown = (e) => { this._isDragging = true; this.canvas.style.cursor = 'grabbing'; };
-        this._onMouseUp = () => { this._isDragging = false; this.canvas.style.cursor = 'grab'; };
+        this._onMouseDown = (e) => {
+            this._isDragging = true;
+            this.container.style.cursor = 'grabbing';
+        };
+        this._onMouseUp = () => {
+            this._isDragging = false;
+            this.container.style.cursor = 'grab';
+        };
         this._onMouseMove = (e) => {
             if (!this._isDragging) return;
             const rect = this.container.getBoundingClientRect();
             this.targetBalance = Math.max(0.05, Math.min(0.95, (e.clientX - rect.left) / rect.width));
         };
-        this._onResize = () => {
-            const nw = container.clientWidth, nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-        };
+    }
 
-        this.canvas.addEventListener('mousedown', this._onMouseDown);
-        this.canvas.addEventListener('mouseup', this._onMouseUp);
-        this.canvas.addEventListener('mouseleave', this._onMouseUp);
-        this.canvas.addEventListener('mousemove', this._onMouseMove);
-        window.addEventListener('resize', this._onResize);
+    async init() {
+        this.container.style.cursor = 'grab';
+
+        // Bind events to container, not canvas, for better hit testing
+        this.container.addEventListener('mousedown', this._onMouseDown);
+        this.container.addEventListener('mouseup', this._onMouseUp);
+        this.container.addEventListener('mouseleave', this._onMouseUp);
+        this.container.addEventListener('mousemove', this._onMouseMove);
 
         this._createUI();
-        this._animate();
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         overlay.innerHTML = `
-      <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
-        font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#e74c3c;">
-        Paradox Mirror — Ambivalence of the Fish
-      </span>
-      <span style="position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
-        font-size:0.55rem;opacity:0.3;">drag left/right to tilt the balance</span>
-    `;
-        this.container.style.position = 'relative';
+          <span style="position:absolute;top:10%;left:50%;transform:translateX(-50%);
+            font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#e74c3c;">
+            Paradox Mirror — Ambivalence of the Fish
+          </span>
+          <span style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
+            font-size:0.55rem;opacity:0.3;">drag left/right to tilt the balance</span>
+        `;
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
+    update(dt) {
+        this.time += dt * 0.5;
+        // Smooth balance transition
         this.balance += (this.targetBalance - this.balance) * 0.06;
-        this._draw();
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const w = width / this.dpr;
+        const h = height / this.dpr;
+        const cx = w / 2;
+        const cy = h / 2;
         const t = this.time;
         const bal = this.balance;
 
@@ -134,7 +120,7 @@ export default class ParadoxMirrorViz {
         // Left fish (light)
         const leftFishX = mirrorX * 0.5;
         const bob1 = Math.sin(t * 0.7) * 8;
-        this._drawFish(ctx, leftFishX, cy + bob1, Math.min(w, h) * 0.12, 1, '#d4af37', bal, t);
+        this._drawFish(ctx, leftFishX, cy + bob1, Math.min(w, h) * 0.12, 1, '#d4af37', bal);
         ctx.fillStyle = `rgba(212,175,55,${0.3 + bal * 0.3})`;
         ctx.font = '8px system-ui';
         ctx.textAlign = 'center';
@@ -143,7 +129,7 @@ export default class ParadoxMirrorViz {
         // Right fish (dark)
         const rightFishX = mirrorX + (w - mirrorX) * 0.5;
         const bob2 = Math.sin(t * 0.7 + Math.PI) * 8;
-        this._drawFish(ctx, rightFishX, cy + bob2, Math.min(w, h) * 0.12, -1, '#22d3ee', 1 - bal, t);
+        this._drawFish(ctx, rightFishX, cy + bob2, Math.min(w, h) * 0.12, -1, '#22d3ee', 1 - bal);
         ctx.fillStyle = `rgba(34,211,238,${0.3 + (1 - bal) * 0.3})`;
         ctx.font = '8px system-ui';
         ctx.textAlign = 'center';
@@ -180,7 +166,7 @@ export default class ParadoxMirrorViz {
         ctx.restore();
     }
 
-    _drawFish(ctx, x, y, size, dir, color, intensity, t) {
+    _drawFish(ctx, x, y, size, dir, color, intensity) {
         ctx.save();
         ctx.translate(x, y);
         ctx.scale(dir, 1);
@@ -207,16 +193,13 @@ export default class ParadoxMirrorViz {
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
-        this.canvas.removeEventListener('mousedown', this._onMouseDown);
-        this.canvas.removeEventListener('mouseup', this._onMouseUp);
-        this.canvas.removeEventListener('mouseleave', this._onMouseUp);
-        this.canvas.removeEventListener('mousemove', this._onMouseMove);
-        window.removeEventListener('resize', this._onResize);
+    destroy() {
+        this.container.removeEventListener('mousedown', this._onMouseDown);
+        this.container.removeEventListener('mouseup', this._onMouseUp);
+        this.container.removeEventListener('mouseleave', this._onMouseUp);
+        this.container.removeEventListener('mousemove', this._onMouseMove);
+        this.container.style.cursor = '';
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }

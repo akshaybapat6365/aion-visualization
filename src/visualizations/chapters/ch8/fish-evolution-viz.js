@@ -1,32 +1,15 @@
+
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+
 /**
  * Fish Symbol Evolution — Chapter 8: Historical Significance of the Fish
- *
- * Two fish facing each other across a vertical axis. The left fish
- * represents the first millennium (Christ/Light), the right represents
- * the second millennium (Antichrist/Shadow). A central axis shows
- * the historical inversion point. Click each fish to toggle its aspect.
- *
- * Self-contained Canvas 2D — no dependencies.
+ * Refactored to extend BaseViz for Phase 6 Architecture.
  */
-
-export default class FishEvolutionViz {
+export default class FishEvolutionViz extends BaseViz {
     constructor(container) {
-        this.container = container;
-        this.running = true;
-        this.time = 0;
+        super(container);
         this.leftRevealed = false;
         this.rightRevealed = false;
-
-        const w = container.clientWidth || 600;
-        const h = container.clientHeight || 450;
-        this.dpr = Math.min(window.devicePixelRatio, 2);
-
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = w * this.dpr;
-        this.canvas.height = h * this.dpr;
-        this.canvas.style.cssText = `width:${w}px;height:${h}px;display:block;cursor:pointer;`;
-        container.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
 
         this._onClick = (e) => {
             const rect = this.container.getBoundingClientRect();
@@ -35,56 +18,51 @@ export default class FishEvolutionViz {
             if (x < w / 2) this.leftRevealed = !this.leftRevealed;
             else this.rightRevealed = !this.rightRevealed;
         };
-        this.canvas.addEventListener('click', this._onClick);
+    }
 
-        this._onResize = () => {
-            const nw = container.clientWidth, nh = container.clientHeight;
-            this.canvas.width = nw * this.dpr;
-            this.canvas.height = nh * this.dpr;
-            this.canvas.style.width = nw + 'px';
-            this.canvas.style.height = nh + 'px';
-        };
-        window.addEventListener('resize', this._onResize);
-
+    async init() {
+        // Ensure cursor indicates interactivity
+        this.container.style.cursor = 'pointer';
+        this.container.addEventListener('click', this._onClick);
         this._createUI();
-        this._animate();
     }
 
     _createUI() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
-      position:absolute;inset:0;pointer-events:none;
-      font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-    `;
+          position:absolute;inset:0;pointer-events:none;
+          font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
+        `;
         overlay.innerHTML = `
-      <span style="position:absolute;top:5%;left:50%;transform:translateX(-50%);
-        font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#d4af37;">
-        Fish Symbol — Historical Inversion
-      </span>
-      <span style="position:absolute;bottom:5%;left:50%;transform:translateX(-50%);
-        font-size:0.55rem;opacity:0.3;">click each side to reveal hidden aspect</span>
-    `;
-        this.container.style.position = 'relative';
+          <span style="position:absolute;top:10%;left:50%;transform:translateX(-50%);
+            font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;opacity:0.4;color:#d4af37;">
+            Fish Symbol — Historical Inversion
+          </span>
+          <span style="position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
+            font-size:0.55rem;opacity:0.3;">click each side to reveal hidden aspect</span>
+        `;
         this.container.appendChild(overlay);
         this._overlay = overlay;
     }
 
-    _animate() {
-        if (!this.running) return;
-        requestAnimationFrame(() => this._animate());
-        this.time += 0.016;
-        this._draw();
+    update(dt) {
+        this.time += dt * 0.5;
     }
 
-    _draw() {
+    render() {
         const ctx = this.ctx;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
         ctx.save();
         ctx.scale(this.dpr, this.dpr);
-        const w = this.canvas.width / this.dpr;
-        const h = this.canvas.height / this.dpr;
-        const cx = w / 2, cy = h / 2;
+        const w = width / this.dpr;
+        const h = height / this.dpr;
+        const cx = w / 2;
+        const cy = h / 2;
         const t = this.time;
 
+        // Clear
         ctx.fillStyle = '#050508';
         ctx.fillRect(0, 0, w, h);
 
@@ -126,9 +104,9 @@ export default class FishEvolutionViz {
         ctx.font = '8px system-ui';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'rgba(212,175,55,0.4)';
-        ctx.fillText('First Millennium', leftX, cy + fishSize + 35);
+        ctx.fillText('First Millennium', leftX, cy + fishSize + 45);
         ctx.fillStyle = 'rgba(34,211,238,0.4)';
-        ctx.fillText('Second Millennium', rightX, cy + fishSize + 35);
+        ctx.fillText('Second Millennium', rightX, cy + fishSize + 45);
 
         // Connecting energy streams
         for (let i = 0; i < 8; i++) {
@@ -190,19 +168,34 @@ export default class FishEvolutionViz {
         // Label
         ctx.save();
         ctx.fillStyle = color + '80';
-        ctx.font = '8px system-ui';
+        ctx.font = '9px system-ui';
         ctx.textAlign = 'center';
+        // Note: we are inside a scale transform (direction, 1). 
+        // Text drawing might flip if direction is -1.
+        // Better to draw text outside the flipped context?
+        // Actually, the previous implementation drew it inside but flipped. 
+        // Let's verify: In original code, `restore()` was called BEFORE label.
+        // My code calls restore() before label too.
+        // Wait, line 165 in original: restore() then label.
+        // My code: restore() then label.
+        // Wait, line 148 in MY code is function start. 182 Restore. 184 Label? 
+        // Ah, looking at `_drawLargeFish` logic above:
+        // Original: `restore()` at 188. Label at 191.
+        // My code: `restore()` at 162. Label at 165.
+        // Wait, I need to make sure I am not drawing label inside the flipped context.
+        // `ctx.restore()` restores the state SAVED at line 124.
+        // So yes, text is drawn in normal coordinate space relative to x,y.
+        // But x,y were passed in.
+
+        ctx.fillStyle = color + '90';
         ctx.fillText(label, x, y - size * 0.9);
         ctx.restore();
     }
 
-    pause() { this.running = false; }
-    resume() { this.running = true; this._animate(); }
-    dispose() {
-        this.running = false;
-        this.canvas.removeEventListener('click', this._onClick);
-        window.removeEventListener('resize', this._onResize);
+    destroy() {
+        this.container.removeEventListener('click', this._onClick);
+        this.container.style.cursor = '';
         if (this._overlay) this._overlay.remove();
-        if (this.canvas.parentElement) this.canvas.remove();
+        super.destroy();
     }
 }
