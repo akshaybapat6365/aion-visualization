@@ -47,3 +47,4 @@ tests/reports/performance/
 tests/reports/performance-history/
 .lighthouseci/
 .vercel
+.env*.local
