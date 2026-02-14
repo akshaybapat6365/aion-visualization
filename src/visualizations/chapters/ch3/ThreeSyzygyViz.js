@@ -108,7 +108,9 @@ export default class ThreeSyzygyViz extends BaseViz {
         this._buildOrbitTrails();
         this._buildFieldLines();
         this._buildQuaternio();
+        this._buildProjectionArcs();
         this._buildConjunction();
+        this._buildMandorla();
         this._buildAtmosphere();
         this._buildAnnotations();
 
@@ -283,7 +285,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         }
         this.animaTrailGeo = new THREE.BufferGeometry().setFromPoints(this.animaTrailPts);
         this.animaTrail = new THREE.Line(this.animaTrailGeo, new THREE.LineBasicMaterial({
-            color: ANIMA_TRAIL, transparent: true, opacity: 0.12,
+            color: ANIMA_TRAIL, transparent: true, opacity: 0.18,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.animaTrail);
@@ -295,7 +297,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         }
         this.animusTrailGeo = new THREE.BufferGeometry().setFromPoints(this.animusTrailPts);
         this.animusTrail = new THREE.Line(this.animusTrailGeo, new THREE.LineBasicMaterial({
-            color: ANIMUS_TRAIL, transparent: true, opacity: 0.12,
+            color: ANIMUS_TRAIL, transparent: true, opacity: 0.18,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.animusTrail);
@@ -328,7 +330,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         // Faint cross lines — vertical and horizontal
         const crossLen = 12;
         const crossMat = new THREE.LineBasicMaterial({
-            color: 0x202040, transparent: true, opacity: 0.04
+            color: 0x303060, transparent: true, opacity: 0.12
         });
 
         const vLine = new THREE.Line(
@@ -355,9 +357,9 @@ export default class ThreeSyzygyViz extends BaseViz {
         ];
         for (const p of dotPos) {
             const dot = new THREE.Mesh(
-                new THREE.SphereGeometry(0.03, 6, 6),
+                new THREE.SphereGeometry(0.05, 8, 8),
                 new THREE.MeshBasicMaterial({
-                    color: 0x303060, transparent: true, opacity: 0.1,
+                    color: 0x404080, transparent: true, opacity: 0.2,
                     blending: THREE.AdditiveBlending
                 })
             );
@@ -365,6 +367,78 @@ export default class ThreeSyzygyViz extends BaseViz {
             this.scene.add(dot);
             this.quatDots.push(dot);
         }
+    }
+
+    /* ══════════════════════════════════════════════════════
+     *  PROJECTION ARCS — "you project them onto others"
+     * ══════════════════════════════════════════════════════ */
+    _buildProjectionArcs() {
+        this.projArcs = [];
+        const arcMat = (clr) => new THREE.LineBasicMaterial({
+            color: clr, transparent: true, opacity: 0.06,
+            blending: THREE.AdditiveBlending
+        });
+
+        // 3 arcs from Anima, 3 from Animus — outward to distant "projection targets"
+        const targets = [
+            // Anima projections (silver) — arcing toward world edges
+            { src: 'anima', end: new THREE.Vector3(-12, 3, -6), clr: ANIMA_GLOW },
+            { src: 'anima', end: new THREE.Vector3(-10, -4, 4), clr: ANIMA_GLOW },
+            { src: 'anima', end: new THREE.Vector3(-14, 0, 0), clr: ANIMA_GLOW },
+            // Animus projections (gold) — arcing toward world edges
+            { src: 'animus', end: new THREE.Vector3(12, 3, -6), clr: ANIMUS_GLOW },
+            { src: 'animus', end: new THREE.Vector3(10, -4, 4), clr: ANIMUS_GLOW },
+            { src: 'animus', end: new THREE.Vector3(14, 0, 0), clr: ANIMUS_GLOW },
+        ];
+
+        for (const t of targets) {
+            const pts = [];
+            for (let i = 0; i <= 40; i++) pts.push(new THREE.Vector3());
+            const geo = new THREE.BufferGeometry().setFromPoints(pts);
+            const line = new THREE.Line(geo, arcMat(t.clr));
+            this.scene.add(line);
+
+            // Target dot — "the person you project onto"
+            const dot = new THREE.Mesh(
+                new THREE.SphereGeometry(0.06, 6, 6),
+                new THREE.MeshBasicMaterial({
+                    color: t.clr, transparent: true, opacity: 0.15,
+                    blending: THREE.AdditiveBlending
+                })
+            );
+            dot.position.copy(t.end);
+            this.scene.add(dot);
+
+            this.projArcs.push({ geo, line, dot, src: t.src, end: t.end });
+        }
+    }
+
+    /* ══════════════════════════════════════════════════════
+     *  MANDORLA — vesica piscis at conjunction
+     * ══════════════════════════════════════════════════════ */
+    _buildMandorla() {
+        // Two overlapping rings that form the mandorla shape
+        const ringGeo = new THREE.TorusGeometry(1.2, 0.015, 4, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+            color: CONJ_CLR, transparent: true, opacity: 0,
+            blending: THREE.AdditiveBlending
+        });
+        this.mandorlaRing1 = new THREE.Mesh(ringGeo, ringMat.clone());
+        this.mandorlaRing2 = new THREE.Mesh(ringGeo, ringMat.clone());
+        this.mandorlaRing1.rotation.x = Math.PI / 2;
+        this.mandorlaRing2.rotation.x = Math.PI / 2;
+        this.scene.add(this.mandorlaRing1);
+        this.scene.add(this.mandorlaRing2);
+
+        // Inner glow at the mandorla center
+        this.mandorlaGlow = new THREE.Mesh(
+            new THREE.SphereGeometry(0.4, 16, 16),
+            new THREE.MeshBasicMaterial({
+                color: CONJ_CLR, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        this.scene.add(this.mandorlaGlow);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -460,6 +534,14 @@ export default class ThreeSyzygyViz extends BaseViz {
     letter-spacing: -0.02em;
     line-height: 1.05;
 }
+.ch3-a--heading .ch3-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+    font-style: italic;
+    letter-spacing: 0.12em;
+    color: rgba(140, 130, 190, 0.28);
+    margin-top: 0.5em;
+}
 
 /* ─── Phase 2: Anima (left) ─── */
 .ch3-a--anima {
@@ -489,6 +571,13 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-style: normal;
     color: rgba(184, 200, 232, 0.7);
 }
+.ch3-a--anima .ch3-life {
+    display: block;
+    font-size: 0.85em;
+    color: rgba(140, 160, 210, 0.35);
+    margin-top: 0.5em;
+    line-height: 1.6;
+}
 .ch3-a--anima .ch3-note {
     display: block;
     font-family: 'Inter', sans-serif;
@@ -496,7 +585,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(128, 144, 192, 0.2);
+    color: rgba(128, 144, 192, 0.25);
     margin-top: 0.7em;
 }
 
@@ -530,6 +619,13 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-style: normal;
     color: rgba(255, 208, 96, 0.7);
 }
+.ch3-a--animus .ch3-life {
+    display: block;
+    font-size: 0.85em;
+    color: rgba(210, 180, 100, 0.35);
+    margin-top: 0.5em;
+    line-height: 1.6;
+}
 .ch3-a--animus .ch3-note {
     display: block;
     font-family: 'Inter', sans-serif;
@@ -537,7 +633,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(208, 160, 48, 0.2);
+    color: rgba(208, 160, 48, 0.25);
     margin-top: 0.7em;
 }
 
@@ -628,6 +724,79 @@ export default class ThreeSyzygyViz extends BaseViz {
     margin-top: 0.6em;
 }
 
+/* ─── Phase 6: Projection ─── */
+.ch3-a--projection {
+    bottom: 28vh;
+    right: 4.5vw;
+    max-width: 26ch;
+    text-align: right;
+}
+.ch3-a--projection .ch3-text {
+    font-size: clamp(0.78rem, 1.05vw, 0.92rem);
+    font-style: italic;
+    color: rgba(180, 160, 220, 0.42);
+    line-height: 1.7;
+}
+.ch3-a--projection .ch3-text em {
+    font-style: normal;
+    color: rgba(210, 180, 255, 0.6);
+}
+.ch3-a--projection .ch3-attr {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.45em;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(160, 140, 200, 0.2);
+    margin-top: 0.7em;
+}
+
+/* ─── Phase 7: Quaternio ─── */
+.ch3-a--quaternio {
+    bottom: 12vh;
+    right: 4.5vw;
+    max-width: 28ch;
+    text-align: right;
+}
+.ch3-a--quaternio .ch3-text {
+    font-size: clamp(0.75rem, 1vw, 0.88rem);
+    font-style: italic;
+    color: rgba(150, 140, 200, 0.35);
+    line-height: 1.7;
+}
+.ch3-a--quaternio .ch3-text em {
+    font-style: normal;
+    color: rgba(180, 170, 230, 0.5);
+}
+.ch3-a--quaternio .ch3-note {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.45em;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(140, 130, 190, 0.2);
+    margin-top: 0.7em;
+}
+
+/* ─── Quaternio labels (in 3D scene overlay) ─── */
+.ch3-quat-label {
+    position: absolute;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.4rem, 0.55vw, 0.48rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(100, 95, 150, 0.22);
+    opacity: 0;
+    transition: opacity 3s ease;
+}
+.ch3-quat-label.vis { opacity: 1; }
+.ch3-quat-label--top { top: 20%; left: 50%; transform: translateX(-50%); }
+.ch3-quat-label--bottom { bottom: 20%; left: 50%; transform: translateX(-50%); }
+.ch3-quat-label--left { top: 50%; left: 8%; transform: translateY(-50%); }
+.ch3-quat-label--right { top: 50%; right: 8%; transform: translateY(-50%); }
+
 /* ─── Micro-labels ─── */
 .ch3-micro {
     position: absolute;
@@ -642,18 +811,19 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-micro--anima {
     left: 22%;
     top: 52%;
-    color: rgba(128, 144, 192, 0.18);
+    color: rgba(128, 144, 192, 0.35);
 }
 .ch3-micro--animus {
     right: 20%;
     top: 52%;
-    color: rgba(208, 160, 48, 0.18);
+    color: rgba(208, 160, 48, 0.35);
 }
 
 @media (max-width: 768px) {
     .ch3-a--dance { max-width: 24ch; bottom: 16vh; }
     .ch3-a--anima, .ch3-a--animus { max-width: 18ch; }
-    .ch3-micro { display: none; }
+    .ch3-a--projection, .ch3-a--quaternio { max-width: 22ch; }
+    .ch3-micro, .ch3-quat-label { display: none; }
 }
 </style>
 
@@ -661,6 +831,7 @@ export default class ThreeSyzygyViz extends BaseViz {
 <div class="ch3-a ch3-a--heading" data-phase="1">
     <div class="ch3-eyebrow">Chapter III</div>
     <div class="ch3-title">The Syzygy</div>
+    <div class="ch3-subtitle">the divine pair within</div>
 </div>
 
 <!-- Phase 2: Anima -->
@@ -668,9 +839,12 @@ export default class ThreeSyzygyViz extends BaseViz {
     <span class="ch3-leader"></span>
     <div class="ch3-text">
         The silver figure is <em>the Anima</em> —
-        the inner feminine, image of
-        feeling, eros, relationship.
-        <span class="ch3-note">Lunar — fluid, changing, receptive</span>
+        the inner feminine image that lives
+        in every man's unconscious.
+        She appears as moods, hunches,
+        and sudden irrational feelings.
+        <span class="ch3-life">When you fall in love at first sight — you have met your Anima, projected onto another.</span>
+        <span class="ch3-note">Lunar · feeling · eros · relationship</span>
     </div>
 </div>
 
@@ -679,9 +853,12 @@ export default class ThreeSyzygyViz extends BaseViz {
     <span class="ch3-leader"></span>
     <div class="ch3-text">
         The golden figure is <em>the Animus</em> —
-        the inner masculine, voice of
-        judgment, logos, meaning.
-        <span class="ch3-note">Solar — crystalline, radiating, active</span>
+        the inner masculine image that lives
+        in every woman's unconscious.
+        He appears as strong opinions,
+        snap judgments, and convictions.
+        <span class="ch3-life">When certainty feels absolute but unbending — the Animus speaks.</span>
+        <span class="ch3-note">Solar · judgment · logos · meaning</span>
     </div>
 </div>
 
@@ -689,8 +866,9 @@ export default class ThreeSyzygyViz extends BaseViz {
 <div class="ch3-a ch3-a--dance" data-phase="4">
     <div class="ch3-text">
         Their orbit is <em>the Syzygy</em> — the eternal dance
-        of opposites within the psyche. Neither dominates;
-        each needs the other to be whole.
+        of opposites within every psyche. Neither dominates;
+        each needs the other to be whole.<br>
+        <em>Look at any relationship — this dance is playing out beneath the surface.</em>
     </div>
 </div>
 
@@ -706,14 +884,44 @@ export default class ThreeSyzygyViz extends BaseViz {
     </div>
 </div>
 
-<!-- Phase 6: Conjunction (synced to union event) -->
+<!-- Phase 6: Projection -->
+<div class="ch3-a ch3-a--projection" data-phase="6">
+    <div class="ch3-text">
+        <em>Projection</em> — you never see
+        your Anima or Animus directly.
+        You project them onto others:
+        the woman who seems magical,
+        the man who seems to know everything.
+        <span class="ch3-attr">"What is not-I is felt as outside me" — §24</span>
+    </div>
+</div>
+
+<!-- Phase 7: Quaternio -->
+<div class="ch3-a ch3-a--quaternio" data-phase="7">
+    <div class="ch3-text">
+        Jung called this the <em>marriage quaternio</em> —
+        a four-fold bond beneath every relationship:
+        man ↔ woman on the outside,
+        animus ↔ anima on the inside.
+        <span class="ch3-note">The faint cross behind the dance is this quaternio</span>
+    </div>
+</div>
+
+<!-- Conjunction (synced to union event) -->
 <div class="ch3-a ch3-a--conjunction">
     <div class="ch3-conj-text">
         Coniunctio — the sacred marriage<br>
-        where opposites briefly unite
+        Two circles overlap to form the <em>mandorla</em> —<br>
+        the place where opposites briefly become one
         <span class="ch3-conj-sub">Wholeness glimpsed, not possessed</span>
     </div>
 </div>
+
+<!-- Quaternio cardinal labels -->
+<div class="ch3-quat-label ch3-quat-label--top" data-phase="7">animus</div>
+<div class="ch3-quat-label ch3-quat-label--bottom" data-phase="7">anima</div>
+<div class="ch3-quat-label ch3-quat-label--left" data-phase="7">woman</div>
+<div class="ch3-quat-label ch3-quat-label--right" data-phase="7">man</div>
 
 <!-- Micro-labels -->
 <div class="ch3-micro ch3-micro--anima" data-phase="2">anima ☽</div>
@@ -726,10 +934,12 @@ export default class ThreeSyzygyViz extends BaseViz {
         this._annTimers = [];
         const phases = [
             { sel: '[data-phase="1"]', delay: 2000 },
-            { sel: '[data-phase="2"]', delay: 6000 },
-            { sel: '[data-phase="3"]', delay: 11000 },
-            { sel: '[data-phase="4"]', delay: 17000 },
-            { sel: '[data-phase="5"]', delay: 23000 },
+            { sel: '[data-phase="2"]', delay: 7000 },
+            { sel: '[data-phase="3"]', delay: 14000 },
+            { sel: '[data-phase="4"]', delay: 21000 },
+            { sel: '[data-phase="5"]', delay: 28000 },
+            { sel: '[data-phase="6"]', delay: 35000 },
+            { sel: '[data-phase="7"]', delay: 42000 },
         ];
         for (const p of phases) {
             const els = ov.querySelectorAll(p.sel);
@@ -824,7 +1034,7 @@ export default class ThreeSyzygyViz extends BaseViz {
                 pts[j * 3 + 2] = mz + Math.sin(fl.offset + t * 0.15) * bow;
             }
             fl.geo.attributes.position.needsUpdate = true;
-            fl.line.material.opacity = 0.05 + Math.sin(t * 0.3 + fl.offset) * 0.04;
+            fl.line.material.opacity = 0.08 + Math.sin(t * 0.3 + fl.offset) * 0.06;
         }
 
         /* ── Conjunction — when they're close ── */
@@ -879,6 +1089,41 @@ export default class ThreeSyzygyViz extends BaseViz {
                 conjAnn.classList.remove('vis');
                 conjAnn.classList.add('hid');
             }
+        }
+
+        /* ── Projection arcs — bezier from figures to distant targets ── */
+        if (this.projArcs) {
+            for (const arc of this.projArcs) {
+                const src = arc.src === 'anima' ? a : b;
+                const pts = arc.geo.attributes.position.array;
+                for (let j = 0; j <= 40; j++) {
+                    const frac = j / 40;
+                    // Quadratic bezier: src → control → end
+                    const cX = (src.x + arc.end.x) * 0.5;
+                    const cY = (src.y + arc.end.y) * 0.5 + 3 * Math.sin(frac * Math.PI);
+                    const cZ = (src.z + arc.end.z) * 0.5;
+                    const inv = 1 - frac;
+                    pts[j * 3] = inv * inv * src.x + 2 * inv * frac * cX + frac * frac * arc.end.x;
+                    pts[j * 3 + 1] = inv * inv * src.y + 2 * inv * frac * cY + frac * frac * arc.end.y;
+                    pts[j * 3 + 2] = inv * inv * src.z + 2 * inv * frac * cZ + frac * frac * arc.end.z;
+                }
+                arc.geo.attributes.position.needsUpdate = true;
+                arc.line.material.opacity = 0.04 + Math.sin(t * 0.2) * 0.03;
+                arc.dot.material.opacity = 0.1 + Math.sin(t * 0.5) * 0.08;
+            }
+        }
+
+        /* ── Mandorla — position rings at conjunction ── */
+        if (this.mandorlaRing1) {
+            const mid = new THREE.Vector3().lerpVectors(a, b, 0.5);
+            const conjFade = this.conjTimer > 0 ? Math.min(this.conjTimer / 2, 1) * 0.25 : 0;
+            // Position rings slightly offset to form vesica piscis
+            this.mandorlaRing1.position.copy(mid).add(new THREE.Vector3(-0.5, 0, 0));
+            this.mandorlaRing2.position.copy(mid).add(new THREE.Vector3(0.5, 0, 0));
+            this.mandorlaRing1.material.opacity = conjFade;
+            this.mandorlaRing2.material.opacity = conjFade;
+            this.mandorlaGlow.position.copy(mid);
+            this.mandorlaGlow.material.opacity = conjFade * 0.5;
         }
 
         /* ── Atmosphere ── */
