@@ -1,2 +1,12 @@
-/* Typography System */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital,wght@0,400;1,400&family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+/* ── Typography System ──
+   Fonts loaded via <link> tags in HTML <head> for fastest rendering.
+   This file defines font-face fallback rules and utility classes.
+   
+   Primary Fonts:
+   - Playfair Display (Display / Headings)
+   - Source Serif 4 (Body Serif)
+   - Inter (UI Sans-serif)
+*/
+
+/* Import as fallback if <link> tags aren't present */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Inter:wght@300..700&display=swap');

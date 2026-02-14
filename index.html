@@ -2,21 +2,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aion — Researches into the Phenomenology of the Self</title>
     <meta name="description"
-        content="An immersive visual journey through Carl Jung's Aion. Interactive Three.js visualizations for each of the 14 chapters." />
+        content="An immersive visual journey through Carl Jung's Aion. Interactive Three.js visualizations for each of the 14 chapters.">
+
+    <!-- ── Google Fonts: Playfair Display + Source Serif 4 + Inter ── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Inter:wght@300..700&display=swap"
+        rel="stylesheet">
+
     <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
     }
+  }
   </script>
-    <link rel="stylesheet" href="src/styles/fonts.css" />
-    <link rel="stylesheet" href="src/styles/tokens.css" />
+
     <style>
         *,
         *::before,
@@ -32,9 +39,64 @@
 
         body {
             background: #050508;
-            color: var(--text-primary);
-            font-family: var(--font-sans);
+            color: #f5f5f5;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Nav ── */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.2rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav.scrolled {
+            background: rgba(5, 5, 8, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
+            padding: 0.8rem 2.5rem;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: #d4af37;
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* ── Hero ── */
@@ -42,6 +104,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            min-height: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,294 +120,316 @@
             z-index: 0;
         }
 
-        .hero__content {
+        .hero-content {
             position: relative;
             z-index: 1;
             text-align: center;
             pointer-events: none;
         }
 
-        .hero__title {
-            font-family: var(--font-display);
-            font-size: clamp(5rem, 12vw, 12rem);
-            letter-spacing: 0.25em;
-            color: var(--color-accent);
-            text-shadow: 0 0 60px rgba(212, 175, 55, 0.3), 0 0 120px rgba(212, 175, 55, 0.1);
-            line-height: 1;
+        .hero-eyebrow {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
             font-weight: 400;
-            animation: titleFade 3s ease-out both;
-        }
-
-        .hero__subtitle {
-            font-family: var(--font-serif);
-            font-style: italic;
-            font-size: clamp(0.9rem, 1.5vw, 1.3rem);
-            color: var(--text-secondary);
-            margin-top: 1rem;
-            letter-spacing: 0.08em;
-            opacity: 0;
-            animation: subtitleFade 2s ease-out 1.5s both;
-        }
-
-        .hero__cta {
-            display: inline-block;
-            margin-top: 3rem;
-            padding: 0.85rem 2.5rem;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            color: var(--color-accent);
-            text-decoration: none;
-            font-family: var(--font-sans);
-            font-size: 0.8rem;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.45em;
             text-transform: uppercase;
-            pointer-events: auto;
-            transition: all 0.4s ease;
-            background: transparent;
+            color: rgba(212, 175, 55, 0.45);
+            margin-bottom: 2.5rem;
             opacity: 0;
-            animation: ctaFade 2s ease-out 2.5s both;
+            animation: fadeUp 2s ease-out 0.5s both;
         }
 
-        .hero__cta:hover {
-            background: rgba(212, 175, 55, 0.1);
-            border-color: var(--color-accent);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(7rem, 18vw, 18rem);
+            color: #d4af37;
+            font-weight: 400;
+            font-style: italic;
+            line-height: 0.82;
+            letter-spacing: -0.03em;
+            text-shadow:
+                0 0 80px rgba(212, 175, 55, 0.18),
+                0 0 200px rgba(212, 175, 55, 0.05);
+            opacity: 0;
+            animation: heroTitle 3s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
         }
 
-        .hero__scroll-hint {
+        .hero-subtitle {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+            font-size: clamp(1rem, 2.2vw, 1.45rem);
+            color: rgba(255, 255, 255, 0.32);
+            margin-top: 2.5rem;
+            letter-spacing: 0.03em;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeUp 2s ease-out 1.4s both;
+        }
+
+        .hero-author {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 0.6rem;
+            opacity: 0;
+            animation: fadeUp 1.8s ease-out 2s both;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            pointer-events: auto;
+            margin-top: 5rem;
+            padding: 1rem 4rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 400;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #d4af37;
+            text-decoration: none;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: transparent;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            animation: fadeUp 2s ease-out 2.8s both;
+        }
+
+        .hero-cta:hover {
+            background: rgba(212, 175, 55, 0.06);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 80px rgba(212, 175, 55, 0.08), 0 0 160px rgba(212, 175, 55, 0.03);
+            transform: translateY(-2px);
+        }
+
+        .hero-scroll {
             position: absolute;
-            bottom: 2rem;
+            bottom: 3rem;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1;
             opacity: 0;
-            animation: scrollHintFade 2s ease-out 4s both;
+            animation: fadeIn 2s ease-out 4s both;
         }
 
-        .hero__scroll-hint span {
+        .hero-scroll span {
             display: block;
             width: 1px;
-            height: 40px;
-            background: linear-gradient(to bottom, rgba(212, 175, 55, 0.5), transparent);
-            margin: 0 auto;
-            animation: scrollPulse 2s ease-in-out infinite;
+            height: 56px;
+            background: linear-gradient(to bottom, rgba(212, 175, 55, 0.3), transparent);
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        /* ── Chapter Grid ── */
-        .chapters {
+        /* ── Chapter Section ── */
+        .chapters-section {
             position: relative;
-            padding: 8rem 2rem 6rem;
+            padding: 8rem 3rem 6rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .chapters__grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
         }
 
-        .chapter-card {
+        .section-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 400;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.4);
+            margin-bottom: 0.8rem;
+            opacity: 0;
+            animation: fadeUp 1.5s ease-out both;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            color: #f5f5f5;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: -0.01em;
+            opacity: 0;
+            animation: fadeUp 1.5s ease-out 0.2s both;
+        }
+
+        .section-rule {
+            width: 32px;
+            height: 1px;
+            background: rgba(212, 175, 55, 0.2);
+            margin: 1.8rem auto 0;
+            border: none;
+            opacity: 0;
+            animation: fadeUp 1.5s ease-out 0.4s both;
+        }
+
+        /* ── Card Grid ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .card {
             position: relative;
-            aspect-ratio: 4 / 3;
-            border-radius: var(--radius-lg);
+            aspect-ratio: 16/10;
+            border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
             text-decoration: none;
             display: block;
             border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            background: rgba(8, 8, 14, 0.6);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateY(24px);
         }
 
-        .chapter-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            border-color: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.05);
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .chapter-card__canvas {
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.04);
+        }
+
+        .card canvas {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
         }
 
-        .chapter-card__overlay {
+        .card-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(5, 5, 8, 0.9) 0%, rgba(5, 5, 8, 0.3) 40%, transparent 100%);
             z-index: 1;
+            background: linear-gradient(to top, rgba(5, 5, 8, 0.95) 0%, rgba(5, 5, 8, 0.15) 55%, transparent 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 1.2rem;
-            transition: background 0.5s ease;
+            padding: 1.5rem 1.8rem;
         }
 
-        .chapter-card:hover .chapter-card__overlay {
-            background: linear-gradient(to top, rgba(5, 5, 8, 0.7) 0%, rgba(5, 5, 8, 0.1) 40%, transparent 100%);
+        .card:hover .card-overlay {
+            background: linear-gradient(to top, rgba(5, 5, 8, 0.65) 0%, rgba(5, 5, 8, 0.06) 55%, transparent 100%);
         }
 
-        .chapter-card__number {
-            font-family: var(--font-sans);
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
+        .card-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
             text-transform: uppercase;
-            color: var(--color-accent);
-            opacity: 0.7;
+            color: rgba(212, 175, 55, 0.5);
         }
 
-        .chapter-card__title {
-            font-family: var(--font-display);
-            font-size: 1.35rem;
-            color: var(--text-primary);
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #f5f5f5;
+            font-weight: 400;
+            font-style: italic;
             margin-top: 0.25rem;
-            line-height: 1.2;
-        }
-
-        /* ── Minimal Nav ── */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: background 0.4s ease;
-        }
-
-        .nav--scrolled {
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .nav__logo {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            letter-spacing: 0.15em;
-            color: var(--color-accent);
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .nav__links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav__links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
-            transition: color 0.3s ease;
-        }
-
-        .nav__links a:hover,
-        .nav__links a.active {
-            color: var(--text-primary);
-        }
-
-        /* ── Animations ── */
-        @keyframes titleFade {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-                letter-spacing: 0.5em;
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-                letter-spacing: 0.25em;
-            }
-        }
-
-        @keyframes subtitleFade {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 0.7;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes ctaFade {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scrollHintFade {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 0.5;
-            }
-        }
-
-        @keyframes scrollPulse {
-
-            0%,
-            100% {
-                transform: translateY(0);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: translateY(8px);
-                opacity: 1;
-            }
-        }
-
-        /* ── Scroll-driven fade-in for chapter cards ── */
-        .chapter-card {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .chapter-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            line-height: 1.15;
         }
 
         /* ── Footer ── */
         .footer {
             text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-tertiary);
-            font-size: 0.75rem;
-            letter-spacing: 0.04em;
+            padding: 4rem 2rem 3rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.12);
         }
 
-        @media (max-width: 640px) {
-            .chapters {
-                padding: 4rem 1rem 3rem;
+        /* ── Animations ── */
+        @keyframes heroTitle {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+                filter: blur(4px);
             }
 
-            .chapters__grid {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translateY(12px);
+                opacity: 0.7;
+            }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .chapters-section {
+                padding: 5rem 1.5rem 4rem;
+            }
+
+            .card-grid {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .nav__links {
-                gap: 1rem;
+        @media (max-width: 480px) {
+            .nav-links a {
+                font-size: 0.7rem;
+            }
+
+            .hero-cta {
+                padding: 0.8rem 2.5rem;
             }
         }
     </style>
@@ -352,33 +437,34 @@
 
 <body>
 
-    <!-- Minimal fixed nav -->
-    <nav class="nav" id="main-nav">
-        <a href="./" class="nav__logo">Aion</a>
-        <ul class="nav__links">
+    <nav class="nav" id="nav">
+        <a href="./" class="nav-logo">Aion</a>
+        <ul class="nav-links">
             <li><a href="./" class="active">Home</a></li>
-            <li><a href="chapters/index.html">Chapters</a></li>
-            <li><a href="src/atlas/index.html">Atlas</a></li>
+            <li><a href="chapters/">Explore</a></li>
             <li><a href="about.html">About</a></li>
         </ul>
     </nav>
 
-    <!-- Hero: full-screen Three.js canvas + minimal overlay -->
     <section class="hero">
         <canvas id="hero-canvas"></canvas>
-        <div class="hero__content">
-            <h1 class="hero__title">AION</h1>
-            <p class="hero__subtitle">Researches into the Phenomenology of the Self</p>
-            <a href="#chapters" class="hero__cta">Enter</a>
+        <div class="hero-content">
+            <p class="hero-eyebrow">A Visual Companion</p>
+            <h1 class="hero-title">Aion</h1>
+            <p class="hero-subtitle">Researches into the Phenomenology of the Self</p>
+            <p class="hero-author">Carl Gustav Jung</p>
+            <a href="#chapters" class="hero-cta">Enter the Journey</a>
         </div>
-        <div class="hero__scroll-hint"><span></span></div>
+        <div class="hero-scroll"><span></span></div>
     </section>
 
-    <!-- Chapter Grid -->
-    <section class="chapters" id="chapters">
-        <div class="chapters__grid" id="chapter-grid">
-            <!-- Populated by JS -->
-        </div>
+    <section class="chapters-section" id="chapters">
+        <header class="section-header">
+            <p class="section-label">14 Chapters</p>
+            <h2 class="section-title">The Journey</h2>
+            <hr class="section-rule">
+        </header>
+        <div class="card-grid" id="card-grid"></div>
     </section>
 
     <footer class="footer">
@@ -386,241 +472,195 @@
     </footer>
 
     <script type="module">
-    import * as THREE from 'three';
+        import * as THREE from 'three';
 
-    // ── Chapter metadata ──
-    const chapters = [
-      { id: 'ch1',  num: 1,  title: 'The Ego',              accent: '#b0b0d0' },
-      { id: 'ch2',  num: 2,  title: 'The Shadow',           accent: '#6a1b9a' },
-      { id: 'ch3',  num: 3,  title: 'The Syzygy',           accent: '#c0c0c0' },
-      { id: 'ch4',  num: 4,  title: 'The Self',             accent: '#ffd700' },
-      { id: 'ch5',  num: 5,  title: 'Christ, a Symbol',     accent: '#e8e8f0' },
-      { id: 'ch6',  num: 6,  title: 'Sign of the Fishes',   accent: '#22d3ee' },
-      { id: 'ch7',  num: 7,  title: 'The Prophecies',       accent: '#ff8c00' },
-      { id: 'ch8',  num: 8,  title: 'Historical Symbols',   accent: '#8b0000' },
-      { id: 'ch9',  num: 9,  title: 'The Ouroboros',        accent: '#2e7d32' },
-      { id: 'ch10', num: 10, title: 'Gnostic Symbols',      accent: '#7c4dff' },
-      { id: 'ch11', num: 11, title: 'Unus Mundus',          accent: '#4caf50' },
-      { id: 'ch12', num: 12, title: 'Sacred Marriage',       accent: '#e91e63' },
-      { id: 'ch13', num: 13, title: 'Three Quaternio',      accent: '#ff9800' },
-      { id: 'ch14', num: 14, title: 'The Aeon',             accent: '#ffd700' },
-    ];
+        const CHAPTERS = [
+            { id: 'ch1', n: 1, t: 'The Ego', c: '#b0b0d0' },
+            { id: 'ch2', n: 2, t: 'The Shadow', c: '#7b1fa2' },
+            { id: 'ch3', n: 3, t: 'The Syzygy', c: '#90a4ae' },
+            { id: 'ch4', n: 4, t: 'The Self', c: '#ffd700' },
+            { id: 'ch5', n: 5, t: 'Christ, a Symbol', c: '#cfd8dc' },
+            { id: 'ch6', n: 6, t: 'Sign of the Fishes', c: '#00bcd4' },
+            { id: 'ch7', n: 7, t: 'The Prophecies', c: '#ff9800' },
+            { id: 'ch8', n: 8, t: 'Historical Symbols', c: '#c62828' },
+            { id: 'ch9', n: 9, t: 'The Ouroboros', c: '#2e7d32' },
+            { id: 'ch10', n: 10, t: 'Gnostic Symbols', c: '#7c4dff' },
+            { id: 'ch11', n: 11, t: 'Unus Mundus', c: '#66bb6a' },
+            { id: 'ch12', n: 12, t: 'Sacred Marriage', c: '#e91e63' },
+            { id: 'ch13', n: 13, t: 'Three Quaternio', c: '#ff9800' },
+            { id: 'ch14', n: 14, t: 'The Aeon', c: '#ffd700' },
+        ];
 
-    // ── Hero scene: Cosmic mandala ──
-    const heroCanvas = document.getElementById('hero-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x050508);
+        /* ── Hero Mandala ── */
+        const heroCanvas = document.getElementById('hero-canvas');
+        const R = new THREE.WebGLRenderer({ canvas: heroCanvas, antialias: true, alpha: true });
+        R.setPixelRatio(Math.min(devicePixelRatio, 2));
+        R.setClearColor(0x050508);
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 100);
+        cam.position.z = 14;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 12;
+        // Concentric rings
+        for (let r = 0; r < 7; r++) {
+            const count = 200 + r * 100;
+            const radius = 1.5 + r * 1.6;
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+                const a = (i / count) * Math.PI * 2 + Math.random() * 0.03;
+                const j = (Math.random() - 0.5) * 0.3;
+                pos[i * 3] = Math.cos(a) * (radius + j);
+                pos[i * 3 + 1] = Math.sin(a) * (radius + j);
+                pos[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+                color: new THREE.Color().setHSL(0.105 + r * 0.008, 0.5, 0.45 + r * 0.03),
+                size: 0.02 + r * 0.003, transparent: true, opacity: 0.5 - r * 0.05,
+                blending: THREE.AdditiveBlending, depthWrite: false,
+            })));
+        }
 
-    // Particle ring system (cosmic mandala)
-    const ringCount = 5;
-    const rings = [];
-    for (let r = 0; r < ringCount; r++) {
-      const count = 200 + r * 100;
-      const radius = 2.5 + r * 1.8;
-      const positions = new Float32Array(count * 3);
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * Math.PI * 2;
-        const jitter = (Math.random() - 0.5) * 0.3;
-        positions[i * 3]     = Math.cos(angle) * (radius + jitter);
-        positions[i * 3 + 1] = Math.sin(angle) * (radius + jitter);
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-      }
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      const hue = 40 + r * 5;
-      const color = new THREE.Color().setHSL(hue / 360, 0.6, 0.5 + r * 0.05);
-      const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-        color, size: 0.03 + r * 0.008, transparent: true, opacity: 0.6 - r * 0.08,
-        blending: THREE.AdditiveBlending, depthWrite: false,
-      }));
-      scene.add(pts);
-      rings.push({ pts, radius, speed: 0.08 - r * 0.012 });
-    }
+        // Center glow
+        scene.add(new THREE.Mesh(
+            new THREE.SphereGeometry(0.4, 16, 16),
+            new THREE.MeshBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending })
+        ));
 
-    // Center glow
-    const centerGeo = new THREE.SphereGeometry(0.6, 16, 16);
-    const centerMat = new THREE.MeshBasicMaterial({
-      color: 0xd4af37, transparent: true, opacity: 0.08,
-      blending: THREE.AdditiveBlending,
-    });
-    scene.add(new THREE.Mesh(centerGeo, centerMat));
+        // Radial lines
+        for (let i = 0; i < 12; i++) {
+            const a = (i / 12) * Math.PI * 2;
+            const g = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(Math.cos(a) * 16, Math.sin(a) * 16, 0),
+            ]);
+            scene.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.02 })));
+        }
 
-    const centerGlow2 = new THREE.Mesh(
-      new THREE.SphereGeometry(1.5, 16, 16),
-      new THREE.MeshBasicMaterial({
-        color: 0xd4af37, transparent: true, opacity: 0.02,
-        blending: THREE.AdditiveBlending,
-      })
-    );
-    scene.add(centerGlow2);
-
-    // Radial lines
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const pts = [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(Math.cos(angle) * 15, Math.sin(angle) * 15, 0),
-      ];
-      const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
-      const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({
-        color: 0xd4af37, transparent: true, opacity: 0.03,
-      }));
-      scene.add(line);
-    }
-
-    // Mouse tracking
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
-
-    // Resize
-    function resizeHero() {
-      const w = window.innerWidth, h = window.innerHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    resizeHero();
-    window.addEventListener('resize', resizeHero);
-
-    // Animate hero
-    let time = 0;
-    function animateHero() {
-      requestAnimationFrame(animateHero);
-      time += 0.005;
-
-      for (const ring of rings) {
-        ring.pts.rotation.z += ring.speed * 0.01;
-        ring.pts.rotation.x = Math.sin(time * 0.3) * 0.1;
-      }
-
-      camera.position.x += (mouseX * 1.5 - camera.position.x) * 0.02;
-      camera.position.y += (mouseY * 1.0 - camera.position.y) * 0.02;
-      camera.lookAt(0, 0, 0);
-
-      centerMat.opacity = 0.06 + Math.sin(time * 2) * 0.03;
-
-      renderer.render(scene, camera);
-    }
-    animateHero();
-
-    // ── Nav scroll effect ──
-    const nav = document.getElementById('main-nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('nav--scrolled', window.scrollY > 80);
-    });
-
-    // ── Build chapter cards ──
-    const grid = document.getElementById('chapter-grid');
-    const cardScenes = [];
-
-    chapters.forEach((ch, idx) => {
-      const card = document.createElement('a');
-      card.className = 'chapter-card';
-      card.href = `journey/chapter/index.html?id=${ch.id}`;
-      card.innerHTML = `
-        <canvas class="chapter-card__canvas" id="card-${ch.id}"></canvas>
-        <div class="chapter-card__overlay">
-          <span class="chapter-card__number">Chapter ${ch.num}</span>
-          <span class="chapter-card__title">${ch.title}</span>
-        </div>
-      `;
-      grid.appendChild(card);
-
-      // Intersection observer for fade-in
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            setTimeout(() => e.target.classList.add('visible'), idx * 80);
-            obs.unobserve(e.target);
-          }
+        let mx = 0, my = 0;
+        document.addEventListener('mousemove', e => {
+            mx = (e.clientX / innerWidth) * 2 - 1;
+            my = -(e.clientY / innerHeight) * 2 + 1;
         });
-      }, { threshold: 0.1 });
-      obs.observe(card);
 
-      // Mini Three.js scene per card (lightweight particle preview)
-      requestAnimationFrame(() => {
-        const canvas = document.getElementById(`card-${ch.id}`);
-        if (!canvas) return;
-        const r = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
-        r.setPixelRatio(1);
-        r.setClearColor(0x050508);
-        const s = new THREE.Scene();
-        const c = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 50);
-        c.position.z = 6;
-
-        // Unique particle system per chapter based on accent color
-        const count = 120;
-        const positions = new Float32Array(count * 3);
-        const phases = new Float32Array(count);
-        for (let i = 0; i < count; i++) {
-          const theta = Math.random() * Math.PI * 2;
-          const phi = Math.random() * Math.PI;
-          const rad = 1.5 + Math.random() * 2;
-          positions[i * 3]     = Math.sin(phi) * Math.cos(theta) * rad;
-          positions[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * rad;
-          positions[i * 3 + 2] = Math.cos(phi) * rad;
-          phases[i] = Math.random() * Math.PI * 2;
+        function resizeHero() {
+            R.setSize(innerWidth, innerHeight);
+            cam.aspect = innerWidth / innerHeight;
+            cam.updateProjectionMatrix();
         }
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-          color: new THREE.Color(ch.accent), size: 0.06,
-          transparent: true, opacity: 0.7,
-          blending: THREE.AdditiveBlending, depthWrite: false,
-        }));
-        s.add(pts);
+        resizeHero(); addEventListener('resize', resizeHero);
 
-        // Center glow for card
-        const cg = new THREE.Mesh(
-          new THREE.SphereGeometry(0.4, 8, 8),
-          new THREE.MeshBasicMaterial({
-            color: new THREE.Color(ch.accent), transparent: true, opacity: 0.08,
-            blending: THREE.AdditiveBlending,
-          })
-        );
-        s.add(cg);
-
-        cardScenes.push({ r, s, c, pts, phases, canvas, time: Math.random() * 100, active: false });
-      });
-    });
-
-    // Animate card scenes only when visible
-    const cardObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        const idx = Array.from(grid.children).indexOf(e.target);
-        if (idx >= 0 && cardScenes[idx]) cardScenes[idx].active = e.isIntersecting;
-      });
-    }, { threshold: 0.01 });
-    requestAnimationFrame(() => {
-      Array.from(grid.children).forEach(c => cardObserver.observe(c));
-    });
-
-    function animateCards() {
-      requestAnimationFrame(animateCards);
-      for (const cs of cardScenes) {
-        if (!cs.active) continue;
-        cs.time += 0.008;
-        cs.pts.rotation.y += 0.003;
-        cs.pts.rotation.x = Math.sin(cs.time * 0.5) * 0.15;
-
-        const w = cs.canvas.clientWidth, h = cs.canvas.clientHeight;
-        if (w > 0 && h > 0 && (cs.canvas.width !== w || cs.canvas.height !== h)) {
-          cs.r.setSize(w, h, false);
-          cs.c.aspect = w / h;
-          cs.c.updateProjectionMatrix();
+        let t = 0;
+        function animateHero() {
+            requestAnimationFrame(animateHero);
+            t += 0.003;
+            scene.children.forEach((c, i) => {
+                if (c.isPoints) {
+                    c.rotation.z += (i % 2 === 0 ? 0.0006 : -0.0004);
+                    c.rotation.x = Math.sin(t * 0.3) * 0.08;
+                }
+            });
+            cam.position.x += (mx * 1.5 - cam.position.x) * 0.012;
+            cam.position.y += (my * 1.0 - cam.position.y) * 0.012;
+            cam.lookAt(0, 0, 0);
+            R.render(scene, cam);
         }
-        cs.r.render(cs.s, cs.c);
-      }
-    }
-    animateCards();
+        animateHero();
+
+        /* ── Nav scroll ── */
+        const nav = document.getElementById('nav');
+        addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60));
+
+        /* ── Chapter Cards ── */
+        const grid = document.getElementById('card-grid');
+        const scenes = [];
+
+        CHAPTERS.forEach((ch, idx) => {
+            const a = document.createElement('a');
+            a.className = 'card';
+            a.href = `journey/chapter/index.html?id=${ch.id}`;
+            a.id = `card-${ch.id}`;
+            a.innerHTML = `
+      <canvas id="cv-${ch.id}"></canvas>
+      <div class="card-overlay">
+        <span class="card-num">Chapter ${ch.n}</span>
+        <span class="card-title">${ch.t}</span>
+      </div>`;
+            grid.appendChild(a);
+
+            // Stagger fade-in with IntersectionObserver
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        setTimeout(() => e.target.classList.add('visible'), idx * 60);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.08 });
+            obs.observe(a);
+
+            // Mini particle preview
+            requestAnimationFrame(() => {
+                const cv = document.getElementById(`cv-${ch.id}`);
+                if (!cv) return;
+                const r = new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true });
+                r.setPixelRatio(1); r.setClearColor(0x050508);
+                const s = new THREE.Scene();
+                const c = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+                c.position.z = 5;
+
+                const N = 100;
+                const p = new Float32Array(N * 3);
+                for (let i = 0; i < N; i++) {
+                    const θ = Math.random() * Math.PI * 2;
+                    const φ = Math.acos(2 * Math.random() - 1);
+                    const R = 1.2 + Math.random() * 1.8;
+                    p[i * 3] = Math.sin(φ) * Math.cos(θ) * R;
+                    p[i * 3 + 1] = Math.sin(φ) * Math.sin(θ) * R;
+                    p[i * 3 + 2] = Math.cos(φ) * R;
+                }
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.BufferAttribute(p, 3));
+                const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+                    color: new THREE.Color(ch.c), size: 0.05, transparent: true, opacity: 0.6,
+                    blending: THREE.AdditiveBlending, depthWrite: false,
+                }));
+                s.add(pts);
+                s.add(new THREE.Mesh(
+                    new THREE.SphereGeometry(0.25, 8, 8),
+                    new THREE.MeshBasicMaterial({ color: new THREE.Color(ch.c), transparent: true, opacity: 0.04, blending: THREE.AdditiveBlending })
+                ));
+
+                scenes.push({ r, s, c, pts, cv, t: Math.random() * 100, on: false });
+            });
+        });
+
+        // Only render visible cards
+        const cObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                const i = Array.from(grid.children).indexOf(e.target);
+                if (i >= 0 && scenes[i]) scenes[i].on = e.isIntersecting;
+            });
+        }, { threshold: 0.01 });
+        requestAnimationFrame(() => Array.from(grid.children).forEach(c => cObs.observe(c)));
+
+        function animateCards() {
+            requestAnimationFrame(animateCards);
+            for (const s of scenes) {
+                if (!s.on) continue;
+                s.t += 0.005;
+                s.pts.rotation.y += 0.002;
+                s.pts.rotation.x = Math.sin(s.t * 0.4) * 0.12;
+                const w = s.cv.clientWidth, h = s.cv.clientHeight;
+                if (w > 0 && h > 0 && (s.cv.width !== w || s.cv.height !== h)) {
+                    s.r.setSize(w, h, false);
+                    s.c.aspect = w / h;
+                    s.c.updateProjectionMatrix();
+                }
+                s.r.render(s.s, s.c);
+            }
+        }
+        animateCards();
     </script>
 </body>
 

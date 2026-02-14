@@ -2,20 +2,19 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chapters — Aion</title>
-    <base href="../">
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
-    <link rel="stylesheet" href="src/styles/fonts.css" />
-    <link rel="stylesheet" href="src/styles/tokens.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore — Aion</title>
+    <meta name="description"
+        content="Explore all 14 chapters of Carl Jung's Aion through an interactive knowledge graph and immersive visualizations.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Inter:wght@300..700&display=swap"
+        rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
     <style>
         *,
         *::before,
@@ -27,86 +26,312 @@
 
         body {
             background: #050508;
-            color: var(--text-primary);
-            font-family: var(--font-sans);
+            color: #f5f5f5;
+            font-family: 'Inter', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Nav */
+        /* ── Nav ── */
         .nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 1rem 2rem;
+            padding: 1rem 2.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(5, 5, 8, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.06);
         }
 
-        .nav__logo {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            letter-spacing: 0.15em;
-            color: var(--color-accent);
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: #d4af37;
             text-decoration: none;
-            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 500;
         }
 
-        .nav__links {
+        .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             list-style: none;
         }
 
-        .nav__links a {
-            color: var(--text-secondary);
+        .nav-links a {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
             text-decoration: none;
-            font-size: 0.8rem;
-            letter-spacing: 0.06em;
             transition: color 0.3s ease;
         }
 
-        .nav__links a:hover,
-        .nav__links a.active {
-            color: var(--text-primary);
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Grid */
-        .chapters {
-            padding: 6rem 2rem 4rem;
+        /* ── Page Header ── */
+        .page-header {
+            text-align: center;
+            padding: 6.5rem 2rem 2rem;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            color: #f5f5f5;
+            font-weight: 400;
+            font-style: italic;
+            opacity: 0;
+            animation: heroReveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .page-title span {
+            color: #d4af37;
+        }
+
+        .page-subtitle {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 0.8rem;
+            opacity: 0;
+            animation: fadeUp 1.8s ease-out 0.8s both;
+        }
+
+        /* ── Knowledge Graph Section ── */
+        .graph-section {
+            position: relative;
             max-width: 1400px;
-            margin: 0 auto;
+            margin: 1rem auto 0;
+            padding: 0 2rem;
         }
 
-        .chapters__grid {
+        .graph-container {
+            position: relative;
+            border-radius: 12px;
+            background: rgba(8, 8, 14, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            overflow: hidden;
+        }
+
+        #atlas {
+            width: 100%;
+            height: min(55vh, 520px);
+            display: block;
+        }
+
+        /* ── Graph Controls ── */
+        .graph-controls {
+            position: absolute;
+            left: 1rem;
+            bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem 0.7rem;
+            border-radius: 100px;
+            background: rgba(5, 5, 8, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+        }
+
+        .graph-controls input {
+            width: min(200px, 40vw);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 100px;
+            color: #f5f5f5;
+            padding: 0.35rem 0.7rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .graph-controls input:focus {
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .graph-controls input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .graph-controls button {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 0.3rem 0.7rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .graph-controls button:hover {
+            color: #f5f5f5;
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        /* ── Graph Detail Panel ── */
+        .graph-detail {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            width: 240px;
+            padding: 1.2rem;
+            border-radius: 10px;
+            background: rgba(5, 5, 8, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+        }
+
+        #detail-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #f5f5f5;
+            font-weight: 400;
+            font-style: italic;
+            margin-bottom: 0.6rem;
+            line-height: 1.2;
+        }
+
+        #detail-body {
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.6;
+        }
+
+        #detail-body p {
+            margin: 0.3rem 0;
+        }
+
+        #detail-body strong {
+            color: rgba(212, 175, 55, 0.6);
+            font-weight: 500;
+        }
+
+        .atlas-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin-top: 0.6rem;
+        }
+
+        .atlas-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.3);
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .atlas-open {
+            display: inline-block;
+            margin-top: 0.6rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #d4af37;
+            text-decoration: none;
+            padding: 0.35rem 0.7rem;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .atlas-open:hover {
+            background: rgba(212, 175, 55, 0.06);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        /* ── Graph Node Styles ── */
+        .atlas-node {
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
+
+        .atlas-node.is-dimmed {
+            opacity: 0.2;
+        }
+
+        .atlas-node:hover circle {
+            stroke: rgba(212, 175, 55, 0.6);
+        }
+
+        /* ── Chapters Grid ── */
+        .chapters-section {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            padding: 0 2rem 4rem;
+        }
+
+        .chapters-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 400;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.35);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .chapter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
         }
 
-        /* Card */
         .chapter-card {
             position: relative;
-            aspect-ratio: 4 / 3;
-            border-radius: var(--radius-lg);
+            aspect-ratio: 4/3;
+            border-radius: 10px;
             overflow: hidden;
-            cursor: pointer;
             text-decoration: none;
             display: block;
             border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            background: rgba(8, 8, 14, 0.6);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .chapter-card.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .chapter-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            border-color: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.05);
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5), 0 0 24px rgba(212, 175, 55, 0.04);
+        }
+
+        .chapter-card.is-highlighted {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.08);
         }
 
         .chapter-card__canvas {
@@ -119,54 +344,104 @@
         .chapter-card__overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(5, 5, 8, 0.9) 0%, rgba(5, 5, 8, 0.3) 40%, transparent 100%);
             z-index: 1;
+            background: linear-gradient(to top, rgba(5, 5, 8, 0.92) 0%, rgba(5, 5, 8, 0.1) 60%, transparent 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 1.2rem;
-            transition: background 0.5s ease;
+            padding: 1rem 1.2rem;
         }
 
         .chapter-card:hover .chapter-card__overlay {
-            background: linear-gradient(to top, rgba(5, 5, 8, 0.7) 0%, rgba(5, 5, 8, 0.1) 40%, transparent 100%);
+            background: linear-gradient(to top, rgba(5, 5, 8, 0.6) 0%, rgba(5, 5, 8, 0.04) 60%, transparent 100%);
         }
 
-        .chapter-card__number {
-            font-size: 0.65rem;
-            letter-spacing: 0.2em;
+        .chapter-card__num {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.5rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
             text-transform: uppercase;
-            color: var(--color-accent);
-            opacity: 0.7;
+            color: rgba(212, 175, 55, 0.45);
         }
 
         .chapter-card__title {
-            font-family: var(--font-display);
-            font-size: 1.35rem;
-            color: var(--text-primary);
-            margin-top: 0.25rem;
-            line-height: 1.2;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: #f5f5f5;
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.15;
+            margin-top: 0.15rem;
         }
 
-        /* fade-in */
-        .chapter-card {
-            opacity: 0;
-            transform: translateY(30px);
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.12);
         }
 
-        .chapter-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @media (max-width: 640px) {
-            .chapters {
-                padding: 5rem 1rem 3rem;
+        /* ── Animations ── */
+        @keyframes heroReveal {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.97);
+                filter: blur(3px);
             }
 
-            .chapters__grid {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .graph-detail {
+                position: static;
+                width: 100%;
+                margin: 0.5rem 0;
+                border-radius: 0 0 12px 12px;
+            }
+
+            #atlas {
+                height: 40vh;
+            }
+
+            .chapter-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .graph-controls {
+                left: 0.5rem;
+                bottom: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chapter-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                padding: 6rem 1.2rem 1.5rem;
             }
         }
     </style>
@@ -175,129 +450,396 @@
 <body>
 
     <nav class="nav">
-        <a href="./" class="nav__logo">Aion</a>
-        <ul class="nav__links">
-            <li><a href="./">Home</a></li>
-            <li><a href="chapters/index.html" class="active">Chapters</a></li>
-            <li><a href="src/atlas/index.html">Atlas</a></li>
-            <li><a href="about.html">About</a></li>
+        <a href="../" class="nav-logo">Aion</a>
+        <ul class="nav-links">
+            <li><a href="../">Home</a></li>
+            <li><a href="./" class="active">Explore</a></li>
+            <li><a href="../about.html">About</a></li>
         </ul>
     </nav>
 
-    <section class="chapters">
-        <div class="chapters__grid" id="chapter-grid"></div>
+    <header class="page-header">
+        <h1 class="page-title"><span>Explore</span> Aion</h1>
+        <p class="page-subtitle">Navigate the psychology of the self</p>
+    </header>
+
+    <!-- ── Knowledge Graph ── -->
+    <section class="graph-section">
+        <div class="graph-container">
+            <svg id="atlas"></svg>
+            <div class="graph-controls">
+                <input type="text" id="atlas-search" placeholder="Search chapters or concepts…" autocomplete="off">
+                <button id="atlas-reset">Reset</button>
+            </div>
+            <div class="graph-detail">
+                <h3 id="detail-title">Select a chapter</h3>
+                <div id="detail-body">
+                    <p>Click any node to see its summary, key concepts, and links.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <script type="module">
-        import * as THREE from 'three';
+    <!-- ── Chapter Cards Grid ── -->
+    <section class="chapters-section">
+        <p class="chapters-label">14 Chapters · Click to Enter</p>
+        <div class="chapter-grid" id="chapter-grid"></div>
+    </section>
 
-        const chapters = [
-            { id: 'ch1', num: 1, title: 'The Ego', accent: '#b0b0d0' },
-            { id: 'ch2', num: 2, title: 'The Shadow', accent: '#6a1b9a' },
-            { id: 'ch3', num: 3, title: 'The Syzygy', accent: '#c0c0c0' },
-            { id: 'ch4', num: 4, title: 'The Self', accent: '#ffd700' },
-            { id: 'ch5', num: 5, title: 'Christ, a Symbol', accent: '#e8e8f0' },
-            { id: 'ch6', num: 6, title: 'Sign of the Fishes', accent: '#22d3ee' },
-            { id: 'ch7', num: 7, title: 'The Prophecies', accent: '#ff8c00' },
-            { id: 'ch8', num: 8, title: 'Historical Symbols', accent: '#8b0000' },
-            { id: 'ch9', num: 9, title: 'The Ouroboros', accent: '#2e7d32' },
-            { id: 'ch10', num: 10, title: 'Gnostic Symbols', accent: '#7c4dff' },
-            { id: 'ch11', num: 11, title: 'Unus Mundus', accent: '#4caf50' },
-            { id: 'ch12', num: 12, title: 'Sacred Marriage', accent: '#e91e63' },
-            { id: 'ch13', num: 13, title: 'Three Quaternio', accent: '#ff9800' },
-            { id: 'ch14', num: 14, title: 'The Aeon', accent: '#ffd700' },
+    <footer class="footer">
+        <p>A visual companion to Carl Jung's Aion · 2026</p>
+    </footer>
+
+    <script>
+        // ── Chapter metadata ──
+        const CHAPTERS = [
+            { id: 'ch1', n: 1, t: 'The Ego', c: '#b0b0d0' },
+            { id: 'ch2', n: 2, t: 'The Shadow', c: '#7b1fa2' },
+            { id: 'ch3', n: 3, t: 'The Syzygy', c: '#90a4ae' },
+            { id: 'ch4', n: 4, t: 'The Self', c: '#ffd700' },
+            { id: 'ch5', n: 5, t: 'Christ, a Symbol', c: '#cfd8dc' },
+            { id: 'ch6', n: 6, t: 'Sign of the Fishes', c: '#00bcd4' },
+            { id: 'ch7', n: 7, t: 'The Prophecies', c: '#ff9800' },
+            { id: 'ch8', n: 8, t: 'Historical Symbols', c: '#c62828' },
+            { id: 'ch9', n: 9, t: 'The Ouroboros', c: '#2e7d32' },
+            { id: 'ch10', n: 10, t: 'Gnostic Symbols', c: '#7c4dff' },
+            { id: 'ch11', n: 11, t: 'Unus Mundus', c: '#66bb6a' },
+            { id: 'ch12', n: 12, t: 'Sacred Marriage', c: '#e91e63' },
+            { id: 'ch13', n: 13, t: 'Three Quaternio', c: '#ff9800' },
+            { id: 'ch14', n: 14, t: 'The Aeon', c: '#ffd700' },
         ];
 
+        // ── Chapter Cards ──
         const grid = document.getElementById('chapter-grid');
-        const cardScenes = [];
+        const cardEls = {};
 
-        chapters.forEach((ch, idx) => {
-            const card = document.createElement('a');
-            card.className = 'chapter-card';
-            card.href = `journey/chapter/index.html?id=${ch.id}`;
-            card.innerHTML = `
-        <canvas class="chapter-card__canvas" id="card-${ch.id}"></canvas>
-        <div class="chapter-card__overlay">
-          <span class="chapter-card__number">Chapter ${ch.num}</span>
-          <span class="chapter-card__title">${ch.title}</span>
-        </div>
-      `;
-            grid.appendChild(card);
+        CHAPTERS.forEach((ch, idx) => {
+            const a = document.createElement('a');
+            a.className = 'chapter-card';
+            a.href = `../journey/chapter/index.html?id=${ch.id}`;
+            a.id = `card-${ch.id}`;
+            a.innerHTML = `
+                <canvas class="chapter-card__canvas" id="cv-${ch.id}"></canvas>
+                <div class="chapter-card__overlay">
+                    <span class="chapter-card__num">Chapter ${ch.n}</span>
+                    <span class="chapter-card__title">${ch.t}</span>
+                </div>`;
+            grid.appendChild(a);
+            cardEls[ch.id] = a;
 
-            const obs = new IntersectionObserver((entries) => {
+            // Staggered fade-in
+            const obs = new IntersectionObserver(entries => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
-                        setTimeout(() => e.target.classList.add('visible'), idx * 60);
+                        setTimeout(() => e.target.classList.add('visible'), idx * 50);
                         obs.unobserve(e.target);
                     }
                 });
-            }, { threshold: 0.1 });
-            obs.observe(card);
+            }, { threshold: 0.08 });
+            obs.observe(a);
+        });
 
-            requestAnimationFrame(() => {
-                const canvas = document.getElementById(`card-${ch.id}`);
-                if (!canvas) return;
-                const r = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
-                r.setPixelRatio(1);
-                r.setClearColor(0x050508);
-                const s = new THREE.Scene();
-                const c = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 50);
-                c.position.z = 6;
+        // ── Mini particle previews (lightweight) ──
+        function initCardPreviews() {
+            CHAPTERS.forEach(ch => {
+                const cv = document.getElementById(`cv-${ch.id}`);
+                if (!cv) return;
+                const ctx = cv.getContext('2d');
+                const color = ch.c;
 
-                const count = 120;
-                const positions = new Float32Array(count * 3);
-                for (let i = 0; i < count; i++) {
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.random() * Math.PI;
-                    const rad = 1.5 + Math.random() * 2;
-                    positions[i * 3] = Math.sin(phi) * Math.cos(theta) * rad;
-                    positions[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * rad;
-                    positions[i * 3 + 2] = Math.cos(phi) * rad;
+                function resize() {
+                    cv.width = cv.clientWidth;
+                    cv.height = cv.clientHeight;
                 }
-                const geo = new THREE.BufferGeometry();
-                geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                const pts = new THREE.Points(geo, new THREE.PointsMaterial({
-                    color: new THREE.Color(ch.accent), size: 0.06,
-                    transparent: true, opacity: 0.7,
-                    blending: THREE.AdditiveBlending, depthWrite: false,
-                }));
-                s.add(pts);
-                s.add(new THREE.Mesh(
-                    new THREE.SphereGeometry(0.4, 8, 8),
-                    new THREE.MeshBasicMaterial({
-                        color: new THREE.Color(ch.accent), transparent: true, opacity: 0.08,
-                        blending: THREE.AdditiveBlending,
-                    })
-                ));
-                cardScenes.push({ r, s, c, pts, canvas, time: Math.random() * 100, active: false });
+                resize();
+
+                const particles = [];
+                const N = 40;
+                for (let i = 0; i < N; i++) {
+                    particles.push({
+                        x: Math.random(),
+                        y: Math.random(),
+                        r: 1 + Math.random() * 2,
+                        vx: (Math.random() - 0.5) * 0.001,
+                        vy: (Math.random() - 0.5) * 0.001,
+                        a: 0.15 + Math.random() * 0.35,
+                    });
+                }
+
+                let running = false;
+                function draw() {
+                    if (!running) return;
+                    requestAnimationFrame(draw);
+                    const w = cv.width, h = cv.height;
+                    if (w === 0 || h === 0) return;
+                    ctx.clearRect(0, 0, w, h);
+                    for (const p of particles) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0 || p.x > 1) p.vx *= -1;
+                        if (p.y < 0 || p.y > 1) p.vy *= -1;
+                        ctx.beginPath();
+                        ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = p.a;
+                        ctx.fill();
+                    }
+                    ctx.globalAlpha = 0.04;
+                    ctx.beginPath();
+                    ctx.arc(w / 2, h / 2, Math.min(w, h) * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+
+                const cObs = new IntersectionObserver(entries => {
+                    entries.forEach(e => {
+                        if (e.isIntersecting && !running) {
+                            resize();
+                            running = true;
+                            draw();
+                        } else if (!e.isIntersecting) {
+                            running = false;
+                        }
+                    });
+                }, { threshold: 0.01 });
+                cObs.observe(cv);
+            });
+        }
+        initCardPreviews();
+        addEventListener('resize', () => {
+            CHAPTERS.forEach(ch => {
+                const cv = document.getElementById(`cv-${ch.id}`);
+                if (cv) { cv.width = cv.clientWidth; cv.height = cv.clientHeight; }
             });
         });
 
-        const cardObs = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                const idx = Array.from(grid.children).indexOf(e.target);
-                if (idx >= 0 && cardScenes[idx]) cardScenes[idx].active = e.isIntersecting;
-            });
-        }, { threshold: 0.01 });
-        requestAnimationFrame(() => Array.from(grid.children).forEach(c => cardObs.observe(c)));
+        // ── D3 Knowledge Graph (inlined from atlas.js with corrected selectors) ──
+        const CORE_PATHS = {
+            chapters: '../src/data/aion-core/chapters.json',
+            concepts: '../src/data/aion-core/concepts.json',
+            relationships: '../src/data/aion-core/relationships.json'
+        };
 
-        function animate() {
-            requestAnimationFrame(animate);
-            for (const cs of cardScenes) {
-                if (!cs.active) continue;
-                cs.time += 0.008;
-                cs.pts.rotation.y += 0.003;
-                cs.pts.rotation.x = Math.sin(cs.time * 0.5) * 0.15;
-                const w = cs.canvas.clientWidth, h = cs.canvas.clientHeight;
-                if (w > 0 && h > 0 && (cs.canvas.width !== w || cs.canvas.height !== h)) {
-                    cs.r.setSize(w, h, false);
-                    cs.c.aspect = w / h;
-                    cs.c.updateProjectionMatrix();
-                }
-                cs.r.render(cs.s, cs.c);
+        function chapterUrl(id) {
+            return `../journey/chapter/index.html?id=${encodeURIComponent(id)}`;
+        }
+
+        function highlightCard(chId) {
+            Object.values(cardEls).forEach(el => el.classList.remove('is-highlighted'));
+            if (chId && cardEls[chId]) {
+                cardEls[chId].classList.add('is-highlighted');
+                cardEls[chId].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
-        animate();
+
+        async function initAtlas() {
+            const svg = d3.select('#atlas');
+            if (svg.empty()) return;
+
+            const rect = svg.node().getBoundingClientRect();
+            const width = rect.width || 1200;
+            const height = rect.height || 520;
+            svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+            const accent = '#d4af37';
+            const accentCool = '#22d3ee';
+
+            const clusterColors = new Map([
+                ['Identity', accent],
+                ['Relational Psyche', accentCool],
+                ['Selfhood', '#8dddb8'],
+                ['Aeon & Fish', '#ffd37a'],
+                ['Alchemy', '#ffa98f'],
+                ['Gnosis', '#9cc9e8'],
+                ['Synthesis', '#e5e5e5']
+            ]);
+
+            const zoomRoot = svg.append('g');
+            const linkLayer = zoomRoot.append('g');
+            const nodeLayer = zoomRoot.append('g');
+
+            const zoom = d3.zoom().scaleExtent([0.5, 3]).on('zoom', e => zoomRoot.attr('transform', e.transform));
+            svg.call(zoom);
+
+            const detailTitle = document.getElementById('detail-title');
+            const detailBody = document.getElementById('detail-body');
+            const searchInput = document.getElementById('atlas-search');
+            const resetBtn = document.getElementById('atlas-reset');
+
+            // Load data
+            let core;
+            try {
+                const [chRes, coRes, reRes] = await Promise.all([
+                    fetch(CORE_PATHS.chapters), fetch(CORE_PATHS.concepts), fetch(CORE_PATHS.relationships)
+                ]);
+                if (!chRes.ok || !coRes.ok || !reRes.ok) throw new Error('Data load failed');
+                const [chJson, coJson, reJson] = await Promise.all([chRes.json(), coRes.json(), reRes.json()]);
+                core = { chapters: chJson.chapters, concepts: coJson.concepts, relationships: reJson.relationships };
+            } catch (err) {
+                console.error('Atlas data load failed:', err);
+                detailBody.innerHTML = '<p>Graph data failed to load.</p>';
+                return;
+            }
+
+            const chapters = core.chapters.slice().sort((a, b) => a.order - b.order);
+            const chapterById = new Map(chapters.map(c => [c.id, c]));
+            const conceptsById = new Map(core.concepts.map(c => [c.id, c]));
+
+            // Build links
+            function linkKey(l) {
+                const s = typeof l.source === 'string' ? l.source : l.source.id;
+                const t = typeof l.target === 'string' ? l.target : l.target.id;
+                return `${s}=>${t}|${l.kind || ''}`;
+            }
+
+            const baseLinks = [];
+            for (let i = 1; i < chapters.length; i++) baseLinks.push({ source: `ch${i}`, target: `ch${i + 1}`, kind: 'journey' });
+
+            const seen = new Set(baseLinks.map(linkKey));
+            chapters.forEach(ch => {
+                (ch.relatedChapterIds || []).forEach(rel => {
+                    const c = { source: ch.id, target: rel, kind: 'related' };
+                    const k = linkKey(c);
+                    if (!seen.has(k)) { seen.add(k); baseLinks.push(c); }
+                });
+            });
+            core.relationships.forEach(r => {
+                if (!String(r.source).startsWith('ch') || !String(r.target).startsWith('ch')) return;
+                const c = { source: r.source, target: r.target, kind: 'taxonomy' };
+                const k = linkKey(c);
+                if (!seen.has(k)) { seen.add(k); baseLinks.push(c); }
+            });
+
+            let selectedChapterId = null;
+            let activeSim = null;
+
+            function buildGraph(selId) {
+                const nodes = chapters.map(c => ({
+                    id: c.id, kind: 'chapter', order: c.order, title: c.title,
+                    cluster: c.cluster, summary: c.summary, keyConceptIds: c.keyConceptIds
+                }));
+                const links = [...baseLinks];
+
+                if (selId) {
+                    const sel = chapterById.get(selId);
+                    if (sel) {
+                        const cNodes = (sel.keyConceptIds || [])
+                            .map(id => conceptsById.get(id)).filter(Boolean).slice(0, 6)
+                            .map(c => ({ id: `concept:${c.id}`, kind: 'concept', label: c.label }));
+                        nodes.push(...cNodes);
+                        cNodes.forEach(c => links.push({ source: sel.id, target: c.id, kind: 'concept-link' }));
+                    }
+                }
+                return { nodes, links };
+            }
+
+            function renderDetails(ch) {
+                if (!ch) {
+                    detailTitle.textContent = 'Select a chapter';
+                    detailBody.innerHTML = '<p>Click any node to see its summary, key concepts, and links.</p>';
+                    return;
+                }
+                const concepts = (ch.keyConceptIds || []).map(id => conceptsById.get(id)?.label).filter(Boolean);
+                detailTitle.textContent = `Chapter ${ch.order}: ${ch.title}`;
+                detailBody.innerHTML = `
+                    <p><strong>Cluster:</strong> ${ch.cluster}</p>
+                    <p>${ch.summary}</p>
+                    <div class="atlas-badges">${concepts.map(l => `<span class="atlas-badge">${l}</span>`).join('')}</div>
+                    <a class="atlas-open" href="${chapterUrl(ch.id)}">Open chapter →</a>
+                `;
+            }
+
+            function renderGraph(nodes, links) {
+                if (activeSim) { activeSim.stop(); activeSim = null; }
+
+                const sim = d3.forceSimulation(nodes)
+                    .force('link', d3.forceLink(links).id(d => d.id).distance(l => l.kind === 'journey' ? 90 : l.kind === 'concept-link' ? 80 : 130).strength(l => l.kind === 'journey' ? 0.85 : 0.6))
+                    .force('charge', d3.forceManyBody().strength(d => d.kind === 'concept' ? -120 : -280))
+                    .force('center', d3.forceCenter(width / 2, height / 2))
+                    .force('collision', d3.forceCollide().radius(d => d.kind === 'concept' ? 16 : 28));
+
+                const linkSel = linkLayer.selectAll('line').data(links, linkKey).join('line')
+                    .attr('stroke', l => l.kind === 'journey' ? accent : l.kind === 'concept-link' ? accentCool : 'rgba(255,255,255,0.15)')
+                    .attr('stroke-width', l => l.kind === 'journey' ? 2 : 1.2)
+                    .attr('stroke-dasharray', l => l.kind === 'concept-link' ? '4 4' : null)
+                    .attr('opacity', l => l.kind === 'journey' ? 0.4 : 0.25);
+
+                const nodeSel = nodeLayer.selectAll('g').data(nodes, d => d.id).join(enter => {
+                    const g = enter.append('g').attr('class', 'atlas-node');
+                    g.append('circle')
+                        .attr('r', d => d.kind === 'concept' ? 8 : 16)
+                        .attr('fill', d => d.kind === 'concept' ? 'rgba(0,0,0,0.2)' : clusterColors.get(d.cluster) || accent)
+                        .attr('stroke', 'rgba(255,255,255,0.06)')
+                        .attr('stroke-width', d => d.kind === 'concept' ? 1.4 : 2.2);
+                    g.append('text')
+                        .attr('text-anchor', d => d.kind === 'concept' ? 'start' : 'middle')
+                        .attr('dy', d => d.kind === 'concept' ? 4 : 5)
+                        .attr('dx', d => d.kind === 'concept' ? 14 : 0)
+                        .attr('fill', d => d.kind === 'concept' ? '#a3a3a3' : '#111')
+                        .attr('font-size', d => d.kind === 'concept' ? 11 : 10)
+                        .attr('font-weight', d => d.kind === 'concept' ? 500 : 700)
+                        .attr('font-family', 'Inter, sans-serif')
+                        .text(d => d.kind === 'concept' ? d.label : d.order);
+                    g.style('cursor', 'pointer')
+                        .on('click', (_, d) => { if (d.kind === 'chapter') selectChapter(d.id); })
+                        .on('dblclick', (_, d) => { if (d.kind === 'chapter') window.location.href = chapterUrl(d.id); });
+                    return g;
+                });
+
+                sim.on('tick', () => {
+                    linkSel.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+                    nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+                });
+                activeSim = sim;
+
+                // Stop after settling
+                setTimeout(() => { if (activeSim === sim) { sim.stop(); activeSim = null; } }, 1500);
+            }
+
+            function selectChapter(id) {
+                selectedChapterId = id;
+                renderDetails(chapterById.get(id));
+                highlightCard(id);
+                const { nodes, links } = buildGraph(id);
+                renderGraph(nodes, links);
+            }
+
+            function applySearch(q) {
+                const query = q.trim().toLowerCase();
+                if (!query) {
+                    nodeLayer.selectAll('.atlas-node').classed('is-dimmed', false);
+                    return;
+                }
+                const matches = new Set();
+                chapters.forEach(ch => {
+                    if (ch.title.toLowerCase().includes(query)) matches.add(ch.id);
+                    (ch.keyConceptIds || []).forEach(id => {
+                        if ((conceptsById.get(id)?.label || '').toLowerCase().includes(query)) matches.add(ch.id);
+                    });
+                });
+                nodeLayer.selectAll('.atlas-node').classed('is-dimmed', d => matches.size > 0 && !matches.has(d.id));
+            }
+
+            function reset() {
+                selectedChapterId = null;
+                renderDetails(null);
+                highlightCard(null);
+                const { nodes, links } = buildGraph(null);
+                renderGraph(nodes, links);
+                nodeLayer.selectAll('.atlas-node').classed('is-dimmed', false);
+                searchInput.value = '';
+                svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+            }
+
+            // Boot
+            const { nodes, links } = buildGraph(null);
+            renderGraph(nodes, links);
+            searchInput.addEventListener('input', () => applySearch(searchInput.value));
+            resetBtn.addEventListener('click', reset);
+        }
+
+        initAtlas();
     </script>
 </body>
 
