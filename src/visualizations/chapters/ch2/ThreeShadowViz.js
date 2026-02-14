@@ -9,32 +9,49 @@
  *   "Projections change the world into the replica of
  *    one's own unknown face."
  *
- * Visual metaphor & pedagogical narrative:
+ * ── VISUAL DESIGN RATIONALE ──────────────────────────────
  *
- *   The Ego (luminous figure, left) faces its Shadow (dark
- *   distorted mirror, right). Between them: a thin mirror
- *   boundary. The shadow mirrors every movement but distorts
- *   it — it is autonomous, alive, and slightly grotesque.
+ * A newcomer must INSTANTLY grasp the metaphor. Every visual
+ * element is chosen so the concept is self-evident:
  *
- *   Projection arcs fly outward from the shadow like tendrils
- *   of illusion cast onto the world. A "cocoon" of projection
- *   strands periodically envelops the ego, showing how
- *   unrecognized shadow material traps you in illusion.
+ *   EGO: A radiant, warm figure surrounded by light rays
+ *         and a protective "persona shell" — this is you,
+ *         the self you present to the world.
  *
- *   Integration moment: every ~30s the ego and shadow briefly
- *   drift toward each other, merging into a pulse of light —
- *   Jung's insight that wholeness requires embracing the dark.
+ *   SHADOW: A dark, larger, distorted mirror of the ego
+ *           with smoky tendrils that writhes and squirms —
+ *           autonomous and uncanny. It is visually LARGER
+ *           than the ego (Jung: the shadow often contains
+ *           more psychic mass than the ego).
  *
- * Phased annotations (Instrument Serif):
- *   Phase 1 (2s):  Chapter heading
- *   Phase 2 (5s):  "The bright figure is the Ego — what you
- *                   show the world"
- *   Phase 3 (9s):  "Its dark mirror is the Shadow — everything
- *                   you refuse to see in yourself"
- *   Phase 4 (14s): "Projection — the shadow's qualities cast
- *                   outward onto others"
- *   Phase 5 (20s): Jung quote §14
- *   Phase 6 (cyc): Integration moment annotation
+ *   MIRROR: A visible vertical boundary between them —
+ *           you can see yourself on one side and the dark
+ *           mirror image on the other.
+ *
+ *   PROJECTION ARCS: Bright purple tendrils arcing away
+ *           from the shadow with pulsing dots at their ends,
+ *           representing how shadow material is "cast onto"
+ *           other people.
+ *
+ *   COCOON: Circling strands that wrap the ego when projection
+ *           is active — Jung's "isolating cocoon of illusions."
+ *
+ *   INTEGRATION: Every cycle, the ego and shadow drift
+ *           together and a warm pulse of light merges them —
+ *           the moment of recognizing "that is also me."
+ *
+ * ── ANNOTATION DESIGN ────────────────────────────────────
+ *
+ *   Annotations are READABLE (not ghostly-invisible).
+ *   Each has a LEADER LINE connecting to the visual element.
+ *   They build a narrative that teaches Jung's concepts:
+ *
+ *   Phase 1 (2s):   Chapter heading
+ *   Phase 2 (5s):   Ego identification + leader line
+ *   Phase 3 (10s):  Shadow identification + leader line
+ *   Phase 4 (16s):  What "projection" means
+ *   Phase 5 (22s):  Jung quote
+ *   Phase 6 (cyc):  Integration insight
  */
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -43,16 +60,16 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ── Palette ── */
-const VOID = 0x030308;
-const EGO_CLR = new THREE.Color('#c8c8e0');
-const EGO_GLOW = new THREE.Color('#8888b8');
-const SHADOW_CLR = new THREE.Color('#1a0828');
-const SHADOW_GLOW = new THREE.Color('#3a1060');
-const PROJ_CLR = new THREE.Color('#7b1fa2');
-const PROJ_CLR2 = new THREE.Color('#4a148c');
-const MIRROR_CLR = new THREE.Color('#2a1040');
-const SMOKE_CLR = new THREE.Color('#0a0418');
-const INTEGRATION = new THREE.Color('#d0a0ff');
+const VOID = 0x020206;
+const EGO_WARM = new THREE.Color('#e8d8c0');  // warm cream — human
+const EGO_GLOW = new THREE.Color('#c0a880');  // golden aura
+const EGO_RAY = new THREE.Color('#d0c0a0');
+const SHADOW_CLR = new THREE.Color('#0a0418');  // near-black purple
+const SHADOW_GLOW = new THREE.Color('#3a1060');  // deep violet
+const PROJ_CLR = new THREE.Color('#9c27b0');  // vivid purple
+const PROJ_CLR2 = new THREE.Color('#7b1fa2');
+const MIRROR_CLR = new THREE.Color('#403060');
+const INTEG_CLR = new THREE.Color('#e0c0ff');  // soft lavender
 
 export default class ThreeShadowViz extends BaseViz {
     constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
@@ -67,15 +84,15 @@ export default class ThreeShadowViz extends BaseViz {
         R.setSize(this.width, this.height);
         R.setClearColor(VOID);
         R.toneMapping = THREE.ACESFilmicToneMapping;
-        R.toneMappingExposure = 1.0;
+        R.toneMappingExposure = 1.1;
 
         const S = this.scene = new THREE.Scene();
-        S.fog = new THREE.FogExp2(VOID, 0.012);
+        S.fog = new THREE.FogExp2(VOID, 0.008);
 
         const cam = this.camera = new THREE.PerspectiveCamera(
             50, this.width / this.height, 0.1, 200
         );
-        cam.position.set(0, 2, 14);
+        cam.position.set(0, 1.5, 14);
 
         /* ── Mouse ── */
         this.mouse = new THREE.Vector2();
@@ -87,32 +104,43 @@ export default class ThreeShadowViz extends BaseViz {
         addEventListener('mousemove', this._onMM);
 
         /* ── Build scene ── */
-        this._buildEgoFigure();
-        this._buildShadowFigure();
-        this._buildMirrorBoundary();
-        this._buildProjectionArcs();
+        this._buildEgo();
+        this._buildShadow();
+        this._buildMirror();
+        this._buildProjections();
         this._buildCocoon();
-        this._buildSmoke();
+        this._buildAtmosphere();
         this._buildGround();
         this._buildAnnotations();
 
         /* ── Lighting ── */
-        S.add(new THREE.AmbientLight(0x08081a, 0.15));
-        this.egoLight = new THREE.PointLight(0xa0a0d0, 1.2, 14);
+        S.add(new THREE.AmbientLight(0x080812, 0.2));
+
+        // Ego warm light
+        this.egoLight = new THREE.PointLight(0xd0b080, 1.5, 15);
         this.egoLight.position.set(-3, 2, 4);
         S.add(this.egoLight);
-        this.shadowLight = new THREE.PointLight(0x2a0040, 0.5, 10);
+
+        // Shadow dim light
+        this.shadowLight = new THREE.PointLight(0x200040, 0.6, 12);
         this.shadowLight.position.set(3, -1, 3);
         S.add(this.shadowLight);
-        this.integrationLight = new THREE.PointLight(0xd0a0ff, 0, 12);
-        this.integrationLight.position.set(0, 0, 2);
+
+        // Integration light (off by default)
+        this.integrationLight = new THREE.PointLight(0xe0c0ff, 0, 14);
+        this.integrationLight.position.set(0, 0, 3);
         S.add(this.integrationLight);
+
+        // Back rim light
+        const rim = new THREE.DirectionalLight(0x1a1030, 0.3);
+        rim.position.set(0, 5, -10);
+        S.add(rim);
 
         /* ── Post-processing ── */
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(S, cam));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.2, 0.5, 0.3
+            new THREE.Vector2(this.width, this.height), 1.4, 0.4, 0.25
         );
         this.composer.addPass(this.bloom);
 
@@ -120,154 +148,210 @@ export default class ThreeShadowViz extends BaseViz {
     }
 
     /* ══════════════════════════════════════════════════════
-     *  EGO — the luminous persona, "what you show the world"
+     *  EGO — warm, radiant, human-like figure of light
      * ══════════════════════════════════════════════════════ */
-    _buildEgoFigure() {
+    _buildEgo() {
         const g = this.egoGroup = new THREE.Group();
-        g.position.set(-3, 0, 0);
+        g.position.set(-3.5, 0, 0);
 
-        // Core ego sphere
+        // Core sphere — warm, cream-colored
         this.egoCore = new THREE.Mesh(
-            new THREE.SphereGeometry(0.45, 24, 24),
+            new THREE.SphereGeometry(0.5, 32, 32),
             new THREE.MeshStandardMaterial({
-                color: EGO_CLR, emissive: EGO_CLR,
-                emissiveIntensity: 0.4, roughness: 0.3, metalness: 0.1
+                color: EGO_WARM, emissive: EGO_WARM,
+                emissiveIntensity: 0.5, roughness: 0.2, metalness: 0.05
             })
         );
         g.add(this.egoCore);
 
-        // Ego glow
+        // Inner glow halo
         this.egoGlow = new THREE.Mesh(
-            new THREE.SphereGeometry(1.0, 16, 16),
+            new THREE.SphereGeometry(0.9, 16, 16),
             new THREE.MeshBasicMaterial({
-                color: EGO_GLOW, transparent: true, opacity: 0.08,
-                blending: THREE.AdditiveBlending
+                color: EGO_GLOW, transparent: true, opacity: 0.12,
+                blending: THREE.AdditiveBlending, side: THREE.BackSide
             })
         );
         g.add(this.egoGlow);
 
-        // Ego "persona" rings — the mask of identity
-        this.personaRings = [];
-        for (let i = 0; i < 3; i++) {
-            const ring = new THREE.Mesh(
-                new THREE.TorusGeometry(0.7 + i * 0.4, 0.008, 4, 80),
-                new THREE.MeshBasicMaterial({
-                    color: EGO_GLOW, transparent: true, opacity: 0.06,
-                    blending: THREE.AdditiveBlending
-                })
-            );
-            ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.4;
-            ring.rotation.z = Math.random() * Math.PI;
-            g.add(ring);
-            this.personaRings.push(ring);
-        }
-
-        this.scene.add(g);
-    }
-
-    /* ══════════════════════════════════════════════════════
-     *  SHADOW — the dark double, autonomous and distorted
-     * ══════════════════════════════════════════════════════ */
-    _buildShadowFigure() {
-        const g = this.shadowGroup = new THREE.Group();
-        g.position.set(3, 0, 0);
-
-        // Shadow core — darker, denser
-        this.shadowCore = new THREE.Mesh(
-            new THREE.SphereGeometry(0.45, 24, 24),
-            new THREE.MeshStandardMaterial({
-                color: SHADOW_CLR, emissive: SHADOW_GLOW,
-                emissiveIntensity: 0.2, roughness: 0.9, metalness: 0.4
-            })
-        );
-        g.add(this.shadowCore);
-
-        // Shadow aura — ominous purple haze
-        this.shadowAura = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 12, 12),
+        // Outer glow
+        const outerGlow = new THREE.Mesh(
+            new THREE.SphereGeometry(1.4, 12, 12),
             new THREE.MeshBasicMaterial({
-                color: SHADOW_GLOW, transparent: true, opacity: 0.06,
-                blending: THREE.AdditiveBlending
+                color: EGO_GLOW, transparent: true, opacity: 0.04,
+                blending: THREE.AdditiveBlending, side: THREE.BackSide
             })
         );
-        g.add(this.shadowAura);
+        g.add(outerGlow);
 
-        // Shadow tendrils — spiky distortion lines
-        this.tendrils = [];
-        for (let i = 0; i < 10; i++) {
-            const angle = (i / 10) * Math.PI * 2;
-            const len = 1.2 + Math.random() * 1.5;
+        // Light rays emanating outward — "the light of consciousness"
+        this.egoRays = [];
+        for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2;
+            const len = 1.2 + Math.random() * 1.0;
             const pts = [
                 new THREE.Vector3(0, 0, 0),
                 new THREE.Vector3(
-                    Math.cos(angle) * len * 0.4,
-                    Math.sin(angle * 0.7) * len * 0.3,
-                    Math.sin(angle) * len * 0.4
-                ),
-                new THREE.Vector3(
                     Math.cos(angle) * len,
-                    Math.sin(angle * 0.5) * len * 0.5 - 0.5,
-                    Math.sin(angle) * len
+                    Math.sin(angle) * len * 0.6,
+                    0
                 )
-            ];
-            const curve = new THREE.QuadraticBezierCurve3(...pts);
-            const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(20));
-            const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
-                color: SHADOW_GLOW, transparent: true, opacity: 0.12,
-                blending: THREE.AdditiveBlending
-            }));
-            g.add(line);
-            this.tendrils.push({ line, ph: Math.random() * Math.PI * 2 });
-        }
-
-        this.scene.add(g);
-    }
-
-    /* ══════════════════════════════════════════════════════
-     *  MIRROR BOUNDARY — the threshold between known & unknown
-     * ══════════════════════════════════════════════════════ */
-    _buildMirrorBoundary() {
-        // Vertical shimmering plane
-        const mirrorGeo = new THREE.PlaneGeometry(0.015, 12);
-        this.mirrorPlane = new THREE.Mesh(mirrorGeo, new THREE.MeshBasicMaterial({
-            color: MIRROR_CLR, transparent: true, opacity: 0.2
-        }));
-        this.mirrorPlane.position.set(0, 0, 0);
-        this.scene.add(this.mirrorPlane);
-
-        // Mirror shimmer lines
-        this.mirrorLines = [];
-        for (let i = 0; i < 8; i++) {
-            const y = -4 + i * 1.1;
-            const pts = [
-                new THREE.Vector3(0, y, -0.5),
-                new THREE.Vector3(0, y, 0.5)
             ];
             const line = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints(pts),
                 new THREE.LineBasicMaterial({
-                    color: MIRROR_CLR, transparent: true, opacity: 0.06,
+                    color: EGO_RAY, transparent: true, opacity: 0.15,
                     blending: THREE.AdditiveBlending
                 })
             );
-            this.scene.add(line);
-            this.mirrorLines.push({ line, ph: Math.random() * Math.PI * 2 });
+            g.add(line);
+            this.egoRays.push({ line, baseLen: len, angle, ph: Math.random() * Math.PI * 2 });
+        }
+
+        // "Persona shell" — thin ring representing the mask
+        this.personaShell = new THREE.Mesh(
+            new THREE.TorusGeometry(0.75, 0.015, 4, 80),
+            new THREE.MeshBasicMaterial({
+                color: EGO_GLOW, transparent: true, opacity: 0.1,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        this.personaShell.rotation.x = Math.PI / 2;
+        g.add(this.personaShell);
+
+        this.scene.add(g);
+    }
+
+    /* ══════════════════════════════════════════════════════
+     *  SHADOW — dark, LARGER, distorted mirror of the ego
+     * ══════════════════════════════════════════════════════ */
+    _buildShadow() {
+        const g = this.shadowGroup = new THREE.Group();
+        g.position.set(3.5, 0, 0);
+
+        // Shadow is LARGER — Jung: the shadow often contains more
+        // psychic mass than we realize
+        this.shadowCore = new THREE.Mesh(
+            new THREE.SphereGeometry(0.65, 32, 32),
+            new THREE.MeshStandardMaterial({
+                color: SHADOW_CLR, emissive: SHADOW_GLOW,
+                emissiveIntensity: 0.15, roughness: 0.95, metalness: 0.3
+            })
+        );
+        g.add(this.shadowCore);
+
+        // Dark aura
+        this.shadowAura = new THREE.Mesh(
+            new THREE.SphereGeometry(1.4, 12, 12),
+            new THREE.MeshBasicMaterial({
+                color: SHADOW_GLOW, transparent: true, opacity: 0.08,
+                blending: THREE.AdditiveBlending, side: THREE.BackSide
+            })
+        );
+        g.add(this.shadowAura);
+
+        // Smoky tendrils — irregular, reaching outward
+        this.tendrils = [];
+        for (let i = 0; i < 14; i++) {
+            const angle = (i / 14) * Math.PI * 2;
+            const len = 1.0 + Math.random() * 2.0;
+            const pts = [
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(
+                    Math.cos(angle) * len * 0.35,
+                    Math.sin(angle * 0.8) * len * 0.3,
+                    Math.sin(angle) * len * 0.35
+                ),
+                new THREE.Vector3(
+                    Math.cos(angle) * len,
+                    Math.sin(angle * 0.4) * len * 0.5 - 0.3,
+                    Math.sin(angle) * len
+                )
+            ];
+            const curve = new THREE.QuadraticBezierCurve3(...pts);
+            const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(24));
+            const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
+                color: SHADOW_GLOW, transparent: true, opacity: 0.15,
+                blending: THREE.AdditiveBlending
+            }));
+            g.add(line);
+            this.tendrils.push({ line, ph: Math.random() * Math.PI * 2, len });
+        }
+
+        // "Dark rays" — anti-light, absorbing
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2 + 0.2;
+            const len = 1.5 + Math.random() * 0.8;
+            const pts = [
+                new THREE.Vector3(0, 0, 0),
+                new THREE.Vector3(
+                    Math.cos(angle) * len,
+                    Math.sin(angle) * len * 0.5,
+                    0
+                )
+            ];
+            const line = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(pts),
+                new THREE.LineBasicMaterial({
+                    color: SHADOW_GLOW, transparent: true, opacity: 0.06,
+                    blending: THREE.AdditiveBlending
+                })
+            );
+            g.add(line);
+        }
+
+        this.scene.add(g);
+    }
+
+    /* ══════════════════════════════════════════════════════
+     *  MIRROR — visible vertical boundary
+     * ══════════════════════════════════════════════════════ */
+    _buildMirror() {
+        // Main mirror line — more visible
+        this.mirrorPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.02, 14),
+            new THREE.MeshBasicMaterial({
+                color: MIRROR_CLR, transparent: true, opacity: 0.25
+            })
+        );
+        this.scene.add(this.mirrorPlane);
+
+        // Shimmer dots along mirror line
+        this.mirrorDots = [];
+        for (let i = 0; i < 20; i++) {
+            const y = -5 + i * 0.55;
+            const dot = new THREE.Mesh(
+                new THREE.SphereGeometry(0.015, 6, 6),
+                new THREE.MeshBasicMaterial({
+                    color: MIRROR_CLR, transparent: true, opacity: 0.15,
+                    blending: THREE.AdditiveBlending
+                })
+            );
+            dot.position.set(0, y, 0);
+            this.scene.add(dot);
+            this.mirrorDots.push({ dot, ph: i * 0.4 });
         }
     }
 
     /* ══════════════════════════════════════════════════════
-     *  PROJECTION ARCS — illusions cast outward onto the world
+     *  PROJECTIONS — vivid arcs cast outward from shadow
      * ══════════════════════════════════════════════════════ */
-    _buildProjectionArcs() {
+    _buildProjections() {
         this.projArcs = [];
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.random() - 0.5) * 1.5;
-            const outward = 4 + Math.random() * 6;
-            const height = (Math.random() - 0.5) * 3;
+        const dirs = [
+            { x: 6, y: 2, z: 3 },
+            { x: 7, y: -1, z: -2 },
+            { x: 8, y: 0.5, z: 4 },
+            { x: 5, y: -2, z: -3 },
+            { x: 9, y: 1, z: -1 },
+            { x: 6, y: 3, z: 2 },
+            { x: 7, y: -3, z: 1 },
+        ];
+        for (const d of dirs) {
             const pts = [
-                new THREE.Vector3(3, 0, 0), // starts at shadow
-                new THREE.Vector3(3 + outward * 0.4, height * 0.5 + 1.5, angle * 2),
-                new THREE.Vector3(3 + outward, height, angle * 4)
+                new THREE.Vector3(3.5, 0, 0),
+                new THREE.Vector3(3.5 + d.x * 0.4, d.y * 0.6, d.z * 0.4),
+                new THREE.Vector3(3.5 + d.x, d.y, d.z)
             ];
             const curve = new THREE.QuadraticBezierCurve3(...pts);
             const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(40));
@@ -277,39 +361,54 @@ export default class ThreeShadowViz extends BaseViz {
             }));
             this.scene.add(line);
 
-            // Small "target" dot at the end (where projection lands)
+            // Pulsing "target" dot at endpoint
             const dot = new THREE.Mesh(
-                new THREE.SphereGeometry(0.06, 8, 8),
+                new THREE.SphereGeometry(0.08, 8, 8),
                 new THREE.MeshBasicMaterial({
                     color: PROJ_CLR, transparent: true, opacity: 0,
                     blending: THREE.AdditiveBlending
                 })
             );
-            dot.position.copy(pts[2]);
+            dot.position.set(pts[2].x, pts[2].y, pts[2].z);
             this.scene.add(dot);
 
-            this.projArcs.push({ line, dot, ph: Math.random() * Math.PI * 2, speed: 0.3 + Math.random() * 0.3 });
+            // Tiny glow around target
+            const targetGlow = new THREE.Mesh(
+                new THREE.SphereGeometry(0.2, 6, 6),
+                new THREE.MeshBasicMaterial({
+                    color: PROJ_CLR2, transparent: true, opacity: 0,
+                    blending: THREE.AdditiveBlending
+                })
+            );
+            targetGlow.position.copy(dot.position);
+            this.scene.add(targetGlow);
+
+            this.projArcs.push({
+                line, dot, targetGlow,
+                ph: Math.random() * Math.PI * 2,
+                speed: 0.2 + Math.random() * 0.2
+            });
         }
     }
 
     /* ══════════════════════════════════════════════════════
-     *  COCOON — the "isolating cocoon of illusions" (§15)
+     *  COCOON — strands wrapping the ego during projection
      * ══════════════════════════════════════════════════════ */
     _buildCocoon() {
         this.cocoonStrands = [];
-        for (let i = 0; i < 15; i++) {
-            const angle = (i / 15) * Math.PI * 2;
-            const r = 1.5 + Math.random() * 0.8;
+        for (let i = 0; i < 20; i++) {
+            const angle = (i / 20) * Math.PI * 2;
+            const r = 1.3 + Math.random() * 0.5;
             const pts = [];
-            const segs = 15;
+            const segs = 18;
             for (let j = 0; j < segs; j++) {
                 const frac = j / (segs - 1);
-                const a = angle + frac * 2;
+                const a = angle + frac * 2.5;
                 const y = -2 + frac * 4;
                 pts.push(new THREE.Vector3(
-                    Math.cos(a) * r * (0.5 + frac * 0.5),
+                    Math.cos(a) * r * (0.4 + frac * 0.6),
                     y,
-                    Math.sin(a) * r * (0.5 + frac * 0.5)
+                    Math.sin(a) * r * (0.4 + frac * 0.6)
                 ));
             }
             const geo = new THREE.BufferGeometry().setFromPoints(pts);
@@ -317,48 +416,41 @@ export default class ThreeShadowViz extends BaseViz {
                 color: PROJ_CLR2, transparent: true, opacity: 0,
                 blending: THREE.AdditiveBlending
             }));
-            line.position.set(-3, 0, 0); // wraps around ego
+            line.position.set(-3.5, 0, 0);
             this.scene.add(line);
             this.cocoonStrands.push({ line, ph: Math.random() * Math.PI * 2 });
         }
     }
 
     /* ══════════════════════════════════════════════════════
-     *  SMOKE — ambient atmosphere
+     *  ATMOSPHERE — particles and depth
      * ══════════════════════════════════════════════════════ */
-    _buildSmoke() {
-        const N = 800;
+    _buildAtmosphere() {
+        const N = 1000;
         const pos = new Float32Array(N * 3);
-        const colors = new Float32Array(N * 3);
+        const sizes = new Float32Array(N);
         for (let i = 0; i < N; i++) {
-            pos[i * 3] = (Math.random() - 0.5) * 30;
-            pos[i * 3 + 1] = (Math.random() - 0.5) * 15;
-            pos[i * 3 + 2] = (Math.random() - 0.5) * 30;
-            const t = Math.random();
-            colors[i * 3] = 0.04 + t * 0.06;
-            colors[i * 3 + 1] = 0.02 + t * 0.04;
-            colors[i * 3 + 2] = 0.08 + t * 0.1;
+            pos[i * 3] = (Math.random() - 0.5) * 40;
+            pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+            sizes[i] = 0.02 + Math.random() * 0.06;
         }
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         this.smoke = new THREE.Points(geo, new THREE.PointsMaterial({
-            size: 0.06, transparent: true, opacity: 0.35,
-            vertexColors: true, depthWrite: false,
-            blending: THREE.AdditiveBlending
+            color: 0x0a0520, size: 0.05, transparent: true, opacity: 0.3,
+            blending: THREE.AdditiveBlending, depthWrite: false
         }));
         this.scene.add(this.smoke);
     }
 
-    /* ══════════════════════════════════════════════════════
-     *  GROUND — subtle reflective plane
-     * ══════════════════════════════════════════════════════ */
+    /* ── GROUND ── */
     _buildGround() {
         const ground = new THREE.Mesh(
-            new THREE.PlaneGeometry(60, 60),
+            new THREE.PlaneGeometry(80, 80),
             new THREE.MeshStandardMaterial({
-                color: 0x050510, roughness: 0.95, metalness: 0.1,
-                transparent: true, opacity: 0.4
+                color: 0x030310, roughness: 0.95, metalness: 0.05,
+                transparent: true, opacity: 0.5
             })
         );
         ground.rotation.x = -Math.PI / 2;
@@ -366,9 +458,9 @@ export default class ThreeShadowViz extends BaseViz {
         this.scene.add(ground);
     }
 
-    /* ══════════════════════════════════════════════════════════════
-     *  ANNOTATIONS — phased narrative for Jung's Shadow concept
-     * ══════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════════
+     *  ANNOTATIONS — READABLE, with LEADER LINES connecting to elements
+     * ══════════════════════════════════════════════════════════════════ */
     _buildAnnotations() {
         const ov = this._annotationOverlay = document.createElement('div');
         ov.className = 'ch2-annotations';
@@ -388,9 +480,9 @@ export default class ThreeShadowViz extends BaseViz {
     position: absolute;
     font-family: 'Instrument Serif', serif;
     opacity: 0;
-    transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 3s cubic-bezier(0.16, 1, 0.3, 1);
-    transform: translateY(8px);
+    transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(6px);
     will-change: opacity, transform;
 }
 .ch2-a.vis {
@@ -400,103 +492,151 @@ export default class ThreeShadowViz extends BaseViz {
 
 /* ─── Phase 1: Chapter heading ─── */
 .ch2-a--heading {
-    top: 7vh;
+    top: 6vh;
     left: 4.5vw;
 }
 .ch2-a--heading .ch2-eyebrow {
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(0.55rem, 0.9vw, 0.7rem);
-    letter-spacing: 0.4em;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-size: clamp(0.55rem, 0.9vw, 0.72rem);
+    letter-spacing: 0.45em;
     text-transform: uppercase;
-    color: rgba(120, 80, 160, 0.2);
+    color: rgba(140, 100, 180, 0.35);
     margin-bottom: 0.4em;
 }
 .ch2-a--heading .ch2-title {
-    font-size: clamp(1.8rem, 3.8vw, 3rem);
+    font-size: clamp(2rem, 4vw, 3.4rem);
     font-style: italic;
-    color: rgba(150, 100, 200, 0.3);
+    color: rgba(160, 120, 210, 0.45);
     letter-spacing: -0.02em;
     line-height: 1.05;
 }
 
-/* ─── Phase 2: Ego pointer ─── */
+/* ─── Phase 2: Ego annotation (left, with leader line) ─── */
 .ch2-a--ego {
-    top: 30vh;
-    left: 5vw;
+    top: 28vh;
+    left: 4vw;
     max-width: 22ch;
 }
-.ch2-a--ego .ch2-pointer {
+.ch2-a--ego .ch2-leader {
     display: block;
-    width: 40px;
+    width: 50px;
     height: 1px;
-    background: linear-gradient(to right, rgba(176,176,208,0.3), rgba(176,176,208,0));
-    margin-bottom: 8px;
+    background: linear-gradient(to right, rgba(208,176,128,0.5), rgba(208,176,128,0));
+    margin-bottom: 10px;
+    transform-origin: left;
+    animation: ch2-leaderPulse 4s ease-in-out infinite;
 }
-.ch2-a--ego .ch2-concept {
-    font-size: clamp(0.75rem, 1.15vw, 0.95rem);
+@keyframes ch2-leaderPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+.ch2-a--ego .ch2-text {
+    font-size: clamp(0.8rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(200, 200, 220, 0.3);
-    line-height: 1.65;
+    color: rgba(220, 210, 190, 0.5);
+    line-height: 1.7;
 }
-.ch2-a--ego .ch2-concept em {
+.ch2-a--ego .ch2-text em {
     font-style: normal;
-    color: rgba(200, 200, 230, 0.45);
+    color: rgba(232, 216, 192, 0.7);
+    font-weight: 400;
+}
+.ch2-a--ego .ch2-note {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.55em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(208, 176, 128, 0.2);
+    margin-top: 0.8em;
 }
 
-/* ─── Phase 3: Shadow pointer ─── */
+/* ─── Phase 3: Shadow annotation (right, with leader line) ─── */
 .ch2-a--shadow {
-    top: 30vh;
-    right: 5vw;
+    top: 28vh;
+    right: 4vw;
     max-width: 22ch;
     text-align: right;
 }
-.ch2-a--shadow .ch2-pointer {
+.ch2-a--shadow .ch2-leader {
     display: block;
-    width: 40px;
+    width: 50px;
     height: 1px;
-    background: linear-gradient(to left, rgba(120,80,160,0.3), rgba(120,80,160,0));
+    background: linear-gradient(to left, rgba(120,60,180,0.5), rgba(120,60,180,0));
+    margin-left: auto;
+    margin-bottom: 10px;
+    animation: ch2-leaderPulseShadow 4s ease-in-out infinite;
+}
+@keyframes ch2-leaderPulseShadow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+.ch2-a--shadow .ch2-text {
+    font-size: clamp(0.8rem, 1.2vw, 1rem);
+    font-style: italic;
+    color: rgba(160, 100, 220, 0.5);
+    line-height: 1.7;
+}
+.ch2-a--shadow .ch2-text em {
+    font-style: normal;
+    color: rgba(180, 120, 240, 0.7);
+    font-weight: 400;
+}
+.ch2-a--shadow .ch2-note {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.55em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(140, 80, 200, 0.25);
+    margin-top: 0.8em;
+}
+
+/* ─── Phase 4: Projection annotation (lower right) ─── */
+.ch2-a--projection {
+    bottom: 28vh;
+    right: 6vw;
+    max-width: 26ch;
+    text-align: right;
+}
+.ch2-a--projection .ch2-leader {
+    display: block;
+    width: 35px;
+    height: 1px;
+    background: linear-gradient(to left, rgba(156,39,176,0.4), rgba(156,39,176,0));
     margin-left: auto;
     margin-bottom: 8px;
 }
-.ch2-a--shadow .ch2-concept {
-    font-size: clamp(0.75rem, 1.15vw, 0.95rem);
+.ch2-a--projection .ch2-text {
+    font-size: clamp(0.72rem, 1.05vw, 0.88rem);
     font-style: italic;
-    color: rgba(140, 80, 200, 0.3);
-    line-height: 1.65;
+    color: rgba(156, 39, 176, 0.4);
+    line-height: 1.7;
 }
-.ch2-a--shadow .ch2-concept em {
+.ch2-a--projection .ch2-text em {
     font-style: normal;
-    color: rgba(160, 100, 220, 0.45);
+    color: rgba(180, 60, 210, 0.6);
 }
 
-/* ─── Phase 4: Projection label ─── */
-.ch2-a--projection {
-    bottom: 35vh;
-    right: 12vw;
-    max-width: 24ch;
-    text-align: right;
-}
-.ch2-a--projection .ch2-concept {
-    font-size: clamp(0.65rem, 0.95vw, 0.82rem);
-    font-style: italic;
-    color: rgba(123, 31, 162, 0.28);
-    line-height: 1.6;
-}
-.ch2-a--projection .ch2-concept em {
-    font-style: normal;
-    color: rgba(160, 60, 200, 0.4);
-}
-
-/* ─── Phase 5: Jung quote ─── */
+/* ─── Phase 5: Jung quote (bottom left) ─── */
 .ch2-a--quote {
-    bottom: 8vh;
-    left: 5vw;
-    max-width: 28ch;
+    bottom: 7vh;
+    left: 4.5vw;
+    max-width: 30ch;
 }
-.ch2-a--quote .ch2-concept {
-    font-size: clamp(0.78rem, 1.15vw, 0.95rem);
+.ch2-a--quote .ch2-quotemark {
+    display: block;
+    font-size: 2rem;
+    line-height: 1;
+    color: rgba(140, 100, 200, 0.12);
+    margin-bottom: 0.2em;
+}
+.ch2-a--quote .ch2-text {
+    font-size: clamp(0.82rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(150, 120, 200, 0.22);
+    color: rgba(180, 150, 220, 0.4);
     line-height: 1.7;
 }
 .ch2-a--quote .ch2-attr {
@@ -504,41 +644,81 @@ export default class ThreeShadowViz extends BaseViz {
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-size: 0.5em;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: rgba(150, 120, 200, 0.1);
-    margin-top: 0.7em;
+    color: rgba(140, 110, 190, 0.2);
+    margin-top: 0.8em;
 }
 
-/* ─── Phase 6: Integration moment ─── */
+/* ─── Phase 6: Integration annotation (center, synced) ─── */
 .ch2-a--integration {
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) translateY(8px);
+    transform: translate(-50%, -50%) translateY(6px);
     text-align: center;
-    max-width: 26ch;
+    max-width: 24ch;
+    transition: opacity 2s ease, transform 2s ease;
 }
 .ch2-a--integration.vis {
+    opacity: 1;
     transform: translate(-50%, -50%) translateY(0);
 }
+.ch2-a--integration.hid {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(6px);
+}
 .ch2-a--integration .ch2-integ-text {
-    font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+    font-size: clamp(0.9rem, 1.4vw, 1.15rem);
     font-style: italic;
-    color: rgba(208, 160, 255, 0);
-    letter-spacing: 0.04em;
-    transition: color 2s ease;
-    line-height: 1.6;
+    color: rgba(224, 192, 255, 0.55);
+    line-height: 1.65;
+    letter-spacing: 0.03em;
 }
-.ch2-a--integration.vis .ch2-integ-text {
-    color: rgba(208, 160, 255, 0.3);
+.ch2-a--integration .ch2-integ-sub {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.5em;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(200, 160, 240, 0.2);
+    margin-top: 0.6em;
 }
-.ch2-a--integration.hid .ch2-integ-text {
-    color: rgba(208, 160, 255, 0) !important;
+
+/* ─── Persistent micro-labels near objects ─── */
+.ch2-micro {
+    position: absolute;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.45rem, 0.65vw, 0.55rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 3s ease;
+}
+.ch2-micro.vis { opacity: 1; }
+
+.ch2-micro--ego {
+    left: 20%;
+    top: 55%;
+    color: rgba(208, 176, 128, 0.2);
+}
+.ch2-micro--shadow {
+    right: 18%;
+    top: 55%;
+    color: rgba(140, 80, 200, 0.2);
+}
+.ch2-micro--mirror {
+    left: 50%;
+    top: 45%;
+    transform: translateX(-50%) rotate(-90deg);
+    color: rgba(80, 60, 120, 0.15);
+    letter-spacing: 0.5em;
 }
 
 @media (max-width: 768px) {
-    .ch2-a--projection { display: none; }
-    .ch2-a--ego, .ch2-a--shadow { max-width: 17ch; }
+    .ch2-a--projection { bottom: 18vh; right: 3vw; max-width: 20ch; }
+    .ch2-a--ego, .ch2-a--shadow { max-width: 18ch; }
+    .ch2-micro { display: none; }
 }
 </style>
 
@@ -548,54 +728,65 @@ export default class ThreeShadowViz extends BaseViz {
     <div class="ch2-title">The Shadow</div>
 </div>
 
-<!-- Phase 2: Ego identification -->
+<!-- Phase 2: Ego identification with leader line -->
 <div class="ch2-a ch2-a--ego" data-phase="2">
-    <span class="ch2-pointer"></span>
-    <div class="ch2-concept">
-        The bright figure is <em>the Ego</em> —
+    <span class="ch2-leader"></span>
+    <div class="ch2-text">
+        The radiant figure is <em>the Ego</em> —
         the self you know, the face
         you show the world.
+        <span class="ch2-note">Move your mouse — it follows you</span>
     </div>
 </div>
 
-<!-- Phase 3: Shadow identification -->
+<!-- Phase 3: Shadow identification with leader line -->
 <div class="ch2-a ch2-a--shadow" data-phase="3">
-    <span class="ch2-pointer"></span>
-    <div class="ch2-concept">
+    <span class="ch2-leader"></span>
+    <div class="ch2-text">
         Its dark mirror is <em>the Shadow</em> —
-        everything you refuse to
-        see in yourself.
+        everything about yourself
+        you refuse to see.
+        <span class="ch2-note">It mirrors you, but distorted and delayed</span>
     </div>
 </div>
 
-<!-- Phase 4: Projection label -->
+<!-- Phase 4: Projection -->
 <div class="ch2-a ch2-a--projection" data-phase="4">
-    <div class="ch2-concept">
-        <em>Projection</em> — the Shadow's
-        qualities are cast outward,
-        seen in others rather than
-        in oneself.
+    <span class="ch2-leader"></span>
+    <div class="ch2-text">
+        The arcs flying outward are
+        <em>Projections</em> — you see your
+        shadow in others, blaming them
+        for what you won't face
+        in yourself.
     </div>
 </div>
 
 <!-- Phase 5: Jung quote -->
 <div class="ch2-a ch2-a--quote" data-phase="5">
-    <div class="ch2-concept">
+    <span class="ch2-quotemark">"</span>
+    <div class="ch2-text">
         One does not become enlightened
         by imagining figures of light,
         but by making the
         darkness conscious.
-        <span class="ch2-attr">— C. G. Jung</span>
+        <span class="ch2-attr">— C. G. Jung, Aion §14</span>
     </div>
 </div>
 
-<!-- Phase 6: Integration (synced to cycle) -->
+<!-- Phase 6: Integration (synced to convergence cycle) -->
 <div class="ch2-a ch2-a--integration">
     <div class="ch2-integ-text">
-        Integration — recognizing<br>
-        "that is also me"
+        Integration — the moment<br>
+        of recognizing <em>"that is also me"</em>
+        <span class="ch2-integ-sub">Wholeness requires embracing the dark</span>
     </div>
 </div>
+
+<!-- Persistent micro-labels (appear with phase 2/3) -->
+<div class="ch2-micro ch2-micro--ego" data-phase="2">ego</div>
+<div class="ch2-micro ch2-micro--shadow" data-phase="3">shadow</div>
+<div class="ch2-micro ch2-micro--mirror" data-phase="3">mirror</div>
 `;
 
         (this.container || document.body).appendChild(ov);
@@ -605,16 +796,16 @@ export default class ThreeShadowViz extends BaseViz {
         const phases = [
             { sel: '[data-phase="1"]', delay: 2000 },
             { sel: '[data-phase="2"]', delay: 5000 },
-            { sel: '[data-phase="3"]', delay: 9000 },
-            { sel: '[data-phase="4"]', delay: 14000 },
-            { sel: '[data-phase="5"]', delay: 20000 },
+            { sel: '[data-phase="3"]', delay: 10000 },
+            { sel: '[data-phase="4"]', delay: 16000 },
+            { sel: '[data-phase="5"]', delay: 22000 },
         ];
         for (const p of phases) {
-            const el = ov.querySelector(p.sel);
-            if (el) {
+            const els = ov.querySelectorAll(p.sel);
+            els.forEach(el => {
                 const t = setTimeout(() => el.classList.add('vis'), p.delay);
                 this._annTimers.push(t);
-            }
+            });
         }
     }
 
@@ -627,61 +818,65 @@ export default class ThreeShadowViz extends BaseViz {
         this.mouseSmooth.lerp(this.mouse, 0.03);
         this.introT += dt;
 
-        /* ── Ego follows mouse gently ── */
-        const egoTX = -3 + this.mouseSmooth.x * 1.2;
-        const egoTY = this.mouseSmooth.y * 1.0;
+        /* ── Ego follows mouse ── */
+        const egoTX = -3.5 + this.mouseSmooth.x * 1.5;
+        const egoTY = this.mouseSmooth.y * 1.2;
         this.egoGroup.position.x += (egoTX - this.egoGroup.position.x) * 0.06;
         this.egoGroup.position.y += (egoTY - this.egoGroup.position.y) * 0.06;
 
-        // Ego pulse
-        const ep = 0.9 + Math.sin(t * 1.5) * 0.1;
-        this.egoCore.material.emissiveIntensity = 0.3 + Math.sin(t * 0.8) * 0.1;
-        this.egoGlow.material.opacity = 0.06 + Math.sin(t * 0.5) * 0.03;
+        // Ego pulse — breathing light
+        this.egoCore.material.emissiveIntensity = 0.4 + Math.sin(t * 1.2) * 0.15;
+        this.egoGlow.material.opacity = 0.1 + Math.sin(t * 0.6) * 0.04;
 
-        // Persona rings drift
-        for (let i = 0; i < this.personaRings.length; i++) {
-            this.personaRings[i].rotation.z += 0.002 * (i % 2 === 0 ? 1 : -1);
-            this.personaRings[i].material.opacity = 0.04 + Math.sin(t * 0.3 + i) * 0.025;
+        // Ego rays pulse
+        for (const ray of this.egoRays) {
+            ray.line.material.opacity = 0.1 + Math.sin(t * 0.8 + ray.ph) * 0.08;
         }
 
-        /* ── Shadow mirrors ego with delay + distortion ── */
-        const sx = 3 - this.mouseSmooth.x * 1.2;   // mirrored X
-        const sy = -this.mouseSmooth.y * 1.0 + Math.sin(t * 0.5) * 0.4;  // inverted Y + wobble
-        this.shadowGroup.position.x += (sx - this.shadowGroup.position.x) * 0.015; // slower follow = lag
-        this.shadowGroup.position.y += (sy - this.shadowGroup.position.y) * 0.015;
+        // Persona shell drifts
+        this.personaShell.rotation.z += 0.003;
+        this.personaShell.material.opacity = 0.06 + Math.sin(t * 0.4) * 0.04;
 
-        // Shadow scale distortion — squishes and stretches
-        const distort = 1 + Math.sin(t * 0.7) * 0.25;
+        /* ── Shadow mirrors ego with lag + distortion ── */
+        const sx = 3.5 - this.mouseSmooth.x * 1.5;   // mirrored
+        const sy = -this.mouseSmooth.y * 1.2 + Math.sin(t * 0.4) * 0.5; // inverted + wobble
+        this.shadowGroup.position.x += (sx - this.shadowGroup.position.x) * 0.012; // VERY slow follow
+        this.shadowGroup.position.y += (sy - this.shadowGroup.position.y) * 0.012;
+
+        // Shadow scale distortion — squashes/stretches autonomously
+        const distort = 1 + Math.sin(t * 0.6) * 0.3;
         this.shadowCore.scale.set(distort, 1 / distort, distort);
-        this.shadowAura.material.opacity = 0.04 + Math.sin(t * 0.4) * 0.03;
+        this.shadowAura.material.opacity = 0.06 + Math.sin(t * 0.35) * 0.04;
 
-        // Shadow tendrils pulse
+        // Tendrils pulse
         for (const td of this.tendrils) {
-            td.line.material.opacity = 0.06 + Math.sin(t * 0.6 + td.ph) * 0.06;
+            td.line.material.opacity = 0.08 + Math.sin(t * 0.5 + td.ph) * 0.08;
         }
 
         /* ── Mirror shimmer ── */
-        for (const ml of this.mirrorLines) {
-            ml.line.material.opacity = 0.03 + Math.sin(t * 0.8 + ml.ph) * 0.04;
+        this.mirrorPlane.material.opacity = 0.15 + Math.sin(t * 0.25) * 0.08;
+        for (const md of this.mirrorDots) {
+            md.dot.material.opacity = 0.08 + Math.sin(t * 0.6 + md.ph) * 0.1;
         }
-        this.mirrorPlane.material.opacity = 0.12 + Math.sin(t * 0.3) * 0.06;
 
         /* ── Projection arcs — periodic visibility ── */
-        const projCycle = t % 18;
-        const projVisible = projCycle > 6 && projCycle < 15;
-        const projFade = projVisible
-            ? Math.sin(((projCycle - 6) / 9) * Math.PI) * 0.18
+        const projCycle = t % 20;
+        const projActive = projCycle > 5 && projCycle < 16;
+        const projFade = projActive
+            ? Math.sin(((projCycle - 5) / 11) * Math.PI)
             : 0;
         for (const arc of this.projArcs) {
-            arc.line.material.opacity = projFade;
-            arc.dot.material.opacity = projFade * 1.5;
+            const pulse = Math.sin(t * arc.speed + arc.ph) * 0.5 + 0.5;
+            arc.line.material.opacity = projFade * 0.25;
+            arc.dot.material.opacity = projFade * 0.5 * pulse;
+            arc.targetGlow.material.opacity = projFade * 0.1 * pulse;
         }
 
-        /* ── Cocoon — periodic wrapping of ego ── */
-        const cocoonCycle = t % 22;
-        const cocoonActive = cocoonCycle > 8 && cocoonCycle < 16;
+        /* ── Cocoon wraps ego during projection ── */
+        const cocoonCycle = t % 24;
+        const cocoonActive = cocoonCycle > 7 && cocoonCycle < 18;
         const cocoonFade = cocoonActive
-            ? Math.sin(((cocoonCycle - 8) / 8) * Math.PI) * 0.1
+            ? Math.sin(((cocoonCycle - 7) / 11) * Math.PI) * 0.14
             : 0;
         for (const strand of this.cocoonStrands) {
             strand.line.material.opacity = cocoonFade;
@@ -692,24 +887,25 @@ export default class ThreeShadowViz extends BaseViz {
             );
         }
 
-        /* ── Integration moment — every 32s for 6s ── */
-        const intCycle = t % 32;
-        const integrating = intCycle > 24;
-        const intT = integrating ? (intCycle - 24) / 8 : 0;
+        /* ── Integration moment — every 35s for ~8s ── */
+        const intCycle = t % 35;
+        const integrating = intCycle > 26;
+        const intT = integrating ? (intCycle - 26) / 9 : 0;
         const intPulse = integrating ? Math.sin(intT * Math.PI) : 0;
 
-        // During integration, ego and shadow drift toward center
         if (integrating) {
-            const convergence = intPulse * 0.6;
-            this.egoGroup.position.x += (0 - this.egoGroup.position.x) * convergence * 0.03;
-            this.shadowGroup.position.x += (0 - this.shadowGroup.position.x) * convergence * 0.03;
+            const convergence = intPulse * 0.7;
+            this.egoGroup.position.x += (0 - this.egoGroup.position.x) * convergence * 0.02;
+            this.egoGroup.position.y += (0 - this.egoGroup.position.y) * convergence * 0.02;
+            this.shadowGroup.position.x += (0 - this.shadowGroup.position.x) * convergence * 0.02;
+            this.shadowGroup.position.y += (0 - this.shadowGroup.position.y) * convergence * 0.02;
         }
 
-        this.integrationLight.intensity = intPulse * 2;
+        this.integrationLight.intensity = intPulse * 2.5;
         this.integrationLight.position.set(
             (this.egoGroup.position.x + this.shadowGroup.position.x) / 2,
             (this.egoGroup.position.y + this.shadowGroup.position.y) / 2,
-            2
+            3
         );
 
         // Integration annotation sync
@@ -724,28 +920,33 @@ export default class ThreeShadowViz extends BaseViz {
             }
         }
 
-        /* ── Smoke drift ── */
-        this.smoke.rotation.y += 0.0003;
-        this.smoke.rotation.x += 0.00008;
+        /* ── Atmosphere ── */
+        this.smoke.rotation.y += 0.0002;
+        this.smoke.rotation.x += 0.00005;
 
         /* ── Camera ── */
-        const introF = Math.min(this.introT / 8, 1);
+        const introF = Math.min(this.introT / 6, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
-        const tH = 1 + this.mouseSmooth.y * 1.5;
-        const camH = THREE.MathUtils.lerp(10, tH, ease);
-        const camD = THREE.MathUtils.lerp(20, 14, ease);
-        const camA = t * 0.008 + this.mouseSmooth.x * 0.15;
+        const camD = THREE.MathUtils.lerp(22, 14, ease);
+        const camH = THREE.MathUtils.lerp(8, 1.5 + this.mouseSmooth.y * 1.2, ease);
+        const camA = t * 0.006 + this.mouseSmooth.x * 0.12;
         this.camera.position.set(
             Math.sin(camA) * camD,
             camH,
             Math.cos(camA) * camD
         );
-        this.camera.lookAt(0, -0.5, 0);
+        this.camera.lookAt(0, -0.3, 0);
+
+        /* ── Ego light follows ego ── */
+        this.egoLight.position.set(
+            this.egoGroup.position.x,
+            this.egoGroup.position.y + 2,
+            4
+        );
 
         /* ── Bloom ── */
         if (this.bloom) {
-            this.bloom.strength = 1.0 + Math.sin(t * 0.06) * 0.2
-                + intPulse * 0.6;
+            this.bloom.strength = 1.2 + Math.sin(t * 0.05) * 0.2 + intPulse * 0.8;
         }
     }
 
