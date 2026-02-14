@@ -1,232 +1,231 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aion Journey Chapter</title>
+  <title>Aion Journey</title>
   <base href="../../">
-  <script>
-    (function () {
-      const normalize = (raw) => {
-        if (!raw) return null;
-        const trimmed = String(raw).trim();
-        if (/^ch\d+$/.test(trimmed)) return trimmed;
-        const matchChapterDash = trimmed.match(/^chapter-(\d+)$/);
-        if (matchChapterDash) return `ch${matchChapterDash[1]}`;
-        const matchNumeric = trimmed.match(/^(\d+)$/);
-        if (matchNumeric) return `ch${matchNumeric[1]}`;
-        return null;
-      };
-
-      const idFromQuery = normalize(new URLSearchParams(window.location.search).get('id'));
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const idFromPath = normalize(parts[parts.length - 1]);
-      document.documentElement.dataset.requestedChapterId = idFromQuery || idFromPath || 'ch1';
-    }());
-  </script>
-  <style>
-    /* Only show the ch1 seed markup when the request actually targets ch1. */
-    #chapter-seed-ch1 { display: block; }
-    html[data-requested-chapter-id]:not([data-requested-chapter-id="ch1"]) #chapter-seed-ch1 { display: none; }
-  </style>
-  <link rel="preload" href="assets/fonts/Fraunces-Variable-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <style>
-    /* Inline font-face to avoid an extra render-blocking stylesheet on the perf-critical chapter route. */
-    @font-face {
-      font-family: 'Fraunces';
-      font-style: normal;
-      font-weight: 100 900;
-      font-display: swap;
-      src: url('assets/fonts/Fraunces-Variable-latin.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
     }
-  </style>
+  </script>
+  <link rel="stylesheet" href="src/styles/fonts.css" />
   <link rel="stylesheet" href="src/styles/tokens.css" />
-  <link rel="stylesheet" href="src/styles/shared-components.css" />
   <link rel="stylesheet" href="src/features/chapter-engine/chapter-shell.css" />
 </head>
+
 <body>
-  <div id="chapter-root">
-    <div id="chapter-seed-ch1">
-      <div class="chapter-shell-app" data-chapter-id="ch1">
-        <nav class="chapter-shell-topbar" aria-label="Global navigation">
-          <div class="nav-container">
-            <a href="./" class="nav-link chapter-shell-topbar__brand" aria-label="Aion home">Aion</a>
-            <span class="chapter-shell-topbar__meta">Chapter 1 of 14</span>
-            <a href="chapters/index.html" class="nav-link">Chapters</a>
-            <a href="src/timeline.html" class="nav-link">Timeline</a>
-            <a href="src/atlas/index.html" class="nav-link">Atlas</a>
-            <a href="src/symbols.html" class="nav-link">Symbols</a>
-            <a href="about.html" class="nav-link">About</a>
-          </div>
-        </nav>
 
-        <main class="chapter-shell" data-chapter-shell="required-contract">
-          <section class="chapter-shell__section chapter-shell__section--header-thesis">
-            <h2 class="chapter-shell__section-title">Header / Thesis</h2>
-            <header class="chapter-shell__header">
-              <p class="chapter-shell__eyebrow">Chapter 1: Identity</p>
-              <h1 class="chapter-shell__title">The Ego</h1>
-              <p class="chapter-shell__thesis">The ego as the center of conscious identity, and its limits in relation to the greater psyche.</p>
-            </header>
-          </section>
+  <!-- Full-screen visualization layer -->
+  <div id="viz-layer" class="viz-layer"></div>
 
-          <section class="chapter-shell__section chapter-shell__section--why-this-matters">
-            <h2 class="chapter-shell__section-title">Why this matters</h2>
-            <p>This chapter matters because it clarifies the lens you will use throughout Aion: symbolic tensions are not distractions, but the material of psychological transformation.</p>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--core-terms">
-            <h2 class="chapter-shell__section-title">Core terms</h2>
-            <div class="chapter-shell__terms">
-              <article class="concept-card" data-term-id="ego">
-                <h3 class="concept-card-title">Ego</h3>
-                <p class="concept-definition" data-definition-tier="beginner">The center of conscious identity and agency; the standpoint of "I" in experience.</p>
-              </article>
-
-              <article class="concept-card" data-term-id="self">
-                <h3 class="concept-card-title">Self</h3>
-                <p class="concept-definition" data-definition-tier="beginner">The archetype of wholeness and psychic totality that orders life beyond the ego standpoint.</p>
-              </article>
-            </div>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--primary-visualization">
-            <h2 class="chapter-shell__section-title">Primary visualization</h2>
-            <div class="chapter-shell__viz">
-              <p>Hover or focus nodes in the constellation to orient yourself. Use the links below to continue the journey.</p>
-              <figure class="chapter-shell__map">
-                <figcaption class="chapter-shell__map-caption">Constellation: key motifs and how they connect.</figcaption>
-                <svg class="chapter-map" viewBox="0 0 900 460" role="img" aria-label="Primary chapter visualization">
-                  <desc>Interactive map of key motifs for this chapter. Focus nodes to read labels.</desc>
-                  <g class="chapter-map__edges" aria-hidden="true">
-                    <path class="chapter-map__edge" d="M 322.52106056293064 303.6 L 577.4789394370694 303.6" />
-                  </g>
-                  <g class="chapter-map__nodes" role="list" aria-label="Map nodes">
-                    <g class="chapter-map__node chapter-map__node--concept" role="listitem" tabindex="0" aria-label="Ego">
-                      <title>Ego</title>
-                      <circle cx="450" cy="82.79999999999998" r="22" />
-                      <text x="450" y="128.79999999999998" text-anchor="middle">Ego</text>
-                    </g>
-
-                    <g class="chapter-map__node chapter-map__node--concept" role="listitem" tabindex="0" aria-label="Self">
-                      <title>Self</title>
-                      <circle cx="577.4789394370694" cy="303.6" r="22" />
-                      <text x="577.4789394370694" y="349.6" text-anchor="middle">Self</text>
-                    </g>
-
-                    <g class="chapter-map__node chapter-map__node--symbol" role="listitem" tabindex="0" aria-label="Mandala">
-                      <title>Mandala</title>
-                      <circle cx="322.52106056293064" cy="303.6" r="22" />
-                      <text x="322.52106056293064" y="349.6" text-anchor="middle">Mandala</text>
-                    </g>
-                  </g>
-                </svg>
-              </figure>
-
-              <div class="chapter-shell__viz-fallback">Visualization fallback enabled.</div>
-            </div>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--insight-checks">
-            <h2 class="chapter-shell__section-title">Insight checks</h2>
-            <div class="chapter-shell__checks" role="list" aria-label="Insight checks">
-              <details class="chapter-check" role="listitem">
-                <summary class="chapter-check__summary">Identify the central dynamic or symbol developed in "The Ego" and connect it to one related concept.</summary>
-                <div class="chapter-check__body">
-                  <p class="chapter-check__hint">Use the constellation map: pick one connection and explain it in your own words.</p>
-                </div>
-              </details>
-
-              <details class="chapter-check" role="listitem">
-                <summary class="chapter-check__summary">How does "The Ego" change your understanding when you relate it to another chapter or symbol?</summary>
-                <div class="chapter-check__body">
-                  <p class="chapter-check__hint">Try writing one concrete example, then identify the opposite value you resist holding with it.</p>
-                </div>
-              </details>
-            </div>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--symbol-relationship-panel">
-            <h2 class="chapter-shell__section-title">Symbol / relationship panel</h2>
-            <div class="chapter-shell__facts" role="list" aria-label="Symbols and relationships">
-              <div class="chapter-fact" role="listitem">
-                <span class="chapter-fact__label">Key concepts</span>
-                <span class="chapter-fact__value">Ego · Self</span>
-              </div>
-
-              <div class="chapter-fact" role="listitem">
-                <span class="chapter-fact__label">Primary symbols</span>
-                <span class="chapter-fact__value">Mandala</span>
-              </div>
-
-              <div class="chapter-fact" role="listitem">
-                <span class="chapter-fact__label">Motion grammar</span>
-                <span class="chapter-fact__value">cyclical-return</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--synthesis">
-            <h2 class="chapter-shell__section-title">Synthesis</h2>
-            <p>Synthesis: The ego as the center of conscious identity, and its limits in relation to the greater psyche. Next, "The Shadow" extends the same symbolic field under a new historical and conceptual register.</p>
-          </section>
-
-          <section class="chapter-shell__section chapter-shell__section--reflection-next-links">
-            <h2 class="chapter-shell__section-title">Reflection + next links</h2>
-            <div>
-              <p>Reflection: choose one symbol or concept from this chapter and describe how it changes when you hold its opposite with it.</p>
-              <ul><li><a href="journey/chapter/index.html?id=ch2">Next: The Shadow</a></li><li><a href="chapters/index.html">All chapters</a></li></ul>
-            </div>
-          </section>
-        </main>
-      </div>
+  <!-- Floating navigation pill -->
+  <nav class="chapter-nav-pill" id="nav-pill" aria-label="Chapter navigation">
+    <a href="./" class="chapter-nav-pill__home">Aion</a>
+    <span class="chapter-nav-pill__sep">·</span>
+    <span class="chapter-nav-pill__chapter" id="pill-label">Chapter 1</span>
+    <span class="chapter-nav-pill__sep">·</span>
+    <div class="chapter-nav-pill__arrows">
+      <a href="#" id="pill-prev" title="Previous chapter">←</a>
+      <a href="#" id="pill-next" title="Next chapter">→</a>
     </div>
-  </div>
+  </nav>
 
-	  <script type="module">
-	    import { renderChapterById } from './src/features/chapter-engine/ChapterRenderer.js';
+  <!-- Sidebar toggle button -->
+  <button class="sidebar-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="chapter-sidebar"
+    title="Toggle chapter info">
+    ☰
+  </button>
 
-	    const DEFAULT_CHAPTER_ID = 'ch1';
+  <!-- Collapsible sidebar with chapter info -->
+  <aside class="chapter-sidebar" id="chapter-sidebar" role="complementary">
+    <p class="chapter-sidebar__eyebrow" id="sidebar-eyebrow">Chapter 1</p>
+    <h1 class="chapter-sidebar__title" id="sidebar-title">The Ego</h1>
+    <p class="chapter-sidebar__thesis" id="sidebar-thesis"></p>
 
-	    const normalizeChapterId = (raw) => {
-	      if (!raw) return null;
-	      const trimmed = String(raw).trim();
+    <hr class="chapter-sidebar__divider">
 
-	      if (/^ch\\d+$/.test(trimmed)) return trimmed;
+    <div id="sidebar-terms"></div>
 
-	      const matchChapterDash = trimmed.match(/^chapter-(\\d+)$/);
-	      if (matchChapterDash) return `ch${matchChapterDash[1]}`;
+    <hr class="chapter-sidebar__divider">
 
-	      const matchNumeric = trimmed.match(/^(\\d+)$/);
-	      if (matchNumeric) return `ch${matchNumeric[1]}`;
+    <div id="sidebar-facts" class="sidebar-facts"></div>
 
-	      return null;
-	    };
+    <hr class="chapter-sidebar__divider">
 
-	    const idFromQuery = normalizeChapterId(new URLSearchParams(window.location.search).get('id'));
-	    const pathParts = window.location.pathname.split('/').filter(Boolean);
-	    const idFromPath = normalizeChapterId(pathParts[pathParts.length - 1]);
-	    const chapterId = idFromQuery || idFromPath || DEFAULT_CHAPTER_ID;
+    <div id="sidebar-nav" class="sidebar-nav"></div>
+  </aside>
 
-      const mount = document.getElementById('chapter-root');
-      const hasSeedMarkup = chapterId === 'ch1' && !!document.getElementById('chapter-seed-ch1');
+  <!-- Interaction hint -->
+  <div class="viz-hint" id="viz-hint">Move your mouse to explore · Scroll to zoom</div>
 
-      if (hasSeedMarkup) {
-        const seededTitle = mount.querySelector('.chapter-shell__title')?.textContent;
-        if (seededTitle) document.title = `${seededTitle} - Aion Journey`;
+  <!-- Hidden: old chapter-root (kept for ChapterRenderer compatibility but hidden by CSS) -->
+  <div id="chapter-root" style="display:none"></div>
+
+  <script type="module">
+    // ── Chapter metadata ──
+    const CHAPTERS = [
+      { id: 'ch1', num: 1, title: 'The Ego', accent: '#b0b0d0' },
+      { id: 'ch2', num: 2, title: 'The Shadow', accent: '#6a1b9a' },
+      { id: 'ch3', num: 3, title: 'The Syzygy', accent: '#c0c0c0' },
+      { id: 'ch4', num: 4, title: 'The Self', accent: '#ffd700' },
+      { id: 'ch5', num: 5, title: 'Christ, a Symbol', accent: '#e8e8f0' },
+      { id: 'ch6', num: 6, title: 'Sign of the Fishes', accent: '#22d3ee' },
+      { id: 'ch7', num: 7, title: 'The Prophecies', accent: '#ff8c00' },
+      { id: 'ch8', num: 8, title: 'Historical Symbols', accent: '#8b0000' },
+      { id: 'ch9', num: 9, title: 'The Ouroboros', accent: '#2e7d32' },
+      { id: 'ch10', num: 10, title: 'Gnostic Symbols', accent: '#7c4dff' },
+      { id: 'ch11', num: 11, title: 'Unus Mundus', accent: '#4caf50' },
+      { id: 'ch12', num: 12, title: 'Sacred Marriage', accent: '#e91e63' },
+      { id: 'ch13', num: 13, title: 'Three Quaternio', accent: '#ff9800' },
+      { id: 'ch14', num: 14, title: 'The Aeon', accent: '#ffd700' },
+    ];
+
+    // ── Resolve chapter ID ──
+    function normalizeId(raw) {
+      if (!raw) return null;
+      const s = String(raw).trim();
+      if (/^ch\d+$/.test(s)) return s;
+      const m1 = s.match(/^chapter-(\d+)$/); if (m1) return `ch${m1[1]}`;
+      const m2 = s.match(/^(\d+)$/); if (m2) return `ch${m2[1]}`;
+      return null;
+    }
+
+    const idFromQuery = normalizeId(new URLSearchParams(location.search).get('id'));
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const idFromPath = normalizeId(pathParts[pathParts.length - 1]);
+    const chapterId = idFromQuery || idFromPath || 'ch1';
+
+    const chapterIdx = CHAPTERS.findIndex(c => c.id === chapterId);
+    const chapter = CHAPTERS[chapterIdx] || CHAPTERS[0];
+    const prevCh = chapterIdx > 0 ? CHAPTERS[chapterIdx - 1] : null;
+    const nextCh = chapterIdx < CHAPTERS.length - 1 ? CHAPTERS[chapterIdx + 1] : null;
+
+    // ── Set accent color ──
+    document.documentElement.style.setProperty('--chapter-accent', chapter.accent);
+
+    // ── Update nav pill ──
+    document.getElementById('pill-label').textContent = `Chapter ${chapter.num}: ${chapter.title}`;
+    const prevLink = document.getElementById('pill-prev');
+    const nextLink = document.getElementById('pill-next');
+    if (prevCh) { prevLink.href = `journey/chapter/index.html?id=${prevCh.id}`; prevLink.title = prevCh.title; }
+    else { prevLink.style.display = 'none'; }
+    if (nextCh) { nextLink.href = `journey/chapter/index.html?id=${nextCh.id}`; nextLink.title = nextCh.title; }
+    else { nextLink.style.display = 'none'; }
+
+    document.title = `${chapter.title} — Aion`;
+
+    // ── Sidebar toggle ──
+    const sidebar = document.getElementById('chapter-sidebar');
+    const toggle = document.getElementById('sidebar-toggle');
+    toggle.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+      toggle.textContent = open ? '✕' : '☰';
+    });
+
+    // ── Nav pill auto-hide ──
+    let hideTimeout;
+    const pill = document.getElementById('nav-pill');
+    function showPill() {
+      pill.classList.remove('hidden');
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => pill.classList.add('hidden'), 4000);
+    }
+    document.addEventListener('mousemove', showPill);
+    document.addEventListener('touchstart', showPill);
+    showPill();
+
+    // ── Dismiss interaction hint on first mouse action ──
+    const hint = document.getElementById('viz-hint');
+    let hintDismissed = false;
+    function dismissHint() {
+      if (hintDismissed) return;
+      hintDismissed = true;
+      hint.classList.add('dismissed');
+    }
+    document.addEventListener('click', dismissHint);
+    document.addEventListener('wheel', dismissHint);
+    // Auto-dismiss after 8s
+    setTimeout(dismissHint, 8000);
+
+    // ── Load chapter config and populate sidebar ──
+    async function loadChapterConfig() {
+      try {
+        const resp = await fetch(`src/features/chapter-engine/config/${chapterId}.json`);
+        if (!resp.ok) return;
+        const config = await resp.json();
+
+        // Header
+        const header = config.sections.find(s => s.key === 'header-thesis');
+        if (header) {
+          document.getElementById('sidebar-eyebrow').textContent = header.chapterLabel || `Chapter ${chapter.num}`;
+          document.getElementById('sidebar-title').textContent = header.title || chapter.title;
+          document.getElementById('sidebar-thesis').textContent = header.thesis || '';
+        }
+
+        // Core terms
+        const termsSection = config.sections.find(s => s.key === 'core-terms');
+        const termsContainer = document.getElementById('sidebar-terms');
+        if (termsSection?.terms) {
+          termsContainer.innerHTML = termsSection.terms.map(t => `
+            <details class="sidebar-term">
+              <summary>${t.term}</summary>
+              <p class="sidebar-term__def">${t.definition}</p>
+            </details>
+          `).join('');
+        }
+
+        // Facts
+        const factsSection = config.sections.find(s => s.key === 'symbol-relationship-panel');
+        const factsContainer = document.getElementById('sidebar-facts');
+        if (factsSection?.facts) {
+          factsContainer.innerHTML = factsSection.facts.map(f => `
+            <div class="sidebar-fact">
+              <span class="sidebar-fact__label">${f.label}</span>
+              <span class="sidebar-fact__value">${f.value}</span>
+            </div>
+          `).join('');
+        }
+
+        // Navigation links
+        const navSection = config.sections.find(s => s.key === 'reflection-next-links');
+        const navContainer = document.getElementById('sidebar-nav');
+        let navHTML = '';
+        if (prevCh) navHTML += `<a href="journey/chapter/index.html?id=${prevCh.id}">← ${prevCh.title}</a>`;
+        if (nextCh) navHTML += `<a href="journey/chapter/index.html?id=${nextCh.id}">${nextCh.title} →</a>`;
+        navHTML += `<a href="chapters/index.html">All Chapters</a>`;
+        navHTML += `<a href="./">Home</a>`;
+        navContainer.innerHTML = navHTML;
+
+      } catch (err) {
+        console.warn('[Aion] Config load failed:', err);
       }
+    }
 
-      const renderPromise = hasSeedMarkup
-        ? Promise.resolve(chapterId)
-        : renderChapterById(chapterId, mount);
+    // ── Initialize visualization ──
+    async function initViz() {
+      const vizLayer = document.getElementById('viz-layer');
+      try {
+        const { vizController } = await import('./src/features/viz-platform/VizController.js?v=4');
+        vizController.init(vizLayer);
+        await vizController.loadChapter(chapterId);
+        console.log(`[Aion] Viz mounted for ${chapterId}`);
+      } catch (err) {
+        console.error('[Aion] Viz failed:', err);
+        vizLayer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#666;font-size:0.9rem;">Visualization loading...</div>`;
+      }
+    }
 
-	    renderPromise.then(() => {
-        // Load glossary after the chapter shell is mounted so hydration finds concept cards.
-        return import('./src/features/glossary/glossary-ui.js');
-      }).catch((error) => {
-	      mount.innerHTML = `<main><h1>Chapter unavailable</h1><p>${error.message}</p></main>`;
-	    });
-	  </script>
+    // ── Boot ──
+    loadChapterConfig();
+    initViz();
+  </script>
 </body>
+
 </html>

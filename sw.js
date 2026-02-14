@@ -4,7 +4,7 @@
  * Version: 2.0.0 - Enhanced PWA Support
  */
 
-const CACHE_VERSION = 'aion-v4.0.0';
+const CACHE_VERSION = 'aion-v6.0.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const DYNAMIC_CACHE = `${CACHE_VERSION}-dynamic`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -14,19 +14,14 @@ const ANALYTICS_CACHE = 'analytics-queue';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
-    '/visualizations.html',
-    '/test-visualizations.html',
-    '/showcase.html',
     '/404.html',
     '/offline.html',
-    '/manifest.json',
-    '/assets/css/bundle.min.css'
+    '/manifest.json'
 ];
 
 // Chapter files to cache on demand
 const CHAPTER_PATTERNS = [
-    /\/aion-visualization\/chapters\/enhanced\/chapter-\d+\.html$/,
-    /\/aion-visualization\/chapters\/standard\/chapter-\d+\.html$/
+    /\/journey\/chapter\/index\.html/
 ];
 
 // External resources to cache
@@ -38,7 +33,7 @@ const EXTERNAL_RESOURCES = [
 // Install event - cache static assets
 self.addEventListener('install', event => {
     console.log('Service Worker: Installing...');
-    
+
     event.waitUntil(
         Promise.all([
             caches.open(STATIC_CACHE).then(cache => {
@@ -61,13 +56,13 @@ self.addEventListener('install', event => {
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
     console.log('Service Worker: Activating...');
-    
+
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    if (cacheName !== STATIC_CACHE && 
-                        cacheName !== DYNAMIC_CACHE && 
+                    if (cacheName !== STATIC_CACHE &&
+                        cacheName !== DYNAMIC_CACHE &&
                         cacheName !== CACHE_NAME) {
                         console.log('Service Worker: Deleting old cache', cacheName);
                         return caches.delete(cacheName);
@@ -84,18 +79,18 @@ self.addEventListener('activate', event => {
 // Fetch event - serve from cache with network fallback
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
-    
+
     // Skip non-GET requests
     if (event.request.method !== 'GET') {
         return;
     }
-    
+
     // Skip cross-origin requests (except for CDN resources)
-    if (requestUrl.origin !== location.origin && 
+    if (requestUrl.origin !== location.origin &&
         !isAllowedExternalResource(requestUrl.href)) {
         return;
     }
-    
+
     event.respondWith(
         handleFetchRequest(event.request)
     );
@@ -104,7 +99,7 @@ self.addEventListener('fetch', event => {
 async function handleFetchRequest(request) {
     const requestUrl = new URL(request.url);
     const pathname = requestUrl.pathname;
-    
+
     try {
         // Handle different types of requests
         if (isStaticAsset(pathname)) {
@@ -128,13 +123,13 @@ async function handleFetchRequest(request) {
 async function handleStaticAsset(request) {
     const cache = await caches.open(STATIC_CACHE);
     const cached = await cache.match(request);
-    
+
     if (cached) {
         // Serve from cache, update in background
         updateCacheInBackground(request, cache);
         return cached;
     }
-    
+
     // Not in cache, fetch and cache
     try {
         const response = await fetch(request);
@@ -152,11 +147,11 @@ async function handleStaticAsset(request) {
 async function handleChapterFile(request) {
     const cache = await caches.open(DYNAMIC_CACHE);
     const cached = await cache.match(request);
-    
+
     if (cached) {
         return cached;
     }
-    
+
     try {
         const response = await fetch(request);
         if (response.ok) {
@@ -173,26 +168,26 @@ async function handleChapterFile(request) {
 // Handle navigation requests (HTML pages)
 async function handleNavigationRequest(request) {
     const cache = await caches.open(STATIC_CACHE);
-    
+
     try {
         // Try network first for navigation
         const response = await fetch(request);
-        
+
         if (response.ok) {
             // Cache successful navigation responses
             cache.put(request, response.clone());
             return response;
         }
-        
+
         throw new Error(`HTTP ${response.status}`);
-        
+
     } catch (error) {
         // Network failed, try cache
         const cached = await cache.match(request);
         if (cached) {
             return cached;
         }
-        
+
         // No cache, return offline page
         const offlinePage = await cache.match('/404.html');
         return offlinePage || createGenericOfflineResponse();
@@ -203,11 +198,11 @@ async function handleNavigationRequest(request) {
 async function handleExternalResource(request) {
     const cache = await caches.open(DYNAMIC_CACHE);
     const cached = await cache.match(request);
-    
+
     if (cached) {
         return cached;
     }
-    
+
     try {
         const response = await fetch(request);
         if (response.ok) {
@@ -224,13 +219,13 @@ async function handleExternalResource(request) {
 async function handleDynamicRequest(request) {
     try {
         const response = await fetch(request);
-        
+
         if (response.ok) {
             // Cache successful dynamic responses briefly
             const cache = await caches.open(DYNAMIC_CACHE);
             cache.put(request, response.clone());
         }
-        
+
         return response;
     } catch (error) {
         // Try to serve from cache
@@ -243,13 +238,13 @@ async function handleDynamicRequest(request) {
 // Handle offline requests
 async function handleOfflineRequest(request) {
     const requestUrl = new URL(request.url);
-    
+
     if (request.headers.get('accept').includes('text/html')) {
         // HTML request - return offline page
         const cache = await caches.open(STATIC_CACHE);
         return cache.match('/404.html') || createGenericOfflineResponse();
     }
-    
+
     return createOfflineResponse(request);
 }
 
@@ -268,13 +263,13 @@ async function updateCacheInBackground(request, cache) {
 
 // Helper functions
 function isStaticAsset(pathname) {
-    return pathname.includes('/assets/') || 
-           pathname.endsWith('.css') || 
-           pathname.endsWith('.js') || 
-           pathname.endsWith('.png') || 
-           pathname.endsWith('.jpg') || 
-           pathname.endsWith('.svg') ||
-           pathname.endsWith('.ico');
+    return pathname.includes('/assets/') ||
+        pathname.endsWith('.css') ||
+        pathname.endsWith('.js') ||
+        pathname.endsWith('.png') ||
+        pathname.endsWith('.jpg') ||
+        pathname.endsWith('.svg') ||
+        pathname.endsWith('.ico');
 }
 
 function isChapterFile(pathname) {
@@ -282,8 +277,8 @@ function isChapterFile(pathname) {
 }
 
 function isNavigationRequest(request) {
-    return request.mode === 'navigate' || 
-           (request.method === 'GET' && 
+    return request.mode === 'navigate' ||
+        (request.method === 'GET' &&
             request.headers.get('accept').includes('text/html'));
 }
 
@@ -297,7 +292,7 @@ function isAllowedExternalResource(url) {
         'fonts.googleapis.com',
         'fonts.gstatic.com'
     ];
-    
+
     return allowedDomains.some(domain => url.includes(domain));
 }
 
@@ -306,7 +301,7 @@ function createOfflineResponse(request) {
         'Content-Type': 'text/html',
         'Cache-Control': 'no-cache'
     };
-    
+
     const body = `
         <!DOCTYPE html>
         <html>
@@ -342,7 +337,7 @@ function createOfflineResponse(request) {
         </body>
         </html>
     `;
-    
+
     return new Response(body, { headers });
 }
 
@@ -351,12 +346,12 @@ function createChapterOfflineResponse(request) {
     const pathname = requestUrl.pathname;
     const chapterMatch = pathname.match(/chapter-(\d+)\.html/);
     const chapterNum = chapterMatch ? chapterMatch[1] : '?';
-    
+
     const headers = {
         'Content-Type': 'text/html',
         'Cache-Control': 'no-cache'
     };
-    
+
     const body = `
         <!DOCTYPE html>
         <html>
@@ -380,7 +375,7 @@ function createChapterOfflineResponse(request) {
         </body>
         </html>
     `;
-    
+
     return new Response(body, { headers });
 }
 
@@ -389,7 +384,7 @@ function createGenericOfflineResponse() {
         'Content-Type': 'text/html',
         'Cache-Control': 'no-cache'
     };
-    
+
     const body = `
         <!DOCTYPE html>
         <html>
@@ -424,7 +419,7 @@ function createGenericOfflineResponse() {
         </body>
         </html>
     `;
-    
+
     return new Response(body, { headers });
 }
 
@@ -433,13 +428,13 @@ self.addEventListener('message', event => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
-    
+
     if (event.data && event.data.type === 'GET_CACHE_INFO') {
         getCacheInfo().then(info => {
             event.ports[0].postMessage(info);
         });
     }
-    
+
     if (event.data && event.data.type === 'CLEAR_CACHE') {
         clearCaches().then(() => {
             event.ports[0].postMessage({ success: true });
@@ -453,13 +448,13 @@ async function getCacheInfo() {
         caches: cacheNames.length,
         version: CACHE_NAME
     };
-    
+
     for (const cacheName of cacheNames) {
         const cache = await caches.open(cacheName);
         const keys = await cache.keys();
         info[cacheName] = keys.length;
     }
-    
+
     return info;
 }
 

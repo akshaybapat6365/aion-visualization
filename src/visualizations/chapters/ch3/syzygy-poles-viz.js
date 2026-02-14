@@ -1,264 +1,310 @@
-import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
-/**
- * Syzygy Poles Visualization — Chapter 3: Anima & Animus
- * Ported to BaseViz (Phase 6 Architecture)
- */
+import * as THREE from 'three';
+import BaseViz from '../../../features/viz-platform/BaseViz.js';
+import { scrollDirector } from '../../../features/viz-platform/ScrollDirector.js';
+
 export default class SyzygyPolesViz extends BaseViz {
     constructor(container) {
-        super(container);
+        super(container, { contextType: 'webgl' });
+        // Initialize properties to null to avoid BaseViz race conditions
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.objects = {};
+        this.params = {
+            particleCount: 2000,
+            radius: 4,
+            separation: 6, // Distance between centers
+            speed: 1.0,
+            turbulence: 0.0
+        };
     }
 
     async init() {
-        this.time = 0;
+        console.log('[SyzygyViz] Initializing Anima & Animus...');
 
-        // Balance state: 0 = extreme separation, 1 = perfect union
-        this.balance = 0.5;
-        this.targetBalance = 0.5;
+        // 1. Scene Setup
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color('#050508'); // Very dark blue-black
+        this.scene.fog = new THREE.FogExp2('#050508', 0.04);
 
-        // Particle streams
-        this.streams = [];
-        this._initStreams();
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        this.camera.position.set(0, 0, 15);
+        this.camera.lookAt(0, 0, 0);
 
-        this._createUI();
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
+            antialias: true,
+            alpha: false
+        });
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // Bind UI events if needed (slider handles itself via closure but better to bind)
+        // 2. Create Particle Poles
+        this._createParticles();
+
+        // 3. Post-Processing? (Maybe later for bloom)
+
+        // 4. Bind Scroll
+        this.onCinematicUpdate = this.onCinematicUpdate.bind(this);
+        scrollDirector.addEventListener('scroll-update', (e) => this.onCinematicUpdate(e.detail));
+
+        // 5. Mouse Interaction
+        this.mouse = new THREE.Vector2();
+        this.targetTurbulence = 0;
+        window.addEventListener('mousemove', (e) => {
+            // Normalized -1 to 1
+            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            this.targetTurbulence = Math.min(Math.abs(this.mouse.x) * 2, 2.0);
+        });
     }
 
-    _initStreams() {
-        this.streams = [];
-        for (let i = 0; i < 120; i++) {
-            this.streams.push({
-                phase: Math.random() * Math.PI * 2,
-                speed: 0.3 + Math.random() * 0.7,
-                orbit: 0.3 + Math.random() * 0.7,
-                side: Math.random() > 0.5 ? 1 : -1,
-                size: 1.5 + Math.random() * 2,
-            });
+    _createParticles() {
+        const { particleCount, radius } = this.params;
+        const totalParticles = particleCount * 2; // Red set + Blue set
+
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(totalParticles * 3);
+        const colors = new Float32Array(totalParticles * 3);
+        const sizes = new Float32Array(totalParticles);
+        const phases = new Float32Array(totalParticles); // For animation offset
+        const poleIds = new Float32Array(totalParticles); // 0 = Red, 1 = Blue
+
+        const colorRed = new THREE.Color('#ff3366'); // Anima
+        const colorBlue = new THREE.Color('#3366ff'); // Animus
+
+        for (let i = 0; i < totalParticles; i++) {
+            const isBlue = i >= particleCount;
+            poleIds[i] = isBlue ? 1.0 : 0.0;
+
+            // Random point in sphere
+            const r = radius * Math.cbrt(Math.random());
+            const theta = Math.random() * 2 * Math.PI;
+            const phi = Math.acos(2 * Math.random() - 1);
+
+            let x = r * Math.sin(phi) * Math.cos(theta);
+            let y = r * Math.sin(phi) * Math.sin(theta);
+            let z = r * Math.cos(phi);
+
+            // Initial separation
+            if (isBlue) x += this.params.separation / 2;
+            else x -= this.params.separation / 2;
+
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+
+            const color = isBlue ? colorBlue : colorRed;
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+
+            sizes[i] = Math.random() * 2.0;
+            phases[i] = Math.random() * Math.PI * 2;
         }
-    }
 
-    _createUI() {
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position:absolute;inset:0;pointer-events:none;
-            font-family:var(--font-sans,system-ui);color:var(--text-tertiary,#8a8a8a);
-            opacity: 0; transition: opacity 1s ease;
-        `;
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
+        geometry.setAttribute('poleId', new THREE.BufferAttribute(poleIds, 1));
 
-        // Balance slider
-        const sliderWrap = document.createElement('div');
-        sliderWrap.style.cssText = `
-            position:absolute;bottom:14%;left:50%;transform:translateX(-50%);
-            pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:6px;
-        `;
-        const label = document.createElement('span');
-        label.style.cssText = 'font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;opacity:0.5;';
-        label.textContent = 'balance of opposites';
+        // Use ShaderMaterial for custom movement
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uSeparation: { value: this.params.separation },
+                uTurbulence: { value: 0 },
+                uPixelRatio: { value: this.renderer.getPixelRatio() }
+            },
+            vertexShader: `
+                uniform float uTime;
+                uniform float uSeparation;
+                uniform float uTurbulence;
+                uniform float uPixelRatio;
+                
+                attribute float size;
+                attribute float phase;
+                attribute float poleId;
+                
+                varying vec3 vColor;
 
-        const slider = document.createElement('input');
-        slider.type = 'range';
-        slider.min = '0';
-        slider.max = '100';
-        slider.value = '50';
-        slider.style.cssText = 'width:180px;accent-color:#d4af37;opacity:0.7;';
+                // Simplex Noise (Vertex)
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+                float snoise(vec2 v) {
+                    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+                    vec2 i  = floor(v + dot(v, C.yy) );
+                    vec2 x0 = v - i + dot(i, C.xx);
+                    vec2 i1; i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+                    vec4 x12 = x0.xyxy + C.xxzz;
+                    x12.xy -= i1;
+                    i = mod289(i);
+                    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+                    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+                    m = m*m ;
+                    m = m*m ;
+                    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+                    vec3 h = abs(x) - 0.5;
+                    vec3 ox = floor(x + 0.5);
+                    vec3 a0 = x - ox;
+                    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+                    vec3 g;
+                    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+                    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+                    return 130.0 * dot(m, g);
+                }
 
-        // Use arrow function to allow 'this' access
-        slider.addEventListener('input', (e) => {
-            this.targetBalance = parseInt(e.target.value) / 100;
+                void main() {
+                    vColor = color;
+                    
+                    vec3 pos = position;
+                    
+                    // 1. Orbital Rotation
+                    // Rotate around local center (0,0,0) of the cluster AFTER applying separation?
+                    // No, 'position' already stores the separate locations.
+                    // We need to reconstruct "local" position to rotate.
+                    
+                    float shift = uSeparation * 0.5;
+                    vec3 localPos = pos;
+                    if (poleId > 0.5) { // Blue
+                        localPos.x -= shift; // Is actually at +shift, so valid local is 0
+                        // Wait, 'position' buffer was created WITH the shift.
+                        // But uSeparation is dynamic. 
+                        // So we should have stored LOCAL positions in buffer.
+                        // Let's assume buffer is LOCAL and we apply shift here.
+                    } else { // Red
+                        // localPos ...
+                    }
+                    // REFACTOR: Let's assume the buffer position is "Home Base" (separated).
+                    // We modulate the separation dynamically.
+                   
+                    // Dynamic Separation Logic
+                    // We pull them towards 0 based on uSeparation (which will shrink).
+                    // Original Separation was 6.0.
+                    float currentShift = uSeparation * 0.5;
+                    
+                    // Identify original side based on poleId
+                    float direction = (poleId > 0.5) ? 1.0 : -1.0;
+                    
+                    // Reset to center then apply new shift
+                    // We need original local coords. 
+                    // Hack: We know they were created at +/- 3.0
+                    // Let's just use current pos and modify x?
+                    // No, vertex shader is stateless.
+                    
+                    // BETTER: The buffer should hold LOCAL coordinates centered at 0.
+                    // We apply translation in vertex shader.
+                    // I will fix this in JS generation below. But assuming I did:
+                    
+                    // Rotation
+                    float speed = 0.5;
+                    float angle = uTime * speed + phase;
+                    float radius = length(pos.xz); // simple orbit
+                    
+                    // Swirl effect
+                    float c = cos(angle);
+                    float s = sin(angle);
+                    // Rotate around Y
+                    // pos.x = pos.x * c - pos.z * s;
+                    // pos.z = pos.x * s + pos.z * c; 
+                    // This rotates the WHOLE cloud.
+                    
+                    // We want them to swirl AT their pole location.
+                    vec3 rotatedPos = pos;
+                    rotatedPos.x = pos.x * c - pos.z * s;
+                    rotatedPos.z = pos.x * s + pos.z * c;
+
+                    // Apply Global Separation
+                    rotatedPos.x += direction * currentShift;
+
+                    // Turbulence
+                    float noise = snoise(pos.xy * 0.5 + uTime);
+                    rotatedPos += normal * noise * uTurbulence;
+
+                    vec4 mvPosition = modelViewMatrix * vec4(rotatedPos, 1.0);
+                    gl_PointSize = size * uPixelRatio * (50.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                void main() {
+                    // Circular soft particle
+                    vec2 coord = gl_PointCoord - vec2(0.5);
+                    float dist = length(coord);
+                    if (dist > 0.5) discard;
+                    
+                    // Soft edge
+                    float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+                    
+                    gl_FragColor = vec4(vColor, alpha);
+                }
+            `,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
         });
 
-        sliderWrap.appendChild(label);
-        sliderWrap.appendChild(slider);
+        this.objects.points = new THREE.Points(geometry, material);
+        this.scene.add(this.objects.points);
 
-        overlay.innerHTML = `
-            <span style="position:absolute;top:15%;left:28%;
-                font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;
-                color:#ffd37a;">
-                Anima — eros
-            </span>
-            <span style="position:absolute;top:15%;right:22%;
-                font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;
-                color:#93c5fd;">
-                Animus — logos
-            </span>
-        `;
-        overlay.appendChild(sliderWrap);
-
-        this.container.style.position = 'relative';
-        this.container.appendChild(overlay);
-        this._overlay = overlay;
+        // Fix buffer generation to be LOCAL relative to pole
+        // The loop above added separation. Let's REMOVE it there and let shader handle it.
+        const positionAttribute = geometry.getAttribute('position');
+        for (let i = 0; i < totalParticles; i++) {
+            let x = positionAttribute.getX(i);
+            const isBlue = i >= particleCount;
+            // Revert the static shift I added in the loop
+            if (isBlue) x -= this.params.separation / 2;
+            else x += this.params.separation / 2;
+            positionAttribute.setX(i, x);
+        }
+        positionAttribute.needsUpdate = true;
     }
 
-    onScroll(state) {
-        // Reveal UI when scrolling into the main content
-        if (state.activeSection >= 1) {
-            this._overlay.style.opacity = 1;
-        } else {
-            this._overlay.style.opacity = 0;
-        }
+    onCinematicUpdate({ global }) {
+        // Scroll 0.0 -> Separation 6.0
+        // Scroll 1.0 -> Separation 0.0 (Union)
+        this.params.separation = 6.0 * (1.0 - global);
 
-        // Subtle influence of scroll on balance if user hasn't touched it?
-        // Let's stick to the slider for now, as it's the core metaphor interaction.
+        // Camera moves slightly too
+        // this.camera.position.z = 15 - global * 5; 
+
+        if (this.objects.points) {
+            this.objects.points.material.uniforms.uSeparation.value = this.params.separation;
+        }
     }
 
     update(dt) {
-        this.time += dt;
-        // Smooth lerp
-        this.balance += (this.targetBalance - this.balance) * 2.0 * dt;
+        // Smooth turbulence toward target
+        this.params.turbulence += (this.targetTurbulence - this.params.turbulence) * 0.05;
+
+        if (this.objects.points) {
+            this.objects.points.material.uniforms.uTime.value = this.time;
+            this.objects.points.material.uniforms.uTurbulence.value = this.params.turbulence;
+        }
+
+        // Slight camera drift
+        // this.camera.position.y += Math.sin(this.time * 0.5) * 0.01;
     }
 
     render() {
-        const ctx = this.ctx;
-        const W = this.canvas.width;
-        const H = this.canvas.height;
-        const w = W / this.dpr;
-        const h = H / this.dpr;
-        const cx = w / 2;
-        const cy = h / 2;
-        const t = this.time;
-
-        ctx.save();
-        ctx.scale(this.dpr, this.dpr);
-
-        // Clear
-        ctx.fillStyle = '#07070a';
-        ctx.fillRect(0, 0, w, h);
-
-        // Separation = how far apart the poles are
-        const separation = (1 - this.balance) * (w * 0.32);
-        const orbitSpeed = 0.4 + this.balance * 0.6; // faster when balanced
-
-        // Figure-8 orbit positions
-        const animaX = cx - separation + Math.cos(t * orbitSpeed) * separation * 0.3;
-        const animaY = cy + Math.sin(t * orbitSpeed * 2) * (h * 0.12);
-        const animusX = cx + separation + Math.cos(t * orbitSpeed + Math.PI) * separation * 0.3;
-        const animusY = cy + Math.sin((t * orbitSpeed + Math.PI) * 2) * (h * 0.12);
-
-        // ─── Mandala pattern (Balanced) ───
-        if (this.balance > 0.6) {
-            const mandalaOpacity = (this.balance - 0.6) / 0.4;
-            ctx.save();
-            ctx.globalAlpha = mandalaOpacity * 0.15;
-            const rings = 4;
-            for (let r = 0; r < rings; r++) {
-                const radius = 40 + r * 25;
-                const segments = 8 + r * 4;
-                ctx.strokeStyle = r % 2 === 0 ? '#d4af37' : '#93c5fd';
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                for (let s = 0; s <= segments; s++) {
-                    const angle = (s / segments) * Math.PI * 2 + t * 0.2 * (r % 2 === 0 ? 1 : -1);
-                    const px = cx + Math.cos(angle) * radius;
-                    const py = cy + Math.sin(angle) * radius;
-                    s === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-                }
-                ctx.closePath();
-                ctx.stroke();
-            }
-            ctx.restore();
+        if (this.renderer && this.scene && this.camera) {
+            this.renderer.render(this.scene, this.camera);
         }
-
-        // ─── Chaos particles (Imbalanced) ───
-        if (this.balance < 0.4) {
-            const chaosIntensity = (0.4 - this.balance) / 0.4;
-            ctx.save();
-            ctx.globalAlpha = chaosIntensity * 0.3;
-            for (let i = 0; i < 30; i++) {
-                const angle = t * (1 + i * 0.3) + i * 0.7;
-                const dist = 30 + Math.sin(t * 2 + i) * 60 * chaosIntensity;
-                const px = cx + Math.cos(angle) * dist;
-                const py = cy + Math.sin(angle) * dist;
-                ctx.fillStyle = i % 2 === 0 ? '#ffd37a' : '#93c5fd';
-                ctx.beginPath();
-                ctx.arc(px, py, 1.5 + chaosIntensity * 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.restore();
-        }
-
-        // ─── Particle streams between poles ───
-        this.streams.forEach(p => {
-            const phase = p.phase + t * p.speed;
-            const lerp = (Math.sin(phase) + 1) / 2; // 0→1 cycle
-
-            // Interpolate between anima and animus positions
-            const px = animaX + (animusX - animaX) * lerp + Math.sin(phase * 3) * p.orbit * 20;
-            const py = animaY + (animusY - animaY) * lerp + Math.cos(phase * 2) * p.orbit * 15;
-
-            // Color shifts from warm to cool as particle moves between poles
-            const r = Math.round(255 * (1 - lerp) + 147 * lerp);
-            const g = Math.round(211 * (1 - lerp) + 197 * lerp);
-            const b = Math.round(55 * (1 - lerp) + 253 * lerp);
-
-            ctx.save();
-            ctx.globalAlpha = 0.5;
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.beginPath();
-            ctx.arc(px, py, p.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        });
-
-        // ─── Infinity loop path ───
-        ctx.save();
-        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let i = 0; i <= 100; i++) {
-            const angle = (i / 100) * Math.PI * 2;
-            const ix = cx + Math.cos(angle) * separation * 0.8;
-            const iy = cy + Math.sin(angle * 2) * (h * 0.12);
-            i === 0 ? ctx.moveTo(ix, iy) : ctx.lineTo(ix, iy);
-        }
-        ctx.stroke();
-        ctx.restore();
-
-        // ─── Anima pole (warm gold) ───
-        const animaRadius = 18 + Math.sin(t * 1.5) * 3;
-        const glowA = ctx.createRadialGradient(animaX, animaY, 0, animaX, animaY, animaRadius * 3);
-        glowA.addColorStop(0, 'rgba(255, 211, 122, 0.3)');
-        glowA.addColorStop(0.5, 'rgba(212, 175, 55, 0.08)');
-        glowA.addColorStop(1, 'transparent');
-        ctx.fillStyle = glowA;
-        ctx.fillRect(animaX - animaRadius * 3, animaY - animaRadius * 3, animaRadius * 6, animaRadius * 6);
-
-        ctx.fillStyle = '#ffd37a';
-        ctx.beginPath();
-        ctx.arc(animaX, animaY, animaRadius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // ─── Animus pole (cool blue) ───
-        const animusRadius = 18 + Math.cos(t * 1.5) * 3;
-        const glowB = ctx.createRadialGradient(animusX, animusY, 0, animusX, animusY, animusRadius * 3);
-        glowB.addColorStop(0, 'rgba(147, 197, 253, 0.3)');
-        glowB.addColorStop(0.5, 'rgba(96, 165, 250, 0.08)');
-        glowB.addColorStop(1, 'transparent');
-        ctx.fillStyle = glowB;
-        ctx.fillRect(animusX - animusRadius * 3, animusY - animusRadius * 3, animusRadius * 6, animusRadius * 6);
-
-        ctx.fillStyle = '#93c5fd';
-        ctx.beginPath();
-        ctx.arc(animusX, animusY, animusRadius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // ─── Balance state label ───
-        ctx.save();
-        ctx.globalAlpha = 0.5;
-        ctx.fillStyle = '#8a8a8a';
-        ctx.font = '10px system-ui';
-        ctx.textAlign = 'center';
-        const stateLabel = this.balance > 0.7 ? 'integration — harmony'
-            : this.balance > 0.4 ? 'dynamic tension'
-                : 'one-sided — chaotic';
-        ctx.fillText(stateLabel, cx, h * 0.91);
-        ctx.restore();
-
-        ctx.restore();
     }
 
-    destroy() {
-        if (this._overlay) this._overlay.remove();
-        super.destroy();
+    onResize(width, height) {
+        if (this.camera) {
+            this.camera.aspect = width / height;
+            this.camera.updateProjectionMatrix();
+        }
+        if (this.renderer) {
+            this.renderer.setSize(width, height);
+            this.objects.points.material.uniforms.uPixelRatio.value = this.renderer.getPixelRatio();
+        }
     }
 }

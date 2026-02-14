@@ -1,0 +1,42 @@
+/* Nav Compass */
+.nav-compass {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+    mix-blend-mode: exclusion;
+    /* Visible on light/dark */
+}
+
+.nav-compass__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+.nav-compass__dot:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.5);
+}
+
+.nav-compass__dot--active {
+    background: var(--color-accent, gold);
+    transform: scale(1.5);
+    box-shadow: 0 0 8px var(--color-accent, gold);
+}
+
+/* Zen Mode Integration (if body has class) */
+body.zen-mode-active .nav-compass {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease-in-out;
+}

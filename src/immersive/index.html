@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Aion — A Visual Journey through Jung's Self</title>
+    <meta name="description"
+        content="An immersive full-screen visualization of C.G. Jung's Aion: Researches into the Phenomenology of the Self">
+
+    <!-- Design System -->
+    <link rel="stylesheet" href="../styles/fonts.css">
+    <link rel="stylesheet" href="../styles/tokens.css">
+    <link rel="stylesheet" href="immersive-shell.css">
+
+    <!-- Three.js -->
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading</div>
+    </div>
+
+    <!-- 3D Canvas Container -->
+    <div id="viz-canvas"></div>
+
+    <!-- HUD Overlay -->
+    <div id="hud" class="hud">
+
+        <!-- Top: Chapter ID + Title + Info Toggle -->
+        <div class="hud-top">
+            <div>
+                <div id="hud-chapter-id" class="hud-chapter-id">Chapter 01</div>
+                <h1 id="hud-title" class="hud-title">The Ego</h1>
+            </div>
+            <button id="hud-info-toggle" class="hud-info-toggle" aria-label="Show chapter info">ℹ</button>
+        </div>
+
+        <!-- Info Pill -->
+        <div id="hud-info-pill" class="hud-info-pill">
+            <p id="hud-info-text"></p>
+        </div>
+
+        <!-- Bottom: Navigation Pill -->
+        <div class="hud-bottom">
+            <nav class="hud-nav-pill" aria-label="Chapter navigation">
+                <button id="nav-prev" class="nav-btn" aria-label="Previous chapter">← Prev</button>
+                <button id="nav-selector" class="nav-btn-selector" aria-label="Chapter selector"></button>
+                <button id="nav-next" class="nav-btn" aria-label="Next chapter">Next →</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Pause Indicator -->
+    <div id="pause-indicator" class="pause-indicator">Paused</div>
+
+    <!-- Chapter Selector Overlay -->
+    <div id="chapter-selector" class="chapter-selector">
+        <button id="selector-close" class="chapter-selector-close" aria-label="Close selector">✕</button>
+        <h2 class="chapter-selector-title">Choose a Chapter</h2>
+        <div id="chapter-grid" class="chapter-grid">
+            <!-- Populated by ImmersiveShell.js -->
+        </div>
+    </div>
+
+    <!-- Bootstrap -->
+    <script type="module">
+        import ImmersiveShell from './ImmersiveShell.js';
+        window.shell = new ImmersiveShell();
+    </script>
+
+</body>
+
+</html>

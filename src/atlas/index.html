@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,39 +10,178 @@
   <link rel="stylesheet" href="src/styles.css" />
   <link rel="stylesheet" href="assets/css/minimalist-background.min.css" />
   <style>
-    .atlas-page { padding-top: calc(var(--nav-height) + var(--space-8)); }
-    .atlas-header { margin: 0 0 var(--space-8); text-align: center; }
-    .atlas-title { font-family: var(--font-display); font-variation-settings: 'wght' 650; font-size: clamp(2.25rem, 4vw, 3.25rem); margin: var(--space-2) 0; }
-    .atlas-lede { margin: 0 auto; max-width: 70ch; }
-    .atlas-layout { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); align-items: start; }
-    .atlas-canvas { position: relative; overflow: hidden; }
-    #atlas { width: 100%; height: min(72vh, 760px); display: block; border-radius: var(--radius-lg); background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-subtle); }
-    .atlas-node { cursor: pointer; transition: opacity var(--transition-fast); }
-    .atlas-node.is-dimmed { opacity: 0.22; }
-    .atlas-node:focus-visible circle { stroke: var(--accent); stroke-width: 3; }
-    .atlas-node:hover circle { stroke: var(--accent-light); }
-    .atlas-controls { position: absolute; left: var(--space-3); bottom: var(--space-3); display: flex; gap: 0.6rem; align-items: center; padding: 0.65rem 0.75rem; border-radius: var(--radius-lg); background: rgba(0, 0, 0, 0.55); border: 1px solid var(--border-subtle); backdrop-filter: blur(10px); }
-    .atlas-controls label { font-size: var(--text-sm); color: var(--text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; }
-    .atlas-controls input { width: min(240px, 44vw); background: rgba(0,0,0,0.35); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-primary); padding: 0.45rem 0.6rem; }
-    .atlas-controls button { border: 1px solid var(--border-default); border-radius: var(--radius-md); background: transparent; color: var(--text-primary); padding: 0.45rem 0.7rem; cursor: pointer; }
-    .atlas-details { padding: var(--space-4); }
-    .atlas-details h2 { margin: 0 0 var(--space-2); font-family: var(--font-display); font-variation-settings: 'wght' 560; font-size: var(--text-xl); }
-    .atlas-details p { margin: 0.5rem 0; }
-    .atlas-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: var(--space-3); }
-    .atlas-badge { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.14em; padding: 0.4rem 0.6rem; border-radius: 999px; border: 1px solid var(--border-subtle); background: rgba(0, 0, 0, 0.35); color: var(--text-secondary); }
-    .atlas-open { display: inline-flex; align-items: center; justify-content: center; margin-top: var(--space-3); padding: 0.7rem 0.9rem; border-radius: var(--radius-md); border: 1px solid color-mix(in srgb, var(--accent) 65%, rgba(255,255,255,0.2)); color: var(--text-primary); text-decoration: none; background: rgba(0,0,0,0.35); }
-    .atlas-open:hover { background: rgba(0,0,0,0.5); }
-    @media (max-width: 980px) { .atlas-layout { grid-template-columns: 1fr; } #atlas { height: 58vh; } .atlas-controls { position: static; margin-top: var(--space-3); } }
+    .atlas-page {
+      padding-top: calc(var(--nav-height) + var(--space-8));
+    }
+
+    .atlas-header {
+      margin: 0 0 var(--space-8);
+      text-align: center;
+    }
+
+    .atlas-title {
+      font-family: var(--font-display);
+      font-variation-settings: 'wght' 650;
+      font-size: clamp(2.25rem, 4vw, 3.25rem);
+      margin: var(--space-2) 0;
+    }
+
+    .atlas-lede {
+      margin: 0 auto;
+      max-width: 70ch;
+    }
+
+    .atlas-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+
+    .atlas-canvas {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #atlas {
+      width: 100%;
+      height: min(72vh, 760px);
+      display: block;
+      border-radius: var(--radius-lg);
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .atlas-node {
+      cursor: pointer;
+      transition: opacity var(--transition-fast);
+    }
+
+    .atlas-node.is-dimmed {
+      opacity: 0.22;
+    }
+
+    .atlas-node:focus-visible circle {
+      stroke: var(--accent);
+      stroke-width: 3;
+    }
+
+    .atlas-node:hover circle {
+      stroke: var(--accent-light);
+    }
+
+    .atlas-controls {
+      position: absolute;
+      left: var(--space-3);
+      bottom: var(--space-3);
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.65rem 0.75rem;
+      border-radius: var(--radius-lg);
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+    }
+
+    .atlas-controls label {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .atlas-controls input {
+      width: min(240px, 44vw);
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: 0.45rem 0.6rem;
+    }
+
+    .atlas-controls button {
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--text-primary);
+      padding: 0.45rem 0.7rem;
+      cursor: pointer;
+    }
+
+    .atlas-details {
+      padding: var(--space-4);
+    }
+
+    .atlas-details h2 {
+      margin: 0 0 var(--space-2);
+      font-family: var(--font-display);
+      font-variation-settings: 'wght' 560;
+      font-size: var(--text-xl);
+    }
+
+    .atlas-details p {
+      margin: 0.5rem 0;
+    }
+
+    .atlas-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: var(--space-3);
+    }
+
+    .atlas-badge {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.4rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(0, 0, 0, 0.35);
+      color: var(--text-secondary);
+    }
+
+    .atlas-open {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: var(--space-3);
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-md);
+      border: 1px solid color-mix(in srgb, var(--accent) 65%, rgba(255, 255, 255, 0.2));
+      color: var(--text-primary);
+      text-decoration: none;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .atlas-open:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 980px) {
+      .atlas-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #atlas {
+        height: 58vh;
+      }
+
+      .atlas-controls {
+        position: static;
+        margin-top: var(--space-3);
+      }
+    }
   </style>
 </head>
+
 <body>
   <nav id="navigation" class="nav" aria-label="Main navigation">
     <div class="nav-container">
       <a href="./" class="nav-link">Home</a>
       <a href="chapters/index.html" class="nav-link">Chapters</a>
       <a href="src/atlas/index.html" class="nav-link active">Atlas</a>
-      <a href="src/timeline.html" class="nav-link">Timeline</a>
-      <a href="src/symbols.html" class="nav-link">Symbols</a>
       <a href="about.html" class="nav-link">About</a>
     </div>
   </nav>
@@ -51,12 +191,14 @@
       <header class="atlas-header">
         <p class="chapter-number">Atlas</p>
         <h1 class="atlas-title">Concept Atlas</h1>
-        <p class="atlas-lede">Explore Aion as a connected system: chapters, motifs, and cross-links. Select a node to read its context and jump directly into the unified chapter view.</p>
+        <p class="atlas-lede">Explore Aion as a connected system: chapters, motifs, and cross-links. Select a node to
+          read its context and jump directly into the unified chapter view.</p>
       </header>
 
       <section class="atlas-layout">
         <div class="card atlas-canvas">
-          <svg id="atlas" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" aria-label="Aion chapter atlas"></svg>
+          <svg id="atlas" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet"
+            aria-label="Aion chapter atlas"></svg>
           <form class="atlas-controls" aria-label="Atlas controls" onsubmit="return false;">
             <label for="atlas-search">Search</label>
             <input id="atlas-search" type="search" placeholder="Chapter title or concept" autocomplete="off" />
@@ -76,6 +218,7 @@
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script type="module" src="src/atlas/atlas.js"></script>
-  <script type="module" src="src/features/glossary/glossary-ui.js"></script>
+  <script type="module" src="src/features/glossary/glossary-ui.js?v=5"></script>
 </body>
+
 </html>

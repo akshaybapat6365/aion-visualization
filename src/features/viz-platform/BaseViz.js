@@ -6,6 +6,14 @@
  * - Manages `ResizeObserver` and canvas sizing (DPR-aware).
  * - Provides standardized lifecycle hooks: `init`, `update`, `render`, `dispose`.
  * - Exposes `context` (2D or WebGL) to subclasses.
+ * 
+ * LIFECYCLE (Phase 7 — Mount Pattern):
+ * 1. constructor(container, options) — Stores refs only. Does NOT create canvas.
+ * 2. mount() — Called by VizController. Creates canvas, waits for non-zero size,
+ *              calls init(), starts animation loop.
+ * 3. init() — Subclass override. Safe to access this.canvas, this.width, this.height.
+ * 4. update(dt) / render() — Called every frame.
+ * 5. dispose() — Cleanup.
  */
 export default class BaseViz {
     constructor(container, options = {}) {
@@ -26,41 +34,93 @@ export default class BaseViz {
         this.time = 0;
         this.frameId = null;
         this.isVisible = false;
+        this.isMounted = false;
         this.scrollState = { globalProgress: 0, sectionProgress: 0, activeSection: 0 };
 
         this._onResize = this._onResize.bind(this);
         this._loop = this._loop.bind(this);
-
-        this._initCore();
     }
 
-    _initCore() {
-        console.log('[BaseViz] _initCore start');
+    /**
+     * Mount the visualization. Called by VizController AFTER the constructor.
+     * This is the safe entry point that creates the canvas and calls init().
+     */
+    async mount() {
+        if (this.isMounted) return;
+        this.isMounted = true;
+
+        console.log('[BaseViz] mount() start');
+
+        // 1. Create canvas
         this.canvas = document.createElement('canvas');
         this.canvas.style.display = 'block';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
         this.container.appendChild(this.canvas);
 
-        this.ctx = this.canvas.getContext(this.options.contextType, {
-            alpha: false, // Performance optimization
-            desynchronized: true
-        });
+        // 2. Get context
+        if (this.options.contextType === 'webgl' || this.options.contextType === 'webgl2') {
+            // For WebGL, the Three.js renderer will create its own context from the canvas.
+            // We store a reference but don't call getContext() — that would conflict.
+            this.ctx = null;
+        } else {
+            this.ctx = this.canvas.getContext(this.options.contextType, {
+                alpha: false,
+                desynchronized: true
+            });
+        }
 
-        this.resizeObserver = new ResizeObserver((entries) => {
+        // 3. Wait for container to have valid dimensions
+        await this._ensureContainerSize();
+
+        // 4. Resize observer for future changes
+        this.resizeObserver = new ResizeObserver(() => {
             window.requestAnimationFrame(() => this._onResize());
         });
         this.resizeObserver.observe(this.container);
 
-        // Initial resize to set dimensions
+        // 5. Initial resize
         this._onResize();
 
-        // Lifecycle: init
-        console.log('[BaseViz] Scheduling init/start');
-        Promise.resolve(this.init()).then(() => {
-            console.log('[BaseViz] init resolved, calling start()');
-            this.start();
-        }).catch(err => console.error('[BaseViz] init failed:', err));
+        // 6. Call subclass init
+        console.log('[BaseViz] Calling init()...');
+        await this.init();
+
+        // 7. Start animation loop
+        console.log('[BaseViz] init resolved, calling start()');
+        this.start();
+    }
+
+    /**
+     * Wait until the container has non-zero dimensions.
+     * Retries up to 20 times (2 seconds total) with requestAnimationFrame.
+     */
+    _ensureContainerSize() {
+        return new Promise((resolve) => {
+            let attempts = 0;
+            const maxAttempts = 20;
+
+            const check = () => {
+                const rect = this.container.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    this.width = rect.width;
+                    this.height = rect.height;
+                    console.log(`[BaseViz] Container ready: ${this.width}x${this.height}`);
+                    resolve();
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    requestAnimationFrame(check);
+                } else {
+                    // Fallback: use viewport size
+                    console.warn('[BaseViz] Container has zero dimensions after timeout. Using viewport fallback.');
+                    this.width = window.innerWidth;
+                    this.height = window.innerHeight;
+                    resolve();
+                }
+            };
+
+            check();
+        });
     }
 
     /* ─── Lifecycle Hooks (Override these) ─── */
@@ -105,12 +165,15 @@ export default class BaseViz {
         }
         this.canvas = null;
         this.ctx = null;
+        this.isMounted = false;
     }
 
     _onResize() {
         if (!this.container || !this.canvas) return;
 
         const rect = this.container.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return; // Skip zero-size resizes
+
         this.width = rect.width;
         this.height = rect.height;
         this.dpr = window.devicePixelRatio || 1;
@@ -119,11 +182,10 @@ export default class BaseViz {
         this.canvas.width = this.width * this.dpr;
         this.canvas.height = this.height * this.dpr;
 
-        if (this.options.contextType === '2d') {
+        if (this.options.contextType === '2d' && this.ctx) {
             this.ctx.scale(this.dpr, this.dpr);
-        } else if (this.options.contextType === 'webgl' || this.options.contextType === 'webgl2') {
-            this.ctx.viewport(0, 0, this.canvas.width, this.canvas.height);
         }
+        // Note: WebGL viewport is managed by Three.js renderer, not here.
 
         this.onResize(this.width, this.height);
     }

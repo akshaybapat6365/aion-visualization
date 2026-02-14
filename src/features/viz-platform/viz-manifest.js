@@ -8,7 +8,7 @@ export const VIZ_MANIFEST = {
     ch2: '/src/visualizations/chapters/ch2/shadow-projection-viz.js',
     ch3: '/src/visualizations/chapters/ch3/syzygy-poles-viz.js',
     ch4: '/src/visualizations/chapters/ch4/self-mandala-viz.js',
-    ch5: '/src/visualizations/chapters/ch5/christ-quaternity.js',
+    ch5: '/src/visualizations/chapters/ch5/christ-quaternity.js?v=1',
     ch6: '/src/visualizations/chapters/ch6/aeon-wheel-viz.js',
     ch7: '/src/visualizations/chapters/ch7/prophecy-timeline-viz.js',
     ch8: '/src/visualizations/chapters/ch8/fish-evolution-viz.js',

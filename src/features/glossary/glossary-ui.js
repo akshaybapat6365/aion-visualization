@@ -121,14 +121,15 @@ function mountGlossaryDrawer() {
   `;
 
   document.body.appendChild(drawer);
-  navContainer.appendChild(trigger);
+  // Nav trigger removed — glossary is accessible via Symbols page.
+  // Drawer can still be opened programmatically if needed.
 
   const search = drawer.querySelector('#glossary-search');
   const termList = drawer.querySelector('#glossary-term-list');
 
-    const renderTerms = (query = '') => {
-      const q = query.trim().toLowerCase();
-      termList.innerHTML = state.glossary.terms
+  const renderTerms = (query = '') => {
+    const q = query.trim().toLowerCase();
+    termList.innerHTML = state.glossary.terms
       .filter((term) => !q
         || term.canonicalLabel.toLowerCase().includes(q)
         || term.definitionTiers.beginner.toLowerCase().includes(q))
@@ -175,7 +176,7 @@ function mountGlossaryDrawer() {
     await loadGlossary();
     injectDrawerStyles();
     hydrateChapterConceptCards();
-    mountGlossaryDrawer();
+    // mountGlossaryDrawer(); — disabled: glossary nav button removed from site nav
   } catch (error) {
     console.error('Glossary initialization failed:', error);
   }
