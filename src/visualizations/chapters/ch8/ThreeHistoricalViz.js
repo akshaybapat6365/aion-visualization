@@ -21,7 +21,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
-/* ── Palette ── */
+/* ── Palette (true black base) ── */
 const STAR_GOLD = new THREE.Color('#ffd700');
 const WOMAN_WHITE = new THREE.Color('#f0f0ff');
 const DRAGON_RED = new THREE.Color('#8b0000');
@@ -30,8 +30,8 @@ const FISH_CYAN = new THREE.Color('#22d3ee');
 const HEAL_GREEN = new THREE.Color('#32cd32');
 const ARIES_RED = new THREE.Color('#ff4444');
 const PISCES_BLUE = new THREE.Color('#4a90d9');
-const WATER_DARK = new THREE.Color('#0a1a2a');
-const VOID = 0x030310;
+const WATER_DARK = new THREE.Color('#050505');
+const VOID = 0x000000;
 
 /* ── Scene boundaries ── */
 const S1_END = 0.20;
@@ -61,10 +61,10 @@ export default class ThreeHistoricalViz extends BaseViz {
         R.setSize(this.width, this.height);
         R.setClearColor(VOID);
         R.toneMapping = THREE.ACESFilmicToneMapping;
-        R.toneMappingExposure = 1.0;
+        R.toneMappingExposure = 1.1;
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(VOID, 0.01);
+        this.scene.fog = new THREE.FogExp2(VOID, 0.008);
         this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 200);
         this.camera.position.set(0, 4, 16);
 
@@ -79,17 +79,35 @@ export default class ThreeHistoricalViz extends BaseViz {
 
         /* ── Scroll state ── */
         this._scrollP = 0;
-        this._scrollDiv = document.createElement('div');
-        Object.assign(this._scrollDiv.style, {
-            position: 'fixed', top: '0', left: '0', width: '100vw',
-            height: '500vh', pointerEvents: 'none', zIndex: '-1',
-        });
+
+        /* Override chapter-shell.css overflow:hidden to enable native scroll */
+        this._origBodyOverflow = document.body.style.overflow;
+        this._origHtmlOverflow = document.documentElement.style.overflow;
+        document.body.style.overflow = 'auto';
+        document.body.style.overflowX = 'hidden';
+        document.documentElement.style.overflow = 'auto';
+        document.documentElement.style.overflowX = 'hidden';
         document.body.style.height = '500vh';
+        document.body.style.background = '#000';
+
+        /* Scroll from native scrollbar + trackpad */
         this._onScroll = () => {
             const maxScroll = document.body.scrollHeight - innerHeight;
             this._scrollP = maxScroll > 0 ? window.scrollY / maxScroll : 0;
         };
         addEventListener('scroll', this._onScroll, { passive: true });
+
+        /* Wheel fallback — synthetic scroll for contexts where native fails */
+        this._virtualY = 0;
+        this._onWheel = (e) => {
+            /* If native scroll is working (scrollY changes), skip synthetic */
+            if (document.body.scrollHeight > innerHeight + 10) return;
+            e.preventDefault();
+            const maxScroll = innerHeight * 4; /* 500vh - 100vh */
+            this._virtualY = Math.max(0, Math.min(maxScroll, this._virtualY + e.deltaY));
+            this._scrollP = this._virtualY / maxScroll;
+        };
+        addEventListener('wheel', this._onWheel, { passive: false });
 
         /* ── Build scenes ── */
         this._buildScene1_CelestialVision();
@@ -523,7 +541,7 @@ export default class ThreeHistoricalViz extends BaseViz {
 
     /* ─── Lights ── */
     _buildLights() {
-        this.scene.add(new THREE.AmbientLight(0x0a0a18, 0.35));
+        this.scene.add(new THREE.AmbientLight(0x080808, 0.3));
         // Golden light from above (woman)
         const sunLight = new THREE.PointLight(0xffd700, 0.9, 20);
         sunLight.position.set(0, 8, 5);
@@ -543,127 +561,164 @@ export default class ThreeHistoricalViz extends BaseViz {
 
     /* ─── Annotation overlay ── */
     _buildOverlay() {
+        /* ── Inject CSS keyframes once ── */
+        if (!document.getElementById('ch8-anim-style')) {
+            const style = document.createElement('style');
+            style.id = 'ch8-anim-style';
+            style.textContent = `
+                @keyframes ch8Rise {
+                    from { opacity: 0; transform: translateY(24px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes ch8FadeIn {
+                    from { opacity: 0; }
+                    to   { opacity: 1; }
+                }
+                .ch8-quote { will-change: opacity, transform; }
+                .ch8-label { will-change: opacity; }
+            `;
+            document.head.appendChild(style);
+        }
+
         const ov = document.createElement('div');
         Object.assign(ov.style, {
             position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '10',
         });
 
+        /* ── Scene accent colors ── */
+        const GOLD = 'rgba(255,215,0,';    // Scene 1 — celestial
+        const SILVER = 'rgba(192,200,210,';  // Scene 2 — hook
+        const EMERALD = 'rgba(80,220,120,';   // Scene 3 — healing
+        const CRIMSON = 'rgba(255,90,80,';    // Scene 4 — Aries
+        const AZURE = 'rgba(100,170,240,';  // Scene 4 — Pisces
+        const DEEP = 'rgba(120,160,220,';  // Scene 5 — primordial
+
         /* ── Helper: create positioned div ── */
-        const mkEl = (html, css) => {
+        const mkEl = (html, css, cls = '') => {
             const el = document.createElement('div');
-            el.style.cssText = `position:absolute;pointer-events:none;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;text-shadow:0 2px 20px rgba(0,0,0,0.7);${css}`;
+            el.className = cls;
+            el.style.cssText = `position:absolute;pointer-events:none;opacity:0;` +
+                `transition:opacity 1.2s cubic-bezier(0.25,0.46,0.45,0.94),` +
+                `transform 1.2s cubic-bezier(0.25,0.46,0.45,0.94);` +
+                `text-shadow:0 2px 30px rgba(0,0,0,0.85),0 0 60px rgba(0,0,0,0.4);${css}`;
             el.innerHTML = html;
             ov.appendChild(el);
             return el;
         };
 
-        const SERIF = '"Instrument Serif","Playfair Display",serif';
+        const SERIF = '"Instrument Serif","Playfair Display",Georgia,serif';
         const SANS = '"Inter",system-ui,sans-serif';
 
-        /* ═══ CHAPTER CONTEXT BAR (always visible, fades with scroll) ═══ */
+        /* ═══ CHAPTER CONTEXT BAR ═══ */
         this._chapterBar = mkEl(
-            `<span style="opacity:0.5">CHAPTER VIII</span>` +
-            `<span style="display:inline-block;width:2rem"></span>` +
-            `<span style="opacity:0.35;letter-spacing:0.08em">THE HISTORICAL SIGNIFICANCE OF THE FISH</span>`,
-            `top:16px;left:50%;transform:translateX(-50%);font-family:${SANS};font-size:0.55rem;` +
-            `color:rgba(255,255,255,0.5);letter-spacing:0.18em;text-transform:uppercase;text-align:center;opacity:1;`
+            `<span style="opacity:0.6;font-weight:300">CHAPTER VIII</span>` +
+            `<span style="display:inline-block;width:1.5rem;opacity:0.2">·</span>` +
+            `<span style="opacity:0.3;letter-spacing:0.12em;font-weight:300">THE HISTORICAL SIGNIFICANCE OF THE FISH</span>`,
+            `top:18px;left:50%;transform:translateX(-50%);font-family:${SANS};font-size:0.55rem;` +
+            `color:rgba(255,255,255,0.45);letter-spacing:0.2em;text-transform:uppercase;text-align:center;opacity:1;`
         );
 
-        /* ═══ SCENE HEADERS (top-left, Roman numeral + sub-line) ═══ */
-        const mkHeader = (num, title, sub) => mkEl(
-            `<div style="font-family:${SANS};font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px">${num} · ${title}</div>` +
-            `<div style="font-family:${SERIF};font-style:italic;font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:0.04em">${sub}</div>`,
+        /* ═══ SCENE HEADERS — Instrument Serif italic sub-line ═══ */
+        const mkHeader = (num, title, sub, accentColor) => mkEl(
+            `<div style="font-family:${SANS};font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;` +
+            `color:${accentColor}0.4);margin-bottom:6px;font-weight:300">${num} · ${title}</div>` +
+            `<div style="font-family:${SERIF};font-style:italic;font-size:0.7rem;` +
+            `color:${accentColor}0.25);letter-spacing:0.03em;line-height:1.4">${sub}</div>`,
             `top:52px;left:28px;text-align:left;`
         );
-        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon');
-        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep');
-        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness');
-        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces');
-        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — integration of the unconscious');
+        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon', GOLD);
+        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep', SILVER);
+        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness', EMERALD);
+        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces', CRIMSON);
+        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — totality of the unconscious', DEEP);
 
-        /* ═══ PRIMARY QUOTES + EXPLANATORY SUB-TEXT ═══ */
+        /* ═══ PRIMARY QUOTES — Instrument Serif italic with explanatory text ═══ */
         const mkQuote = (quote, explain, css) => mkEl(
-            `<div style="font-family:${SERIF};font-style:italic;font-size:1.4rem;margin-bottom:8px;letter-spacing:0.03em">${quote}</div>` +
-            `<div style="font-family:${SERIF};font-size:0.62rem;opacity:0.45;letter-spacing:0.04em;max-width:340px;margin:0 auto;line-height:1.5">${explain}</div>`,
-            `text-align:center;${css}`
+            `<div style="font-family:${SERIF};font-style:italic;font-size:clamp(1.2rem,2.5vw,1.9rem);` +
+            `margin-bottom:12px;letter-spacing:0.02em;line-height:1.25">${quote}</div>` +
+            `<div style="font-family:${SERIF};font-size:0.6rem;opacity:0.35;letter-spacing:0.05em;` +
+            `max-width:320px;margin:0 auto;line-height:1.6">${explain}</div>`,
+            `text-align:center;${css}`,
+            'ch8-quote'
         );
 
         this._ann1 = mkQuote(
             'A woman clothed with the sun',
-            'The divine feminine crowned with the zodiac,<br>the moon beneath her feet',
-            'top:14%;left:50%;transform:translateX(-50%) translateY(12px);color:rgba(255,215,0,0.85);'
+            'The divine feminine crowned with the zodiac — the moon beneath her feet',
+            `top:14%;left:50%;transform:translateX(-50%) translateY(20px);color:${GOLD}0.9);`
         );
         this._ann2 = mkQuote(
             'The Cross as Hook, Christ as Bait',
-            'Patristic allegory — the crucifixion snares<br>the primordial unconscious',
-            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(12px);color:rgba(200,200,210,0.85);'
+            'Patristic allegory — the crucifixion snares the primordial unconscious',
+            `top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);color:${SILVER}0.85);`
         );
         this._ann3 = mkQuote(
             'The fish that heals blindness',
-            'Tobias extracts the healing organs —<br>libido drawn from the unconscious into consciousness',
-            'top:42%;left:50%;transform:translate(-50%,0) translateY(12px);color:rgba(50,205,50,0.8);'
+            'Tobias extracts the healing organs — libido drawn from the unconscious into consciousness',
+            `top:42%;left:50%;transform:translate(-50%,0) translateY(20px);color:${EMERALD}0.85);`
         );
         this._ann4 = mkQuote(
             'From the Ram to the Fish',
-            'The astrological age shift mirrors<br>the psychological transformation of an era',
-            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(12px);' +
-            'background:linear-gradient(90deg,rgba(255,68,68,0.85),rgba(74,144,217,0.85));' +
-            '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;'
+            'The astrological age shift mirrors the psychological transformation of an era',
+            `top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);` +
+            `background:linear-gradient(90deg,${CRIMSON}0.9),${AZURE}0.9));` +
+            `-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;`
         );
         this._ann5 = mkQuote(
             'In the depths, the Self',
-            'The fish as totality — Christ and Leviathan<br>unified in the collective unconscious',
-            'bottom:16%;left:50%;transform:translateX(-50%) translateY(12px);color:rgba(74,144,217,0.75);'
+            'The fish as totality — Christ and Leviathan unified in the collective unconscious',
+            `bottom:16%;left:50%;transform:translateX(-50%) translateY(20px);color:${DEEP}0.8);`
         );
 
-        /* ═══ ELEMENT LABELS (small, near geometry positions) ═══ */
-        const mkLabel = (text, css) => mkEl(
+        /* ═══ SELECTIVE ELEMENT LABELS — 2−3 per scene, restrained ═══ */
+        const mkLabel = (text, accentColor, css) => mkEl(
             text,
-            `font-family:${SANS};font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);${css}`
+            `font-family:${SERIF};font-style:italic;font-size:0.55rem;letter-spacing:0.06em;` +
+            `color:${accentColor}0.22);${css}`,
+            'ch8-label'
         );
 
-        // Scene 1 labels
-        this._lbl_woman = mkLabel('The Woman', 'top:28%;left:50%;transform:translateX(-50%);');
-        this._lbl_crown = mkLabel('Crown of 12 Stars', 'top:23%;left:50%;transform:translateX(-50%);');
-        this._lbl_dragon = mkLabel('Seven-Headed Dragon', 'bottom:32%;left:50%;transform:translateX(-50%);');
-        this._lbl_moon = mkLabel('Moon at her feet', 'top:42%;left:50%;transform:translateX(-50%);');
+        // Scene 1: two key symbols
+        this._lbl_crown = mkLabel('Crown of Twelve Stars', GOLD, 'top:22%;left:50%;transform:translateX(-50%);');
+        this._lbl_dragon = mkLabel('The Seven-Headed Dragon', GOLD, 'bottom:30%;left:50%;transform:translateX(-50%);');
 
-        // Scene 2 labels
-        this._lbl_cross = mkLabel('The Cross', 'top:18%;right:32%;');
-        this._lbl_ichthys = mkLabel('Ichthys — Fish-Christ', 'top:60%;right:30%;');
-        this._lbl_leviathan = mkLabel('Leviathan', 'bottom:22%;right:30%;');
+        // Scene 2: cross and leviathan
+        this._lbl_cross = mkLabel('The Cross', SILVER, 'top:20%;right:28%;');
+        this._lbl_leviathan = mkLabel('Leviathan', SILVER, 'bottom:24%;right:28%;');
 
-        // Scene 3 labels
-        this._lbl_tobit = mkLabel("Tobit's Fish", 'top:38%;left:28%;');
-        this._lbl_healing = mkLabel('Healing emanation', 'top:52%;left:22%;');
+        // Scene 3: single label
+        this._lbl_tobit = mkLabel('Tobit\'s Fish', EMERALD, 'top:36%;left:26%;');
 
-        // Scene 4 labels
-        this._lbl_aries = mkLabel('♈ Aries', 'top:32%;left:30%;');
-        this._lbl_pisces = mkLabel('♓ Pisces', 'top:58%;right:30%;');
+        // Scene 4: zodiac signs
+        this._lbl_aries = mkLabel('♈ Aries', CRIMSON, 'top:30%;left:28%;');
+        this._lbl_pisces = mkLabel('♓ Pisces', AZURE, 'top:56%;right:28%;');
 
-        // Scene 5 labels
-        this._lbl_self = mkLabel('The Self', 'bottom:28%;left:50%;transform:translateX(-50%);');
+        // Scene 5: the Self
+        this._lbl_self = mkLabel('The Self', DEEP, 'bottom:26%;left:50%;transform:translateX(-50%);');
 
-        /* ═══ SCROLL PROGRESS INDICATOR (right edge, 5 dots) ═══ */
-        const progressContainer = document.createElement('div');
-        progressContainer.style.cssText = `position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:12px;`;
+        /* ═══ SCROLL PROGRESS — minimal dot track ═══ */
+        const pc = document.createElement('div');
+        pc.style.cssText = `position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:11;` +
+            `pointer-events:none;display:flex;flex-direction:column;align-items:flex-end;gap:14px;`;
         this._progressDots = [];
         const nums = ['I', 'II', 'III', 'IV', 'V'];
         for (let i = 0; i < 5; i++) {
             const wrap = document.createElement('div');
-            wrap.style.cssText = `display:flex;align-items:center;gap:6px;flex-direction:row-reverse;`;
+            wrap.style.cssText = `display:flex;align-items:center;gap:8px;flex-direction:row-reverse;`;
             const dot = document.createElement('div');
-            dot.style.cssText = `width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.5s ease;box-shadow:none;`;
-            const label = document.createElement('div');
-            label.style.cssText = `font-family:${SANS};font-size:0.45rem;color:rgba(255,255,255,0);letter-spacing:0.1em;transition:color 0.5s ease;white-space:nowrap;`;
-            label.textContent = nums[i];
-            wrap.appendChild(label);
+            dot.style.cssText = `width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.12);` +
+                `transition:all 0.6s cubic-bezier(0.25,0.46,0.45,0.94);`;
+            const lbl = document.createElement('div');
+            lbl.style.cssText = `font-family:${SERIF};font-style:italic;font-size:0.4rem;` +
+                `color:rgba(255,255,255,0);letter-spacing:0.08em;transition:color 0.6s ease;white-space:nowrap;`;
+            lbl.textContent = nums[i];
+            wrap.appendChild(lbl);
             wrap.appendChild(dot);
-            progressContainer.appendChild(wrap);
-            this._progressDots.push({ dot, label });
+            pc.appendChild(wrap);
+            this._progressDots.push({ dot, label: lbl });
         }
-        ov.appendChild(progressContainer);
-        this._progressContainer = progressContainer;
+        ov.appendChild(pc);
+        this._progressContainer = pc;
 
         this.canvas.parentElement.appendChild(ov);
         this._overlay = ov;
@@ -847,23 +902,19 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._setAnnotation(this._hdr4, smoothstep(0.59, 0.63, p) * (1 - smoothstep(0.76, 0.80, p)));
         this._setAnnotation(this._hdr5, smoothstep(0.79, 0.83, p));
 
-        /* ── Element labels (tighter ranges to prevent overlap) ── */
-        const s1lbl = smoothstep(0.04, 0.09, p) * (1 - smoothstep(0.13, 0.18, p));
-        this._setAnnotation(this._lbl_woman, s1lbl);
+        /* ── Element labels (selective, 2-3 per scene) ── */
+        const s1lbl = smoothstep(0.04, 0.10, p) * (1 - smoothstep(0.14, 0.19, p));
         this._setAnnotation(this._lbl_crown, s1lbl);
         this._setAnnotation(this._lbl_dragon, s1lbl);
-        this._setAnnotation(this._lbl_moon, s1lbl);
 
-        const s2lbl = smoothstep(0.24, 0.29, p) * (1 - smoothstep(0.33, 0.38, p));
+        const s2lbl = smoothstep(0.24, 0.30, p) * (1 - smoothstep(0.34, 0.39, p));
         this._setAnnotation(this._lbl_cross, s2lbl);
-        this._setAnnotation(this._lbl_ichthys, s2lbl);
         this._setAnnotation(this._lbl_leviathan, s2lbl);
 
-        const s3lbl = smoothstep(0.44, 0.49, p) * (1 - smoothstep(0.53, 0.58, p));
+        const s3lbl = smoothstep(0.44, 0.50, p) * (1 - smoothstep(0.54, 0.59, p));
         this._setAnnotation(this._lbl_tobit, s3lbl);
-        this._setAnnotation(this._lbl_healing, s3lbl);
 
-        const s4lbl = smoothstep(0.64, 0.69, p) * (1 - smoothstep(0.73, 0.78, p));
+        const s4lbl = smoothstep(0.64, 0.70, p) * (1 - smoothstep(0.74, 0.79, p));
         this._setAnnotation(this._lbl_aries, s4lbl);
         this._setAnnotation(this._lbl_pisces, s4lbl);
 
@@ -881,10 +932,10 @@ export default class ThreeHistoricalViz extends BaseViz {
             for (let i = 0; i < 5; i++) {
                 const { dot, label } = this._progressDots[i];
                 const isActive = i === activeScene;
-                dot.style.background = isActive ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.15)';
-                dot.style.boxShadow = isActive ? '0 0 6px rgba(255,255,255,0.4)' : 'none';
-                dot.style.width = dot.style.height = isActive ? '6px' : '5px';
-                label.style.color = isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0)';
+                dot.style.background = isActive ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.1)';
+                dot.style.boxShadow = isActive ? '0 0 8px rgba(255,255,255,0.3)' : 'none';
+                dot.style.width = dot.style.height = isActive ? '5px' : '4px';
+                label.style.color = isActive ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0)';
             }
         }
 
@@ -940,8 +991,16 @@ export default class ThreeHistoricalViz extends BaseViz {
     dispose() {
         removeEventListener('mousemove', this._onMM);
         removeEventListener('scroll', this._onScroll);
+        removeEventListener('wheel', this._onWheel);
+        /* Restore overflow to original values */
+        document.body.style.overflow = this._origBodyOverflow || '';
+        document.documentElement.style.overflow = this._origHtmlOverflow || '';
+        document.body.style.overflowX = '';
+        document.documentElement.style.overflowX = '';
         document.body.style.height = '';
+        document.body.style.background = '';
         if (this._overlay) this._overlay.remove();
+        if (this._progressContainer) this._progressContainer.remove();
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
         this.scene?.traverse(o => {
             o.geometry?.dispose();
