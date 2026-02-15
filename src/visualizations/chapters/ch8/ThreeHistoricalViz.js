@@ -561,156 +561,244 @@ export default class ThreeHistoricalViz extends BaseViz {
 
     /* ─── Annotation overlay ── */
     _buildOverlay() {
-        /* ── Inject CSS keyframes once ── */
-        if (!document.getElementById('ch8-anim-style')) {
-            const style = document.createElement('style');
-            style.id = 'ch8-anim-style';
-            style.textContent = `
-                @keyframes ch8Rise {
-                    from { opacity: 0; transform: translateY(24px); }
-                    to   { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes ch8FadeIn {
-                    from { opacity: 0; }
-                    to   { opacity: 1; }
-                }
-                .ch8-quote { will-change: opacity, transform; }
-                .ch8-label { will-change: opacity; }
-            `;
-            document.head.appendChild(style);
-        }
-
         const ov = document.createElement('div');
-        Object.assign(ov.style, {
-            position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '10',
-        });
+        ov.className = 'ch8-annotations';
+        ov.setAttribute('aria-hidden', 'true');
 
-        /* ── Scene accent colors ── */
-        const GOLD = 'rgba(255,215,0,';    // Scene 1 — celestial
-        const SILVER = 'rgba(192,200,210,';  // Scene 2 — hook
-        const EMERALD = 'rgba(80,220,120,';   // Scene 3 — healing
-        const CRIMSON = 'rgba(255,90,80,';    // Scene 4 — Aries
-        const AZURE = 'rgba(100,170,240,';  // Scene 4 — Pisces
-        const DEEP = 'rgba(120,160,220,';  // Scene 5 — primordial
+        /* ── CSS: proper font declarations matching ch1–ch7 pattern ── */
+        const style = document.createElement('style');
+        style.id = 'ch8-anim-style';
+        style.textContent = `
+            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
 
-        /* ── Helper: create positioned div ── */
-        const mkEl = (html, css, cls = '') => {
+            .ch8-annotations {
+                position: fixed; inset: 0;
+                pointer-events: none; z-index: 10;
+                overflow: hidden;
+            }
+
+            /* ── Keyframes ── */
+            @keyframes ch8Rise {
+                0%   { opacity: 0; transform: translateY(28px) scale(0.97); filter: blur(3px); }
+                60%  { opacity: 0.85; transform: translateY(3px) scale(1); filter: blur(0); }
+                100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            }
+            @keyframes ch8LabelSlide {
+                0%   { opacity: 0; transform: translateX(-6px); }
+                100% { opacity: 1; transform: translateX(0); }
+            }
+            @keyframes ch8Glow {
+                0%, 100% { text-shadow: 0 0 20px currentColor, 0 2px 40px rgba(0,0,0,0.9); }
+                50%      { text-shadow: 0 0 45px currentColor, 0 2px 40px rgba(0,0,0,0.9); }
+            }
+
+            /* ── Base element ── */
+            .ch8-el {
+                position: absolute;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                text-shadow: 0 2px 30px rgba(0,0,0,0.85), 0 0 60px rgba(0,0,0,0.5);
+                will-change: opacity, transform;
+            }
+            .ch8-el.ch8-entering {
+                animation: ch8Rise 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+
+            /* ── Chapter bar ── */
+            .ch8-bar {
+                top: 18px; left: 50%; transform: translateX(-50%);
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 0.55rem; font-weight: 300;
+                color: rgba(255,255,255,0.45);
+                letter-spacing: 0.2em; text-transform: uppercase; text-align: center;
+            }
+            .ch8-bar-num { opacity: 0.6; }
+            .ch8-bar-sep { display: inline-block; width: 1.5rem; opacity: 0.2; }
+            .ch8-bar-title { opacity: 0.3; letter-spacing: 0.12em; }
+
+            /* ── Scene headers ── */
+            .ch8-hdr { top: 52px; left: 28px; text-align: left; }
+            .ch8-hdr-num {
+                font-family: 'Inter', system-ui, sans-serif;
+                font-size: 0.65rem; font-weight: 300;
+                letter-spacing: 0.25em; text-transform: uppercase;
+                margin-bottom: 6px;
+            }
+            .ch8-hdr-sub {
+                font-family: 'Instrument Serif', serif;
+                font-style: italic; font-size: 0.8rem;
+                letter-spacing: 0.03em; line-height: 1.4;
+            }
+
+            /* ── Quotes ── */
+            .ch8-quote { text-align: center; }
+            .ch8-quote-main {
+                font-family: 'Instrument Serif', serif;
+                font-style: italic;
+                font-size: clamp(1.4rem, 3vw, 2.2rem);
+                letter-spacing: 0.02em; line-height: 1.3;
+                margin-bottom: 14px;
+            }
+            .ch8-quote.ch8-entering .ch8-quote-main {
+                animation: ch8Glow 3s ease-in-out 1.4s infinite;
+            }
+            .ch8-quote-sub {
+                font-family: 'Instrument Serif', serif;
+                font-style: italic; font-size: 0.7rem;
+                opacity: 0.5; letter-spacing: 0.04em;
+                max-width: 340px; margin: 0 auto; line-height: 1.65;
+            }
+
+            /* ── Element labels ── */
+            .ch8-label {
+                font-family: 'Instrument Serif', serif;
+                font-style: italic; font-size: 0.65rem;
+                letter-spacing: 0.08em;
+            }
+            .ch8-label.ch8-entering {
+                animation: ch8LabelSlide 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            }
+
+            /* ── Scene accent colors ── */
+            .ch8-gold    { color: rgba(255, 215, 0, 0.9); }
+            .ch8-silver  { color: rgba(200, 210, 225, 0.85); }
+            .ch8-emerald { color: rgba(80, 220, 120, 0.85); }
+            .ch8-crimson { color: rgba(255, 90, 80, 0.9); }
+            .ch8-azure   { color: rgba(100, 170, 240, 0.9); }
+            .ch8-deep    { color: rgba(120, 165, 230, 0.85); }
+
+            .ch8-hdr-num.ch8-gold    { color: rgba(255, 215, 0, 0.65); }
+            .ch8-hdr-num.ch8-silver  { color: rgba(200, 210, 225, 0.6); }
+            .ch8-hdr-num.ch8-emerald { color: rgba(80, 220, 120, 0.6); }
+            .ch8-hdr-num.ch8-crimson { color: rgba(255, 90, 80, 0.65); }
+            .ch8-hdr-num.ch8-deep    { color: rgba(120, 165, 230, 0.6); }
+
+            .ch8-hdr-sub.ch8-gold    { color: rgba(255, 215, 0, 0.4); }
+            .ch8-hdr-sub.ch8-silver  { color: rgba(200, 210, 225, 0.35); }
+            .ch8-hdr-sub.ch8-emerald { color: rgba(80, 220, 120, 0.35); }
+            .ch8-hdr-sub.ch8-crimson { color: rgba(255, 90, 80, 0.4); }
+            .ch8-hdr-sub.ch8-deep    { color: rgba(120, 165, 230, 0.35); }
+
+            .ch8-label.ch8-gold    { color: rgba(255, 215, 0, 0.55); }
+            .ch8-label.ch8-silver  { color: rgba(200, 210, 225, 0.5); }
+            .ch8-label.ch8-emerald { color: rgba(80, 220, 120, 0.5); }
+            .ch8-label.ch8-crimson { color: rgba(255, 90, 80, 0.55); }
+            .ch8-label.ch8-azure   { color: rgba(100, 170, 240, 0.55); }
+            .ch8-label.ch8-deep    { color: rgba(120, 165, 230, 0.5); }
+
+            /* ── Gradient ── */
+            .ch8-gradient-text .ch8-quote-main {
+                background: linear-gradient(90deg, rgba(255,90,80,0.9), rgba(100,170,240,0.9));
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* ── Progress dots ── */
+            .ch8-progress {
+                position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+                z-index: 11; pointer-events: none;
+                display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
+            }
+            .ch8-dot-wrap { display: flex; align-items: center; gap: 8px; flex-direction: row-reverse; }
+            .ch8-dot {
+                width: 4px; height: 4px; border-radius: 50%;
+                background: rgba(255,255,255,0.12);
+                transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .ch8-dot-label {
+                font-family: 'Instrument Serif', serif;
+                font-style: italic; font-size: 0.4rem;
+                color: rgba(255,255,255,0); letter-spacing: 0.08em;
+                transition: color 0.6s ease; white-space: nowrap;
+            }
+
+            @media (max-width: 768px) {
+                .ch8-quote-main { font-size: 1.2rem; }
+                .ch8-hdr { top: 44px; left: 16px; }
+                .ch8-label { font-size: 0.5rem; }
+            }
+        `;
+        document.head.appendChild(style);
+        this._ch8Style = style;
+
+        /* ── Helper: create positioned element with classes ── */
+        const mkEl = (html, inlineCSS, ...classes) => {
             const el = document.createElement('div');
-            el.className = cls;
-            el.style.cssText = `position:absolute;pointer-events:none;opacity:0;` +
-                `transition:opacity 1.2s cubic-bezier(0.25,0.46,0.45,0.94),` +
-                `transform 1.2s cubic-bezier(0.25,0.46,0.45,0.94);` +
-                `text-shadow:0 2px 30px rgba(0,0,0,0.85),0 0 60px rgba(0,0,0,0.4);${css}`;
+            el.className = ['ch8-el', ...classes].join(' ');
+            if (inlineCSS) el.style.cssText += inlineCSS;
             el.innerHTML = html;
             ov.appendChild(el);
             return el;
         };
 
-        const SERIF = '"Instrument Serif","Playfair Display",Georgia,serif';
-        const SANS = '"Inter",system-ui,sans-serif';
-
         /* ═══ CHAPTER CONTEXT BAR ═══ */
         this._chapterBar = mkEl(
-            `<span style="opacity:0.6;font-weight:300">CHAPTER VIII</span>` +
-            `<span style="display:inline-block;width:1.5rem;opacity:0.2">·</span>` +
-            `<span style="opacity:0.3;letter-spacing:0.12em;font-weight:300">THE HISTORICAL SIGNIFICANCE OF THE FISH</span>`,
-            `top:18px;left:50%;transform:translateX(-50%);font-family:${SANS};font-size:0.55rem;` +
-            `color:rgba(255,255,255,0.45);letter-spacing:0.2em;text-transform:uppercase;text-align:center;opacity:1;`
+            `<span class="ch8-bar-num">CHAPTER VIII</span>` +
+            `<span class="ch8-bar-sep">·</span>` +
+            `<span class="ch8-bar-title">THE HISTORICAL SIGNIFICANCE OF THE FISH</span>`,
+            'opacity:1;', 'ch8-bar'
         );
 
-        /* ═══ SCENE HEADERS — Instrument Serif italic sub-line ═══ */
-        const mkHeader = (num, title, sub, accentColor) => mkEl(
-            `<div style="font-family:${SANS};font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;` +
-            `color:${accentColor}0.4);margin-bottom:6px;font-weight:300">${num} · ${title}</div>` +
-            `<div style="font-family:${SERIF};font-style:italic;font-size:0.7rem;` +
-            `color:${accentColor}0.25);letter-spacing:0.03em;line-height:1.4">${sub}</div>`,
-            `top:52px;left:28px;text-align:left;`
+        /* ═══ SCENE HEADERS ═══ */
+        const mkHeader = (num, title, sub, accent) => mkEl(
+            `<div class="ch8-hdr-num ${accent}">${num} · ${title}</div>` +
+            `<div class="ch8-hdr-sub ${accent}">${sub}</div>`,
+            '', 'ch8-hdr'
         );
-        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon', GOLD);
-        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep', SILVER);
-        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness', EMERALD);
-        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces', CRIMSON);
-        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — totality of the unconscious', DEEP);
+        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon', 'ch8-gold');
+        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep', 'ch8-silver');
+        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness', 'ch8-emerald');
+        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces', 'ch8-crimson');
+        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — totality of the unconscious', 'ch8-deep');
 
-        /* ═══ PRIMARY QUOTES — Instrument Serif italic with explanatory text ═══ */
-        const mkQuote = (quote, explain, css) => mkEl(
-            `<div style="font-family:${SERIF};font-style:italic;font-size:clamp(1.2rem,2.5vw,1.9rem);` +
-            `margin-bottom:12px;letter-spacing:0.02em;line-height:1.25">${quote}</div>` +
-            `<div style="font-family:${SERIF};font-size:0.6rem;opacity:0.35;letter-spacing:0.05em;` +
-            `max-width:320px;margin:0 auto;line-height:1.6">${explain}</div>`,
-            `text-align:center;${css}`,
-            'ch8-quote'
+        /* ═══ PRIMARY QUOTES ═══ */
+        const mkQuote = (main, sub, inlineCSS, accent) => mkEl(
+            `<div class="ch8-quote-main">${main}</div>` +
+            `<div class="ch8-quote-sub">${sub}</div>`,
+            inlineCSS, 'ch8-quote', accent
         );
-
-        this._ann1 = mkQuote(
-            'A woman clothed with the sun',
+        this._ann1 = mkQuote('A woman clothed with the sun',
             'The divine feminine crowned with the zodiac — the moon beneath her feet',
-            `top:14%;left:50%;transform:translateX(-50%) translateY(20px);color:${GOLD}0.9);`
-        );
-        this._ann2 = mkQuote(
-            'The Cross as Hook, Christ as Bait',
+            'top:14%;left:50%;transform:translateX(-50%) translateY(20px);', 'ch8-gold');
+        this._ann2 = mkQuote('The Cross as Hook, Christ as Bait',
             'Patristic allegory — the crucifixion snares the primordial unconscious',
-            `top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);color:${SILVER}0.85);`
-        );
-        this._ann3 = mkQuote(
-            'The fish that heals blindness',
+            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);', 'ch8-silver');
+        this._ann3 = mkQuote('The fish that heals blindness',
             'Tobias extracts the healing organs — libido drawn from the unconscious into consciousness',
-            `top:42%;left:50%;transform:translate(-50%,0) translateY(20px);color:${EMERALD}0.85);`
-        );
-        this._ann4 = mkQuote(
-            'From the Ram to the Fish',
+            'top:42%;left:50%;transform:translate(-50%,0) translateY(20px);', 'ch8-emerald');
+        this._ann4 = mkQuote('From the Ram to the Fish',
             'The astrological age shift mirrors the psychological transformation of an era',
-            `top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);` +
-            `background:linear-gradient(90deg,${CRIMSON}0.9),${AZURE}0.9));` +
-            `-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;`
-        );
-        this._ann5 = mkQuote(
-            'In the depths, the Self',
+            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);', 'ch8-gradient-text');
+        this._ann5 = mkQuote('In the depths, the Self',
             'The fish as totality — Christ and Leviathan unified in the collective unconscious',
-            `bottom:16%;left:50%;transform:translateX(-50%) translateY(20px);color:${DEEP}0.8);`
-        );
+            'bottom:16%;left:50%;transform:translateX(-50%) translateY(20px);', 'ch8-deep');
 
-        /* ═══ SELECTIVE ELEMENT LABELS — 2−3 per scene, restrained ═══ */
-        const mkLabel = (text, accentColor, css) => mkEl(
-            text,
-            `font-family:${SERIF};font-style:italic;font-size:0.55rem;letter-spacing:0.06em;` +
-            `color:${accentColor}0.22);${css}`,
-            'ch8-label'
-        );
+        /* ═══ ELEMENT LABELS ═══ */
+        const mkLabel = (text, inlineCSS, accent) => mkEl(text, inlineCSS, 'ch8-label', accent);
 
-        // Scene 1: two key symbols
-        this._lbl_crown = mkLabel('Crown of Twelve Stars', GOLD, 'top:22%;left:50%;transform:translateX(-50%);');
-        this._lbl_dragon = mkLabel('The Seven-Headed Dragon', GOLD, 'bottom:30%;left:50%;transform:translateX(-50%);');
+        this._lbl_crown = mkLabel('Crown of Twelve Stars', 'top:22%;left:50%;transform:translateX(-50%);', 'ch8-gold');
+        this._lbl_dragon = mkLabel('The Seven-Headed Dragon', 'bottom:30%;left:50%;transform:translateX(-50%);', 'ch8-gold');
+        this._lbl_cross = mkLabel('The Cross', 'top:20%;right:28%;', 'ch8-silver');
+        this._lbl_leviathan = mkLabel('Leviathan', 'bottom:24%;right:28%;', 'ch8-silver');
+        this._lbl_tobit = mkLabel('Tobit\'s Fish', 'top:36%;left:26%;', 'ch8-emerald');
+        this._lbl_aries = mkLabel('♈ Aries', 'top:30%;left:28%;', 'ch8-crimson');
+        this._lbl_pisces = mkLabel('♓ Pisces', 'top:56%;right:28%;', 'ch8-azure');
+        this._lbl_self = mkLabel('The Self', 'bottom:26%;left:50%;transform:translateX(-50%);', 'ch8-deep');
 
-        // Scene 2: cross and leviathan
-        this._lbl_cross = mkLabel('The Cross', SILVER, 'top:20%;right:28%;');
-        this._lbl_leviathan = mkLabel('Leviathan', SILVER, 'bottom:24%;right:28%;');
-
-        // Scene 3: single label
-        this._lbl_tobit = mkLabel('Tobit\'s Fish', EMERALD, 'top:36%;left:26%;');
-
-        // Scene 4: zodiac signs
-        this._lbl_aries = mkLabel('♈ Aries', CRIMSON, 'top:30%;left:28%;');
-        this._lbl_pisces = mkLabel('♓ Pisces', AZURE, 'top:56%;right:28%;');
-
-        // Scene 5: the Self
-        this._lbl_self = mkLabel('The Self', DEEP, 'bottom:26%;left:50%;transform:translateX(-50%);');
-
-        /* ═══ SCROLL PROGRESS — minimal dot track ═══ */
+        /* ═══ PROGRESS DOTS ═══ */
         const pc = document.createElement('div');
-        pc.style.cssText = `position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:11;` +
-            `pointer-events:none;display:flex;flex-direction:column;align-items:flex-end;gap:14px;`;
+        pc.className = 'ch8-progress';
         this._progressDots = [];
         const nums = ['I', 'II', 'III', 'IV', 'V'];
         for (let i = 0; i < 5; i++) {
             const wrap = document.createElement('div');
-            wrap.style.cssText = `display:flex;align-items:center;gap:8px;flex-direction:row-reverse;`;
+            wrap.className = 'ch8-dot-wrap';
             const dot = document.createElement('div');
-            dot.style.cssText = `width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.12);` +
-                `transition:all 0.6s cubic-bezier(0.25,0.46,0.45,0.94);`;
+            dot.className = 'ch8-dot';
             const lbl = document.createElement('div');
-            lbl.style.cssText = `font-family:${SERIF};font-style:italic;font-size:0.4rem;` +
-                `color:rgba(255,255,255,0);letter-spacing:0.08em;transition:color 0.6s ease;white-space:nowrap;`;
+            lbl.className = 'ch8-dot-label';
             lbl.textContent = nums[i];
             wrap.appendChild(lbl);
             wrap.appendChild(dot);
@@ -724,289 +812,296 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._overlay = ov;
     }
 
-    /* ═══════════════════════════════════════════════════════════════
-       UPDATE — Scroll-driven animation
-       ═══════════════════════════════════════════════════════════════ */
-    update(dt) {
-        if (!this.scene) return;
-        const t = this.time;
-        const p = this._scrollP;
-        this.mouseSmooth.lerp(this.mouse, 0.03);
 
-        /* ── Scene 1: Celestial Vision ── */
-        const s1 = clamp01(1 - p / S1_END);  // 1 at start, 0 by S1_END
-        this._s1.visible = s1 > 0.01;
-        if (this._s1.visible) {
-            // Woman hover
-            this._womanBody.position.y = 5 + Math.sin(t * 0.15) * 0.3;
-            this._womanAura.position.copy(this._womanBody.position);
+/* ═══════════════════════════════════════════════════════════════
+   UPDATE — Scroll-driven animation
+   ═══════════════════════════════════════════════════════════════ */
+update(dt) {
+    if (!this.scene) return;
+    const t = this.time;
+    const p = this._scrollP;
+    this.mouseSmooth.lerp(this.mouse, 0.03);
 
-            // Stars orbit slowly
-            for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * Math.PI * 2 + t * 0.05;
-                this._stars[i].position.set(
-                    Math.cos(angle) * 0.75,
-                    this._womanBody.position.y + 0.85,
-                    Math.sin(angle) * 0.4
-                );
-                this._stars[i].rotation.y = t * 0.3;
-            }
+    /* ── Scene 1: Celestial Vision ── */
+    const s1 = clamp01(1 - p / S1_END);  // 1 at start, 0 by S1_END
+    this._s1.visible = s1 > 0.01;
+    if (this._s1.visible) {
+        // Woman hover
+        this._womanBody.position.y = 5 + Math.sin(t * 0.15) * 0.3;
+        this._womanAura.position.copy(this._womanBody.position);
 
-            // Dragon pursuing — circles below the woman
-            const dragonA = t * 0.08;
-            this._dragonGroup.position.set(
-                Math.cos(dragonA) * 2.5,
-                -1 + Math.sin(t * 0.2) * 0.3,
-                Math.sin(dragonA) * 2.5
+        // Stars orbit slowly
+        for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2 + t * 0.05;
+            this._stars[i].position.set(
+                Math.cos(angle) * 0.75,
+                this._womanBody.position.y + 0.85,
+                Math.sin(angle) * 0.4
             );
-            this._dragonBody.rotation.x = t * 0.1;
-            this._dragonBody.rotation.y = t * 0.15;
-
-            // Heads pulsate
-            for (const h of this._dragonHeads) {
-                h.material.emissiveIntensity = 0.4 + Math.sin(t * 2 + h.position.x) * 0.3;
-            }
-
-            // Fade Scene 1 out
-            this._womanBody.material.opacity = 0.8 * s1;
-            this._womanAura.material.opacity = 0.04 * s1;
-            this._dragonBody.material.opacity = 0.65 * s1;
-            this._starField.material.opacity = 0.4 * s1;
+            this._stars[i].rotation.y = t * 0.3;
         }
 
-        /* ── Scene 2: Hook of Consciousness ── */
-        const s2enter = smoothstep(S2_START, S2_START + 0.05, p);
-        const s2exit = 1 - smoothstep(S2_END - 0.05, S2_END, p);
-        const s2 = Math.min(s2enter, s2exit);
-        this._s2.visible = s2 > 0.01;
-        if (this._s2.visible) {
-            // Hook sway
-            this._s2.rotation.z = Math.sin(t * 0.12) * 0.04;
-            // Bait fish wiggle
-            this._baitFish.rotation.z = Math.sin(t * 0.3) * 0.12;
-            this._baitTail.rotation.z = this._baitFish.rotation.z;
-            this._baitTail.position.copy(this._baitFish.position);
-
-            // Leviathan undulation (vertex displacement)
-            const levPos = this._leviathan.geometry.attributes.position.array;
-            const orig = this._levOrigPositions;
-            for (let i = 0; i < levPos.length; i += 3) {
-                levPos[i] = orig[i] + Math.sin(t * 0.3 + orig[i + 1] * 2) * 0.15;
-                levPos[i + 1] = orig[i + 1] + Math.sin(t * 0.25 + orig[i] * 1.5) * 0.1;
-            }
-            this._leviathan.geometry.attributes.position.needsUpdate = true;
-
-            // Leviathan eye pulse
-            this._levEye.material.opacity = 0.2 + Math.sin(t * 0.8) * 0.15;
-
-            // Opacity
-            this._baitFish.material.opacity = 0.75 * s2;
-            this._leviathan.material.opacity = 0.25 * s2;
-        }
-
-        /* ── Scene 3: Healing Fish ── */
-        const s3enter = smoothstep(S3_START, S3_START + 0.05, p);
-        const s3exit = 1 - smoothstep(S3_END - 0.05, S3_END, p);
-        const s3 = Math.min(s3enter, s3exit);
-        this._s3.visible = s3 > 0.01;
-        if (this._s3.visible) {
-            // Fish swim
-            this._healFish.position.x = Math.sin(t * 0.08) * 1.5;
-            this._healFish.position.y = Math.sin(t * 0.15) * 0.3;
-
-            // Glow pulse
-            const healPulse = 0.5 + Math.sin(t * 0.5) * 0.5;
-            this._healGlow.material.opacity = (0.04 + healPulse * 0.06) * s3;
-            this._healAuraOuter.material.opacity = (0.01 + healPulse * 0.03) * s3;
-            this._healGlow.scale.setScalar(1 + healPulse * 0.3);
-
-            // Healing particles orbit
-            const pPos = this._healParticles.geometry.attributes.position.array;
-            const oPos = this._healParticleOrigPos;
-            for (let i = 0; i < pPos.length; i += 3) {
-                const a = t * 0.2 + oPos[i] * 0.5;
-                pPos[i] = oPos[i] * Math.cos(a * 0.1) + Math.sin(a) * 0.1;
-                pPos[i + 1] = oPos[i + 1] + Math.sin(t * 0.3 + oPos[i]) * 0.15;
-                pPos[i + 2] = oPos[i + 2] * Math.cos(a * 0.1);
-            }
-            this._healParticles.geometry.attributes.position.needsUpdate = true;
-
-            this._healFish.material.opacity = 0.7 * s3;
-            this._healParticles.material.opacity = 0.4 * s3;
-
-            // Healing light intensity
-            this._healLight.intensity = 0.3 + healPulse * 0.4;
-        }
-
-        /* ── Scene 4: Great Transition ── */
-        const s4enter = smoothstep(S4_START, S4_START + 0.05, p);
-        const s4exit = 1 - smoothstep(S4_END - 0.05, S4_END, p);
-        const s4 = Math.min(s4enter, s4exit);
-        this._s4.visible = s4 > 0.01;
-        if (this._s4.visible) {
-            // Aries fades, Pisces emerges
-            const transP = clamp01((p - S4_START) / (S4_END - S4_START));
-            this._ariesBody.material.opacity = 0.6 * (1 - transP) * s4;
-            this._ariesGroup.traverse(c => {
-                if (c.material && c !== this._ariesBody) c.material.opacity = 0.55 * (1 - transP) * s4;
-            });
-            this._ariesGroup.scale.setScalar(1 - transP * 0.4);
-
-            this._piscesFish.material.opacity = 0.65 * transP * s4;
-            this._piscesAura.material.opacity = 0.05 * transP * s4;
-            this._piscesGroup.scale.setScalar(0.5 + transP * 0.5);
-
-            // Aries rotates / fire
-            this._ariesGroup.rotation.y = t * 0.05 + transP * Math.PI;
-            this._piscesGroup.rotation.y = -t * 0.06;
-
-            // Zodiac arc brightens
-            this._zodiacArc.material.opacity = (0.1 + transP * 0.2) * s4;
-        }
-
-        /* ── Scene 5: Primordial Deep ── */
-        const s5 = smoothstep(S5_START, S5_START + 0.08, p);
-        if (s5 > 0.01) {
-            // Water undulation
-            const waterPos = this._waterField.geometry.attributes.position.array;
-            for (let i = 0; i < waterPos.length; i += 3) {
-                waterPos[i + 1] += Math.sin(t * 0.2 + waterPos[i] * 0.3) * 0.003;
-            }
-            this._waterField.geometry.attributes.position.needsUpdate = true;
-            this._waterField.material.opacity = 0.35 * s5;
-
-            // Deep fish emerges
-            this._deepFish.material.opacity = 0.5 * s5;
-            this._deepFish.position.y = -5 + s5 * 1.5;
-            this._deepFish.rotation.y = t * 0.05;
-            this._deepFishGlow.material.opacity = 0.04 * s5;
-            this._deepFishGlow.position.copy(this._deepFish.position);
-            this._deepFishGlow.scale.setScalar(1 + Math.sin(t * 0.3) * 0.2);
-        } else {
-            this._waterField.material.opacity = 0.08;
-            this._deepFish.material.opacity = 0;
-            this._deepFishGlow.material.opacity = 0;
-        }
-
-        /* ── Annotations: quotes ── */
-        this._setAnnotation(this._ann1, smoothstep(0.02, 0.08, p) * (1 - smoothstep(0.14, 0.20, p)));
-        this._setAnnotation(this._ann2, smoothstep(0.22, 0.28, p) * (1 - smoothstep(0.34, 0.40, p)));
-        this._setAnnotation(this._ann3, smoothstep(0.42, 0.48, p) * (1 - smoothstep(0.54, 0.60, p)));
-        this._setAnnotation(this._ann4, smoothstep(0.62, 0.68, p) * (1 - smoothstep(0.74, 0.80, p)));
-        this._setAnnotation(this._ann5, smoothstep(0.82, 0.88, p));
-
-        /* ── Scene headers ── */
-        this._setAnnotation(this._hdr1, smoothstep(0.0, 0.04, p) * (1 - smoothstep(0.16, 0.20, p)));
-        this._setAnnotation(this._hdr2, smoothstep(0.19, 0.23, p) * (1 - smoothstep(0.36, 0.40, p)));
-        this._setAnnotation(this._hdr3, smoothstep(0.39, 0.43, p) * (1 - smoothstep(0.56, 0.60, p)));
-        this._setAnnotation(this._hdr4, smoothstep(0.59, 0.63, p) * (1 - smoothstep(0.76, 0.80, p)));
-        this._setAnnotation(this._hdr5, smoothstep(0.79, 0.83, p));
-
-        /* ── Element labels (selective, 2-3 per scene) ── */
-        const s1lbl = smoothstep(0.04, 0.10, p) * (1 - smoothstep(0.14, 0.19, p));
-        this._setAnnotation(this._lbl_crown, s1lbl);
-        this._setAnnotation(this._lbl_dragon, s1lbl);
-
-        const s2lbl = smoothstep(0.24, 0.30, p) * (1 - smoothstep(0.34, 0.39, p));
-        this._setAnnotation(this._lbl_cross, s2lbl);
-        this._setAnnotation(this._lbl_leviathan, s2lbl);
-
-        const s3lbl = smoothstep(0.44, 0.50, p) * (1 - smoothstep(0.54, 0.59, p));
-        this._setAnnotation(this._lbl_tobit, s3lbl);
-
-        const s4lbl = smoothstep(0.64, 0.70, p) * (1 - smoothstep(0.74, 0.79, p));
-        this._setAnnotation(this._lbl_aries, s4lbl);
-        this._setAnnotation(this._lbl_pisces, s4lbl);
-
-        const s5lbl = smoothstep(0.84, 0.90, p);
-        this._setAnnotation(this._lbl_self, s5lbl);
-
-        /* ── Chapter context bar fade ── */
-        if (this._chapterBar) {
-            this._chapterBar.style.opacity = lerp(0.9, 0.3, clamp01(p * 2));
-        }
-
-        /* ── Scroll progress dots ── */
-        if (this._progressDots) {
-            const activeScene = p < 0.20 ? 0 : p < 0.40 ? 1 : p < 0.60 ? 2 : p < 0.80 ? 3 : 4;
-            for (let i = 0; i < 5; i++) {
-                const { dot, label } = this._progressDots[i];
-                const isActive = i === activeScene;
-                dot.style.background = isActive ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.1)';
-                dot.style.boxShadow = isActive ? '0 0 8px rgba(255,255,255,0.3)' : 'none';
-                dot.style.width = dot.style.height = isActive ? '5px' : '4px';
-                label.style.color = isActive ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0)';
-            }
-        }
-
-        /* ── Camera: descent from heavens to deep ── */
-        const camY = lerp(6, -3, clamp01(p * 1.1));
-        const camOrbit = t * 0.015 + this.mouseSmooth.x * 0.25;
-        const camRadius = lerp(16, 14, clamp01(p));
-        this.camera.position.set(
-            Math.sin(camOrbit) * camRadius,
-            camY + this.mouseSmooth.y * 2,
-            Math.cos(camOrbit) * camRadius
+        // Dragon pursuing — circles below the woman
+        const dragonA = t * 0.08;
+        this._dragonGroup.position.set(
+            Math.cos(dragonA) * 2.5,
+            -1 + Math.sin(t * 0.2) * 0.3,
+            Math.sin(dragonA) * 2.5
         );
-        this.camera.lookAt(0, lerp(3, -3, clamp01(p)), 0);
+        this._dragonBody.rotation.x = t * 0.1;
+        this._dragonBody.rotation.y = t * 0.15;
 
-        /* ── Bloom modulation ── */
-        if (this.bloom) {
-            this.bloom.strength = lerp(1.4, 0.8, clamp01(p));
+        // Heads pulsate
+        for (const h of this._dragonHeads) {
+            h.material.emissiveIntensity = 0.4 + Math.sin(t * 2 + h.position.x) * 0.3;
         }
 
-        /* ── Light intensity modulation ── */
-        this._sunLight.intensity = lerp(0.9, 0.2, clamp01(p * 2));
-        this._dragonLight.intensity = lerp(0.3, 0.6, clamp01(p * 1.5));
+        // Fade Scene 1 out
+        this._womanBody.material.opacity = 0.8 * s1;
+        this._womanAura.material.opacity = 0.04 * s1;
+        this._dragonBody.material.opacity = 0.65 * s1;
+        this._starField.material.opacity = 0.4 * s1;
     }
 
-    /* ── Annotation visibility helper ── */
-    _setAnnotation(el, opacity) {
-        if (!el) return;
-        if (opacity < 0.01) {
-            el.style.opacity = '0';
-            el.style.display = 'none';
-            return;
+    /* ── Scene 2: Hook of Consciousness ── */
+    const s2enter = smoothstep(S2_START, S2_START + 0.05, p);
+    const s2exit = 1 - smoothstep(S2_END - 0.05, S2_END, p);
+    const s2 = Math.min(s2enter, s2exit);
+    this._s2.visible = s2 > 0.01;
+    if (this._s2.visible) {
+        // Hook sway
+        this._s2.rotation.z = Math.sin(t * 0.12) * 0.04;
+        // Bait fish wiggle
+        this._baitFish.rotation.z = Math.sin(t * 0.3) * 0.12;
+        this._baitTail.rotation.z = this._baitFish.rotation.z;
+        this._baitTail.position.copy(this._baitFish.position);
+
+        // Leviathan undulation (vertex displacement)
+        const levPos = this._leviathan.geometry.attributes.position.array;
+        const orig = this._levOrigPositions;
+        for (let i = 0; i < levPos.length; i += 3) {
+            levPos[i] = orig[i] + Math.sin(t * 0.3 + orig[i + 1] * 2) * 0.15;
+            levPos[i + 1] = orig[i + 1] + Math.sin(t * 0.25 + orig[i] * 1.5) * 0.1;
         }
-        el.style.display = '';
-        el.style.opacity = opacity;
-        const yShift = lerp(12, 0, clamp01(opacity * 3));
-        // Preserve existing transform base, just modify translateY
-        const current = el.style.transform || '';
-        const base = current.replace(/translateY\([^)]+\)/g, '');
-        el.style.transform = base + ` translateY(${yShift}px)`;
+        this._leviathan.geometry.attributes.position.needsUpdate = true;
+
+        // Leviathan eye pulse
+        this._levEye.material.opacity = 0.2 + Math.sin(t * 0.8) * 0.15;
+
+        // Opacity
+        this._baitFish.material.opacity = 0.75 * s2;
+        this._leviathan.material.opacity = 0.25 * s2;
     }
 
-    render() { this.composer?.render(); }
+    /* ── Scene 3: Healing Fish ── */
+    const s3enter = smoothstep(S3_START, S3_START + 0.05, p);
+    const s3exit = 1 - smoothstep(S3_END - 0.05, S3_END, p);
+    const s3 = Math.min(s3enter, s3exit);
+    this._s3.visible = s3 > 0.01;
+    if (this._s3.visible) {
+        // Fish swim
+        this._healFish.position.x = Math.sin(t * 0.08) * 1.5;
+        this._healFish.position.y = Math.sin(t * 0.15) * 0.3;
 
-    onResize(w, h) {
-        if (!this.renderer) return;
-        this.camera.aspect = w / h;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(w, h);
-        this.composer?.setSize(w, h);
-        this.bloom?.setSize(w, h);
+        // Glow pulse
+        const healPulse = 0.5 + Math.sin(t * 0.5) * 0.5;
+        this._healGlow.material.opacity = (0.04 + healPulse * 0.06) * s3;
+        this._healAuraOuter.material.opacity = (0.01 + healPulse * 0.03) * s3;
+        this._healGlow.scale.setScalar(1 + healPulse * 0.3);
+
+        // Healing particles orbit
+        const pPos = this._healParticles.geometry.attributes.position.array;
+        const oPos = this._healParticleOrigPos;
+        for (let i = 0; i < pPos.length; i += 3) {
+            const a = t * 0.2 + oPos[i] * 0.5;
+            pPos[i] = oPos[i] * Math.cos(a * 0.1) + Math.sin(a) * 0.1;
+            pPos[i + 1] = oPos[i + 1] + Math.sin(t * 0.3 + oPos[i]) * 0.15;
+            pPos[i + 2] = oPos[i + 2] * Math.cos(a * 0.1);
+        }
+        this._healParticles.geometry.attributes.position.needsUpdate = true;
+
+        this._healFish.material.opacity = 0.7 * s3;
+        this._healParticles.material.opacity = 0.4 * s3;
+
+        // Healing light intensity
+        this._healLight.intensity = 0.3 + healPulse * 0.4;
     }
 
-    dispose() {
-        removeEventListener('mousemove', this._onMM);
-        removeEventListener('scroll', this._onScroll);
-        removeEventListener('wheel', this._onWheel);
-        /* Restore overflow to original values */
-        document.body.style.overflow = this._origBodyOverflow || '';
-        document.documentElement.style.overflow = this._origHtmlOverflow || '';
-        document.body.style.overflowX = '';
-        document.documentElement.style.overflowX = '';
-        document.body.style.height = '';
-        document.body.style.background = '';
-        if (this._overlay) this._overlay.remove();
-        if (this._progressContainer) this._progressContainer.remove();
-        if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
-        this.scene?.traverse(o => {
-            o.geometry?.dispose();
-            if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+    /* ── Scene 4: Great Transition ── */
+    const s4enter = smoothstep(S4_START, S4_START + 0.05, p);
+    const s4exit = 1 - smoothstep(S4_END - 0.05, S4_END, p);
+    const s4 = Math.min(s4enter, s4exit);
+    this._s4.visible = s4 > 0.01;
+    if (this._s4.visible) {
+        // Aries fades, Pisces emerges
+        const transP = clamp01((p - S4_START) / (S4_END - S4_START));
+        this._ariesBody.material.opacity = 0.6 * (1 - transP) * s4;
+        this._ariesGroup.traverse(c => {
+            if (c.material && c !== this._ariesBody) c.material.opacity = 0.55 * (1 - transP) * s4;
         });
-        this.composer = null; this.scene = null; this.camera = null; this.renderer = null;
-        super.dispose();
+        this._ariesGroup.scale.setScalar(1 - transP * 0.4);
+
+        this._piscesFish.material.opacity = 0.65 * transP * s4;
+        this._piscesAura.material.opacity = 0.05 * transP * s4;
+        this._piscesGroup.scale.setScalar(0.5 + transP * 0.5);
+
+        // Aries rotates / fire
+        this._ariesGroup.rotation.y = t * 0.05 + transP * Math.PI;
+        this._piscesGroup.rotation.y = -t * 0.06;
+
+        // Zodiac arc brightens
+        this._zodiacArc.material.opacity = (0.1 + transP * 0.2) * s4;
     }
+
+    /* ── Scene 5: Primordial Deep ── */
+    const s5 = smoothstep(S5_START, S5_START + 0.08, p);
+    if (s5 > 0.01) {
+        // Water undulation
+        const waterPos = this._waterField.geometry.attributes.position.array;
+        for (let i = 0; i < waterPos.length; i += 3) {
+            waterPos[i + 1] += Math.sin(t * 0.2 + waterPos[i] * 0.3) * 0.003;
+        }
+        this._waterField.geometry.attributes.position.needsUpdate = true;
+        this._waterField.material.opacity = 0.35 * s5;
+
+        // Deep fish emerges
+        this._deepFish.material.opacity = 0.5 * s5;
+        this._deepFish.position.y = -5 + s5 * 1.5;
+        this._deepFish.rotation.y = t * 0.05;
+        this._deepFishGlow.material.opacity = 0.04 * s5;
+        this._deepFishGlow.position.copy(this._deepFish.position);
+        this._deepFishGlow.scale.setScalar(1 + Math.sin(t * 0.3) * 0.2);
+    } else {
+        this._waterField.material.opacity = 0.08;
+        this._deepFish.material.opacity = 0;
+        this._deepFishGlow.material.opacity = 0;
+    }
+
+    /* ── Annotations: quotes ── */
+    this._setAnnotation(this._ann1, smoothstep(0.02, 0.08, p) * (1 - smoothstep(0.14, 0.20, p)));
+    this._setAnnotation(this._ann2, smoothstep(0.22, 0.28, p) * (1 - smoothstep(0.34, 0.40, p)));
+    this._setAnnotation(this._ann3, smoothstep(0.42, 0.48, p) * (1 - smoothstep(0.54, 0.60, p)));
+    this._setAnnotation(this._ann4, smoothstep(0.62, 0.68, p) * (1 - smoothstep(0.74, 0.80, p)));
+    this._setAnnotation(this._ann5, smoothstep(0.82, 0.88, p));
+
+    /* ── Scene headers ── */
+    this._setAnnotation(this._hdr1, smoothstep(0.0, 0.04, p) * (1 - smoothstep(0.16, 0.20, p)));
+    this._setAnnotation(this._hdr2, smoothstep(0.19, 0.23, p) * (1 - smoothstep(0.36, 0.40, p)));
+    this._setAnnotation(this._hdr3, smoothstep(0.39, 0.43, p) * (1 - smoothstep(0.56, 0.60, p)));
+    this._setAnnotation(this._hdr4, smoothstep(0.59, 0.63, p) * (1 - smoothstep(0.76, 0.80, p)));
+    this._setAnnotation(this._hdr5, smoothstep(0.79, 0.83, p));
+
+    /* ── Element labels (selective, 2-3 per scene) ── */
+    const s1lbl = smoothstep(0.04, 0.10, p) * (1 - smoothstep(0.14, 0.19, p));
+    this._setAnnotation(this._lbl_crown, s1lbl);
+    this._setAnnotation(this._lbl_dragon, s1lbl);
+
+    const s2lbl = smoothstep(0.24, 0.30, p) * (1 - smoothstep(0.34, 0.39, p));
+    this._setAnnotation(this._lbl_cross, s2lbl);
+    this._setAnnotation(this._lbl_leviathan, s2lbl);
+
+    const s3lbl = smoothstep(0.44, 0.50, p) * (1 - smoothstep(0.54, 0.59, p));
+    this._setAnnotation(this._lbl_tobit, s3lbl);
+
+    const s4lbl = smoothstep(0.64, 0.70, p) * (1 - smoothstep(0.74, 0.79, p));
+    this._setAnnotation(this._lbl_aries, s4lbl);
+    this._setAnnotation(this._lbl_pisces, s4lbl);
+
+    const s5lbl = smoothstep(0.84, 0.90, p);
+    this._setAnnotation(this._lbl_self, s5lbl);
+
+    /* ── Chapter context bar fade ── */
+    if (this._chapterBar) {
+        this._chapterBar.style.opacity = lerp(0.9, 0.3, clamp01(p * 2));
+    }
+
+    /* ── Scroll progress dots ── */
+    if (this._progressDots) {
+        const activeScene = p < 0.20 ? 0 : p < 0.40 ? 1 : p < 0.60 ? 2 : p < 0.80 ? 3 : 4;
+        for (let i = 0; i < 5; i++) {
+            const { dot, label } = this._progressDots[i];
+            const isActive = i === activeScene;
+            dot.style.background = isActive ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.1)';
+            dot.style.boxShadow = isActive ? '0 0 8px rgba(255,255,255,0.3)' : 'none';
+            dot.style.width = dot.style.height = isActive ? '5px' : '4px';
+            label.style.color = isActive ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0)';
+        }
+    }
+
+    /* ── Camera: descent from heavens to deep ── */
+    const camY = lerp(6, -3, clamp01(p * 1.1));
+    const camOrbit = t * 0.015 + this.mouseSmooth.x * 0.25;
+    const camRadius = lerp(16, 14, clamp01(p));
+    this.camera.position.set(
+        Math.sin(camOrbit) * camRadius,
+        camY + this.mouseSmooth.y * 2,
+        Math.cos(camOrbit) * camRadius
+    );
+    this.camera.lookAt(0, lerp(3, -3, clamp01(p)), 0);
+
+    /* ── Bloom modulation ── */
+    if (this.bloom) {
+        this.bloom.strength = lerp(1.4, 0.8, clamp01(p));
+    }
+
+    /* ── Light intensity modulation ── */
+    this._sunLight.intensity = lerp(0.9, 0.2, clamp01(p * 2));
+    this._dragonLight.intensity = lerp(0.3, 0.6, clamp01(p * 1.5));
+}
+
+/* ── Annotation visibility helper with entrance animation ── */
+_setAnnotation(el, opacity) {
+    if (!el) return;
+    if (opacity < 0.01) {
+        el.style.opacity = '0';
+        el.style.display = 'none';
+        el.classList.remove('ch8-entering');
+        el._ch8Shown = false;
+        return;
+    }
+    el.style.display = '';
+    /* Trigger entrance animation on first appearance */
+    if (!el._ch8Shown && opacity > 0.1) {
+        el._ch8Shown = true;
+        el.classList.add('ch8-entering');
+    }
+    el.style.opacity = opacity;
+    const yShift = lerp(16, 0, clamp01(opacity * 2.5));
+    const current = el.style.transform || '';
+    const base = current.replace(/translateY\([^)]+\)/g, '');
+    el.style.transform = base + ` translateY(${yShift}px)`;
+}
+
+render() { this.composer?.render(); }
+
+onResize(w, h) {
+    if (!this.renderer) return;
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(w, h);
+    this.composer?.setSize(w, h);
+    this.bloom?.setSize(w, h);
+}
+
+dispose() {
+    removeEventListener('mousemove', this._onMM);
+    removeEventListener('scroll', this._onScroll);
+    removeEventListener('wheel', this._onWheel);
+    /* Restore overflow to original values */
+    document.body.style.overflow = this._origBodyOverflow || '';
+    document.documentElement.style.overflow = this._origHtmlOverflow || '';
+    document.body.style.overflowX = '';
+    document.documentElement.style.overflowX = '';
+    document.body.style.height = '';
+    document.body.style.background = '';
+    if (this._overlay) this._overlay.remove();
+    if (this._progressContainer) this._progressContainer.remove();
+    if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
+    this.scene?.traverse(o => {
+        o.geometry?.dispose();
+        if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+    });
+    this.composer = null; this.scene = null; this.camera = null; this.renderer = null;
+    super.dispose();
+}
 }
