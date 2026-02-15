@@ -192,12 +192,12 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._dragonBody = dragonBody;
         this._dragonGroup.add(dragonBody);
 
-        /* Seven heads */
+        /* Seven heads (enlarged for recognizability) */
         this._dragonHeads = [];
         for (let i = 0; i < 7; i++) {
             const angle = (i / 7) * Math.PI * 2;
             const head = new THREE.Mesh(
-                new THREE.SphereGeometry(0.14, 8, 8),
+                new THREE.SphereGeometry(0.19, 8, 8),
                 new THREE.MeshStandardMaterial({
                     color: DRAGON_RED, emissive: '#ff1111', emissiveIntensity: 0.6,
                 })
@@ -209,6 +209,12 @@ export default class ThreeHistoricalViz extends BaseViz {
             );
             this._dragonGroup.add(head);
             this._dragonHeads.push(head);
+            /* Neck line connecting head to body center */
+            const neck = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), head.position.clone()]),
+                new THREE.LineBasicMaterial({ color: DRAGON_RED, transparent: true, opacity: 0.2 })
+            );
+            this._dragonGroup.add(neck);
         }
 
         this._dragonGroup.position.set(0, -1, 0);
@@ -265,6 +271,14 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._baitFish.position.y = -1.8;
         this._s2.add(this._baitFish);
 
+        /* Bait fish eye */
+        const baitEye = new THREE.Mesh(
+            new THREE.SphereGeometry(0.035, 6, 6),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
+        );
+        baitEye.position.set(0.35, 0.04, 0.12);
+        this._baitFish.add(baitEye);
+
         /* Bait fish tail */
         const tailGeo = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(-0.5, 0, 0),
@@ -318,6 +332,14 @@ export default class ThreeHistoricalViz extends BaseViz {
             transparent: true, opacity: 0.7,
         }));
         this._s3.add(this._healFish);
+
+        /* Healing fish eye */
+        const healEye = new THREE.Mesh(
+            new THREE.SphereGeometry(0.04, 6, 6),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
+        );
+        healEye.position.set(0.55, 0.06, 0.14);
+        this._healFish.add(healEye);
 
         /* ── Bio-luminescent inner glow ── */
         const glowGeo = new THREE.SphereGeometry(0.8, 16, 16);
@@ -479,6 +501,14 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._deepFish.position.set(0, -5, 0);
         this.scene.add(this._deepFish);
 
+        /* Deep fish eye */
+        const deepEye = new THREE.Mesh(
+            new THREE.SphereGeometry(0.05, 6, 6),
+            new THREE.MeshBasicMaterial({ color: STAR_GOLD, transparent: true, opacity: 0.6 })
+        );
+        deepEye.position.set(0.8, 0.08, 0.12);
+        this._deepFish.add(deepEye);
+
         /* ── Deep fish glow ── */
         this._deepFishGlow = new THREE.Mesh(
             new THREE.SphereGeometry(1.5, 12, 12),
@@ -513,71 +543,130 @@ export default class ThreeHistoricalViz extends BaseViz {
 
     /* ─── Annotation overlay ── */
     _buildOverlay() {
-        const overlay = document.createElement('div');
-        Object.assign(overlay.style, {
+        const ov = document.createElement('div');
+        Object.assign(ov.style, {
             position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '10',
         });
 
-        const makeAnnotation = (text, cssExtras = '') => {
+        /* ── Helper: create positioned div ── */
+        const mkEl = (html, css) => {
             const el = document.createElement('div');
-            Object.assign(el.style, {
-                position: 'absolute',
-                fontFamily: '"Instrument Serif", "Playfair Display", serif',
-                fontStyle: 'italic',
-                opacity: '0',
-                transition: 'opacity 0.8s ease, transform 0.8s ease',
-                transform: 'translateY(12px)',
-                pointerEvents: 'none',
-                textAlign: 'center',
-                letterSpacing: '0.03em',
-                textShadow: '0 2px 20px rgba(0,0,0,0.6)',
-            });
-            el.setAttribute('style', el.style.cssText + cssExtras);
-            el.innerHTML = text;
-            overlay.appendChild(el);
+            el.style.cssText = `position:absolute;pointer-events:none;opacity:0;transition:opacity 0.8s ease,transform 0.8s ease;text-shadow:0 2px 20px rgba(0,0,0,0.7);${css}`;
+            el.innerHTML = html;
+            ov.appendChild(el);
             return el;
         };
 
-        // Annotation 1 — Celestial Vision
-        this._ann1 = makeAnnotation(
+        const SERIF = '"Instrument Serif","Playfair Display",serif';
+        const SANS = '"Inter",system-ui,sans-serif';
+
+        /* ═══ CHAPTER CONTEXT BAR (always visible, fades with scroll) ═══ */
+        this._chapterBar = mkEl(
+            `<span style="opacity:0.5">CHAPTER VIII</span>` +
+            `<span style="display:inline-block;width:2rem"></span>` +
+            `<span style="opacity:0.35;letter-spacing:0.08em">THE HISTORICAL SIGNIFICANCE OF THE FISH</span>`,
+            `top:16px;left:50%;transform:translateX(-50%);font-family:${SANS};font-size:0.55rem;` +
+            `color:rgba(255,255,255,0.5);letter-spacing:0.18em;text-transform:uppercase;text-align:center;opacity:1;`
+        );
+
+        /* ═══ SCENE HEADERS (top-left, Roman numeral + sub-line) ═══ */
+        const mkHeader = (num, title, sub) => mkEl(
+            `<div style="font-family:${SANS};font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:4px">${num} · ${title}</div>` +
+            `<div style="font-family:${SERIF};font-style:italic;font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:0.04em">${sub}</div>`,
+            `top:52px;left:28px;text-align:left;`
+        );
+        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon');
+        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep');
+        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness');
+        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces');
+        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — integration of the unconscious');
+
+        /* ═══ PRIMARY QUOTES + EXPLANATORY SUB-TEXT ═══ */
+        const mkQuote = (quote, explain, css) => mkEl(
+            `<div style="font-family:${SERIF};font-style:italic;font-size:1.4rem;margin-bottom:8px;letter-spacing:0.03em">${quote}</div>` +
+            `<div style="font-family:${SERIF};font-size:0.62rem;opacity:0.45;letter-spacing:0.04em;max-width:340px;margin:0 auto;line-height:1.5">${explain}</div>`,
+            `text-align:center;${css}`
+        );
+
+        this._ann1 = mkQuote(
             'A woman clothed with the sun',
-            'top:12%;left:50%;transform:translateX(-50%) translateY(12px);' +
-            'font-size:1.5rem;color:rgba(255,215,0,0.85);'
+            'The divine feminine crowned with the zodiac,<br>the moon beneath her feet',
+            'top:14%;left:50%;transform:translateX(-50%) translateY(12px);color:rgba(255,215,0,0.85);'
         );
-
-        // Annotation 2 — Hook of Consciousness
-        this._ann2 = makeAnnotation(
+        this._ann2 = mkQuote(
             'The Cross as Hook, Christ as Bait',
-            'top:50%;left:50%;transform:translate(-50%,-50%) translateY(12px);' +
-            'font-size:1.35rem;color:rgba(200,200,210,0.85);'
+            'Patristic allegory — the crucifixion snares<br>the primordial unconscious',
+            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(12px);color:rgba(200,200,210,0.85);'
         );
-
-        // Annotation 3 — Healing Fish
-        this._ann3 = makeAnnotation(
+        this._ann3 = mkQuote(
             'The fish that heals blindness',
-            'top:45%;left:35%;transform:translateY(12px);' +
-            'font-size:1.3rem;color:rgba(50,205,50,0.8);'
+            'Tobias extracts the healing organs —<br>libido drawn from the unconscious into consciousness',
+            'top:42%;left:50%;transform:translate(-50%,0) translateY(12px);color:rgba(50,205,50,0.8);'
         );
-
-        // Annotation 4 — Great Transition
-        this._ann4 = makeAnnotation(
+        this._ann4 = mkQuote(
             'From the Ram to the Fish',
-            'top:50%;left:50%;transform:translate(-50%,-50%) translateY(12px);' +
-            'font-size:1.4rem;' +
+            'The astrological age shift mirrors<br>the psychological transformation of an era',
+            'top:48%;left:50%;transform:translate(-50%,-50%) translateY(12px);' +
             'background:linear-gradient(90deg,rgba(255,68,68,0.85),rgba(74,144,217,0.85));' +
-            '-webkit-background-clip:text;-webkit-text-fill-color:transparent;' +
-            'background-clip:text;'
+            '-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;'
         );
-
-        // Annotation 5 — Primordial Deep
-        this._ann5 = makeAnnotation(
+        this._ann5 = mkQuote(
             'In the depths, the Self',
-            'bottom:18%;left:50%;transform:translateX(-50%) translateY(12px);' +
-            'font-size:1.5rem;color:rgba(74,144,217,0.75);'
+            'The fish as totality — Christ and Leviathan<br>unified in the collective unconscious',
+            'bottom:16%;left:50%;transform:translateX(-50%) translateY(12px);color:rgba(74,144,217,0.75);'
         );
 
-        this.canvas.parentElement.appendChild(overlay);
-        this._overlay = overlay;
+        /* ═══ ELEMENT LABELS (small, near geometry positions) ═══ */
+        const mkLabel = (text, css) => mkEl(
+            text,
+            `font-family:${SANS};font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);${css}`
+        );
+
+        // Scene 1 labels
+        this._lbl_woman = mkLabel('The Woman', 'top:28%;left:50%;transform:translateX(-50%);');
+        this._lbl_crown = mkLabel('Crown of 12 Stars', 'top:23%;left:50%;transform:translateX(-50%);');
+        this._lbl_dragon = mkLabel('Seven-Headed Dragon', 'bottom:32%;left:50%;transform:translateX(-50%);');
+        this._lbl_moon = mkLabel('Moon at her feet', 'top:42%;left:50%;transform:translateX(-50%);');
+
+        // Scene 2 labels
+        this._lbl_cross = mkLabel('The Cross', 'top:18%;right:32%;');
+        this._lbl_ichthys = mkLabel('Ichthys — Fish-Christ', 'top:60%;right:30%;');
+        this._lbl_leviathan = mkLabel('Leviathan', 'bottom:22%;right:30%;');
+
+        // Scene 3 labels
+        this._lbl_tobit = mkLabel("Tobit's Fish", 'top:38%;left:28%;');
+        this._lbl_healing = mkLabel('Healing emanation', 'top:52%;left:22%;');
+
+        // Scene 4 labels
+        this._lbl_aries = mkLabel('♈ Aries', 'top:32%;left:30%;');
+        this._lbl_pisces = mkLabel('♓ Pisces', 'top:58%;right:30%;');
+
+        // Scene 5 labels
+        this._lbl_self = mkLabel('The Self', 'bottom:28%;left:50%;transform:translateX(-50%);');
+
+        /* ═══ SCROLL PROGRESS INDICATOR (right edge, 5 dots) ═══ */
+        const progressContainer = document.createElement('div');
+        progressContainer.style.cssText = `position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:11;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:12px;`;
+        this._progressDots = [];
+        const nums = ['I', 'II', 'III', 'IV', 'V'];
+        for (let i = 0; i < 5; i++) {
+            const wrap = document.createElement('div');
+            wrap.style.cssText = `display:flex;align-items:center;gap:6px;flex-direction:row-reverse;`;
+            const dot = document.createElement('div');
+            dot.style.cssText = `width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.15);transition:all 0.5s ease;box-shadow:none;`;
+            const label = document.createElement('div');
+            label.style.cssText = `font-family:${SANS};font-size:0.45rem;color:rgba(255,255,255,0);letter-spacing:0.1em;transition:color 0.5s ease;white-space:nowrap;`;
+            label.textContent = nums[i];
+            wrap.appendChild(label);
+            wrap.appendChild(dot);
+            progressContainer.appendChild(wrap);
+            this._progressDots.push({ dot, label });
+        }
+        ov.appendChild(progressContainer);
+        this._progressContainer = progressContainer;
+
+        this.canvas.parentElement.appendChild(ov);
+        this._overlay = ov;
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -744,12 +833,60 @@ export default class ThreeHistoricalViz extends BaseViz {
             this._deepFishGlow.material.opacity = 0;
         }
 
-        /* ── Annotations ── */
+        /* ── Annotations: quotes ── */
         this._setAnnotation(this._ann1, smoothstep(0.02, 0.08, p) * (1 - smoothstep(0.14, 0.20, p)));
         this._setAnnotation(this._ann2, smoothstep(0.22, 0.28, p) * (1 - smoothstep(0.34, 0.40, p)));
         this._setAnnotation(this._ann3, smoothstep(0.42, 0.48, p) * (1 - smoothstep(0.54, 0.60, p)));
         this._setAnnotation(this._ann4, smoothstep(0.62, 0.68, p) * (1 - smoothstep(0.74, 0.80, p)));
         this._setAnnotation(this._ann5, smoothstep(0.82, 0.88, p));
+
+        /* ── Scene headers ── */
+        this._setAnnotation(this._hdr1, smoothstep(0.0, 0.04, p) * (1 - smoothstep(0.16, 0.20, p)));
+        this._setAnnotation(this._hdr2, smoothstep(0.19, 0.23, p) * (1 - smoothstep(0.36, 0.40, p)));
+        this._setAnnotation(this._hdr3, smoothstep(0.39, 0.43, p) * (1 - smoothstep(0.56, 0.60, p)));
+        this._setAnnotation(this._hdr4, smoothstep(0.59, 0.63, p) * (1 - smoothstep(0.76, 0.80, p)));
+        this._setAnnotation(this._hdr5, smoothstep(0.79, 0.83, p));
+
+        /* ── Element labels (tighter ranges to prevent overlap) ── */
+        const s1lbl = smoothstep(0.04, 0.09, p) * (1 - smoothstep(0.13, 0.18, p));
+        this._setAnnotation(this._lbl_woman, s1lbl);
+        this._setAnnotation(this._lbl_crown, s1lbl);
+        this._setAnnotation(this._lbl_dragon, s1lbl);
+        this._setAnnotation(this._lbl_moon, s1lbl);
+
+        const s2lbl = smoothstep(0.24, 0.29, p) * (1 - smoothstep(0.33, 0.38, p));
+        this._setAnnotation(this._lbl_cross, s2lbl);
+        this._setAnnotation(this._lbl_ichthys, s2lbl);
+        this._setAnnotation(this._lbl_leviathan, s2lbl);
+
+        const s3lbl = smoothstep(0.44, 0.49, p) * (1 - smoothstep(0.53, 0.58, p));
+        this._setAnnotation(this._lbl_tobit, s3lbl);
+        this._setAnnotation(this._lbl_healing, s3lbl);
+
+        const s4lbl = smoothstep(0.64, 0.69, p) * (1 - smoothstep(0.73, 0.78, p));
+        this._setAnnotation(this._lbl_aries, s4lbl);
+        this._setAnnotation(this._lbl_pisces, s4lbl);
+
+        const s5lbl = smoothstep(0.84, 0.90, p);
+        this._setAnnotation(this._lbl_self, s5lbl);
+
+        /* ── Chapter context bar fade ── */
+        if (this._chapterBar) {
+            this._chapterBar.style.opacity = lerp(0.9, 0.3, clamp01(p * 2));
+        }
+
+        /* ── Scroll progress dots ── */
+        if (this._progressDots) {
+            const activeScene = p < 0.20 ? 0 : p < 0.40 ? 1 : p < 0.60 ? 2 : p < 0.80 ? 3 : 4;
+            for (let i = 0; i < 5; i++) {
+                const { dot, label } = this._progressDots[i];
+                const isActive = i === activeScene;
+                dot.style.background = isActive ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.15)';
+                dot.style.boxShadow = isActive ? '0 0 6px rgba(255,255,255,0.4)' : 'none';
+                dot.style.width = dot.style.height = isActive ? '6px' : '5px';
+                label.style.color = isActive ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0)';
+            }
+        }
 
         /* ── Camera: descent from heavens to deep ── */
         const camY = lerp(6, -3, clamp01(p * 1.1));
@@ -775,6 +912,12 @@ export default class ThreeHistoricalViz extends BaseViz {
     /* ── Annotation visibility helper ── */
     _setAnnotation(el, opacity) {
         if (!el) return;
+        if (opacity < 0.01) {
+            el.style.opacity = '0';
+            el.style.display = 'none';
+            return;
+        }
+        el.style.display = '';
         el.style.opacity = opacity;
         const yShift = lerp(12, 0, clamp01(opacity * 3));
         // Preserve existing transform base, just modify translateY
