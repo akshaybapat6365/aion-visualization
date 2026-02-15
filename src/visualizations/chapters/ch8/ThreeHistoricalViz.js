@@ -569,7 +569,7 @@ export default class ThreeHistoricalViz extends BaseViz {
         const style = document.createElement('style');
         style.id = 'ch8-anim-style';
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 
             .ch8-annotations {
                 position: fixed; inset: 0;
@@ -609,10 +609,10 @@ export default class ThreeHistoricalViz extends BaseViz {
             /* ── Chapter bar ── */
             .ch8-bar {
                 top: 18px; left: 50%; transform: translateX(-50%);
-                font-family: 'Cormorant Garamond', 'Georgia', serif;
-                font-size: 10px; font-weight: 400;
+                font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+                font-size: 11px; font-weight: 400;
                 color: rgba(255,255,255,0.35);
-                letter-spacing: 5px; text-transform: uppercase; text-align: center;
+                letter-spacing: 4px; text-transform: uppercase; text-align: center;
             }
             .ch8-bar-num { opacity: 0.6; }
             .ch8-bar-sep { display: inline-block; width: 1.5rem; opacity: 0.2; }
@@ -621,9 +621,9 @@ export default class ThreeHistoricalViz extends BaseViz {
             /* ── Scene headers ── */
             .ch8-hdr { top: 52px; left: 28px; text-align: left; }
             .ch8-hdr-num {
-                font-family: 'Cormorant Garamond', 'Georgia', serif;
-                font-size: 10px; font-weight: 400;
-                letter-spacing: 5px; text-transform: uppercase;
+                font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+                font-size: 14px; font-weight: 400;
+                letter-spacing: 4px; text-transform: uppercase;
                 margin-bottom: 6px;
             }
             .ch8-hdr-sub {
