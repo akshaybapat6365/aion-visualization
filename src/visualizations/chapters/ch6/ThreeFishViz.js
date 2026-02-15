@@ -9,7 +9,11 @@
  * new aeon. The spring point precesses from Pisces toward Aquarius.
  *
  * Visual: 5 layers — starfield, zodiac wheel, two fish + commissure,
- * Saturn/Jupiter/conjunction, phased annotations.
+ * Saturn/Jupiter/conjunction, tracked phased annotations.
+ *
+ * v2: All annotations are 3D→2D projection-tracked. Labels follow
+ * their objects through camera orbit. Leader lines connect labels
+ * to elements. Zodiac sign names projected onto wheel markers.
  */
 
 import * as THREE from 'three';
@@ -33,6 +37,11 @@ const SERPENT_GREEN = new THREE.Color('#2ecc71');
 const VOID = 0x030310;
 
 const ZODIAC_R = 5;
+
+const SIGN_NAMES = [
+    'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+    'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
+];
 
 export default class ThreeFishViz extends BaseViz {
     constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
@@ -62,6 +71,10 @@ export default class ThreeFishViz extends BaseViz {
         };
         addEventListener('mousemove', this._onMM);
 
+        /* Scratch vectors for projection (reuse to avoid GC) */
+        this._projVec = new THREE.Vector3();
+        this._smoothPositions = {};
+
         /* Build layers */
         this._createStarfield();
         this._createZodiacWheel();
@@ -79,6 +92,47 @@ export default class ThreeFishViz extends BaseViz {
             new THREE.Vector2(this.width, this.height), 1.2, 0.6, 0.4
         );
         this.composer.addPass(this.bloom);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       3D → 2D Projection Utility
+       ═══════════════════════════════════════════════════════════ */
+    _project(worldPos) {
+        this._projVec.copy(worldPos).project(this.camera);
+        return {
+            x: (this._projVec.x * 0.5 + 0.5) * this.width,
+            y: (-this._projVec.y * 0.5 + 0.5) * this.height,
+            behind: this._projVec.z > 1
+        };
+    }
+
+    /** Smoothly interpolate a tracked position to avoid jitter */
+    _smoothProject(key, worldPos, smoothing = 0.08) {
+        const raw = this._project(worldPos);
+        if (!this._smoothPositions[key]) {
+            this._smoothPositions[key] = { x: raw.x, y: raw.y };
+        }
+        const s = this._smoothPositions[key];
+        s.x += (raw.x - s.x) * smoothing;
+        s.y += (raw.y - s.y) * smoothing;
+        return { x: s.x, y: s.y, behind: raw.behind };
+    }
+
+    /** Position an HTML element by tracked 3D position with offset */
+    _trackElement(el, worldPos, key, offsetX = 0, offsetY = 0) {
+        if (!el) return null;
+        const p = this._smoothProject(key, worldPos);
+        /* Clamp to viewport bounds with generous margins for label width */
+        const marginL = 10;
+        const marginR = Math.min(250, this.width * 0.22); // room for label text
+        const marginT = 60; // below chapter title
+        const marginB = 50;
+        const cx = Math.max(marginL, Math.min(this.width - marginR, p.x + offsetX));
+        const cy = Math.max(marginT, Math.min(this.height - marginB, p.y + offsetY));
+        el.style.left = cx + 'px';
+        el.style.top = cy + 'px';
+        el.style.visibility = p.behind ? 'hidden' : 'visible';
+        return { x: cx, y: cy, anchorX: p.x, anchorY: p.y, behind: p.behind };
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -125,11 +179,8 @@ export default class ThreeFishViz extends BaseViz {
         })));
 
         /* 12 segment markers + spokes */
-        const SIGN_NAMES = [
-            'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-            'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
-        ];
         this.segmentMarkers = [];
+        this._zodiacPositions = []; // store positions for label projection
         for (let i = 0; i < 12; i++) {
             const angle = (i / 12) * Math.PI * 2;
             const isPisces = i === 11;
@@ -145,6 +196,16 @@ export default class ThreeFishViz extends BaseViz {
             dot.position.set(Math.cos(angle) * ZODIAC_R, 0, Math.sin(angle) * ZODIAC_R);
             this.wheelGroup.add(dot);
             this.segmentMarkers.push(dot);
+
+            /* Store label position slightly outside the ring */
+            const labelObj = new THREE.Object3D();
+            labelObj.position.set(
+                Math.cos(angle) * (ZODIAC_R + 0.7),
+                0,
+                Math.sin(angle) * (ZODIAC_R + 0.7)
+            );
+            this.wheelGroup.add(labelObj);
+            this._zodiacPositions.push(labelObj);
 
             /* Spoke line */
             const spoke = new THREE.Line(
@@ -171,11 +232,11 @@ export default class ThreeFishViz extends BaseViz {
                     ));
                 }
                 const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
-                const piscesArc = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
+                this._piscesArc = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
                     color: COMMISSURE, transparent: true, opacity: 0.35,
                     blending: THREE.AdditiveBlending,
                 }));
-                this.wheelGroup.add(piscesArc);
+                this.wheelGroup.add(this._piscesArc);
             }
 
             /* Aquarius sector faint arc */
@@ -189,10 +250,11 @@ export default class ThreeFishViz extends BaseViz {
                     ));
                 }
                 const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
-                this.wheelGroup.add(new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
+                this._aquariusArc = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
                     color: 0x22d3ee, transparent: true, opacity: 0.15,
                     blending: THREE.AdditiveBlending,
-                })));
+                }));
+                this.wheelGroup.add(this._aquariusArc);
             }
         }
 
@@ -268,18 +330,19 @@ export default class ThreeFishViz extends BaseViz {
             }));
             group.add(trailPts);
 
-            /* Glow sphere */
-            const glowGeo = new THREE.SphereGeometry(isLight ? 0.8 : 0.6, 12, 12);
+            /* Glow sphere — used for visual emphasis during label reveal */
+            const glowGeo = new THREE.SphereGeometry(isLight ? 0.9 : 0.7, 12, 12);
             const glowMat = new THREE.MeshBasicMaterial({
                 color: isLight ? 0x4488bb : 0x1a2244,
                 transparent: true, opacity: isLight ? 0.06 : 0.03,
                 blending: THREE.AdditiveBlending,
             });
-            group.add(new THREE.Mesh(glowGeo, glowMat));
+            const glow = new THREE.Mesh(glowGeo, glowMat);
+            group.add(glow);
 
             this.scene.add(group);
             this.fishPair.push({
-                group, direction: isLight ? 1 : -1, trailPts, isLight
+                group, direction: isLight ? 1 : -1, trailPts, isLight, glowMat
             });
         }
     }
@@ -288,7 +351,6 @@ export default class ThreeFishViz extends BaseViz {
        LAYER 3b — Commissure Thread
        ═══════════════════════════════════════════════════════════ */
     _createCommissureThread() {
-        /* Main commissure — a catenary-like curve between the two fish */
         const segCount = 40;
         const pts = [];
         for (let i = 0; i <= segCount; i++) {
@@ -344,7 +406,7 @@ export default class ThreeFishViz extends BaseViz {
             blending: THREE.AdditiveBlending, side: THREE.BackSide,
         })));
 
-        /* Orbiting Lion (red cone) */
+        /* Orbiting Lion (red cone) — with position anchor for tracking */
         this.saturnLion = new THREE.Mesh(
             new THREE.ConeGeometry(0.1, 0.22, 5),
             new THREE.MeshStandardMaterial({
@@ -411,7 +473,7 @@ export default class ThreeFishViz extends BaseViz {
     }
 
     /* ═══════════════════════════════════════════════════════════
-       LAYER 5 — HTML Annotations (6 phases)
+       LAYER 5 — HTML Annotations (tracked, 6 phases)
        ═══════════════════════════════════════════════════════════ */
     _buildAnnotations() {
         const ov = document.createElement('div');
@@ -427,7 +489,7 @@ export default class ThreeFishViz extends BaseViz {
                 overflow: hidden;
             }
 
-            /* Phase system */
+            /* ─── Phase system ─── */
             .ch6-overlay [data-phase] {
                 opacity: 0;
                 transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -437,6 +499,41 @@ export default class ThreeFishViz extends BaseViz {
             .ch6-overlay [data-phase].vis {
                 opacity: 1;
                 transform: translateY(0);
+            }
+
+            /* ─── Tracked labels (positioned by JS) ─── */
+            .ch6-tracked {
+                position: absolute;
+                transition: left 0.18s ease-out, top 0.18s ease-out;
+                will-change: left, top;
+            }
+
+            /* ─── Leader line SVG overlay ─── */
+            .ch6-leaders-svg {
+                position: absolute; inset: 0;
+                pointer-events: none;
+                overflow: visible;
+            }
+            .ch6-leaders-svg line {
+                stroke-dasharray: 4 3;
+                stroke-linecap: round;
+            }
+
+            /* ═══ PHASE 1 — Chapter title ═══ */
+            .ch6-title {
+                position: absolute;
+                top: 32px; left: 50%;
+                transform: translateX(-50%);
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 10px;
+                letter-spacing: 6px;
+                text-transform: uppercase;
+                color: rgba(200, 168, 42, 0.22);
+                white-space: nowrap;
+                transition: opacity 8s ease;
+            }
+            .ch6-title.dim {
+                opacity: 0.35;
             }
 
             /* ═══ PHASE 2 — Framing sentence ═══ */
@@ -456,25 +553,21 @@ export default class ThreeFishViz extends BaseViz {
                 font-style: italic;
             }
 
-            /* ═══ PHASE 3 — Fish labels ═══ */
+            /* ═══ PHASE 3 — Fish labels (tracked) ═══ */
             .ch6-fish-label {
-                position: absolute;
                 font-family: 'Cormorant Garamond', serif;
-                font-size: 8px;
+                font-size: 9px;
                 letter-spacing: 3px;
                 text-transform: uppercase;
                 line-height: 1.4;
+                white-space: nowrap;
             }
             .ch6-fish--light {
-                top: 42%;
-                right: 12%;
-                color: rgba(176, 196, 222, 0.5);
+                color: rgba(176, 196, 222, 0.65);
                 text-align: right;
             }
             .ch6-fish--dark {
-                top: 56%;
-                left: 12%;
-                color: rgba(42, 58, 90, 0.6);
+                color: rgba(60, 80, 120, 0.7);
             }
             .ch6-fish-explain {
                 display: block;
@@ -482,30 +575,29 @@ export default class ThreeFishViz extends BaseViz {
                 font-style: italic;
                 font-size: 10px;
                 letter-spacing: 0;
+                text-transform: none;
                 margin-top: 4px;
                 line-height: 1.4;
-                max-width: 160px;
+                max-width: 170px;
+                white-space: normal;
             }
             .ch6-fish--light .ch6-fish-explain {
-                color: rgba(176, 196, 222, 0.35);
+                color: rgba(176, 196, 222, 0.38);
             }
             .ch6-fish--dark .ch6-fish-explain {
                 color: rgba(80, 100, 140, 0.45);
             }
 
-            /* Commissure label */
+            /* Commissure label (tracked to thread midpoint) */
             .ch6-commissure-label {
-                position: absolute;
-                top: 49%;
-                left: 50%;
-                transform: translateX(-50%);
                 font-family: 'Cormorant Garamond', serif;
                 font-style: italic;
-                font-size: 9px;
+                font-size: 10px;
                 letter-spacing: 1px;
-                color: rgba(255, 215, 0, 0.3);
+                color: rgba(255, 215, 0, 0.4);
                 text-align: center;
                 white-space: nowrap;
+                text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
             }
 
             /* ═══ PHASE 4 — Zodiac context ═══ */
@@ -521,15 +613,39 @@ export default class ThreeFishViz extends BaseViz {
                 color: rgba(200, 168, 32, 0.25);
                 white-space: nowrap;
             }
-            .ch6-spring-label {
-                position: absolute;
-                bottom: 22%;
-                right: 10%;
+
+            /* Zodiac sign names (tracked to wheel markers) */
+            .ch6-sign-name {
                 font-family: 'Cormorant Garamond', serif;
-                font-size: 8px;
+                font-size: 7px;
                 letter-spacing: 2px;
-                color: rgba(255, 102, 0, 0.4);
-                text-align: right;
+                text-transform: uppercase;
+                white-space: nowrap;
+                text-align: center;
+                pointer-events: none;
+            }
+            .ch6-sign-name.ch6-sign--pisces {
+                color: rgba(255, 215, 0, 0.45);
+                font-size: 8px;
+                letter-spacing: 3px;
+            }
+            .ch6-sign-name.ch6-sign--aquarius {
+                color: rgba(34, 211, 238, 0.35);
+                font-size: 8px;
+                letter-spacing: 3px;
+            }
+            .ch6-sign-name.ch6-sign--normal {
+                color: rgba(200, 168, 42, 0.18);
+            }
+
+            /* Spring point label (tracked) */
+            .ch6-spring-label {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 9px;
+                letter-spacing: 2px;
+                color: rgba(255, 102, 0, 0.5);
+                text-align: center;
+                white-space: nowrap;
             }
             .ch6-spring-explain {
                 display: block;
@@ -537,38 +653,16 @@ export default class ThreeFishViz extends BaseViz {
                 font-size: 9.5px;
                 letter-spacing: 0;
                 margin-top: 3px;
-                color: rgba(255, 102, 0, 0.25);
-                max-width: 150px;
-            }
-            .ch6-pisces-label {
-                position: absolute;
-                top: 30%;
-                right: 6%;
-                font-family: 'Cormorant Garamond', serif;
-                font-size: 7px;
-                letter-spacing: 4px;
-                text-transform: uppercase;
-                color: rgba(255, 215, 0, 0.2);
-            }
-            .ch6-aquarius-label {
-                position: absolute;
-                top: 30%;
-                left: 6%;
-                font-family: 'Cormorant Garamond', serif;
-                font-size: 7px;
-                letter-spacing: 4px;
-                text-transform: uppercase;
-                color: rgba(34, 211, 238, 0.2);
+                color: rgba(255, 102, 0, 0.28);
+                max-width: 160px;
+                white-space: normal;
             }
 
-            /* ═══ PHASE 5 — Saturn + Jupiter ═══ */
+            /* ═══ PHASE 5 — Saturn + Jupiter (tracked) ═══ */
             .ch6-saturn-label {
-                position: absolute;
-                top: 16%;
-                left: 10%;
                 font-size: 10px;
                 letter-spacing: 1.5px;
-                color: rgba(74, 74, 90, 0.55);
+                color: rgba(100, 100, 130, 0.65);
             }
             .ch6-saturn-explain {
                 display: block;
@@ -577,17 +671,15 @@ export default class ThreeFishViz extends BaseViz {
                 font-size: 9.5px;
                 letter-spacing: 0;
                 margin-top: 4px;
-                color: rgba(74, 74, 90, 0.35);
-                max-width: 130px;
+                color: rgba(100, 100, 130, 0.38);
+                max-width: 140px;
                 line-height: 1.4;
+                white-space: normal;
             }
             .ch6-jupiter-label {
-                position: absolute;
-                top: 16%;
-                right: 10%;
                 font-size: 10px;
                 letter-spacing: 1.5px;
-                color: rgba(212, 160, 48, 0.5);
+                color: rgba(212, 160, 48, 0.6);
                 text-align: right;
             }
             .ch6-jupiter-explain {
@@ -597,18 +689,15 @@ export default class ThreeFishViz extends BaseViz {
                 font-size: 9.5px;
                 letter-spacing: 0;
                 margin-top: 4px;
-                color: rgba(212, 160, 48, 0.3);
-                max-width: 130px;
+                color: rgba(212, 160, 48, 0.32);
+                max-width: 140px;
                 line-height: 1.4;
+                white-space: normal;
             }
             .ch6-conjunction-label {
-                position: absolute;
-                top: 24%;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: 9px;
+                font-size: 10px;
                 letter-spacing: 2px;
-                color: rgba(255, 255, 255, 0.2);
+                color: rgba(255, 255, 255, 0.25);
                 text-align: center;
                 white-space: nowrap;
             }
@@ -619,28 +708,24 @@ export default class ThreeFishViz extends BaseViz {
                 font-size: 9px;
                 letter-spacing: 0;
                 margin-top: 3px;
-                color: rgba(255, 255, 255, 0.15);
+                color: rgba(255, 255, 255, 0.18);
+                white-space: normal;
+                max-width: 200px;
             }
 
-            /* Leader lines */
-            .ch6-leader {
-                position: absolute;
-                background: none;
-                pointer-events: none;
+            /* Lion + Serpent micro-labels (tracked) */
+            .ch6-orbiter-label {
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 7px;
+                letter-spacing: 2px;
+                text-transform: lowercase;
+                white-space: nowrap;
             }
-            .ch6-leader--saturn {
-                top: 22%;
-                left: 18%;
-                width: 40px;
-                height: 1px;
-                border-top: 1px dashed rgba(74, 74, 90, 0.15);
+            .ch6-orbiter--lion {
+                color: rgba(192, 57, 43, 0.5);
             }
-            .ch6-leader--jupiter {
-                top: 22%;
-                right: 18%;
-                width: 40px;
-                height: 1px;
-                border-top: 1px dashed rgba(212, 160, 48, 0.15);
+            .ch6-orbiter--serpent {
+                color: rgba(46, 204, 113, 0.45);
             }
 
             /* ═══ PHASE 6 — Final message ═══ */
@@ -662,7 +747,37 @@ export default class ThreeFishViz extends BaseViz {
         `;
         ov.appendChild(style);
 
-        ov.innerHTML += `
+        /* ─── SVG leader line overlay ─── */
+        const svgNS = 'http://www.w3.org/2000/svg';
+        this._leaderSvg = document.createElementNS(svgNS, 'svg');
+        this._leaderSvg.classList.add('ch6-leaders-svg');
+        this._leaderSvg.setAttribute('width', '100%');
+        this._leaderSvg.setAttribute('height', '100%');
+        ov.appendChild(this._leaderSvg);
+
+        /* Create reusable leader lines */
+        this._leaders = {};
+        const makeLeader = (id, color, opacity = 0.2) => {
+            const line = document.createElementNS(svgNS, 'line');
+            line.setAttribute('stroke', color);
+            line.setAttribute('stroke-opacity', opacity);
+            line.setAttribute('stroke-width', '1');
+            line.style.display = 'none';
+            this._leaderSvg.appendChild(line);
+            this._leaders[id] = line;
+        };
+        makeLeader('fish-light', 'rgba(176,196,222,0.25)', 0.3);
+        makeLeader('fish-dark', 'rgba(60,80,120,0.25)', 0.3);
+        makeLeader('saturn', 'rgba(100,100,130,0.2)', 0.25);
+        makeLeader('jupiter', 'rgba(212,160,48,0.2)', 0.25);
+        makeLeader('spring', 'rgba(255,102,0,0.2)', 0.25);
+        makeLeader('commissure', 'rgba(255,215,0,0.15)', 0.2);
+
+        /* ─── HTML elements ─── */
+        ov.insertAdjacentHTML('beforeend', `
+            <!-- Phase 1: Chapter title -->
+            <div class="ch6-title" data-phase="1">VI · The Sign of the Fishes</div>
+
             <!-- Phase 2: Framing sentence -->
             <div class="ch6-framing" data-phase="2">
                 The birth of Christ coincided with the dawn
@@ -675,56 +790,79 @@ export default class ThreeFishViz extends BaseViz {
                 hostile brothers of the psyche.
             </div>
 
-            <!-- Phase 3: Fish labels + commissure -->
-            <div class="ch6-fish-label ch6-fish--light" data-phase="3">
+            <!-- Phase 3: Fish labels (tracked by JS) + commissure -->
+            <div class="ch6-tracked ch6-fish-label ch6-fish--light" data-phase="3" data-track="fish-light">
                 Christ-Fish
                 <span class="ch6-fish-explain">the luminous half — what the age chose to worship</span>
             </div>
-            <div class="ch6-fish-label ch6-fish--dark" data-phase="3">
+            <div class="ch6-tracked ch6-fish-label ch6-fish--dark" data-phase="3" data-track="fish-dark">
                 Shadow-Fish
                 <span class="ch6-fish-explain">the dark twin — the Antichrist, denied but never absent</span>
             </div>
-            <div class="ch6-commissure-label" data-phase="3">
+            <div class="ch6-tracked ch6-commissure-label" data-phase="3" data-track="commissure">
                 the commissure — what binds the opposites
             </div>
 
-            <!-- Phase 4: Zodiac →  -->
+            <!-- Phase 4: Zodiac context -->
             <div class="ch6-zodiac-label" data-phase="4">the great year</div>
-            <div class="ch6-pisces-label" data-phase="4">pisces</div>
-            <div class="ch6-aquarius-label" data-phase="4">aquarius</div>
-            <div class="ch6-spring-label" data-phase="4">
-                Spring Point
-                <span class="ch6-spring-explain">slowly precessing from Pisces toward Aquarius</span>
+            <div class="ch6-tracked ch6-spring-label" data-phase="4" data-track="spring">
+                ◆ Spring Point
+                <span class="ch6-spring-explain">slowly precessing from Pisces toward Aquarius — marking the turn of the aeon</span>
             </div>
 
-            <!-- Phase 5: Saturn + Jupiter + Conjunction -->
-            <div class="ch6-saturn-label" data-phase="5">
+            <!-- Phase 5: Saturn + Jupiter (tracked) + lion/serpent -->
+            <div class="ch6-tracked ch6-saturn-label" data-phase="5" data-track="saturn">
                 Saturn
                 <span class="ch6-saturn-explain">the "black star" — malefic father of time, orbited by lion and serpent</span>
             </div>
-            <div class="ch6-jupiter-label" data-phase="5">
+            <div class="ch6-tracked ch6-jupiter-label" data-phase="5" data-track="jupiter">
                 Jupiter
                 <span class="ch6-jupiter-explain">life and justice — the benefic counterpart</span>
             </div>
-            <div class="ch6-conjunction-label" data-phase="5">
+            <div class="ch6-tracked ch6-conjunction-label" data-phase="5" data-track="conjunction">
                 Great Conjunction
                 <span class="ch6-conjunction-explain">Saturn meets Jupiter in Pisces, ~7 BC — the Star of Bethlehem</span>
             </div>
-            <div class="ch6-leader ch6-leader--saturn" data-phase="5"></div>
-            <div class="ch6-leader ch6-leader--jupiter" data-phase="5"></div>
+            <div class="ch6-tracked ch6-orbiter-label ch6-orbiter--lion" data-phase="5" data-track="lion">
+                lion
+            </div>
+            <div class="ch6-tracked ch6-orbiter-label ch6-orbiter--serpent" data-phase="5" data-track="serpent">
+                serpent
+            </div>
 
             <!-- Phase 6: Final reflection -->
             <div class="ch6-final" data-phase="6">
                 The spring point drifts from Pisces into Aquarius —<br>
                 <em>a new aeon approaches</em>
             </div>
-        `;
+        `);
+
+        /* ─── Zodiac sign name elements (Phase 4) ─── */
+        this._signEls = [];
+        for (let i = 0; i < 12; i++) {
+            const isPisces = i === 11;
+            const isAquarius = i === 10;
+            const el = document.createElement('div');
+            el.className = `ch6-tracked ch6-sign-name ${isPisces ? 'ch6-sign--pisces' :
+                isAquarius ? 'ch6-sign--aquarius' : 'ch6-sign--normal'
+                }`;
+            el.dataset.phase = '4';
+            el.textContent = SIGN_NAMES[i];
+            ov.appendChild(el);
+            this._signEls.push(el);
+        }
 
         this.container.appendChild(ov);
         this._overlay = ov;
         this._phaseEls = ov.querySelectorAll('[data-phase]');
         this._phaseTimes = [0, 5, 12, 20, 28, 36]; // seconds for phases 1–6
         this._maxPhase = 0;
+
+        /* Cache tracked element references */
+        this._tracked = {};
+        ov.querySelectorAll('[data-track]').forEach(el => {
+            this._tracked[el.dataset.track] = el;
+        });
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -755,12 +893,17 @@ export default class ThreeFishViz extends BaseViz {
                 tp[j] += (Math.random() - 0.5) * 0.01;
                 tp[j + 1] += (Math.random() - 0.5) * 0.006;
                 tp[j + 2] += (Math.random() - 0.5) * 0.004;
-                /* Keep within bounds */
                 tp[j] = Math.max(-1.5, Math.min(1.5, tp[j]));
                 tp[j + 1] = Math.max(-0.4, Math.min(0.4, tp[j + 1]));
                 tp[j + 2] = Math.max(-0.3, Math.min(0.3, tp[j + 2]));
             }
             fish.trailPts.geometry.attributes.position.needsUpdate = true;
+
+            /* Glow pulse — intensifies when labels are visible (phase 3+) */
+            if (fish.glowMat && this._maxPhase >= 3) {
+                const baseOpacity = fish.isLight ? 0.1 : 0.06;
+                fish.glowMat.opacity = baseOpacity + Math.sin(t * 0.4 + i) * 0.03;
+            }
         }
 
         /* ─── Commissure thread following fish ─── */
@@ -777,7 +920,9 @@ export default class ThreeFishViz extends BaseViz {
             commPos[i * 3 + 2] = z;
         }
         this.commissure.geometry.attributes.position.needsUpdate = true;
-        this.commissure.material.opacity = 0.25 + Math.sin(t * 0.3) * 0.1;
+        /* Commissure opacity increases when labeled (phase 3+) */
+        const commBaseOp = this._maxPhase >= 3 ? 0.4 : 0.25;
+        this.commissure.material.opacity = commBaseOp + Math.sin(t * 0.3) * 0.1;
 
         /* Commissure glow particles */
         const glPos = this.commissureGlow.geometry.attributes.position.array;
@@ -825,6 +970,14 @@ export default class ThreeFishViz extends BaseViz {
         );
         this.springPoint.rotation.y = t * 0.5;
 
+        /* ─── Pisces/Aquarius arc pulse ─── */
+        if (this._piscesArc && this._maxPhase >= 4) {
+            this._piscesArc.material.opacity = 0.35 + Math.sin(t * 0.3) * 0.08;
+        }
+        if (this._aquariusArc && this._maxPhase >= 4) {
+            this._aquariusArc.material.opacity = 0.15 + Math.sin(t * 0.25 + 1) * 0.05;
+        }
+
         /* ─── Wheel slow rotation ─── */
         this.wheelGroup.rotation.y = t * 0.006;
 
@@ -857,6 +1010,156 @@ export default class ThreeFishViz extends BaseViz {
                 });
             }
         }
+
+        /* ─── Dim title after 15s ─── */
+        if (t > 15 && this._tracked) {
+            const titleEl = this._overlay?.querySelector('.ch6-title');
+            if (titleEl && !titleEl.classList.contains('dim')) {
+                titleEl.classList.add('dim');
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           TRACKED LABEL POSITIONING (3D → 2D projection)
+           ═══════════════════════════════════════════════════════ */
+        this.camera.updateMatrixWorld();
+
+        /* --- Fish labels --- */
+        if (this._maxPhase >= 3) {
+            /* Determine which side the fish is on, offset label to opposite side */
+            const f0screen = this._project(this.fishPair[0].group.position);
+            const f0Right = f0screen.x > this.width * 0.5;
+            const lightPos = this._trackElement(
+                this._tracked['fish-light'],
+                this.fishPair[0].group.position,
+                'fish-light', f0Right ? -200 : 40, -30
+            );
+            const f1screen = this._project(this.fishPair[1].group.position);
+            const f1Right = f1screen.x > this.width * 0.5;
+            const darkPos = this._trackElement(
+                this._tracked['fish-dark'],
+                this.fishPair[1].group.position,
+                'fish-dark', f1Right ? -200 : 40, 20
+            );
+
+            /* Commissure label at midpoint of thread */
+            const commMid = new THREE.Vector3().lerpVectors(f0, f1, 0.5);
+            commMid.y += Math.sin(0.5 * Math.PI) * 0.4 * Math.sin(t * 0.2);
+            const commLabelPos = this._trackElement(
+                this._tracked['commissure'],
+                commMid, 'commissure', -100, -20
+            );
+
+            /* Leader lines for fish */
+            if (lightPos && !lightPos.behind) {
+                this._updateLeader('fish-light', lightPos.x, lightPos.y, lightPos.anchorX, lightPos.anchorY, true);
+            }
+            if (darkPos && !darkPos.behind) {
+                this._updateLeader('fish-dark', darkPos.x, darkPos.y + 8, darkPos.anchorX, darkPos.anchorY, true);
+            }
+            if (commLabelPos && !commLabelPos.behind) {
+                this._updateLeader('commissure', commLabelPos.x + 100, commLabelPos.y + 8, commLabelPos.anchorX, commLabelPos.anchorY, true);
+            }
+        }
+
+        /* --- Zodiac sign names (Phase 4) --- */
+        if (this._maxPhase >= 4 && this._signEls) {
+            for (let i = 0; i < 12; i++) {
+                const labelObj = this._zodiacPositions[i];
+                /* Get world position of the label anchor (it's inside wheelGroup) */
+                const worldPos = new THREE.Vector3();
+                labelObj.getWorldPosition(worldPos);
+                const p = this._project(worldPos);
+
+                /* Only show signs facing camera (z < 1) and not behind */
+                if (!p.behind && p.x > 20 && p.x < this.width - 20 && p.y > 20 && p.y < this.height - 20) {
+                    this._signEls[i].style.left = p.x + 'px';
+                    this._signEls[i].style.top = p.y + 'px';
+                    this._signEls[i].style.transform = 'translate(-50%, -50%)';
+                    this._signEls[i].style.visibility = 'visible';
+                } else {
+                    this._signEls[i].style.visibility = 'hidden';
+                }
+            }
+
+            /* Spring point tracked label */
+            const spWorld = new THREE.Vector3();
+            this.springPoint.getWorldPosition(spWorld);
+            /* Spring point — offset away from right edge */
+            const spScreen = this._project(spWorld);
+            const spRight = spScreen.x > this.width * 0.55;
+            const spPos = this._trackElement(
+                this._tracked['spring'],
+                spWorld, 'spring', spRight ? -200 : 25, -30
+            );
+            if (spPos && !spPos.behind) {
+                this._updateLeader('spring', spPos.x, spPos.y + 8, spPos.anchorX, spPos.anchorY, true);
+            }
+        }
+
+        /* --- Saturn, Jupiter, Conjunction labels (Phase 5) --- */
+        if (this._maxPhase >= 5) {
+            /* Saturn */
+            const satWorld = new THREE.Vector3();
+            this.saturnGroup.getWorldPosition(satWorld);
+            /* Saturn — keep label from overlapping framing text */
+            const satScreen = this._project(satWorld);
+            const satBelow = satScreen.y > this.height * 0.35;
+            const satPos = this._trackElement(
+                this._tracked['saturn'],
+                satWorld, 'saturn', -160, satBelow ? -60 : 35
+            );
+            if (satPos && !satPos.behind) {
+                this._updateLeader('saturn', satPos.x + 40, satPos.y + 10, satPos.anchorX, satPos.anchorY, true);
+            }
+
+            /* Jupiter */
+            const jupWorld = this.jupiter.position.clone();
+            const jupScreen = this._project(jupWorld);
+            const jupRight = jupScreen.x > this.width * 0.55;
+            const jupPos = this._trackElement(
+                this._tracked['jupiter'],
+                jupWorld, 'jupiter', jupRight ? -180 : 45, -30
+            );
+            if (jupPos && !jupPos.behind) {
+                this._updateLeader('jupiter', jupPos.x, jupPos.y + 10, jupPos.anchorX, jupPos.anchorY, true);
+            }
+
+            /* Great Conjunction — position at midpoint between Saturn and Jupiter */
+            const conjMid = new THREE.Vector3().lerpVectors(satWorld, jupWorld, 0.5);
+            this._trackElement(
+                this._tracked['conjunction'],
+                conjMid, 'conjunction', -80, -50
+            );
+
+            /* Lion micro-label */
+            const lionWorld = new THREE.Vector3();
+            this.saturnLion.getWorldPosition(lionWorld);
+            this._trackElement(
+                this._tracked['lion'],
+                lionWorld, 'lion', 15, -12
+            );
+
+            /* Serpent micro-label */
+            const serpWorld = new THREE.Vector3();
+            this.saturnSerpent.getWorldPosition(serpWorld);
+            this._trackElement(
+                this._tracked['serpent'],
+                serpWorld, 'serpent', 15, -12
+            );
+        }
+    }
+
+    /** Update an SVG leader line between a label position and its 3D anchor */
+    _updateLeader(id, labelX, labelY, anchorX, anchorY, show = true) {
+        const line = this._leaders[id];
+        if (!line) return;
+        if (!show) { line.style.display = 'none'; return; }
+        line.style.display = '';
+        line.setAttribute('x1', labelX);
+        line.setAttribute('y1', labelY);
+        line.setAttribute('x2', anchorX);
+        line.setAttribute('y2', anchorY);
     }
 
     /* ═══ Render ═══ */
