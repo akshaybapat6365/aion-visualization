@@ -130,6 +130,24 @@ export default class ThreeProphecyViz extends BaseViz {
         super(c, Object.assign({ contextType: 'webgl' }, o));
         this._activeScene = 0; // 0=none, 1=great year, 2=spiral, 3=timeline
         this._sceneOpacities = { scene1: 1, scene2: 0, scene3: 0 };
+        this.panelState = { activePanelId: 'prophecy', progress: 0 };
+        this._targetProgress = 0.06;
+        this._visualProgress = 0.06;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+        const panelProgress = {
+            prophecy: 0.06,
+            collective: 0.25,
+            threshold: 0.82,
+        };
+        this._targetProgress = panelProgress[this.panelState.activePanelId] ?? this.panelState.progress ?? 0.06;
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     async init() {
@@ -139,10 +157,10 @@ export default class ThreeProphecyViz extends BaseViz {
         });
         R.setPixelRatio(Math.min(devicePixelRatio, 2));
         R.setSize(this.width, this.height);
-        R.setClearColor(0x000000);
+        R.setClearColor(0x020208);
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x000000, 0.004);
+        this.scene.fog = new THREE.FogExp2(0x020208, 0.004);
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 500);
         this.camera.position.set(0, 0, 20);
         this.camera.lookAt(0, 0, 0);
@@ -182,50 +200,15 @@ export default class ThreeProphecyViz extends BaseViz {
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 0.9, 0.5, 0.35
+            new THREE.Vector2(this.width, this.height), 1.18, 0.55, 0.28
         );
         this.composer.addPass(this.bloom);
 
         /* CSS Overlay */
         this._buildOverlay();
 
-        /* ─── Scroll Spacer ───
-           The chapter page runs in "immersive mode" (no text sections),
-           so we create our own scroll spacer to enable scrolling.
-           The spacer sits behind the fixed viz canvas and gives the page
-           enough height for the user to scroll through three scenes. */
-        this._scrollSpacer = document.createElement('div');
-        this._scrollSpacer.style.cssText = `
-            position:relative;width:100%;height:800vh;
-            pointer-events:none;z-index:-1;
-        `;
-        document.body.appendChild(this._scrollSpacer);
-
-        /* ─── Trackpad / Mouse Wheel Scroll ───
-           The #viz-layer is position:fixed covering the viewport,
-           so trackpad two-finger gestures fire 'wheel' events on the
-           fixed layer but never cause a native scroll. We intercept
-           wheel events and programmatically scroll the page. */
-        this._onWheelHandler = (e) => {
-            e.preventDefault();
-            window.scrollBy({ top: e.deltaY * 0.35, left: 0 });
-        };
-        // Listen on the entire document so trackpad events anywhere are captured
-        document.addEventListener('wheel', this._onWheelHandler, { passive: false });
-
-        /* Wire scroll → scrollState */
-        this._onScrollHandler = () => {
-            const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-            const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-            this.scrollState = {
-                globalProgress: progress,
-                sectionProgress: progress,
-                activeSection: progress < SCENE2_START ? 0 : progress < SCENE3_START ? 1 : 2,
-                scrollY: window.scrollY
-            };
-        };
-        window.addEventListener('scroll', this._onScrollHandler, { passive: true });
-        this._onScrollHandler(); // Initialize
+        /* The React chapter shell supplies panel state; the scene no longer
+           owns body scroll or adds its own scroll spacer. */
 
         /* Initial state */
         this.scene2Group.visible = false;
@@ -244,7 +227,7 @@ export default class ThreeProphecyViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.starfield = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0x8888aa, size: 0.04, transparent: true, opacity: 0.4,
+            color: 0xaaaad0, size: 0.055, transparent: true, opacity: 0.62,
             sizeAttenuation: true, depthWrite: false
         }));
         this.scene.add(this.starfield);
@@ -258,9 +241,9 @@ export default class ThreeProphecyViz extends BaseViz {
 
         /* Outer ring */
         const outerR = 5;
-        this._addRing(g, outerR, GOLD, 0.15);
-        this._addRing(g, 4.2, COOL_BLUE, 0.06);
-        this._addRing(g, 3.2, GOLD, 0.04);
+        this._addRing(g, outerR, GOLD, 0.34);
+        this._addRing(g, 4.2, COOL_BLUE, 0.18);
+        this._addRing(g, 3.2, GOLD, 0.13);
 
         /* Zodiac glyph sprites */
         for (let i = 0; i < 12; i++) {
@@ -311,7 +294,7 @@ export default class ThreeProphecyViz extends BaseViz {
             const spoke = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints(pts),
                 new THREE.LineBasicMaterial({
-                    color: GOLD, transparent: true, opacity: 0.03,
+                    color: GOLD, transparent: true, opacity: 0.09,
                     blending: THREE.AdditiveBlending
                 })
             );
@@ -801,6 +784,15 @@ export default class ThreeProphecyViz extends BaseViz {
                 letter-spacing: 0.15em; text-transform: uppercase;
                 color: rgba(200,160,64,0.3); white-space: nowrap;
             }
+            .ch7-overlay [data-ch7-copy="quiet"] {
+                display: none !important;
+            }
+            @media (max-width: 700px) {
+                .ch7-event-tooltip,
+                .ch7-scene-dot {
+                    display: none !important;
+                }
+            }
         `;
         ol.appendChild(style);
 
@@ -1204,6 +1196,27 @@ export default class ThreeProphecyViz extends BaseViz {
                 </div>
             </div>
         `);
+
+        [
+            this._scrollIndicator,
+            this._scene1Title,
+            this._scene1Thesis,
+            this._scene1Explain,
+            this._scene1Direction,
+            this._scene2Title,
+            this._scene2Thesis,
+            this._scene2Legend,
+            this._scene2Enantio,
+            this._scene2TimeArrow,
+            this._bridgeAnnotation,
+            this._scene3Title,
+            this._scene3Quote,
+            this._scene3DualFish,
+            this._scene3Eras,
+            this._scene3Nostradamus,
+            this._scene3Bottom,
+            this._scene3FishDivider,
+        ].forEach((el) => el?.setAttribute('data-ch7-copy', 'quiet'));
     }
 
     _makeOverlayEl(parent, html) {
@@ -1217,7 +1230,11 @@ export default class ThreeProphecyViz extends BaseViz {
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
-        const p = this.scrollState?.globalProgress || 0;
+        const targetProgress = this._targetProgress ?? this.scrollState?.globalProgress ?? 0.06;
+        const progressDamp = this.reducedMotion ? 12 : 3.6;
+        this._visualProgress = THREE.MathUtils.damp(this._visualProgress ?? targetProgress, targetProgress, progressDamp, dt);
+        const p = this._visualProgress;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         /* ─── Determine active scene ─── */
@@ -1226,7 +1243,7 @@ export default class ThreeProphecyViz extends BaseViz {
         else if (p >= SCENE2_START) scene = 2;
 
         /* ─── Scene visibility transitions ─── */
-        const fadeSpeed = 1.5 * dt;
+        const fadeSpeed = (this.reducedMotion ? 8 : 1.5) * dt;
         this._sceneOpacities.scene1 += ((scene === 1 ? 1 : 0) - this._sceneOpacities.scene1) * fadeSpeed;
         this._sceneOpacities.scene2 += ((scene === 2 ? 1 : 0) - this._sceneOpacities.scene2) * fadeSpeed;
         this._sceneOpacities.scene3 += ((scene === 3 ? 1 : 0) - this._sceneOpacities.scene3) * fadeSpeed;
@@ -1236,8 +1253,8 @@ export default class ThreeProphecyViz extends BaseViz {
         this.scene3Group.visible = this._sceneOpacities.scene3 > 0.01;
 
         /* ─── Shared starfield (slowed for cosmic feel) ─── */
-        this.starfield.rotation.y = t * 0.0012;
-        this.starfield.rotation.x = t * 0.0005;
+        this.starfield.rotation.y = t * 0.0012 * motionScale;
+        this.starfield.rotation.x = t * 0.0005 * motionScale;
 
         /* ─── Global overlays ─── */
         /* Scroll indicator: visible only at start, fades as user scrolls */
@@ -1256,7 +1273,7 @@ export default class ThreeProphecyViz extends BaseViz {
         /* ═══ SCENE 1 — Great Year ═══ */
         if (this.scene1Group.visible) {
             const s1p = Math.max(0, Math.min(1, (p - SCENE1_START) / (SCENE1_END - SCENE1_START)));
-            this.scene1Group.rotation.z = t * 0.003;
+            this.scene1Group.rotation.z = t * 0.003 * motionScale;
 
             /* Fade and scale: shrink as we transition to scene 2 */
             const s1Scale = 1 - s1p * 0.3;
@@ -1292,12 +1309,12 @@ export default class ThreeProphecyViz extends BaseViz {
             const spiralCamAngle = s2p * Math.PI * 0.5;
 
             /* Slow rotation of the spiral itself */
-            this.scene2Group.rotation.y = t * 0.015 + spiralCamAngle * 0.2;
+            this.scene2Group.rotation.y = t * 0.015 * motionScale + spiralCamAngle * 0.2;
 
             /* Pulse markers */
             for (const m of this._spiralMarkers) {
-                m.sphere.material.opacity = 0.5 + Math.sin(t * 2 + m.data.year * 0.01) * 0.2;
-                m.halo.material.opacity = 0.1 + Math.sin(t * 2 + m.data.year * 0.01) * 0.08;
+                m.sphere.material.opacity = 0.5 + Math.sin(t * 2 * motionScale + m.data.year * 0.01) * 0.2;
+                m.halo.material.opacity = 0.1 + Math.sin(t * 2 * motionScale + m.data.year * 0.01) * 0.08;
             }
 
             /* Overlay */
@@ -1368,8 +1385,8 @@ export default class ThreeProphecyViz extends BaseViz {
 
             /* Enantiodromia marker pulse */
             if (this._enantiMarker) {
-                this._enantiMarker.rotation.y = t * 0.8;
-                this._enantiMarker.material.opacity = 0.4 + Math.sin(t * 2) * 0.2;
+                this._enantiMarker.rotation.y = t * 0.8 * motionScale;
+                this._enantiMarker.material.opacity = 0.4 + Math.sin(t * 2 * motionScale) * 0.2;
             }
 
             /* Find nearest event for tooltip */
@@ -1496,7 +1513,7 @@ export default class ThreeProphecyViz extends BaseViz {
             /* Orbit the spiral */
             const s2p = Math.max(0, Math.min(1, (p - SCENE2_START) / (SCENE2_END - SCENE2_START)));
             const camY = -this._helixTotalHeight / 2 + s2p * this._helixTotalHeight;
-            const camAngle = s2p * Math.PI * 0.6 + t * 0.01;
+            const camAngle = s2p * Math.PI * 0.6 + t * 0.01 * motionScale;
             const camDist = 10;
             targetPos = new THREE.Vector3(
                 Math.cos(camAngle) * camDist + mx,
@@ -1532,8 +1549,6 @@ export default class ThreeProphecyViz extends BaseViz {
 
     dispose() {
         removeEventListener('mousemove', this._onMM);
-        if (this._onWheelHandler) document.removeEventListener('wheel', this._onWheelHandler);
-        if (this._onScrollHandler) removeEventListener('scroll', this._onScrollHandler);
         if (this._scrollSpacer) this._scrollSpacer.remove();
         if (this._overlay) this._overlay.remove();
         this.renderer?.dispose();

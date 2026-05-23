@@ -43,7 +43,21 @@ const PSYCHIC_FILA = 10;
 const RAY_COUNT = 16;
 
 export default class ThreeEgoViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'ego-light', progress: 0 };
+        this.egoFocus = 1;
+        this.rootFocus = 0;
+        this.selfFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         /* ── Renderer ── */
@@ -302,10 +316,8 @@ export default class ThreeEgoViz extends BaseViz {
         ov.className = 'ch1-annotations';
         ov.innerHTML = `
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
 .ch1-annotations {
-    position: fixed;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 10;
@@ -587,19 +599,23 @@ export default class ThreeEgoViz extends BaseViz {
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.03);
         this.introT += dt;
+        const panelId = this.panelState?.activePanelId || 'ego-light';
+        this.egoFocus = THREE.MathUtils.damp(this.egoFocus, panelId === 'ego-light' ? 1 : 0.25, 3.2, dt);
+        this.rootFocus = THREE.MathUtils.damp(this.rootFocus, panelId === 'roots' ? 1 : 0, 3.2, dt);
+        this.selfFocus = THREE.MathUtils.damp(this.selfFocus, panelId === 'self-depth' ? 1 : 0, 3.2, dt);
 
         /* Ego flicker */
         const p = 0.88 + Math.sin(t * 1.8) * 0.08 + Math.sin(t * 4.1) * 0.04;
         this.egoDot.material.opacity = p;
-        this.egoGlow.material.opacity = 0.15 + Math.sin(t * 0.9) * 0.06;
-        this.egoCorona.material.opacity = 0.03 + Math.sin(t * 0.35) * 0.015;
-        this.egoField.material.opacity = 0.012 + Math.sin(t * 0.2) * 0.006;
+        this.egoGlow.material.opacity = 0.15 + Math.sin(t * 0.9) * 0.06 + this.egoFocus * 0.08;
+        this.egoCorona.material.opacity = 0.03 + Math.sin(t * 0.35) * 0.015 + this.egoFocus * 0.018;
+        this.egoField.material.opacity = 0.012 + Math.sin(t * 0.2) * 0.006 + this.egoFocus * 0.012;
         this.egoGroup.position.x = Math.sin(t * 0.04) * 0.2;
         this.egoGroup.position.y = Math.sin(t * 0.1) * 0.1;
 
         /* Rays */
         for (const r of this.rays) {
-            r.line.material.opacity = 0.025 + Math.sin(t * 0.4 + r.ph) * 0.02;
+            r.line.material.opacity = 0.025 + Math.sin(t * 0.4 + r.ph) * 0.02 + this.egoFocus * 0.018;
         }
 
         /* Ocean drift */
@@ -626,7 +642,8 @@ export default class ThreeEgoViz extends BaseViz {
         for (const f of this.filaments) {
             const base = f.type === 'somatic' ? 0.1 : 0.08;
             const amp = f.type === 'somatic' ? 0.08 : 0.06;
-            f.line.material.opacity = base + Math.sin(t * 0.8 + f.ph) * amp;
+            const rootBias = f.type === 'somatic' ? 0.1 : 0.08;
+            f.line.material.opacity = base + Math.sin(t * 0.8 + f.ph) * amp + this.rootFocus * rootBias;
         }
 
         /* Awareness rings */
@@ -640,7 +657,7 @@ export default class ThreeEgoViz extends BaseViz {
         const cycle = t % 28;
         const revealing = cycle > 16;
         const selfT = revealing ? (cycle - 16) / 12 : 0;
-        const selfO = revealing ? Math.sin(selfT * Math.PI) * 0.2 : 0;
+        const selfO = Math.max(revealing ? Math.sin(selfT * Math.PI) * 0.2 : 0, this.selfFocus * 0.22);
 
         this.deepSelf.material.opacity = selfO;
         this.selfHalo.material.opacity = selfO * 0.15;
@@ -667,12 +684,13 @@ export default class ThreeEgoViz extends BaseViz {
         /* Cinematic intro camera */
         const introF = Math.min(this.introT / 10, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
-        const tH = 1.5 + this.mouseSmooth.y * 3 + Math.sin(t * 0.025) * 0.4;
+        const panelDepth = this.rootFocus * -1.8 + this.selfFocus * -4.2;
+        const tH = 1.5 + panelDepth + this.mouseSmooth.y * 3 + Math.sin(t * 0.025) * 0.4;
         const camH = THREE.MathUtils.lerp(20, tH, ease);
-        const camD = THREE.MathUtils.lerp(30, 12, ease);
+        const camD = THREE.MathUtils.lerp(30, 12 + this.selfFocus * 4 - this.egoFocus * 1.5, ease);
         const camA = t * 0.012 + this.mouseSmooth.x * 0.25;
         this.camera.position.set(Math.sin(camA) * camD, camH, Math.cos(camA) * camD);
-        this.camera.lookAt(0, -1.5, 0);
+        this.camera.lookAt(0, -1.5 - this.rootFocus * 2.5 - this.selfFocus * 5.5, 0);
 
         /* Bloom */
         if (this.bloom) {

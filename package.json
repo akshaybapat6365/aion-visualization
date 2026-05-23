@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "python3 -u -m http.server 3000 || python -u -m http.server 3000",
-    "serve": "python3 -u -m http.server 3000 || python -u -m http.server 3000",
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "dev:static": "python3 -u -m http.server 3000 || python -u -m http.server 3000",
+    "serve": "vite preview --host 0.0.0.0 --port 3000",
+    "serve:static": "python3 -u -m http.server 3000 || python -u -m http.server 3000",
+    "build": "vite build",
+    "test:app": "vitest run tests/app",
     "test": "jest --passWithNoTests",
+    "test:e2e:app": "npm run build && node scripts/testing/app-shell-smoke.mjs",
+    "test:a11y:app": "npm run build && node scripts/testing/app-accessibility-smoke.mjs",
     "test:morning": "./phase6-morning-testing.sh",
     "test:afternoon": "./phase6-afternoon-testing.sh",
     "test:full": "npm run test:morning && npm run test:afternoon",
@@ -42,8 +48,11 @@
     "check:term-canonicality": "node scripts/consistency/check-term-canonicality.js"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.52.0",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "@types/three": "^0.160.0",
     "axios": "^1.6.7",
     "babel-jest": "^29.7.0",
@@ -60,6 +69,8 @@
     "puppeteer": "^24.10.0",
     "tesseract.js": "^5.0.4",
     "typescript": "^5.3.3",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7",
     "webpack": "^5.89.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "ajv": "^8.17.1",
@@ -71,6 +82,9 @@
     "d3": "^7.8.5",
     "gsap": "^3.12.4",
     "matter-js": "^0.19.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router": "^7.15.1",
     "three": "^0.160.0"
   }
 }

@@ -1,60 +1,19 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timeline - Aion Visualization</title>
-  <base href="../">
-  <link rel="preload" href="assets/fonts/Fraunces-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="src/styles.css" />
-  <link rel="stylesheet" href="assets/css/minimalist-background.min.css" />
-  <link rel="stylesheet" href="src/features/timeline/timeline.css" />
-</head>
-<body>
-  <nav id="navigation" class="nav" aria-label="Main navigation">
-    <div class="nav-container">
-      <a href="./" class="nav-link">Home</a>
-      <a href="chapters/index.html" class="nav-link">Chapters</a>
-      <a href="src/atlas/index.html" class="nav-link">Atlas</a>
-      <a href="src/timeline.html" class="nav-link active">Timeline</a>
-      <a href="src/symbols.html" class="nav-link">Symbols</a>
-      <a href="about.html" class="nav-link">About</a>
-    </div>
-  </nav>
-
-  <main id="main-content" class="timeline-page">
-    <div class="container">
-      <header class="timeline-hero">
-        <p class="chapter-number">Timeline</p>
-        <h1 class="timeline-title">Jung in Time</h1>
-        <p class="timeline-lede">A focused chronology of life, publications, and conceptual milestones that contextualize <em>Aion</em>.</p>
-      </header>
-
-      <section class="timeline-layout" aria-label="Interactive timeline">
-        <article class="card timeline-rail" aria-label="Timeline events">
-          <form class="timeline-controls" aria-label="Timeline filters" onsubmit="return false;">
-            <div class="timeline-controls__left">
-              <label for="timeline-search">Search</label>
-              <input id="timeline-search" type="search" placeholder="Find an event" autocomplete="off" />
-              <label for="timeline-category">Category</label>
-              <select id="timeline-category"></select>
-            </div>
-            <button id="timeline-reset" type="button">Reset</button>
-          </form>
-          <ol id="timeline-list" class="timeline-list"></ol>
-        </article>
-
-        <aside class="card timeline-detail" aria-live="polite" aria-label="Selected event">
-          <h2 id="timeline-detail-title">Select an event</h2>
-          <p id="timeline-detail-date" class="timeline-detail__date"></p>
-          <p id="timeline-detail-body" class="timeline-detail__summary"></p>
-          <p class="timeline-detail__hint">Tip: Use the search box to find items like “Aion” or “Alchemy”, then click an event to read its context.</p>
-        </aside>
-      </section>
-    </div>
-  </main>
-
-  <script type="module" src="src/features/timeline/timeline-ui.js"></script>
-  <script type="module" src="src/features/glossary/glossary-ui.js?v=5"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Timeline Redirect - Aion</title>
+  </head>
+  <body data-compat-redirect="app-shell">
+    <script>
+      try {
+        sessionStorage.setItem('aion-spa-redirect', '/timeline');
+      } catch (error) {
+        console.warn('Could not persist redirect target', error);
+      }
+      window.location.replace('../');
+    </script>
+  </body>
 </html>

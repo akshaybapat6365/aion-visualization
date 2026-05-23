@@ -1,66 +1,19 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Symbols - Aion Visualization</title>
-  <base href="../">
-  <link rel="preload" href="assets/fonts/Fraunces-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="src/styles.css" />
-  <link rel="stylesheet" href="assets/css/minimalist-background.min.css" />
-  <link rel="stylesheet" href="src/features/symbols/symbols.css" />
-</head>
-<body>
-  <nav id="navigation" class="nav" aria-label="Main navigation">
-    <div class="nav-container">
-      <a href="./" class="nav-link">Home</a>
-      <a href="chapters/index.html" class="nav-link">Chapters</a>
-      <a href="src/atlas/index.html" class="nav-link">Atlas</a>
-      <a href="src/timeline.html" class="nav-link">Timeline</a>
-      <a href="src/symbols.html" class="nav-link active">Symbols</a>
-      <a href="about.html" class="nav-link">About</a>
-    </div>
-  </nav>
-
-  <main id="main-content" class="symbols-page">
-    <div class="container">
-      <header class="symbols-hero">
-        <p class="chapter-number">Symbols</p>
-        <h1 class="symbols-title">Symbol Lexicon</h1>
-        <p class="symbols-lede">A curated set of recurring Aion motifs, connected to the canonical concept graph. Filter, search, and open a symbol to see its concept threads and chapter links.</p>
-      </header>
-
-      <section class="symbols-layout" aria-label="Symbol explorer">
-        <article class="card symbols-browser" aria-label="Symbol browser">
-          <div class="symbols-controls">
-            <label for="symbols-search">Search</label>
-            <input id="symbols-search" class="symbols-search" type="search" placeholder="Try: fish, mandala, ouroboros" autocomplete="off" />
-            <div class="symbols-filters" id="symbols-filters" aria-label="Symbol filters"></div>
-          </div>
-
-          <div class="symbols-grid" id="symbols-grid" aria-label="Symbol cards"></div>
-        </article>
-
-        <aside class="card symbols-detail" aria-live="polite" aria-label="Selected symbol">
-          <h2 id="symbol-detail-title">Select a symbol</h2>
-          <p id="symbol-detail-meta" class="symbols-detail__meta"></p>
-          <p id="symbol-detail-motif" class="symbols-detail__motif"></p>
-
-          <div class="symbols-detail__section">
-            <h3>Concept Threads</h3>
-            <div id="symbol-detail-concepts"></div>
-          </div>
-
-          <div class="symbols-detail__section">
-            <h3>Linked Chapters</h3>
-            <div id="symbol-detail-chapters" class="symbols-chapter-links"></div>
-          </div>
-        </aside>
-      </section>
-    </div>
-  </main>
-
-  <script type="module" src="src/features/symbols/symbols-ui.js"></script>
-  <script type="module" src="src/features/glossary/glossary-ui.js?v=5"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Symbols Redirect - Aion</title>
+  </head>
+  <body data-compat-redirect="app-shell">
+    <script>
+      try {
+        sessionStorage.setItem('aion-spa-redirect', '/symbols');
+      } catch (error) {
+        console.warn('Could not persist redirect target', error);
+      }
+      window.location.replace('../');
+    </script>
+  </body>
 </html>

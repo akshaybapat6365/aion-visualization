@@ -49,7 +49,27 @@ function smoothstep(edge0, edge1, x) {
 }
 
 export default class ThreeHistoricalViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'strata', progress: 0 };
+        this._targetProgress = 0.08;
+        this._scrollP = 0.08;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+        const panelProgress = {
+            strata: 0.08,
+            christian: 0.30,
+            modern: 0.84,
+        };
+        this._targetProgress = panelProgress[this.panelState.activePanelId] ?? this.panelState.progress ?? 0.08;
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         /* ── Renderer ── */
@@ -77,37 +97,8 @@ export default class ThreeHistoricalViz extends BaseViz {
         };
         addEventListener('mousemove', this._onMM);
 
-        /* ── Scroll state ── */
-        this._scrollP = 0;
-
-        /* Override chapter-shell.css overflow:hidden to enable native scroll */
-        this._origBodyOverflow = document.body.style.overflow;
-        this._origHtmlOverflow = document.documentElement.style.overflow;
-        document.body.style.overflow = 'auto';
-        document.body.style.overflowX = 'hidden';
-        document.documentElement.style.overflow = 'auto';
-        document.documentElement.style.overflowX = 'hidden';
-        document.body.style.height = '500vh';
-        document.body.style.background = '#000';
-
-        /* Scroll from native scrollbar + trackpad */
-        this._onScroll = () => {
-            const maxScroll = document.body.scrollHeight - innerHeight;
-            this._scrollP = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-        };
-        addEventListener('scroll', this._onScroll, { passive: true });
-
-        /* Wheel fallback — synthetic scroll for contexts where native fails */
-        this._virtualY = 0;
-        this._onWheel = (e) => {
-            /* If native scroll is working (scrollY changes), skip synthetic */
-            if (document.body.scrollHeight > innerHeight + 10) return;
-            e.preventDefault();
-            const maxScroll = innerHeight * 4; /* 500vh - 100vh */
-            this._virtualY = Math.max(0, Math.min(maxScroll, this._virtualY + e.deltaY));
-            this._scrollP = this._virtualY / maxScroll;
-        };
-        addEventListener('wheel', this._onWheel, { passive: false });
+        /* The React chapter shell owns scroll. This scene receives panel state
+           and maps it to the historical-symbol descent internally. */
 
         /* ── Build scenes ── */
         this._buildScene1_CelestialVision();
@@ -513,10 +504,10 @@ export default class ThreeHistoricalViz extends BaseViz {
         const deepFishGeo = new THREE.SphereGeometry(0.5, 14, 12);
         deepFishGeo.scale(2.5, 0.7, 0.4);
         this._deepFish = new THREE.Mesh(deepFishGeo, new THREE.MeshStandardMaterial({
-            color: PISCES_BLUE, emissive: STAR_GOLD, emissiveIntensity: 0.2,
+            color: PISCES_BLUE, emissive: PISCES_BLUE, emissiveIntensity: 0.55,
             transparent: true, opacity: 0, roughness: 0.5, metalness: 0.3,
         }));
-        this._deepFish.position.set(0, -5, 0);
+        this._deepFish.position.set(2.4, -5, 0);
         this.scene.add(this._deepFish);
 
         /* Deep fish eye */
@@ -526,6 +517,24 @@ export default class ThreeHistoricalViz extends BaseViz {
         );
         deepEye.position.set(0.8, 0.08, 0.12);
         this._deepFish.add(deepEye);
+
+        const deepTailGeo = new THREE.BufferGeometry();
+        deepTailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+            -0.95, 0, 0.03,
+            -1.58, 0.34, 0.03,
+            -1.58, -0.34, 0.03,
+        ]), 3));
+        deepTailGeo.setIndex([0, 1, 2]);
+        this._deepFishTail = new THREE.Mesh(
+            deepTailGeo,
+            new THREE.MeshBasicMaterial({
+                color: PISCES_BLUE, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide,
+                depthTest: false,
+            })
+        );
+        this._deepFish.add(this._deepFishTail);
 
         /* ── Deep fish glow ── */
         this._deepFishGlow = new THREE.Mesh(
@@ -569,10 +578,8 @@ export default class ThreeHistoricalViz extends BaseViz {
         const style = document.createElement('style');
         style.id = 'ch8-anim-style';
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
             .ch8-annotations {
-                position: fixed; inset: 0;
+                position: absolute; inset: 0;
                 pointer-events: none; z-index: 10;
                 overflow: hidden;
             }
@@ -697,7 +704,7 @@ export default class ThreeHistoricalViz extends BaseViz {
 
             /* ── Progress dots ── */
             .ch8-progress {
-                position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+                position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
                 z-index: 11; pointer-events: none;
                 display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
             }
@@ -713,11 +720,15 @@ export default class ThreeHistoricalViz extends BaseViz {
                 color: rgba(255,255,255,0); letter-spacing: 0.08em;
                 transition: color 0.6s ease; white-space: nowrap;
             }
+            .ch8-annotations [data-ch8-copy="quiet"] {
+                display: none !important;
+            }
 
             @media (max-width: 768px) {
                 .ch8-quote-main { font-size: 1.2rem; }
                 .ch8-hdr { top: 44px; left: 16px; }
-                .ch8-label { font-size: 0.5rem; }
+                .ch8-label,
+                .ch8-progress { display: none !important; }
             }
         `;
         document.head.appendChild(style);
@@ -808,6 +819,20 @@ export default class ThreeHistoricalViz extends BaseViz {
         ov.appendChild(pc);
         this._progressContainer = pc;
 
+        [
+            this._chapterBar,
+            this._hdr1,
+            this._hdr2,
+            this._hdr3,
+            this._hdr4,
+            this._hdr5,
+            this._ann1,
+            this._ann2,
+            this._ann3,
+            this._ann4,
+            this._ann5,
+        ].forEach((el) => el?.setAttribute('data-ch8-copy', 'quiet'));
+
         this.canvas.parentElement.appendChild(ov);
         this._overlay = ov;
     }
@@ -819,7 +844,11 @@ export default class ThreeHistoricalViz extends BaseViz {
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const targetProgress = this._targetProgress ?? 0.08;
+        const progressDamp = this.reducedMotion ? 12 : 3.5;
+        this._scrollP = THREE.MathUtils.damp(this._scrollP ?? targetProgress, targetProgress, progressDamp, dt);
         const p = this._scrollP;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         /* ── Scene 1: Celestial Vision ── */
@@ -827,33 +856,33 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._s1.visible = s1 > 0.01;
         if (this._s1.visible) {
             // Woman hover
-            this._womanBody.position.y = 5 + Math.sin(t * 0.15) * 0.3;
+            this._womanBody.position.y = 5 + Math.sin(t * 0.15 * motionScale) * 0.3;
             this._womanAura.position.copy(this._womanBody.position);
 
             // Stars orbit slowly
             for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * Math.PI * 2 + t * 0.05;
+                const angle = (i / 12) * Math.PI * 2 + t * 0.05 * motionScale;
                 this._stars[i].position.set(
                     Math.cos(angle) * 0.75,
                     this._womanBody.position.y + 0.85,
                     Math.sin(angle) * 0.4
                 );
-                this._stars[i].rotation.y = t * 0.3;
+                this._stars[i].rotation.y = t * 0.3 * motionScale;
             }
 
             // Dragon pursuing — circles below the woman
-            const dragonA = t * 0.08;
+            const dragonA = t * 0.08 * motionScale;
             this._dragonGroup.position.set(
                 Math.cos(dragonA) * 2.5,
-                -1 + Math.sin(t * 0.2) * 0.3,
+                -1 + Math.sin(t * 0.2 * motionScale) * 0.3,
                 Math.sin(dragonA) * 2.5
             );
-            this._dragonBody.rotation.x = t * 0.1;
-            this._dragonBody.rotation.y = t * 0.15;
+            this._dragonBody.rotation.x = t * 0.1 * motionScale;
+            this._dragonBody.rotation.y = t * 0.15 * motionScale;
 
             // Heads pulsate
             for (const h of this._dragonHeads) {
-                h.material.emissiveIntensity = 0.4 + Math.sin(t * 2 + h.position.x) * 0.3;
+                h.material.emissiveIntensity = 0.4 + Math.sin(t * 2 * motionScale + h.position.x) * 0.3;
             }
 
             // Fade Scene 1 out
@@ -870,9 +899,9 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._s2.visible = s2 > 0.01;
         if (this._s2.visible) {
             // Hook sway
-            this._s2.rotation.z = Math.sin(t * 0.12) * 0.04;
+            this._s2.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.04;
             // Bait fish wiggle
-            this._baitFish.rotation.z = Math.sin(t * 0.3) * 0.12;
+            this._baitFish.rotation.z = Math.sin(t * 0.3 * motionScale) * 0.12;
             this._baitTail.rotation.z = this._baitFish.rotation.z;
             this._baitTail.position.copy(this._baitFish.position);
 
@@ -880,13 +909,13 @@ export default class ThreeHistoricalViz extends BaseViz {
             const levPos = this._leviathan.geometry.attributes.position.array;
             const orig = this._levOrigPositions;
             for (let i = 0; i < levPos.length; i += 3) {
-                levPos[i] = orig[i] + Math.sin(t * 0.3 + orig[i + 1] * 2) * 0.15;
-                levPos[i + 1] = orig[i + 1] + Math.sin(t * 0.25 + orig[i] * 1.5) * 0.1;
+                levPos[i] = orig[i] + Math.sin(t * 0.3 * motionScale + orig[i + 1] * 2) * 0.15;
+                levPos[i + 1] = orig[i + 1] + Math.sin(t * 0.25 * motionScale + orig[i] * 1.5) * 0.1;
             }
             this._leviathan.geometry.attributes.position.needsUpdate = true;
 
             // Leviathan eye pulse
-            this._levEye.material.opacity = 0.2 + Math.sin(t * 0.8) * 0.15;
+            this._levEye.material.opacity = 0.2 + Math.sin(t * 0.8 * motionScale) * 0.15;
 
             // Opacity
             this._baitFish.material.opacity = 0.75 * s2;
@@ -900,11 +929,11 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._s3.visible = s3 > 0.01;
         if (this._s3.visible) {
             // Fish swim
-            this._healFish.position.x = Math.sin(t * 0.08) * 1.5;
-            this._healFish.position.y = Math.sin(t * 0.15) * 0.3;
+            this._healFish.position.x = Math.sin(t * 0.08 * motionScale) * 1.5;
+            this._healFish.position.y = Math.sin(t * 0.15 * motionScale) * 0.3;
 
             // Glow pulse
-            const healPulse = 0.5 + Math.sin(t * 0.5) * 0.5;
+            const healPulse = 0.5 + Math.sin(t * 0.5 * motionScale) * 0.5;
             this._healGlow.material.opacity = (0.04 + healPulse * 0.06) * s3;
             this._healAuraOuter.material.opacity = (0.01 + healPulse * 0.03) * s3;
             this._healGlow.scale.setScalar(1 + healPulse * 0.3);
@@ -913,9 +942,9 @@ export default class ThreeHistoricalViz extends BaseViz {
             const pPos = this._healParticles.geometry.attributes.position.array;
             const oPos = this._healParticleOrigPos;
             for (let i = 0; i < pPos.length; i += 3) {
-                const a = t * 0.2 + oPos[i] * 0.5;
+                const a = t * 0.2 * motionScale + oPos[i] * 0.5;
                 pPos[i] = oPos[i] * Math.cos(a * 0.1) + Math.sin(a) * 0.1;
-                pPos[i + 1] = oPos[i + 1] + Math.sin(t * 0.3 + oPos[i]) * 0.15;
+                pPos[i + 1] = oPos[i + 1] + Math.sin(t * 0.3 * motionScale + oPos[i]) * 0.15;
                 pPos[i + 2] = oPos[i + 2] * Math.cos(a * 0.1);
             }
             this._healParticles.geometry.attributes.position.needsUpdate = true;
@@ -946,8 +975,8 @@ export default class ThreeHistoricalViz extends BaseViz {
             this._piscesGroup.scale.setScalar(0.5 + transP * 0.5);
 
             // Aries rotates / fire
-            this._ariesGroup.rotation.y = t * 0.05 + transP * Math.PI;
-            this._piscesGroup.rotation.y = -t * 0.06;
+            this._ariesGroup.rotation.y = t * 0.05 * motionScale + transP * Math.PI;
+            this._piscesGroup.rotation.y = -t * 0.06 * motionScale;
 
             // Zodiac arc brightens
             this._zodiacArc.material.opacity = (0.1 + transP * 0.2) * s4;
@@ -959,21 +988,23 @@ export default class ThreeHistoricalViz extends BaseViz {
             // Water undulation
             const waterPos = this._waterField.geometry.attributes.position.array;
             for (let i = 0; i < waterPos.length; i += 3) {
-                waterPos[i + 1] += Math.sin(t * 0.2 + waterPos[i] * 0.3) * 0.003;
+                waterPos[i + 1] += Math.sin(t * 0.2 * motionScale + waterPos[i] * 0.3) * 0.003;
             }
             this._waterField.geometry.attributes.position.needsUpdate = true;
-            this._waterField.material.opacity = 0.35 * s5;
+            this._waterField.material.opacity = 0.12 + 0.48 * s5;
 
             // Deep fish emerges
-            this._deepFish.material.opacity = 0.5 * s5;
-            this._deepFish.position.y = -5 + s5 * 1.5;
-            this._deepFish.rotation.y = t * 0.05;
-            this._deepFishGlow.material.opacity = 0.04 * s5;
+            this._deepFish.material.opacity = 0.75 * s5;
+            this._deepFishTail.material.opacity = 0.62 * s5;
+            this._deepFish.position.set(2.4, -5 + s5 * 1.65, 0);
+            this._deepFish.rotation.y = 0.35 + Math.sin(t * 0.08 * motionScale) * 0.22;
+            this._deepFishGlow.material.opacity = 0.09 * s5;
             this._deepFishGlow.position.copy(this._deepFish.position);
-            this._deepFishGlow.scale.setScalar(1 + Math.sin(t * 0.3) * 0.2);
+            this._deepFishGlow.scale.setScalar(1.15 + Math.sin(t * 0.3 * motionScale) * 0.18);
         } else {
             this._waterField.material.opacity = 0.08;
             this._deepFish.material.opacity = 0;
+            this._deepFishTail.material.opacity = 0;
             this._deepFishGlow.material.opacity = 0;
         }
 
@@ -1030,7 +1061,7 @@ export default class ThreeHistoricalViz extends BaseViz {
 
         /* ── Camera: descent from heavens to deep ── */
         const camY = lerp(6, -3, clamp01(p * 1.1));
-        const camOrbit = t * 0.015 + this.mouseSmooth.x * 0.25;
+        const camOrbit = t * 0.015 * motionScale + this.mouseSmooth.x * 0.25;
         const camRadius = lerp(16, 14, clamp01(p));
         this.camera.position.set(
             Math.sin(camOrbit) * camRadius,
@@ -1085,15 +1116,8 @@ export default class ThreeHistoricalViz extends BaseViz {
 
     dispose() {
         removeEventListener('mousemove', this._onMM);
-        removeEventListener('scroll', this._onScroll);
-        removeEventListener('wheel', this._onWheel);
-        /* Restore overflow to original values */
-        document.body.style.overflow = this._origBodyOverflow || '';
-        document.documentElement.style.overflow = this._origHtmlOverflow || '';
-        document.body.style.overflowX = '';
-        document.documentElement.style.overflowX = '';
-        document.body.style.height = '';
-        document.body.style.background = '';
+        if (this._onScroll) removeEventListener('scroll', this._onScroll);
+        if (this._onWheel) removeEventListener('wheel', this._onWheel);
         if (this._overlay) this._overlay.remove();
         if (this._progressContainer) this._progressContainer.remove();
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }

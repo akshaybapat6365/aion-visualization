@@ -71,7 +71,21 @@ const FIELD_CLR = new THREE.Color('#404070');
 const CONJ_CLR = new THREE.Color('#ffe0f0');  // warm white-pink for union
 
 export default class ThreeSyzygyViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'pair', progress: 0 };
+        this.pairFocus = 1;
+        this.orbitFocus = 0;
+        this.unionFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         /* ── Renderer ── */
@@ -490,10 +504,8 @@ export default class ThreeSyzygyViz extends BaseViz {
         ov.className = 'ch3-annotations';
         ov.innerHTML = `
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
 .ch3-annotations {
-    position: fixed;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 10;
@@ -512,6 +524,15 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a.vis {
     opacity: 1;
     transform: translateY(0);
+}
+
+.ch3-a--anima,
+.ch3-a--animus,
+.ch3-a--dance,
+.ch3-a--quote,
+.ch3-a--projection,
+.ch3-a--quaternio {
+    display: none;
 }
 
 /* ─── Phase 1: Chapter heading ─── */
@@ -691,6 +712,7 @@ export default class ThreeSyzygyViz extends BaseViz {
 
 /* ─── Phase 6: Conjunction (synced) ─── */
 .ch3-a--conjunction {
+    display: none;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) translateY(6px);
@@ -958,21 +980,25 @@ export default class ThreeSyzygyViz extends BaseViz {
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.03);
         this.introT += dt;
+        const panelId = this.panelState?.activePanelId || 'pair';
+        this.pairFocus = THREE.MathUtils.damp(this.pairFocus, panelId === 'pair' ? 1 : 0.2, 3.2, dt);
+        this.orbitFocus = THREE.MathUtils.damp(this.orbitFocus, panelId === 'orbit' ? 1 : 0, 3.2, dt);
+        this.unionFocus = THREE.MathUtils.damp(this.unionFocus, panelId === 'union' ? 1 : 0, 3.2, dt);
 
         // Orbit parameters — mouse controls balance
-        const orbitR = 3.8 + this.mouseSmooth.y * 1.2;
-        const speed = 0.25 + this.mouseSmooth.x * 0.12;
+        const orbitR = 3.8 + this.mouseSmooth.y * 1.2 + this.pairFocus * 0.8 - this.unionFocus * 2.6;
+        const speed = 0.25 + this.mouseSmooth.x * 0.12 + this.orbitFocus * 0.18 - this.unionFocus * 0.08;
 
         /* ── Anima orbit ── */
-        const animaX = Math.cos(t * speed) * orbitR;
-        const animaY = Math.sin(t * speed * 0.6) * 1.0;
-        const animaZ = Math.sin(t * speed) * orbitR * 0.7;
+        const animaX = THREE.MathUtils.lerp(Math.cos(t * speed) * orbitR, -0.55 + Math.sin(t * 0.8) * 0.08, this.unionFocus);
+        const animaY = THREE.MathUtils.lerp(Math.sin(t * speed * 0.6) * 1.0, Math.sin(t * 0.7) * 0.14, this.unionFocus);
+        const animaZ = THREE.MathUtils.lerp(Math.sin(t * speed) * orbitR * 0.7, Math.cos(t * 0.6) * 0.1, this.unionFocus);
         this.animaGroup.position.set(animaX, animaY, animaZ);
 
         // Anima subtle pulsing/wobble — she changes
-        this.animaCore.material.emissiveIntensity = 0.3 + Math.sin(t * 1.5) * 0.15;
+        this.animaCore.material.emissiveIntensity = 0.3 + Math.sin(t * 1.5) * 0.15 + this.pairFocus * 0.12 + this.unionFocus * 0.18;
         this.animaRing.rotation.z += 0.005;
-        this.animaRing.material.opacity = 0.1 + Math.sin(t * 0.4) * 0.06;
+        this.animaRing.material.opacity = 0.1 + Math.sin(t * 0.4) * 0.06 + this.pairFocus * 0.05;
 
         // Anima flow particles
         const flowP = this.animaFlow.geometry.attributes.position.array;
@@ -987,19 +1013,19 @@ export default class ThreeSyzygyViz extends BaseViz {
         this.animaFlow.geometry.attributes.position.needsUpdate = true;
 
         /* ── Animus orbit (opposite) ── */
-        const animusX = -Math.cos(t * speed) * orbitR;
-        const animusY = -Math.sin(t * speed * 0.6) * 1.0;
-        const animusZ = -Math.sin(t * speed) * orbitR * 0.7;
+        const animusX = THREE.MathUtils.lerp(-Math.cos(t * speed) * orbitR, 0.55 - Math.sin(t * 0.8) * 0.08, this.unionFocus);
+        const animusY = THREE.MathUtils.lerp(-Math.sin(t * speed * 0.6) * 1.0, -Math.sin(t * 0.7) * 0.14, this.unionFocus);
+        const animusZ = THREE.MathUtils.lerp(-Math.sin(t * speed) * orbitR * 0.7, -Math.cos(t * 0.6) * 0.1, this.unionFocus);
         this.animusGroup.position.set(animusX, animusY, animusZ);
 
         // Animus spins and pulses — crystalline rotation
         this.animusCore.rotation.y = t * 0.4;
         this.animusCore.rotation.x = t * 0.15;
-        this.animusCore.material.emissiveIntensity = 0.4 + Math.sin(t * 1.2) * 0.2;
+        this.animusCore.material.emissiveIntensity = 0.4 + Math.sin(t * 1.2) * 0.2 + this.pairFocus * 0.12 + this.unionFocus * 0.18;
 
         // Animus rays pulse
         for (const ray of this.animusRays) {
-            ray.line.material.opacity = 0.08 + Math.sin(t * 0.7 + ray.ph) * 0.06;
+            ray.line.material.opacity = 0.08 + Math.sin(t * 0.7 + ray.ph) * 0.06 + this.pairFocus * 0.04;
         }
 
         /* ── Orbit trails ── */
@@ -1034,12 +1060,12 @@ export default class ThreeSyzygyViz extends BaseViz {
                 pts[j * 3 + 2] = mz + Math.sin(fl.offset + t * 0.15) * bow;
             }
             fl.geo.attributes.position.needsUpdate = true;
-            fl.line.material.opacity = 0.08 + Math.sin(t * 0.3 + fl.offset) * 0.06;
+            fl.line.material.opacity = 0.08 + Math.sin(t * 0.3 + fl.offset) * 0.06 + this.orbitFocus * 0.12 + this.unionFocus * 0.08;
         }
 
         /* ── Conjunction — when they're close ── */
         const dist = a.distanceTo(b);
-        const isConjunction = dist < 3;
+        const isConjunction = dist < 3 || this.unionFocus > 0.65;
 
         if (isConjunction && this.conjTimer <= 0) {
             this.conjTimer = 4;
@@ -1061,7 +1087,7 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         if (this.conjTimer > 0) {
             this.conjTimer -= dt;
-            const fade = Math.max(0, this.conjTimer / 4);
+            const fade = Math.max(0, this.conjTimer / 4, this.unionFocus * 0.85);
             this.conjPts.material.opacity = fade * 0.6;
             this.conjLight.intensity = fade * 3;
             const mid = new THREE.Vector3().lerpVectors(a, b, 0.5);
@@ -1082,7 +1108,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         // Conjunction annotation sync
         const conjAnn = this._annotationOverlay?.querySelector('.ch3-a--conjunction');
         if (conjAnn) {
-            if (this.conjTimer > 1) {
+            if (this.conjTimer > 1 || this.unionFocus > 0.35) {
                 conjAnn.classList.add('vis');
                 conjAnn.classList.remove('hid');
             } else if (this.conjTimer <= 0.5) {
@@ -1108,15 +1134,15 @@ export default class ThreeSyzygyViz extends BaseViz {
                     pts[j * 3 + 2] = inv * inv * src.z + 2 * inv * frac * cZ + frac * frac * arc.end.z;
                 }
                 arc.geo.attributes.position.needsUpdate = true;
-                arc.line.material.opacity = 0.04 + Math.sin(t * 0.2) * 0.03;
-                arc.dot.material.opacity = 0.1 + Math.sin(t * 0.5) * 0.08;
+                arc.line.material.opacity = 0.04 + Math.sin(t * 0.2) * 0.03 + this.orbitFocus * 0.08;
+                arc.dot.material.opacity = 0.1 + Math.sin(t * 0.5) * 0.08 + this.orbitFocus * 0.18;
             }
         }
 
         /* ── Mandorla — position rings at conjunction ── */
         if (this.mandorlaRing1) {
             const mid = new THREE.Vector3().lerpVectors(a, b, 0.5);
-            const conjFade = this.conjTimer > 0 ? Math.min(this.conjTimer / 2, 1) * 0.25 : 0;
+            const conjFade = Math.max(this.conjTimer > 0 ? Math.min(this.conjTimer / 2, 1) * 0.25 : 0, this.unionFocus * 0.34);
             // Position rings slightly offset to form vesica piscis
             this.mandorlaRing1.position.copy(mid).add(new THREE.Vector3(-0.5, 0, 0));
             this.mandorlaRing2.position.copy(mid).add(new THREE.Vector3(0.5, 0, 0));
@@ -1132,9 +1158,9 @@ export default class ThreeSyzygyViz extends BaseViz {
         /* ── Camera ── */
         const introF = Math.min(this.introT / 6, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
-        const camD = THREE.MathUtils.lerp(24, 16, ease);
-        const camH = THREE.MathUtils.lerp(10, 3 + this.mouseSmooth.y * 2, ease);
-        const camA = t * 0.012 + this.mouseSmooth.x * 0.15;
+        const camD = THREE.MathUtils.lerp(24, 16 + this.orbitFocus * 2.5 - this.unionFocus * 4, ease);
+        const camH = THREE.MathUtils.lerp(10, 3 + this.mouseSmooth.y * 2 - this.unionFocus * 0.7, ease);
+        const camA = t * 0.012 + this.mouseSmooth.x * 0.15 + this.orbitFocus * 0.08;
         this.camera.position.set(
             Math.sin(camA) * camD,
             camH,
@@ -1144,8 +1170,8 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         /* ── Bloom ── */
         if (this.bloom) {
-            const conjBoost = this.conjTimer > 0 ? (this.conjTimer / 4) * 0.8 : 0;
-            this.bloom.strength = 1.3 + Math.sin(t * 0.04) * 0.15 + conjBoost;
+            const conjBoost = Math.max(this.conjTimer > 0 ? (this.conjTimer / 4) * 0.8 : 0, this.unionFocus * 0.85);
+            this.bloom.strength = 1.3 + Math.sin(t * 0.04) * 0.15 + conjBoost + this.orbitFocus * 0.18;
         }
     }
 

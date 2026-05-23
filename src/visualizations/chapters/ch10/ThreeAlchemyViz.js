@@ -33,6 +33,19 @@ const MAGNET_PARTICLES = 200;
 export default class ThreeAlchemyViz extends BaseViz {
     constructor(container, opts = {}) {
         super(container, Object.assign({ contextType: 'webgl' }, opts));
+        this.panelState = { activePanelId: 'vessel', progress: 0 };
+        this.vesselFocus = 1;
+        this.primaFocus = 0;
+        this.opusFocus = 0;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     async init() {
@@ -96,6 +109,7 @@ export default class ThreeAlchemyViz extends BaseViz {
 
     _createShip() {
         this.shipGroup = new THREE.Group();
+        this.shipParts = [];
 
         // Hull — elongated box
         const hullGeo = new THREE.BoxGeometry(4, 0.8, 1.2);
@@ -105,6 +119,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         });
         const hull = new THREE.Mesh(hullGeo, hullMat);
         this.shipGroup.add(hull);
+        this.shipParts.push(hull);
 
         // Mast
         const mastGeo = new THREE.CylinderGeometry(0.03, 0.03, 2.5, 6);
@@ -113,6 +128,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         }));
         mast.position.y = 1.5;
         this.shipGroup.add(mast);
+        this.shipParts.push(mast);
 
         // Sail
         const sailGeo = new THREE.PlaneGeometry(1.5, 1.5);
@@ -122,6 +138,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         }));
         sail.position.set(0, 1.5, 0);
         this.shipGroup.add(sail);
+        this.shipParts.push(sail);
 
         this.shipGroup.position.set(-2, 2, 0);
         this.scene.add(this.shipGroup);
@@ -183,10 +200,24 @@ export default class ThreeAlchemyViz extends BaseViz {
 
         this.lapisGroup.position.set(0, -2, 2);
         this.scene.add(this.lapisGroup);
+
+        const vesselGeo = new THREE.SphereGeometry(1.25, 28, 18);
+        vesselGeo.scale(1.15, 1.35, 1);
+        this.vesselGlass = new THREE.Mesh(vesselGeo, new THREE.MeshBasicMaterial({
+            color: 0x9fdcff,
+            transparent: true,
+            opacity: 0.035,
+            blending: THREE.AdditiveBlending,
+            wireframe: true,
+            depthWrite: false,
+        }));
+        this.vesselGlass.position.copy(this.lapisGroup.position);
+        this.scene.add(this.vesselGlass);
     }
 
     _createYokedFish() {
         this.yokeGroup = new THREE.Group();
+        this.yokedFishParts = [];
 
         // Two fish
         for (let i = 0; i < 2; i++) {
@@ -199,6 +230,7 @@ export default class ThreeAlchemyViz extends BaseViz {
             const fish = new THREE.Mesh(bodyGeo, bodyMat);
             fish.position.set(i === 0 ? -0.3 : 0.3, 0, 0);
             this.yokeGroup.add(fish);
+            this.yokedFishParts.push(fish);
         }
 
         // Yoke bar
@@ -207,6 +239,7 @@ export default class ThreeAlchemyViz extends BaseViz {
             color: YOKE_BROWN, transparent: true, opacity: 0.5,
         }));
         this.yokeGroup.add(yoke);
+        this.yokedFishParts.push(yoke);
 
         this.yokeGroup.position.set(-5, -3.5, 0);
         this.scene.add(this.yokeGroup);
@@ -215,6 +248,7 @@ export default class ThreeAlchemyViz extends BaseViz {
     _createAlchemicalGround() {
         // Four-stage ground strips: nigredo → albedo → citrinitas → rubedo
         const stages = [NIGREDO_BLACK, ALBEDO_WHITE, CITRINITAS, RUBEDO_RED];
+        this.groundStrips = [];
         for (let i = 0; i < 4; i++) {
             const stripGeo = new THREE.PlaneGeometry(4, 1);
             const stripMat = new THREE.MeshBasicMaterial({
@@ -225,33 +259,54 @@ export default class ThreeAlchemyViz extends BaseViz {
             strip.rotation.x = -Math.PI / 2;
             strip.position.set(-5 + i * 3.5, -4, 0);
             this.scene.add(strip);
+            this.groundStrips.push(strip);
         }
     }
 
     _createLights() {
         this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        this.scene.add(Object.assign(new THREE.PointLight(0x22d3ee, 0.6, 12), { position: new THREE.Vector3(-4, 3, 3) }));
-        this.scene.add(Object.assign(new THREE.PointLight(0x6a2c91, 0.5, 15), { position: new THREE.Vector3(3, -2, 3) }));
-        this.scene.add(Object.assign(new THREE.PointLight(0xd4af37, 0.4, 10), { position: new THREE.Vector3(0, -2, 3) }));
+        const echeneisLight = new THREE.PointLight(0x22d3ee, 0.6, 12);
+        echeneisLight.position.set(-4, 3, 3);
+        this.scene.add(echeneisLight);
+
+        const magnetLight = new THREE.PointLight(0x6a2c91, 0.5, 15);
+        magnetLight.position.set(3, -2, 3);
+        this.scene.add(magnetLight);
+
+        const lapisLight = new THREE.PointLight(0xd4af37, 0.4, 10);
+        lapisLight.position.set(0, -2, 3);
+        this.scene.add(lapisLight);
     }
 
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const panelId = this.panelState?.activePanelId || 'vessel';
+        const dampRate = this.reducedMotion ? 9 : 3.5;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
+        this.vesselFocus = THREE.MathUtils.damp(this.vesselFocus, panelId === 'vessel' ? 1 : 0.22, dampRate, dt);
+        this.primaFocus = THREE.MathUtils.damp(this.primaFocus, panelId === 'prima' ? 1 : 0.16, dampRate, dt);
+        this.opusFocus = THREE.MathUtils.damp(this.opusFocus, panelId === 'opus' ? 1 : 0.16, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // Echeneis hovering near ship
-        this.echeneisGroup.position.x = -3 + Math.sin(t * 0.08) * 0.3;
-        this.echeneisGroup.position.y = 2 + Math.sin(t * 0.15) * 0.2;
-        this.echeneisAura.material.opacity = 0.04 + Math.sin(t * 0.6) * 0.03;
+        this.echeneisGroup.position.x = -3 + Math.sin(t * 0.08 * motionScale) * 0.3;
+        this.echeneisGroup.position.y = 2 + Math.sin(t * 0.15 * motionScale) * 0.2;
+        this.echeneisGroup.scale.setScalar(0.88 + this.vesselFocus * 0.28);
+        this.echeneisBody.material.opacity = 0.36 + this.vesselFocus * 0.5;
+        this.echeneisAura.material.opacity = (0.03 + Math.sin(t * 0.6 * motionScale) * 0.02) + this.vesselFocus * 0.13;
 
         // Ship halted — only rocking
-        this.shipGroup.rotation.z = Math.sin(t * 0.12) * 0.03;
-        this.shipGroup.position.y = 2 + Math.sin(t * 0.08) * 0.05;
+        this.shipGroup.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.03;
+        this.shipGroup.position.y = 2 + Math.sin(t * 0.08 * motionScale) * 0.05;
+        this.shipGroup.scale.setScalar(0.94 + this.vesselFocus * 0.08);
+        this.shipParts?.forEach((part) => {
+            part.material.opacity = (part === this.shipParts[2] ? 0.1 : 0.14) + this.vesselFocus * (part === this.shipParts[2] ? 0.16 : 0.18);
+        });
 
         // Magnet drawing particles upward
         const magPos = this.magnetField.geometry.attributes.position.array;
-        const pullStrength = 0.3 + Math.sin(t * 0.2) * 0.2;
+        const pullStrength = 0.18 + this.primaFocus * 0.48 + Math.sin(t * 0.2 * motionScale) * 0.12;
         for (let i = 0; i < MAGNET_PARTICLES; i++) {
             // Pull toward magnet core
             const dx = this.magnetCore.position.x - magPos[i * 3];
@@ -270,29 +325,43 @@ export default class ThreeAlchemyViz extends BaseViz {
             }
         }
         this.magnetField.geometry.attributes.position.needsUpdate = true;
-        this.magnetCore.rotation.y = t * 0.1;
+        this.magnetField.material.opacity = 0.16 + this.primaFocus * 0.55;
+        this.magnetCore.rotation.y = t * 0.1 * motionScale;
+        this.magnetCore.scale.setScalar(0.72 + this.primaFocus * 0.5);
+        this.magnetCore.material.opacity = 0.28 + this.primaFocus * 0.56;
 
         // Lapis heartbeat — systole/diastole
-        const heartbeat = Math.sin(t * 2); // Fast pulse
+        const heartbeat = Math.sin(t * 2 * motionScale); // Fast pulse
         const pulse = heartbeat > 0.7 ? 1 : 0; // Sharp beat
-        this.lapisStone.scale.setScalar(1 + pulse * 0.15);
-        this.lapisStone.material.emissiveIntensity = 0.3 + pulse * 0.5;
-        this.heartAura.material.opacity = pulse * 0.08;
-        this.heartAura.scale.setScalar(1 + pulse * 0.5);
-        this.lapisStone.rotation.y = t * 0.05;
+        this.lapisStone.scale.setScalar(0.82 + this.primaFocus * 0.16 + this.opusFocus * 0.22 + pulse * 0.15);
+        this.lapisStone.material.opacity = 0.3 + this.primaFocus * 0.22 + this.opusFocus * 0.32;
+        this.lapisStone.material.emissiveIntensity = 0.22 + this.opusFocus * 0.38 + pulse * 0.5;
+        this.heartAura.material.opacity = pulse * (0.04 + this.opusFocus * 0.08);
+        this.heartAura.scale.setScalar(1 + pulse * 0.5 + this.opusFocus * 0.2);
+        this.lapisStone.rotation.y = t * 0.05 * motionScale;
+        this.vesselGlass.material.opacity = 0.02 + this.vesselFocus * 0.04 + this.primaFocus * 0.04 + this.opusFocus * 0.05;
+        this.vesselGlass.rotation.y = -t * 0.025 * motionScale;
 
         // Yoked fish ploughing across stages
-        this.yokeGroup.position.x = -5 + ((t * 0.2) % 14);
+        this.yokeGroup.position.x = -5 + ((t * 0.2 * motionScale * (0.5 + this.opusFocus)) % 14);
         if (this.yokeGroup.position.x > 9) this.yokeGroup.position.x = -5;
-        this.yokeGroup.position.y = -3.5 + Math.sin(t * 0.3) * 0.1;
+        this.yokeGroup.position.y = -3.5 + Math.sin(t * 0.3 * motionScale) * 0.1;
+        this.yokeGroup.scale.setScalar(0.78 + this.opusFocus * 0.36);
+        this.yokedFishParts?.forEach((part) => {
+            part.material.opacity = 0.22 + this.opusFocus * 0.5;
+        });
+        this.groundStrips?.forEach((strip, index) => {
+            strip.material.opacity = 0.035 + this.opusFocus * (0.07 + index * 0.015);
+        });
 
         // Camera
-        const camAngle = t * 0.015 + this.mouseSmooth.x * 0.3;
-        const camH = 2 + this.mouseSmooth.y * 3;
-        this.camera.position.set(Math.sin(camAngle) * 14, camH, Math.cos(camAngle) * 14);
-        this.camera.lookAt(0, -0.5, 0);
+        const camAngle = t * 0.015 * motionScale + this.mouseSmooth.x * 0.3;
+        const camH = 2 + this.mouseSmooth.y * 3 - this.opusFocus * 0.6;
+        const camRadius = 14 - this.vesselFocus * 1.2 - this.primaFocus * 0.6 + this.opusFocus * 0.8;
+        this.camera.position.set(Math.sin(camAngle) * camRadius, camH, Math.cos(camAngle) * camRadius);
+        this.camera.lookAt(this.primaFocus * 1.2 - this.vesselFocus * 0.8, -0.5 - this.opusFocus * 0.8, 0);
 
-        if (this.bloomPass) this.bloomPass.strength = 1.0 + Math.sin(t * 0.1) * 0.3;
+        if (this.bloomPass) this.bloomPass.strength = 0.95 + Math.sin(t * 0.1 * motionScale) * 0.2 + this.vesselFocus * 0.2 + this.opusFocus * 0.18;
     }
 
     render() { this.composer?.render(); }
