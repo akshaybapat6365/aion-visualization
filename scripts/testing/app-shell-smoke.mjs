@@ -73,6 +73,11 @@ function watchForRouteFailures(page) {
   return { consoleErrors, notFound };
 }
 
+async function gotoAppRoute(page, route) {
+  await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+}
+
 async function assertHealthyShell(page, route, failures) {
   const navVisible = await page.locator('header[aria-label="Global navigation"]').isVisible();
   const primaryNavVisible = await page.locator('nav[aria-label="Primary"]').isVisible();
@@ -123,14 +128,14 @@ async function countCanvasPixels(canvas) {
 
 async function smokeCanonicalRoutes(page, failures) {
   for (const route of canonicalRoutes) {
-    await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle', timeout: 20_000 });
+    await gotoAppRoute(page, route);
     await assertHealthyShell(page, route, failures);
   }
 }
 
 async function smokeChapterRoutes(page, failures) {
   for (const route of chapterRoutes) {
-    await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle', timeout: 20_000 });
+    await gotoAppRoute(page, route);
     await assertHealthyShell(page, route, failures);
 
     const canvas = page.locator('.scene-host canvas').first();
@@ -144,7 +149,7 @@ async function smokeChapterRoutes(page, failures) {
 }
 
 async function smokeKeyboard(page, failures) {
-  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/');
   await page.keyboard.press('Tab');
   const skipFocused = await page.locator('.skip-link').evaluate((element) => document.activeElement === element);
   await page.keyboard.press('Tab');
@@ -156,7 +161,8 @@ async function smokeKeyboard(page, failures) {
 
 async function smokeReducedMotion(page, failures) {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto(`${baseUrl}/journey/chapter/ch1`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch1');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
   const fallbackVisible = await page.locator('.scene-host__fallback').isVisible();
   const reducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
 
@@ -166,14 +172,16 @@ async function smokeReducedMotion(page, failures) {
 }
 
 async function smokeLegacyRedirect(page, failures) {
-  await page.goto(`${baseUrl}/chapters/chapter-7.html`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await page.goto(`${baseUrl}/chapters/chapter-7.html`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.waitForURL(/\/journey\/chapter\/ch7$/, { timeout: 10_000 }).catch(() => {});
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
   if (!/\/journey\/chapter\/ch7$/.test(page.url())) {
     failures.push(`legacy chapter redirect landed at ${page.url()}`);
   }
 }
 
 async function smokeChapterJump(page, failures) {
-  await page.goto(`${baseUrl}/chapters`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/chapters');
   await page.selectOption('#chapter-jump-select', 'ch3');
   await page.waitForURL(/\/journey\/chapter\/ch3$/, { timeout: 10_000 });
 
@@ -187,7 +195,7 @@ async function smokeChapterJump(page, failures) {
 }
 
 async function smokeChapterSceneControls(page, failures) {
-  await page.goto(`${baseUrl}/journey/chapter/ch1`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch1');
   const wholeness = page.getByRole('button', { name: /03\s+Wholeness/ });
   await wholeness.click();
   await page.waitForTimeout(250);
@@ -197,7 +205,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (pressed !== 'true') failures.push(`chapter scene control did not become active: ${pressed}`);
   if (scrollY > 10) failures.push(`chapter scene control unexpectedly scrolled page: ${scrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch2`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch2');
   const projection = page.getByRole('button', { name: /02\s+Projection/ });
   await projection.click();
   await page.waitForTimeout(250);
@@ -207,7 +215,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (projectionPressed !== 'true') failures.push(`chapter 2 scene control did not become active: ${projectionPressed}`);
   if (chapterTwoScrollY > 10) failures.push(`chapter 2 scene control unexpectedly scrolled page: ${chapterTwoScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch3`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch3');
   const conjunction = page.getByRole('button', { name: /03\s+Conjunction/ });
   await conjunction.click();
   await page.waitForTimeout(250);
@@ -217,7 +225,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (conjunctionPressed !== 'true') failures.push(`chapter 3 scene control did not become active: ${conjunctionPressed}`);
   if (chapterThreeScrollY > 10) failures.push(`chapter 3 scene control unexpectedly scrolled page: ${chapterThreeScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch4`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch4');
   const mandala = page.getByRole('button', { name: /03\s+Mandala/ });
   await mandala.click();
   await page.waitForTimeout(250);
@@ -227,7 +235,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (mandalaPressed !== 'true') failures.push(`chapter 4 scene control did not become active: ${mandalaPressed}`);
   if (chapterFourScrollY > 10) failures.push(`chapter 4 scene control unexpectedly scrolled page: ${chapterFourScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch5`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch5');
   const depth = page.getByRole('button', { name: /03\s+Depth/ });
   await depth.click();
   await page.waitForTimeout(250);
@@ -237,7 +245,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (depthPressed !== 'true') failures.push(`chapter 5 scene control did not become active: ${depthPressed}`);
   if (chapterFiveScrollY > 10) failures.push(`chapter 5 scene control unexpectedly scrolled page: ${chapterFiveScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch6`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch6');
   const threshold = page.getByRole('button', { name: /03\s+Threshold/ });
   await threshold.click();
   await page.waitForTimeout(250);
@@ -247,7 +255,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (thresholdPressed !== 'true') failures.push(`chapter 6 scene control did not become active: ${thresholdPressed}`);
   if (chapterSixScrollY > 10) failures.push(`chapter 6 scene control unexpectedly scrolled page: ${chapterSixScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch7`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch7');
   const chapterSevenThreshold = page.getByRole('button', { name: /03\s+Threshold/ });
   await chapterSevenThreshold.click();
   await page.waitForTimeout(250);
@@ -257,7 +265,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterSevenPressed !== 'true') failures.push(`chapter 7 scene control did not become active: ${chapterSevenPressed}`);
   if (chapterSevenScrollY > 10) failures.push(`chapter 7 scene control unexpectedly scrolled page: ${chapterSevenScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch8`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch8');
   const afterlife = page.getByRole('button', { name: /03\s+Afterlife/ });
   await afterlife.click();
   await page.waitForTimeout(250);
@@ -267,7 +275,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (afterlifePressed !== 'true') failures.push(`chapter 8 scene control did not become active: ${afterlifePressed}`);
   if (chapterEightScrollY > 10) failures.push(`chapter 8 scene control unexpectedly scrolled page: ${chapterEightScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch9`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch9');
   const shadowFish = page.getByRole('button', { name: /03\s+Shadow/ });
   await shadowFish.click();
   await page.waitForTimeout(250);
@@ -277,7 +285,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (shadowFishPressed !== 'true') failures.push(`chapter 9 scene control did not become active: ${shadowFishPressed}`);
   if (chapterNineScrollY > 10) failures.push(`chapter 9 scene control unexpectedly scrolled page: ${chapterNineScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch10`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch10');
   const opus = page.getByRole('button', { name: /03\s+Opus/ });
   await opus.click();
   await page.waitForTimeout(250);
@@ -287,7 +295,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (opusPressed !== 'true') failures.push(`chapter 10 scene control did not become active: ${opusPressed}`);
   if (chapterTenScrollY > 10) failures.push(`chapter 10 scene control unexpectedly scrolled page: ${chapterTenScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch11`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch11');
   const stone = page.getByRole('button', { name: /03\s+Stone/ });
   await stone.click();
   await page.waitForTimeout(250);
@@ -297,7 +305,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (stonePressed !== 'true') failures.push(`chapter 11 scene control did not become active: ${stonePressed}`);
   if (chapterElevenScrollY > 10) failures.push(`chapter 11 scene control unexpectedly scrolled page: ${chapterElevenScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch12`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch12');
   const bridge = page.getByRole('button', { name: /03\s+Bridge/ });
   await bridge.click();
   await page.waitForTimeout(250);
@@ -307,7 +315,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (bridgePressed !== 'true') failures.push(`chapter 12 scene control did not become active: ${bridgePressed}`);
   if (chapterTwelveScrollY > 10) failures.push(`chapter 12 scene control unexpectedly scrolled page: ${chapterTwelveScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch13`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch13');
   const paradox = page.getByRole('button', { name: /03\s+Paradox/ });
   await paradox.click();
   await page.waitForTimeout(250);
@@ -317,7 +325,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (paradoxPressed !== 'true') failures.push(`chapter 13 scene control did not become active: ${paradoxPressed}`);
   if (chapterThirteenScrollY > 10) failures.push(`chapter 13 scene control unexpectedly scrolled page: ${chapterThirteenScrollY}`);
 
-  await page.goto(`${baseUrl}/journey/chapter/ch14`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await gotoAppRoute(page, '/journey/chapter/ch14');
   const aeon = page.getByRole('button', { name: /03\s+Aeon/ });
   await aeon.click();
   await page.waitForTimeout(250);
@@ -331,7 +339,7 @@ async function smokeChapterSceneControls(page, failures) {
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
   for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch14']) {
-    await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle', timeout: 20_000 });
+    await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
 }

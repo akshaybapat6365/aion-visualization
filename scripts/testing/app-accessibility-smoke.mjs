@@ -54,7 +54,8 @@ async function waitForServer(server) {
 }
 
 async function checkRoute(page, route, failures) {
-  await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle', timeout: 20_000 });
+  await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
 
   const report = await page.evaluate(() => {
     const getName = (element) => {
