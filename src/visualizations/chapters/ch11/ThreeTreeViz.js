@@ -33,10 +33,29 @@ const VOID = 0x030308;
 
 const WATER_PARTICLES = 200;
 const THOUSAND_NAMES = 50;
+const OPUS_STAGES = [
+    { color: '#050506', y: 1.35, x: 0, scale: 1.08 },
+    { color: '#e8e8f0', y: 0, x: 1.35, scale: 0.86 },
+    { color: '#ffd76a', y: -1.35, x: 0, scale: 0.96 },
+    { color: '#c0392b', y: 0, x: -1.35, scale: 1.02 },
+];
 
 export default class ThreeTreeViz extends BaseViz {
     constructor(container, opts = {}) {
         super(container, Object.assign({ contextType: 'webgl' }, opts));
+        this.panelState = { activePanelId: 'mercurius', progress: 0 };
+        this.mercuriusFocus = 1;
+        this.opusFocus = 0;
+        this.lapisFocus = 0;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     async init() {
@@ -60,9 +79,12 @@ export default class ThreeTreeViz extends BaseViz {
         window.addEventListener('mousemove', this._onMouseMove);
 
         this._createPhilosophicalTree();
+        this._createMercuriusMediator();
+        this._createOpusWheel();
         this._createAquaDoctrinae();
         this._createMirrorSurface();
         this._createFigureReflection();
+        this._createLapisMandala();
         this._createCosmicSubstance();
         this._createLights();
 
@@ -76,13 +98,18 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createPhilosophicalTree() {
         this.treeGroup = new THREE.Group();
+        this.treeMaterials = [];
+        this.rootMeshes = [];
+        this.branchMeshes = [];
 
         // Trunk — central vertical pillar (the opus)
         const trunkGeo = new THREE.CylinderGeometry(0.1, 0.15, 6, 8);
         const trunkMat = new THREE.MeshStandardMaterial({
             color: TRUNK_BROWN, emissive: '#1a1008', emissiveIntensity: 0.2,
         });
-        this.treeGroup.add(new THREE.Mesh(trunkGeo, trunkMat));
+        this.trunkMesh = new THREE.Mesh(trunkGeo, trunkMat);
+        this.treeGroup.add(this.trunkMesh);
+        this.treeMaterials.push(trunkMat);
 
         // Roots (above — unconscious, reaching into sky)
         for (let i = 0; i < 6; i++) {
@@ -96,6 +123,8 @@ export default class ThreeTreeViz extends BaseViz {
             root.position.set(Math.cos(angle) * 0.3, 3 + len * 0.4, Math.sin(angle) * 0.3);
             root.rotation.z = angle * 0.4 - Math.PI * 0.1;
             this.treeGroup.add(root);
+            this.rootMeshes.push(root);
+            this.treeMaterials.push(root.material);
         }
 
         // Branches (below — thousand names, reaching down)
@@ -115,6 +144,8 @@ export default class ThreeTreeViz extends BaseViz {
             );
             branch.rotation.z = (Math.random() - 0.5) * 0.5;
             this.treeGroup.add(branch);
+            this.branchMeshes.push(branch);
+            this.treeMaterials.push(branch.material);
 
             // Luminous tip — a "name"
             const tipGeo = new THREE.SphereGeometry(0.03, 6, 6);
@@ -124,9 +155,119 @@ export default class ThreeTreeViz extends BaseViz {
             tip.position.copy(branch.position).add(new THREE.Vector3(0, -branchLen * 0.5, 0));
             this.treeGroup.add(tip);
             this.nameParticles.push(tip);
+            this.treeMaterials.push(tip.material);
         }
 
         this.scene.add(this.treeGroup);
+    }
+
+    _createMercuriusMediator() {
+        this.mercuriusGroup = new THREE.Group();
+        this.mercuriusGroup.position.set(0, 0.15, 1.15);
+
+        for (let strand = 0; strand < 2; strand++) {
+            const phase = strand * Math.PI;
+            const pts = [];
+            for (let i = 0; i <= 92; i++) {
+                const p = i / 92;
+                const y = THREE.MathUtils.lerp(-3.1, 3.15, p);
+                const angle = p * Math.PI * 6 + phase;
+                pts.push(new THREE.Vector3(Math.cos(angle) * 0.62, y, Math.sin(angle) * 0.2));
+            }
+            const curve = new THREE.CatmullRomCurve3(pts);
+            const tube = new THREE.Mesh(
+                new THREE.TubeGeometry(curve, 120, 0.024, 8, false),
+                new THREE.MeshBasicMaterial({
+                    color: strand === 0 ? MIRROR_CYAN : LAPIS_GOLD,
+                    transparent: true,
+                    opacity: 0.72,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            this.mercuriusGroup.add(tube);
+        }
+
+        const wingMat = new THREE.LineBasicMaterial({
+            color: 0xe8e8f0,
+            transparent: true,
+            opacity: 0.34,
+            blending: THREE.AdditiveBlending,
+        });
+        for (let side = -1; side <= 1; side += 2) {
+            const pts = [];
+            for (let i = 0; i <= 28; i++) {
+                const p = i / 28;
+                pts.push(new THREE.Vector3(side * (0.36 + p * 1.45), 1.15 + Math.sin(p * Math.PI) * 0.7, -0.08));
+            }
+            this.mercuriusGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), wingMat.clone()));
+        }
+
+        this.mercuriusCore = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.32, 0),
+            new THREE.MeshStandardMaterial({
+                color: MIRROR_CYAN,
+                emissive: MIRROR_CYAN,
+                emissiveIntensity: 0.72,
+                transparent: true,
+                opacity: 0.68,
+                metalness: 0.4,
+                roughness: 0.28,
+            })
+        );
+        this.mercuriusGroup.add(this.mercuriusCore);
+        this.scene.add(this.mercuriusGroup);
+    }
+
+    _createOpusWheel() {
+        this.opusWheel = new THREE.Group();
+        this.opusWheel.position.set(2.35, -0.05, 1.2);
+        this.opusNodes = [];
+        this.opusArcs = [];
+
+        const ringMat = new THREE.MeshBasicMaterial({
+            color: LAPIS_GOLD,
+            transparent: true,
+            opacity: 0.2,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        });
+        const outerRing = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.014, 8, 120), ringMat);
+        const innerRing = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.01, 8, 96), ringMat.clone());
+        this.opusWheel.add(outerRing, innerRing);
+        this.opusArcs.push(outerRing, innerRing);
+
+        OPUS_STAGES.forEach((stage, index) => {
+            const node = new THREE.Mesh(
+                new THREE.DodecahedronGeometry(0.16 * stage.scale, 0),
+                new THREE.MeshStandardMaterial({
+                    color: stage.color,
+                    emissive: stage.color,
+                    emissiveIntensity: index === 0 ? 0.15 : 0.45,
+                    transparent: true,
+                    opacity: 0.66,
+                    metalness: 0.4,
+                    roughness: 0.3,
+                })
+            );
+            node.position.set(stage.x, stage.y, 0);
+            this.opusWheel.add(node);
+            this.opusNodes.push(node);
+
+            const spoke = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(stage.x, stage.y, 0)]),
+                new THREE.LineBasicMaterial({
+                    color: index === 0 ? 0x443a46 : stage.color,
+                    transparent: true,
+                    opacity: 0.22,
+                    blending: THREE.AdditiveBlending,
+                })
+            );
+            this.opusWheel.add(spoke);
+            this.opusArcs.push(spoke);
+        });
+
+        this.scene.add(this.opusWheel);
     }
 
     _createAquaDoctrinae() {
@@ -208,6 +349,62 @@ export default class ThreeTreeViz extends BaseViz {
         this.scene.add(this.reflectionGroup);
     }
 
+    _createLapisMandala() {
+        this.lapisMandala = new THREE.Group();
+        this.lapisMandala.position.set(2.85, -2.15, 1.3);
+        this.lapisMandalaParts = [];
+
+        this.lapisStone = new THREE.Mesh(
+            new THREE.DodecahedronGeometry(0.58, 0),
+            new THREE.MeshStandardMaterial({
+                color: LAPIS_GOLD,
+                emissive: LAPIS_GOLD,
+                emissiveIntensity: 0.35,
+                metalness: 0.74,
+                roughness: 0.22,
+                transparent: true,
+                opacity: 0.45,
+            })
+        );
+        this.lapisMandala.add(this.lapisStone);
+        this.lapisMandalaParts.push(this.lapisStone);
+
+        for (let i = 0; i < 3; i++) {
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(0.92 + i * 0.26, 0.012, 8, 100),
+                new THREE.MeshBasicMaterial({
+                    color: i === 1 ? MIRROR_CYAN : LAPIS_GOLD,
+                    transparent: true,
+                    opacity: 0.12,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            ring.rotation.x = i === 0 ? Math.PI / 2 : Math.PI * 0.5 + i * 0.42;
+            ring.rotation.y = i * 0.58;
+            this.lapisMandala.add(ring);
+            this.lapisMandalaParts.push(ring);
+        }
+
+        for (let i = 0; i < 4; i++) {
+            const angle = i * Math.PI * 0.5;
+            const jewel = new THREE.Mesh(
+                new THREE.SphereGeometry(0.07, 10, 8),
+                new THREE.MeshBasicMaterial({
+                    color: i % 2 === 0 ? MIRROR_CYAN : LAPIS_GOLD,
+                    transparent: true,
+                    opacity: 0.38,
+                    blending: THREE.AdditiveBlending,
+                })
+            );
+            jewel.position.set(Math.cos(angle) * 1.28, Math.sin(angle) * 1.28, 0);
+            this.lapisMandala.add(jewel);
+            this.lapisMandalaParts.push(jewel);
+        }
+
+        this.scene.add(this.lapisMandala);
+    }
+
     _createCosmicSubstance() {
         // Arcane substance particles — both near figure AND in distant cosmos
         const count = 400;
@@ -249,56 +446,133 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createLights() {
         this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        this.scene.add(Object.assign(new THREE.PointLight(0x2a0845, 0.5, 15), { position: new THREE.Vector3(0, 5, 3) }));
-        this.scene.add(Object.assign(new THREE.PointLight(0xc8a820, 0.5, 15), { position: new THREE.Vector3(0, -4, 3) }));
-        this.scene.add(Object.assign(new THREE.PointLight(0x4a8aca, 0.3, 10), { position: new THREE.Vector3(4, -5, 2) }));
+        const rootLight = new THREE.PointLight(0x2a0845, 0.5, 15);
+        rootLight.position.set(0, 5, 3);
+        this.scene.add(rootLight);
+
+        const branchLight = new THREE.PointLight(0xc8a820, 0.5, 15);
+        branchLight.position.set(0, -4, 3);
+        this.scene.add(branchLight);
+
+        const waterLight = new THREE.PointLight(0x4a8aca, 0.3, 10);
+        waterLight.position.set(4, -5, 2);
+        this.scene.add(waterLight);
     }
 
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const panelId = this.panelState?.activePanelId || 'mercurius';
+        const dampRate = this.reducedMotion ? 9 : 3.2;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
+        const isMobile = this.width < 680;
+        this.mercuriusFocus = THREE.MathUtils.damp(this.mercuriusFocus, panelId === 'mercurius' ? 1 : 0.18, dampRate, dt);
+        this.opusFocus = THREE.MathUtils.damp(this.opusFocus, panelId === 'opus-wheel' ? 1 : 0.16, dampRate, dt);
+        this.lapisFocus = THREE.MathUtils.damp(this.lapisFocus, panelId === 'lapis' ? 1 : 0.16, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // Tree gentle sway
-        this.treeGroup.rotation.z = Math.sin(t * 0.05) * 0.03;
-        this.treeGroup.rotation.y = t * 0.005;
+        this.treeGroup.position.x = THREE.MathUtils.damp(this.treeGroup.position.x, isMobile ? 2.8 : 1.35, 4, dt);
+        this.treeGroup.position.y = THREE.MathUtils.damp(this.treeGroup.position.y, isMobile ? -0.45 : 0, 4, dt);
+        this.treeGroup.rotation.z = Math.sin(t * 0.05 * motionScale) * 0.03;
+        this.treeGroup.rotation.y = t * 0.005 * motionScale;
+        this.treeGroup.scale.setScalar(0.9 + this.mercuriusFocus * 0.08 + this.opusFocus * 0.05 + this.lapisFocus * 0.03);
+        this.trunkMesh.material.emissiveIntensity = 0.16 + this.mercuriusFocus * 0.18 + this.opusFocus * 0.22;
+        this.rootMeshes?.forEach((root, index) => {
+            root.material.opacity = 0.22 + this.mercuriusFocus * 0.34 + Math.sin(t * 0.16 * motionScale + index) * 0.04;
+            root.material.emissiveIntensity = 0.18 + this.mercuriusFocus * 0.28;
+        });
+        this.branchMeshes?.forEach((branch, index) => {
+            branch.material.opacity = 0.18 + this.opusFocus * 0.38 + this.lapisFocus * 0.18 + Math.sin(t * 0.2 * motionScale + index) * 0.03;
+            branch.material.emissiveIntensity = 0.18 + this.opusFocus * 0.36 + this.lapisFocus * 0.18;
+        });
+
+        this.mercuriusGroup.position.x = THREE.MathUtils.damp(this.mercuriusGroup.position.x, isMobile ? 3.05 : 1.35, 4, dt);
+        this.mercuriusGroup.position.y = THREE.MathUtils.damp(this.mercuriusGroup.position.y, isMobile ? 0.55 : 0.15, 4, dt);
+        this.mercuriusGroup.rotation.y = Math.sin(t * 0.12 * motionScale) * 0.35;
+        this.mercuriusGroup.scale.setScalar((isMobile ? 0.74 : 0.9) + this.mercuriusFocus * (isMobile ? 0.2 : 0.28));
+        this._setGroupOpacity(this.mercuriusGroup, 0.15 + this.mercuriusFocus * 0.78);
+        this.mercuriusCore.rotation.y = t * 0.18 * motionScale;
+        this.mercuriusCore.rotation.x = Math.sin(t * 0.12 * motionScale) * 0.4;
+        this.mercuriusCore.material.emissiveIntensity = 0.35 + this.mercuriusFocus * 0.72;
+
+        this.opusWheel.position.x = THREE.MathUtils.damp(this.opusWheel.position.x, isMobile ? 2.8 : 2.35, 4, dt);
+        this.opusWheel.position.y = THREE.MathUtils.damp(this.opusWheel.position.y, isMobile ? 0.72 : -0.05, 4, dt);
+        this.opusWheel.rotation.z = -t * 0.045 * motionScale;
+        this.opusWheel.scale.setScalar((isMobile ? 0.62 : 0.82) + this.opusFocus * (isMobile ? 0.18 : 0.28));
+        this._setGroupOpacity(this.opusWheel, 0.1 + this.opusFocus * 0.88);
+        this.opusNodes?.forEach((node, index) => {
+            const pulse = 0.5 + Math.sin(t * 1.2 * motionScale + index * 1.6) * 0.5;
+            node.scale.setScalar(0.85 + this.opusFocus * 0.5 + pulse * 0.14 * this.opusFocus);
+            node.material.emissiveIntensity = (index === 0 ? 0.12 : 0.34) + this.opusFocus * (0.4 + pulse * 0.28);
+        });
 
         // Name particles twinkle
         for (const np of this.nameParticles) {
-            np.material.opacity = 0.3 + Math.sin(t * 0.5 + np.position.x * 2) * 0.3;
+            np.material.opacity = 0.16 + this.opusFocus * 0.34 + this.lapisFocus * 0.24 + Math.sin(t * 0.5 * motionScale + np.position.x * 2) * 0.18;
         }
 
         // Water rising
         const waterPos = this.waterPts.geometry.attributes.position.array;
+        const waterSpeed = (0.08 + this.mercuriusFocus * 0.14 + this.lapisFocus * 0.18) * motionScale;
         for (let i = 0; i < WATER_PARTICLES; i++) {
-            waterPos[i * 3 + 1] += dt * 0.3;
-            waterPos[i * 3] += Math.sin(t * 0.2 + this.waterPhases[i]) * dt * 0.05;
+            waterPos[i * 3 + 1] += dt * waterSpeed;
+            waterPos[i * 3] += Math.sin(t * 0.2 * motionScale + this.waterPhases[i]) * dt * 0.05;
             if (waterPos[i * 3 + 1] > 0) {
                 waterPos[i * 3 + 1] = -6;
                 waterPos[i * 3] = (Math.random() - 0.5) * 3;
             }
         }
         this.waterPts.geometry.attributes.position.needsUpdate = true;
+        this.waterPts.material.opacity = 0.2 + this.mercuriusFocus * 0.18 + this.lapisFocus * 0.22;
 
         // Mirror shimmer
-        this.mirror.material.opacity = 0.015 + Math.sin(t * 0.15) * 0.008;
+        this.mirror.material.opacity = 0.01 + this.lapisFocus * 0.035 + Math.sin(t * 0.15 * motionScale) * 0.006;
 
         // Lapis in reflection fading in
-        const lapisProgress = Math.min(1, t / 60);
+        const lapisProgress = Math.max(this.lapisFocus, Math.min(1, t / 60) * 0.25);
         this.reflectionLapis.material.opacity = lapisProgress * 0.6;
-        this.reflectionLapis.rotation.y = t * 0.1;
+        this.reflectionLapis.rotation.y = t * 0.1 * motionScale;
         this.reflectionLapis.material.emissiveIntensity = 0.3 + lapisProgress * 0.4;
+        this.reflectionGroup.scale.setScalar(0.95 + this.lapisFocus * 0.16);
+        this.figureGroup.scale.setScalar(0.9 + this.lapisFocus * 0.12);
+
+        this.lapisMandala.position.x = THREE.MathUtils.damp(this.lapisMandala.position.x, isMobile ? 4.2 : 3.45, 4, dt);
+        this.lapisMandala.position.y = THREE.MathUtils.damp(this.lapisMandala.position.y, isMobile ? -1.35 : -2.15, 4, dt);
+        this.lapisMandala.scale.setScalar((isMobile ? 0.44 : 0.7) + this.lapisFocus * (isMobile ? 0.26 : 0.46));
+        this.lapisMandala.rotation.y = t * 0.04 * motionScale;
+        this.lapisStone.rotation.y = t * 0.16 * motionScale;
+        this.lapisStone.rotation.x = Math.sin(t * 0.1 * motionScale) * 0.35;
+        this.lapisMandalaParts?.forEach((part, index) => {
+            const material = part.material;
+            if (!material) return;
+            const base = part === this.lapisStone ? 0.22 : 0.08;
+            material.opacity = base + this.lapisFocus * (part === this.lapisStone ? 0.56 : 0.38);
+            if (material.emissiveIntensity !== undefined) {
+                material.emissiveIntensity = 0.26 + this.lapisFocus * 0.76 + Math.sin(t * 1.4 * motionScale + index) * 0.08;
+            }
+        });
 
         // Cosmic particles slow rotation
-        this.cosmicPts.rotation.y += dt * 0.002;
+        this.cosmicPts.rotation.y += dt * 0.002 * motionScale;
+        this.cosmicPts.material.opacity = 0.16 + this.mercuriusFocus * 0.08 + this.lapisFocus * 0.18;
 
         // Camera
-        const camAngle = t * 0.015 + this.mouseSmooth.x * 0.3;
-        const camH = 1 + this.mouseSmooth.y * 4;
-        this.camera.position.set(Math.sin(camAngle) * 12, camH, Math.cos(camAngle) * 12);
-        this.camera.lookAt(0, -1, 0);
+        const camAngle = t * 0.012 * motionScale + this.mouseSmooth.x * 0.22;
+        const baseRadius = 11.2 - this.opusFocus * 0.8 - this.lapisFocus * 1.2;
+        const targetCam = new THREE.Vector3(
+            Math.sin(camAngle) * baseRadius + this.opusFocus * 0.9 + this.lapisFocus * 1.6 + (isMobile ? 2.05 : 0.65),
+            1.4 + this.mouseSmooth.y * 2.2 - this.opusFocus * 0.6 - this.lapisFocus * 1.8,
+            Math.cos(camAngle) * baseRadius
+        );
+        this.camera.position.lerp(targetCam, this.reducedMotion ? 1 : Math.min(1, dt * 1.8));
+        this.camera.lookAt(
+            this.opusFocus * 1.8 + this.lapisFocus * 1.8 + (isMobile ? 1.45 : 0.55),
+            -0.9 - this.opusFocus * 0.35 - this.lapisFocus * 1.1,
+            0.5
+        );
 
-        if (this.bloomPass) this.bloomPass.strength = 1.0 + Math.sin(t * 0.1) * 0.3;
+        if (this.bloomPass) this.bloomPass.strength = 0.92 + Math.sin(t * 0.1 * motionScale) * 0.16 + this.mercuriusFocus * 0.2 + this.lapisFocus * 0.22;
     }
 
     render() { this.composer?.render(); }
@@ -308,6 +582,17 @@ export default class ThreeTreeViz extends BaseViz {
         this.renderer.setSize(w, h); this.composer?.setSize(w, h); this.bloomPass?.setSize(w, h);
     }
     _onMouseMove(e) { this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; }
+    _setGroupOpacity(group, opacity) {
+        group?.traverse((obj) => {
+            const materials = obj.material ? (Array.isArray(obj.material) ? obj.material : [obj.material]) : [];
+            materials.forEach((material) => {
+                if (material.opacity === undefined) return;
+                if (material.userData.baseOpacity === undefined) material.userData.baseOpacity = material.opacity;
+                material.transparent = true;
+                material.opacity = material.userData.baseOpacity * opacity;
+            });
+        });
+    }
     dispose() {
         window.removeEventListener('mousemove', this._onMouseMove);
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }

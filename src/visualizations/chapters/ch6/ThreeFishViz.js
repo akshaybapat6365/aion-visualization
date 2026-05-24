@@ -44,7 +44,22 @@ const SIGN_NAMES = [
 ];
 
 export default class ThreeFishViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'fish', progress: 0 };
+        this.fishFocus = 1;
+        this.zodiacFocus = 0;
+        this.transitionFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+        this._syncPanelAnnotations?.();
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         /* ═══ Renderer ═══ */
@@ -89,7 +104,7 @@ export default class ThreeFishViz extends BaseViz {
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.2, 0.6, 0.4
+            new THREE.Vector2(this.width, this.height), 1.28, 0.62, 0.34
         );
         this.composer.addPass(this.bloom);
     }
@@ -152,7 +167,7 @@ export default class ThreeFishViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.starfield = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0x6666aa, size: 0.04, transparent: true, opacity: 0.3,
+            color: 0x8585c8, size: 0.05, transparent: true, opacity: 0.38,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.starfield);
@@ -163,20 +178,26 @@ export default class ThreeFishViz extends BaseViz {
        ═══════════════════════════════════════════════════════════ */
     _createZodiacWheel() {
         this.wheelGroup = new THREE.Group();
+        this.wheelMaterials = [];
+        this.spokes = [];
 
         /* Main ring */
         const ringGeo = new THREE.TorusGeometry(ZODIAC_R, 0.03, 8, 128);
-        this.wheelGroup.add(new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({
+        const mainRingMat = new THREE.MeshBasicMaterial({
             color: ZODIAC_GOLD, transparent: true, opacity: 0.25,
             blending: THREE.AdditiveBlending,
-        })));
+        });
+        this.wheelGroup.add(new THREE.Mesh(ringGeo, mainRingMat));
+        this.wheelMaterials.push({ material: mainRingMat, baseOpacity: 0.25 });
 
         /* Inner ring — fainter, smaller */
         const innerGeo = new THREE.TorusGeometry(ZODIAC_R * 0.85, 0.015, 8, 128);
-        this.wheelGroup.add(new THREE.Mesh(innerGeo, new THREE.MeshBasicMaterial({
+        const innerRingMat = new THREE.MeshBasicMaterial({
             color: ZODIAC_GOLD, transparent: true, opacity: 0.08,
             blending: THREE.AdditiveBlending,
-        })));
+        });
+        this.wheelGroup.add(new THREE.Mesh(innerGeo, innerRingMat));
+        this.wheelMaterials.push({ material: innerRingMat, baseOpacity: 0.08 });
 
         /* 12 segment markers + spokes */
         this.segmentMarkers = [];
@@ -220,6 +241,7 @@ export default class ThreeFishViz extends BaseViz {
                 })
             );
             this.wheelGroup.add(spoke);
+            this.spokes.push({ line: spoke, baseOpacity: isPisces ? 0.2 : 0.1, isPisces, isAquarius });
 
             /* Pisces sector glow arc */
             if (isPisces) {
@@ -342,7 +364,7 @@ export default class ThreeFishViz extends BaseViz {
 
             this.scene.add(group);
             this.fishPair.push({
-                group, direction: isLight ? 1 : -1, trailPts, isLight, glowMat
+                group, direction: isLight ? 1 : -1, trailPts, isLight, glowMat, bodyMat, tailMat
             });
         }
     }
@@ -450,15 +472,46 @@ export default class ThreeFishViz extends BaseViz {
         );
         this.jupiter.add(jupGlow);
 
-        /* Conjunction flash sphere */
+        /* Conjunction threshold: a subtle luminous event rather than a solid body */
+        this.conjGroup = new THREE.Group();
         this.conjFlash = new THREE.Mesh(
-            new THREE.SphereGeometry(2.5, 16, 16),
+            new THREE.SphereGeometry(1.25, 24, 18),
             new THREE.MeshBasicMaterial({
                 color: CONJUNCTION_C, transparent: true, opacity: 0,
                 blending: THREE.AdditiveBlending,
+                depthWrite: false,
             })
         );
-        this.scene.add(this.conjFlash);
+        this.conjHalo = new THREE.Mesh(
+            new THREE.SphereGeometry(2.2, 24, 18),
+            new THREE.MeshBasicMaterial({
+                color: 0x8f90b8, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                depthWrite: false,
+            })
+        );
+        this.conjRing = new THREE.Mesh(
+            new THREE.TorusGeometry(1.82, 0.015, 8, 160),
+            new THREE.MeshBasicMaterial({
+                color: COMMISSURE, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.conjRing.rotation.x = Math.PI / 2.6;
+        this.conjAquariusRing = new THREE.Mesh(
+            new THREE.TorusGeometry(2.1, 0.01, 8, 160),
+            new THREE.MeshBasicMaterial({
+                color: 0x22d3ee, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.conjAquariusRing.rotation.x = Math.PI / 2.15;
+        this.conjAquariusRing.rotation.z = Math.PI / 9;
+        this.conjGroup.add(this.conjHalo, this.conjFlash, this.conjRing, this.conjAquariusRing);
+        this.scene.add(this.conjGroup);
     }
 
     /* ═══ Lights ═══ */
@@ -480,8 +533,6 @@ export default class ThreeFishViz extends BaseViz {
         ov.className = 'ch6-overlay';
         const style = document.createElement('style');
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
-
             .ch6-overlay {
                 position: absolute; inset: 0;
                 pointer-events: none;
@@ -499,6 +550,16 @@ export default class ThreeFishViz extends BaseViz {
             .ch6-overlay [data-phase].vis {
                 opacity: 1;
                 transform: translateY(0);
+            }
+
+            .ch6-title,
+            .ch6-framing,
+            .ch6-final {
+                display: none;
+            }
+
+            .ch6-overlay [data-phase].ch6-zodiac-label.vis {
+                transform: translateX(-50%);
             }
 
             /* ─── Tracked labels (positioned by JS) ─── */
@@ -744,6 +805,20 @@ export default class ThreeFishViz extends BaseViz {
             .ch6-final em {
                 color: rgba(34, 211, 238, 0.45);
             }
+
+            @media (max-width: 700px) {
+                .ch6-fish-label,
+                .ch6-commissure-label,
+                .ch6-sign-name,
+                .ch6-spring-label,
+                .ch6-saturn-label,
+                .ch6-jupiter-label,
+                .ch6-conjunction-label,
+                .ch6-orbiter-label,
+                .ch6-leaders-svg {
+                    display: none;
+                }
+            }
         `;
         ov.appendChild(style);
 
@@ -863,6 +938,25 @@ export default class ThreeFishViz extends BaseViz {
         ov.querySelectorAll('[data-track]').forEach(el => {
             this._tracked[el.dataset.track] = el;
         });
+        this._syncPanelAnnotations();
+    }
+
+    _syncPanelAnnotations() {
+        if (!this._overlay) return;
+        const panelId = this.panelState?.activePanelId || 'fish';
+        const fish = panelId === 'fish';
+        const zodiac = panelId === 'zodiac';
+        const transition = panelId === 'transition';
+        const toggleAll = (selector, enabled) => {
+            this._overlay.querySelectorAll(selector).forEach((el) => {
+                el.classList.toggle('vis', enabled);
+            });
+        };
+
+        toggleAll('.ch6-fish-label, .ch6-commissure-label', fish);
+        toggleAll('.ch6-zodiac-label, .ch6-sign-name, .ch6-spring-label', zodiac || transition);
+        toggleAll('.ch6-saturn-label, .ch6-jupiter-label, .ch6-conjunction-label, .ch6-orbiter-label', transition);
+        this._maxPhase = transition ? 5 : zodiac ? 4 : 3;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -872,15 +966,21 @@ export default class ThreeFishViz extends BaseViz {
         if (!this.scene) return;
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.03);
+        const panelId = this.panelState?.activePanelId || 'fish';
+        const dampRate = this.reducedMotion ? 7 : 3.3;
+        this.fishFocus = THREE.MathUtils.damp(this.fishFocus, panelId === 'fish' ? 1 : 0.2, dampRate, dt);
+        this.zodiacFocus = THREE.MathUtils.damp(this.zodiacFocus, panelId === 'zodiac' ? 1 : 0.1, dampRate, dt);
+        this.transitionFocus = THREE.MathUtils.damp(this.transitionFocus, panelId === 'transition' ? 1 : 0, dampRate, dt);
 
         /* ─── Fish orbiting on zodiac ring ─── */
         for (let i = 0; i < 2; i++) {
             const fish = this.fishPair[i];
-            const angle = fish.direction * t * 0.04 + (i === 0 ? 0 : Math.PI);
+            const angle = fish.direction * t * (this.reducedMotion ? 0.012 : 0.04) + (i === 0 ? 0 : Math.PI);
+            const orbitRadius = ZODIAC_R - this.fishFocus * 0.45 + this.transitionFocus * 0.2;
             fish.group.position.set(
-                Math.cos(angle) * ZODIAC_R,
+                Math.cos(angle) * orbitRadius,
                 Math.sin(t * 0.12 + i * 3) * 0.3,
-                Math.sin(angle) * ZODIAC_R
+                Math.sin(angle) * orbitRadius
             );
             fish.group.rotation.y = angle + (fish.direction > 0 ? Math.PI / 2 : -Math.PI / 2);
 
@@ -902,8 +1002,11 @@ export default class ThreeFishViz extends BaseViz {
             /* Glow pulse — intensifies when labels are visible (phase 3+) */
             if (fish.glowMat && this._maxPhase >= 3) {
                 const baseOpacity = fish.isLight ? 0.1 : 0.06;
-                fish.glowMat.opacity = baseOpacity + Math.sin(t * 0.4 + i) * 0.03;
+                fish.glowMat.opacity = baseOpacity + Math.sin(t * 0.4 + i) * 0.03 + this.fishFocus * (fish.isLight ? 0.12 : 0.08);
             }
+            fish.bodyMat.opacity = (fish.isLight ? 0.62 : 0.42) + this.fishFocus * (fish.isLight ? 0.22 : 0.2) + this.transitionFocus * 0.06;
+            fish.tailMat.opacity = (fish.isLight ? 0.46 : 0.3) + this.fishFocus * 0.16;
+            fish.group.scale.setScalar(1 + this.fishFocus * 0.12);
         }
 
         /* ─── Commissure thread following fish ─── */
@@ -921,8 +1024,10 @@ export default class ThreeFishViz extends BaseViz {
         }
         this.commissure.geometry.attributes.position.needsUpdate = true;
         /* Commissure opacity increases when labeled (phase 3+) */
-        const commBaseOp = this._maxPhase >= 3 ? 0.4 : 0.25;
-        this.commissure.material.opacity = commBaseOp + Math.sin(t * 0.3) * 0.1;
+        const mobileScale = this.width < 700 ? 0.42 : 1;
+        const commBaseOp = this._maxPhase >= 3 ? 0.34 + this.fishFocus * 0.26 : 0.25;
+        this.commissure.material.opacity = (commBaseOp + Math.sin(t * 0.3) * 0.1) * mobileScale;
+        this.commissureGlow.material.opacity = (0.22 + this.fishFocus * 0.18 + this.transitionFocus * 0.12) * mobileScale;
 
         /* Commissure glow particles */
         const glPos = this.commissureGlow.geometry.attributes.position.array;
@@ -938,18 +1043,18 @@ export default class ThreeFishViz extends BaseViz {
         this.commissureGlow.geometry.attributes.position.needsUpdate = true;
 
         /* ─── Saturn orbiting elements ─── */
-        const lionAngle = t * 0.2;
+        const lionAngle = t * (this.reducedMotion ? 0.05 : 0.2);
         this.saturnLion.position.set(
             Math.cos(lionAngle) * 1.4, Math.sin(lionAngle) * 0.5, Math.sin(lionAngle) * 1.4
         );
-        const serpAngle = t * 0.15 + Math.PI;
+        const serpAngle = t * (this.reducedMotion ? 0.04 : 0.15) + Math.PI;
         this.saturnSerpent.position.set(
             Math.cos(serpAngle) * 1.2, Math.sin(serpAngle) * 0.3, Math.sin(serpAngle) * 1.2
         );
-        this.saturnGroup.rotation.y = t * 0.02;
+        this.saturnGroup.rotation.y = t * (this.reducedMotion ? 0.005 : 0.02);
 
         /* ─── Jupiter orbit ─── */
-        const jupAngle = t * 0.025;
+        const jupAngle = t * (this.reducedMotion ? 0.006 : 0.025);
         this.jupiter.position.set(
             Math.cos(jupAngle) * 4.5,
             2.5 + Math.sin(t * 0.08) * 0.3,
@@ -959,12 +1064,19 @@ export default class ThreeFishViz extends BaseViz {
         /* ─── Conjunction flash ─── */
         const dist = this.saturnGroup.position.distanceTo(this.jupiter.position);
         const conjIntensity = Math.max(0, 1 - dist / 4);
-        this.conjFlash.material.opacity = conjIntensity * 0.18;
-        this.conjFlash.position.lerpVectors(this.saturnGroup.position, this.jupiter.position, 0.5);
-        this.conjFlash.scale.setScalar(1 + conjIntensity * 0.5);
+        const thresholdPulse = 0.5 + Math.sin(t * 0.62) * 0.5;
+        this.conjGroup.position.lerpVectors(this.saturnGroup.position, this.jupiter.position, 0.5);
+        this.conjGroup.scale.setScalar(0.92 + conjIntensity * 0.18 + this.transitionFocus * 0.28);
+        this.conjGroup.rotation.y = t * (this.reducedMotion ? 0.01 : 0.035);
+        this.conjFlash.material.opacity = conjIntensity * 0.08 + this.transitionFocus * (0.035 + thresholdPulse * 0.035);
+        this.conjHalo.material.opacity = this.transitionFocus * (0.04 + thresholdPulse * 0.018);
+        this.conjRing.material.opacity = this.transitionFocus * (0.2 + thresholdPulse * 0.1);
+        this.conjRing.rotation.z = t * (this.reducedMotion ? 0.006 : 0.025);
+        this.conjAquariusRing.material.opacity = this.transitionFocus * (0.12 + (1 - thresholdPulse) * 0.08);
+        this.conjAquariusRing.rotation.z = Math.PI / 9 - t * (this.reducedMotion ? 0.004 : 0.017);
 
         /* ─── Spring point precessing ─── */
-        const springAngle = t * 0.005;
+        const springAngle = t * (this.reducedMotion ? 0.0015 : 0.005) + this.transitionFocus * 0.34;
         this.springPoint.position.set(
             Math.cos(springAngle) * ZODIAC_R, 0, Math.sin(springAngle) * ZODIAC_R
         );
@@ -972,44 +1084,49 @@ export default class ThreeFishViz extends BaseViz {
 
         /* ─── Pisces/Aquarius arc pulse ─── */
         if (this._piscesArc && this._maxPhase >= 4) {
-            this._piscesArc.material.opacity = 0.35 + Math.sin(t * 0.3) * 0.08;
+            this._piscesArc.material.opacity = 0.28 + Math.sin(t * 0.3) * 0.07 + this.fishFocus * 0.12 + this.zodiacFocus * 0.18;
         }
         if (this._aquariusArc && this._maxPhase >= 4) {
-            this._aquariusArc.material.opacity = 0.15 + Math.sin(t * 0.25 + 1) * 0.05;
+            this._aquariusArc.material.opacity = 0.12 + Math.sin(t * 0.25 + 1) * 0.05 + this.transitionFocus * 0.35 + this.zodiacFocus * 0.08;
         }
+        this.wheelMaterials?.forEach(({ material, baseOpacity }) => {
+            material.opacity = baseOpacity + this.zodiacFocus * 0.16 + this.transitionFocus * 0.08;
+        });
+        this.spokes?.forEach(({ line, baseOpacity, isPisces, isAquarius }) => {
+            line.material.opacity = baseOpacity + this.zodiacFocus * 0.12 + (isPisces ? this.fishFocus * 0.08 : 0) + (isAquarius ? this.transitionFocus * 0.18 : 0);
+        });
+        this.segmentMarkers?.forEach((dot, index) => {
+            const isAquarius = index === 10;
+            const isPisces = index === 11;
+            dot.material.opacity = 0.22 + this.zodiacFocus * 0.2 + (isPisces ? this.fishFocus * 0.2 : 0) + (isAquarius ? this.transitionFocus * 0.35 : 0);
+        });
+        this.saturnGroup.scale.setScalar(1 + this.transitionFocus * 0.26);
+        this.jupiter.scale.setScalar(1 + this.transitionFocus * 0.22);
 
         /* ─── Wheel slow rotation ─── */
-        this.wheelGroup.rotation.y = t * 0.006;
+        this.wheelGroup.rotation.y = t * (this.reducedMotion ? 0.0015 : 0.006);
 
         /* ─── Camera ─── */
-        const camAngle = t * 0.012 + this.mouseSmooth.x * 0.25;
-        const camH = 4.5 + this.mouseSmooth.y * 2.5;
+        const camAngle = t * (this.reducedMotion ? 0.002 : 0.012) + this.mouseSmooth.x * 0.25;
+        const camH = 4.5 + this.mouseSmooth.y * 2.2 + this.zodiacFocus * 0.8 + this.transitionFocus * 0.2;
+        const camRadius = 13.5 - this.fishFocus * 1.2 + this.zodiacFocus * 1.4 + this.transitionFocus * 0.8;
         this.camera.position.set(
-            Math.sin(camAngle) * 14,
+            Math.sin(camAngle) * camRadius,
             camH,
-            Math.cos(camAngle) * 14
+            Math.cos(camAngle) * camRadius
         );
         this.camera.lookAt(0, 0.5, 0);
 
         /* ─── Starfield ─── */
-        this.starfield.rotation.y += dt * 0.0008;
+        this.starfield.rotation.y += dt * (this.reducedMotion ? 0.00015 : 0.0008);
 
         /* ─── Bloom pulse ─── */
         if (this.bloom) {
-            this.bloom.strength = 1.0 + Math.sin(t * 0.1) * 0.2 + conjIntensity * 0.6;
+            this.bloom.strength = 1.05 + Math.sin(t * 0.1) * 0.16 + conjIntensity * 0.5 + this.fishFocus * 0.12 + this.transitionFocus * 0.18;
         }
 
         /* ─── Phase reveal ─── */
-        for (let p = 0; p < this._phaseTimes.length; p++) {
-            if (t >= this._phaseTimes[p] && p + 1 > this._maxPhase) {
-                this._maxPhase = p + 1;
-                this._phaseEls.forEach(el => {
-                    if (parseInt(el.dataset.phase) <= this._maxPhase) {
-                        el.classList.add('vis');
-                    }
-                });
-            }
-        }
+        this._syncPanelAnnotations?.();
 
         /* ─── Dim title after 15s ─── */
         if (t > 15 && this._tracked) {
@@ -1025,7 +1142,7 @@ export default class ThreeFishViz extends BaseViz {
         this.camera.updateMatrixWorld();
 
         /* --- Fish labels --- */
-        if (this._maxPhase >= 3) {
+        if (this.fishFocus > 0.35) {
             /* Determine which side the fish is on, offset label to opposite side */
             const f0screen = this._project(this.fishPair[0].group.position);
             const f0Right = f0screen.x > this.width * 0.5;
@@ -1060,10 +1177,14 @@ export default class ThreeFishViz extends BaseViz {
             if (commLabelPos && !commLabelPos.behind) {
                 this._updateLeader('commissure', commLabelPos.x + 100, commLabelPos.y + 8, commLabelPos.anchorX, commLabelPos.anchorY, true);
             }
+        } else {
+            this._updateLeader('fish-light', 0, 0, 0, 0, false);
+            this._updateLeader('fish-dark', 0, 0, 0, 0, false);
+            this._updateLeader('commissure', 0, 0, 0, 0, false);
         }
 
         /* --- Zodiac sign names (Phase 4) --- */
-        if (this._maxPhase >= 4 && this._signEls) {
+        if ((this.zodiacFocus > 0.35 || this.transitionFocus > 0.35) && this._signEls) {
             for (let i = 0; i < 12; i++) {
                 const labelObj = this._zodiacPositions[i];
                 /* Get world position of the label anchor (it's inside wheelGroup) */
@@ -1095,10 +1216,13 @@ export default class ThreeFishViz extends BaseViz {
             if (spPos && !spPos.behind) {
                 this._updateLeader('spring', spPos.x, spPos.y + 8, spPos.anchorX, spPos.anchorY, true);
             }
+        } else if (this._signEls) {
+            for (const el of this._signEls) el.style.visibility = 'hidden';
+            this._updateLeader('spring', 0, 0, 0, 0, false);
         }
 
         /* --- Saturn, Jupiter, Conjunction labels (Phase 5) --- */
-        if (this._maxPhase >= 5) {
+        if (this.transitionFocus > 0.35) {
             /* Saturn */
             const satWorld = new THREE.Vector3();
             this.saturnGroup.getWorldPosition(satWorld);
@@ -1147,6 +1271,9 @@ export default class ThreeFishViz extends BaseViz {
                 this._tracked['serpent'],
                 serpWorld, 'serpent', 15, -12
             );
+        } else {
+            this._updateLeader('saturn', 0, 0, 0, 0, false);
+            this._updateLeader('jupiter', 0, 0, 0, 0, false);
         }
     }
 

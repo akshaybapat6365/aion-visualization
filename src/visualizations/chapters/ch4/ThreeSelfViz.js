@@ -48,6 +48,19 @@ const STAR_CLR = 0x1a1a40;
 export default class ThreeSelfViz extends BaseViz {
     constructor(c, o = {}) {
         super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'seed', progress: 0 };
+        this.seedFocus = 1;
+        this.quaternityFocus = 0;
+        this.mandalaFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+        this._syncPanelAnnotations?.();
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -136,7 +149,14 @@ export default class ThreeSelfViz extends BaseViz {
             );
             this.scene.add(disc);
 
-            this.zoneShells.push({ ring, disc, r: radii[i], label: labels[i] });
+            this.zoneShells.push({
+                ring,
+                disc,
+                r: radii[i],
+                label: labels[i],
+                ringOpacity: 0.10 + i * 0.03,
+                discOpacity: 0.02 + i * 0.01,
+            });
         }
     }
 
@@ -207,6 +227,7 @@ export default class ThreeSelfViz extends BaseViz {
                 color: QUAD_COLORS[q], size: 0.06, transparent: true,
                 opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false
             }));
+            pts.userData.baseOpacity = 0.55;
             this.scene.add(pts);
             this.quads.push(pts);
         }
@@ -260,6 +281,7 @@ export default class ThreeSelfViz extends BaseViz {
                 opacity: 0.15 + i * 0.02,
                 blending: THREE.AdditiveBlending
             }));
+            ring.userData.baseOpacity = 0.15 + i * 0.02;
             this.scene.add(ring);
             this.mandalaRings.push({
                 ring, segs, r,
@@ -275,6 +297,7 @@ export default class ThreeSelfViz extends BaseViz {
     _buildCrossAxes() {
         /* Horizontal: Feeling (left, red) ↔ Intuition (right, gold) */
         /* Vertical:   Thinking (top, blue) ↔ Sensation (bottom, teal) */
+        this.crossAxes = [];
         const axes = [
             { a: Math.PI * 0.5, col: QUAD_COLORS[1] },  // up → Thinking
             { a: Math.PI, col: QUAD_COLORS[0] },  // left → Feeling
@@ -304,6 +327,7 @@ export default class ThreeSelfViz extends BaseViz {
             );
             marker.position.set(Math.cos(a) * 12, Math.sin(a) * 12, 0);
             this.scene.add(marker);
+            this.crossAxes.push({ line, marker });
         }
     }
 
@@ -351,14 +375,33 @@ export default class ThreeSelfViz extends BaseViz {
         /* ── CSS ── */
         const style = document.createElement('style');
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
-
             .ch4-annotations {
                 position: absolute; inset: 0;
                 pointer-events: none; z-index: 10;
                 font-family: 'Cormorant Garamond', 'Georgia', serif;
                 color: rgba(255, 245, 220, 0.85);
                 overflow: hidden;
+            }
+
+            .ch4-annotations [data-phase].ch4-center-label.vis {
+                opacity: 1;
+                transform: translate(-50%, 40px);
+            }
+
+            .ch4-annotations [data-phase].ch4-quat--top.vis,
+            .ch4-annotations [data-phase].ch4-quat--bottom.vis {
+                transform: translateX(-50%);
+            }
+
+            .ch4-annotations [data-phase].ch4-quat--right.vis,
+            .ch4-annotations [data-phase].ch4-quat--left.vis {
+                transform: translateY(-50%);
+            }
+
+            .ch4-header,
+            .ch4-annotation,
+            .ch4-hint {
+                display: none;
             }
 
             /* ── Phase fade-in ── */
@@ -504,7 +547,7 @@ export default class ThreeSelfViz extends BaseViz {
                 color: rgba(42, 157, 143, 0.55);
             }
             .ch4-quat--left {
-                top: 50%; left: 44px;
+                top: 56%; left: 44px;
                 transform: translateY(-50%);
                 color: rgba(230, 57, 70, 0.45);
             }
@@ -639,6 +682,7 @@ export default class ThreeSelfViz extends BaseViz {
                 .ch4-a--integration { right: 20px; }
                 .ch4-quat--right { right: 20px; }
                 .ch4-quat--left { left: 20px; }
+                .ch4-center-label { display: none; }
                 .ch4-zone { display: none; }
                 .ch4-ring-label { display: none; }
             }
@@ -764,24 +808,26 @@ export default class ThreeSelfViz extends BaseViz {
         ov.prepend(style);
         (this.container || this.canvas.parentElement).appendChild(ov);
 
-        /* ── Phased reveal ── */
         this._annTimers = [];
-        const phases = [
-            { sel: '[data-phase="1"]', delay: 1500 },
-            { sel: '[data-phase="2"]', delay: 5000 },
-            { sel: '[data-phase="3"]', delay: 10000 },
-            { sel: '[data-phase="4"]', delay: 16000 },
-            { sel: '[data-phase="5"]', delay: 22000 },
-            { sel: '[data-phase="6"]', delay: 28000 },
-            { sel: '[data-phase="7"]', delay: 34000 },
-        ];
-        for (const p of phases) {
-            const els = ov.querySelectorAll(p.sel);
-            els.forEach(el => {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
-                this._annTimers.push(t);
+        this._syncPanelAnnotations();
+    }
+
+    _syncPanelAnnotations() {
+        if (!this._annotationOverlay) return;
+        const panelId = this.panelState?.activePanelId || 'seed';
+        const seed = panelId === 'seed';
+        const quaternity = panelId === 'quaternity';
+        const mandala = panelId === 'mandala';
+        const toggleAll = (selector, enabled) => {
+            this._annotationOverlay.querySelectorAll(selector).forEach((el) => {
+                el.classList.toggle('vis', enabled);
             });
-        }
+        };
+
+        toggleAll('.ch4-center-label', seed || mandala);
+        toggleAll('.ch4-zone', mandala);
+        toggleAll('.ch4-quat', quaternity);
+        toggleAll('.ch4-ring-label', mandala);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -792,54 +838,76 @@ export default class ThreeSelfViz extends BaseViz {
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.04);
         this.introT += dt;
+        const panelId = this.panelState?.activePanelId || 'seed';
+        const dampRate = this.reducedMotion ? 7 : 3.2;
+        this.seedFocus = THREE.MathUtils.damp(this.seedFocus, panelId === 'seed' ? 1 : 0.18, dampRate, dt);
+        this.quaternityFocus = THREE.MathUtils.damp(this.quaternityFocus, panelId === 'quaternity' ? 1 : 0, dampRate, dt);
+        this.mandalaFocus = THREE.MathUtils.damp(this.mandalaFocus, panelId === 'mandala' ? 1 : 0, dampRate, dt);
 
         /* ── Center pulse ("seed → totality") ── */
-        const seedCycle = (Math.sin(t * 0.15) + 1) / 2; // 0..1 over ~42s
-        const seedScale = 0.4 + seedCycle * 1.0;
+        const seedCycle = (Math.sin(t * (this.reducedMotion ? 0.04 : 0.15)) + 1) / 2; // 0..1 over ~42s
+        const seedScale = 0.42 + seedCycle * (0.65 + this.seedFocus * 0.45) + this.mandalaFocus * 0.32;
         this.center.scale.setScalar(seedScale);
-        this.center.material.opacity = 0.6 + seedCycle * 0.3;
-        this.centerGlow.material.opacity = 0.05 + seedCycle * 0.08;
-        this.centerGlow.scale.setScalar(seedScale * 2);
-        this.centerHalo.material.opacity = 0.02 + seedCycle * 0.04;
-        this.centerHalo.scale.setScalar(seedScale * 3.5);
-        this.centerLight.intensity = 0.8 + seedCycle * 1.5;
+        this.center.material.opacity = 0.62 + seedCycle * 0.22 + this.seedFocus * 0.12;
+        this.centerGlow.material.opacity = 0.05 + seedCycle * 0.07 + this.seedFocus * 0.08 + this.mandalaFocus * 0.05;
+        this.centerGlow.scale.setScalar(seedScale * (1.9 + this.seedFocus * 0.35));
+        this.centerHalo.material.opacity = 0.02 + seedCycle * 0.04 + this.mandalaFocus * 0.08;
+        this.centerHalo.scale.setScalar(seedScale * (3.2 + this.mandalaFocus * 1.4));
+        this.centerLight.intensity = 0.8 + seedCycle * 1.3 + this.seedFocus * 0.8 + this.mandalaFocus * 1.2;
 
         /* ── Zone shells breathe gently ── */
         for (let i = 0; i < this.zoneShells.length; i++) {
             const z = this.zoneShells[i];
-            const breathe = 1 + Math.sin(t * 0.2 + i * 1.5) * 0.02;
+            const breathe = 1 + Math.sin(t * 0.2 + i * 1.5) * (this.reducedMotion ? 0.006 : 0.02) + this.mandalaFocus * 0.025;
             z.ring.scale.setScalar(breathe);
             z.disc.scale.setScalar(breathe);
-            z.ring.material.opacity = (0.10 + i * 0.03) + Math.sin(t * 0.3 + i) * 0.02;
+            z.ring.material.opacity = z.ringOpacity + Math.sin(t * 0.3 + i) * (this.reducedMotion ? 0.004 : 0.02) + this.mandalaFocus * 0.12 + this.quaternityFocus * 0.04;
+            z.disc.material.opacity = z.discOpacity + this.mandalaFocus * 0.025 + this.quaternityFocus * 0.01;
         }
 
         /* ── Rotate quadrant particles ── */
         for (let q = 0; q < 4; q++) {
-            this.quads[q].rotation.z = t * (0.015 + q * 0.004) * (q % 2 === 0 ? 1 : -1);
+            const direction = q % 2 === 0 ? 1 : -1;
+            const rotationSpeed = (0.01 + q * 0.003 + this.quaternityFocus * 0.018 + this.mandalaFocus * 0.006) * (this.reducedMotion ? 0.18 : 1);
+            this.quads[q].rotation.z = t * rotationSpeed * direction;
+            this.quads[q].material.opacity = 0.24 + this.quaternityFocus * 0.48 + this.mandalaFocus * 0.2 + this.seedFocus * 0.04;
+        }
+
+        if (this.crossAxes) {
+            for (const axis of this.crossAxes) {
+                axis.line.material.opacity = 0.05 + this.quaternityFocus * 0.22 + this.mandalaFocus * 0.06;
+                axis.marker.material.opacity = 0.14 + this.quaternityFocus * 0.42 + this.mandalaFocus * 0.12;
+            }
         }
 
         /* ── Mandala rings rotate & breathe ── */
         for (const mr of this.mandalaRings) {
-            mr.ring.rotation.z += mr.speed;
-            const breathe = 1 + Math.sin(t * 0.3 + mr.r) * 0.04;
+            mr.ring.rotation.z += mr.speed * (this.reducedMotion ? 0.12 : 1) * (0.7 + this.mandalaFocus * 1.4 + this.quaternityFocus * 0.35);
+            const breathe = 1 + Math.sin(t * 0.3 + mr.r) * (this.reducedMotion ? 0.01 : 0.04) + this.mandalaFocus * 0.05;
             mr.ring.scale.setScalar(breathe);
+            mr.ring.material.opacity = mr.ring.userData.baseOpacity + this.mandalaFocus * 0.2 + this.seedFocus * 0.03;
         }
 
         /* ── Starfield subtle rotation ── */
-        this.stars.rotation.y += 0.0001;
+        this.stars.rotation.y += this.reducedMotion ? 0.00002 : 0.0001;
 
         /* ── Camera — intro zoom + mouse parallax ── */
         const introF = Math.min(this.introT / 6, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
         const baseDist = THREE.MathUtils.lerp(28, 20, ease);
-        this.camera.position.z += (this.zoomTarget * (baseDist / 20) - this.camera.position.z) * 0.05;
-        this.camera.position.x = this.mouseSmooth.x * 2.5;
-        this.camera.position.y = this.mouseSmooth.y * 2.5;
+        const focusDistance = THREE.MathUtils.clamp(
+            this.zoomTarget * (baseDist / 20) - this.seedFocus * 2.6 + this.quaternityFocus * 4.2 + this.mandalaFocus * 1.2,
+            9,
+            30,
+        );
+        this.camera.position.z += (focusDistance - this.camera.position.z) * 0.05;
+        this.camera.position.x = this.mouseSmooth.x * (2.2 - this.seedFocus * 0.5 + this.quaternityFocus * 0.7);
+        this.camera.position.y = this.mouseSmooth.y * (2.2 - this.seedFocus * 0.5 + this.quaternityFocus * 0.7);
         this.camera.lookAt(0, 0, 0);
 
         /* ── Bloom pulse synced to seed ── */
         if (this.bloom) {
-            this.bloom.strength = 1.2 + seedCycle * 0.3 + Math.sin(t * 0.04) * 0.1;
+            this.bloom.strength = 1.15 + seedCycle * 0.25 + Math.sin(t * 0.04) * 0.08 + this.seedFocus * 0.12 + this.mandalaFocus * 0.15;
         }
     }
 

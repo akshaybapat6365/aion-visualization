@@ -6,7 +6,8 @@ on:
   pull_request:
 
 jobs:
-  lint-and-performance:
+  app:
+    name: App quality gates
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,24 +25,34 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: Validate Aion core consistency
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Validate canonical data
         run: npm run validate:consistency
 
-      - name: Install Playwright browsers
+      - name: Verify chapter shell contracts
+        run: npm run ci:chapter-shell
+
+      - name: Run app contract tests
+        run: npm run test:app
+
+      - name: Run legacy test suite
+        run: npm test
+
+      - name: Build app
+        run: npm run build
+
+      - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Route performance budgets (Lighthouse + runtime + cleanup)
-        run: npm run perf:ci
+      - name: Run app shell smoke
+        timeout-minutes: 5
+        run: npm run test:e2e:app
 
-      - name: Bundle size delta check
-        run: npm run perf:bundle-delta
+      - name: Run app accessibility smoke
+        timeout-minutes: 5
+        run: npm run test:a11y:app
 
-      - name: Upload route performance artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: route-performance-reports
-          path: |
-            tests/reports/lighthouse/current
-            tests/reports/performance
-            tests/reports/performance-history
+      - name: Build GitHub Pages artifact
+        run: npm run build:pages

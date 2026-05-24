@@ -1,236 +1,33 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aion Journey</title>
-  <base href="../../">
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Inter:wght@300..700&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="src/styles/fonts.css" />
-  <link rel="stylesheet" href="src/styles/tokens.css" />
-  <link rel="stylesheet" href="src/features/chapter-engine/chapter-shell.css" />
-</head>
-
-<body>
-
-  <!-- Full-screen visualization layer -->
-  <div id="viz-layer" class="viz-layer"></div>
-
-  <!-- Floating navigation pill -->
-  <nav class="chapter-nav-pill" id="nav-pill" aria-label="Chapter navigation">
-    <a href="./" class="chapter-nav-pill__home">Aion</a>
-    <span class="chapter-nav-pill__sep">·</span>
-    <span class="chapter-nav-pill__chapter" id="pill-label">Chapter 1</span>
-    <span class="chapter-nav-pill__sep">·</span>
-    <div class="chapter-nav-pill__arrows">
-      <a href="#" id="pill-prev" title="Previous chapter">←</a>
-      <a href="#" id="pill-next" title="Next chapter">→</a>
-    </div>
-  </nav>
-
-  <!-- Sidebar toggle button -->
-  <button class="sidebar-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="chapter-sidebar"
-    title="Toggle chapter info">
-    ☰
-  </button>
-
-  <!-- Collapsible sidebar with chapter info -->
-  <aside class="chapter-sidebar" id="chapter-sidebar" role="complementary">
-    <p class="chapter-sidebar__eyebrow" id="sidebar-eyebrow">Chapter 1</p>
-    <h1 class="chapter-sidebar__title" id="sidebar-title">The Ego</h1>
-    <p class="chapter-sidebar__thesis" id="sidebar-thesis"></p>
-
-    <hr class="chapter-sidebar__divider">
-
-    <div id="sidebar-terms"></div>
-
-    <hr class="chapter-sidebar__divider">
-
-    <div id="sidebar-facts" class="sidebar-facts"></div>
-
-    <hr class="chapter-sidebar__divider">
-
-    <div id="sidebar-nav" class="sidebar-nav"></div>
-  </aside>
-
-  <!-- Interaction hint -->
-  <div class="viz-hint" id="viz-hint">Move your mouse to explore · Scroll to zoom</div>
-
-  <!-- Hidden: old chapter-root (kept for ChapterRenderer compatibility but hidden by CSS) -->
-  <div id="chapter-root" style="display:none"></div>
-
-  <script type="module">
-    // ── Chapter metadata ──
-    const CHAPTERS = [
-      { id: 'ch1', num: 1, title: 'The Ego', accent: '#b0b0d0' },
-      { id: 'ch2', num: 2, title: 'The Shadow', accent: '#6a1b9a' },
-      { id: 'ch3', num: 3, title: 'The Syzygy', accent: '#c0c0c0' },
-      { id: 'ch4', num: 4, title: 'The Self', accent: '#ffd700' },
-      { id: 'ch5', num: 5, title: 'Christ, a Symbol', accent: '#e8e8f0' },
-      { id: 'ch6', num: 6, title: 'Sign of the Fishes', accent: '#22d3ee' },
-      { id: 'ch7', num: 7, title: 'The Prophecies', accent: '#ff8c00' },
-      { id: 'ch8', num: 8, title: 'Historical Symbols', accent: '#8b0000' },
-      { id: 'ch9', num: 9, title: 'The Ouroboros', accent: '#2e7d32' },
-      { id: 'ch10', num: 10, title: 'Gnostic Symbols', accent: '#7c4dff' },
-      { id: 'ch11', num: 11, title: 'Unus Mundus', accent: '#4caf50' },
-      { id: 'ch12', num: 12, title: 'Sacred Marriage', accent: '#e91e63' },
-      { id: 'ch13', num: 13, title: 'Three Quaternio', accent: '#ff9800' },
-      { id: 'ch14', num: 14, title: 'The Aeon', accent: '#ffd700' },
-    ];
-
-    // ── Resolve chapter ID ──
-    function normalizeId(raw) {
-      if (!raw) return null;
-      const s = String(raw).trim();
-      if (/^ch\d+$/.test(s)) return s;
-      const m1 = s.match(/^chapter-(\d+)$/); if (m1) return `ch${m1[1]}`;
-      const m2 = s.match(/^(\d+)$/); if (m2) return `ch${m2[1]}`;
-      return null;
-    }
-
-    const idFromQuery = normalizeId(new URLSearchParams(location.search).get('id'));
-    const pathParts = location.pathname.split('/').filter(Boolean);
-    const idFromPath = normalizeId(pathParts[pathParts.length - 1]);
-    const chapterId = idFromQuery || idFromPath || 'ch1';
-
-    const chapterIdx = CHAPTERS.findIndex(c => c.id === chapterId);
-    const chapter = CHAPTERS[chapterIdx] || CHAPTERS[0];
-    const prevCh = chapterIdx > 0 ? CHAPTERS[chapterIdx - 1] : null;
-    const nextCh = chapterIdx < CHAPTERS.length - 1 ? CHAPTERS[chapterIdx + 1] : null;
-
-    // ── Set accent color ──
-    document.documentElement.style.setProperty('--chapter-accent', chapter.accent);
-
-    // ── Update nav pill ──
-    document.getElementById('pill-label').textContent = `Chapter ${chapter.num}: ${chapter.title}`;
-    const prevLink = document.getElementById('pill-prev');
-    const nextLink = document.getElementById('pill-next');
-    if (prevCh) { prevLink.href = `journey/chapter/index.html?id=${prevCh.id}`; prevLink.title = prevCh.title; }
-    else { prevLink.style.display = 'none'; }
-    if (nextCh) { nextLink.href = `journey/chapter/index.html?id=${nextCh.id}`; nextLink.title = nextCh.title; }
-    else { nextLink.style.display = 'none'; }
-
-    document.title = `${chapter.title} — Aion`;
-
-    // ── Sidebar toggle ──
-    const sidebar = document.getElementById('chapter-sidebar');
-    const toggle = document.getElementById('sidebar-toggle');
-    toggle.addEventListener('click', () => {
-      const open = sidebar.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open);
-      toggle.textContent = open ? '✕' : '☰';
-    });
-
-    // ── Nav pill auto-hide ──
-    let hideTimeout;
-    const pill = document.getElementById('nav-pill');
-    function showPill() {
-      pill.classList.remove('hidden');
-      clearTimeout(hideTimeout);
-      hideTimeout = setTimeout(() => pill.classList.add('hidden'), 4000);
-    }
-    document.addEventListener('mousemove', showPill);
-    document.addEventListener('touchstart', showPill);
-    showPill();
-
-    // ── Dismiss interaction hint on first mouse action ──
-    const hint = document.getElementById('viz-hint');
-    let hintDismissed = false;
-    function dismissHint() {
-      if (hintDismissed) return;
-      hintDismissed = true;
-      hint.classList.add('dismissed');
-    }
-    document.addEventListener('click', dismissHint);
-    document.addEventListener('wheel', dismissHint);
-    // Auto-dismiss after 8s
-    setTimeout(dismissHint, 8000);
-
-    // ── Load chapter config and populate sidebar ──
-    async function loadChapterConfig() {
-      try {
-        const resp = await fetch(`src/features/chapter-engine/config/${chapterId}.json`);
-        if (!resp.ok) return;
-        const config = await resp.json();
-
-        // Header
-        const header = config.sections.find(s => s.key === 'header-thesis');
-        if (header) {
-          document.getElementById('sidebar-eyebrow').textContent = header.chapterLabel || `Chapter ${chapter.num}`;
-          document.getElementById('sidebar-title').textContent = header.title || chapter.title;
-          document.getElementById('sidebar-thesis').textContent = header.thesis || '';
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Chapter Redirect - Aion</title>
+  </head>
+  <body data-compat-redirect="app-shell">
+    <script>
+      (function () {
+        function normalizeChapterId(raw) {
+          if (!raw) return 'ch1';
+          var value = String(raw).trim().toLowerCase();
+          if (/^ch([1-9]|1[0-4])$/.test(value)) return value;
+          var numberMatch = value.match(/(?:chapter-)?([1-9]|1[0-4])$/);
+          return numberMatch ? 'ch' + numberMatch[1] : 'ch1';
         }
 
-        // Core terms
-        const termsSection = config.sections.find(s => s.key === 'core-terms');
-        const termsContainer = document.getElementById('sidebar-terms');
-        if (termsSection?.terms) {
-          termsContainer.innerHTML = termsSection.terms.map(t => `
-            <details class="sidebar-term">
-              <summary>${t.term}</summary>
-              <p class="sidebar-term__def">${t.definition}</p>
-            </details>
-          `).join('');
+        var query = new URLSearchParams(window.location.search);
+        var chapterId = normalizeChapterId(query.get('id') || window.location.pathname.split('/').filter(Boolean).pop());
+
+        try {
+          sessionStorage.setItem('aion-spa-redirect', '/journey/chapter/' + chapterId);
+        } catch (error) {
+          console.warn('Could not persist redirect target', error);
         }
 
-        // Facts
-        const factsSection = config.sections.find(s => s.key === 'symbol-relationship-panel');
-        const factsContainer = document.getElementById('sidebar-facts');
-        if (factsSection?.facts) {
-          factsContainer.innerHTML = factsSection.facts.map(f => `
-            <div class="sidebar-fact">
-              <span class="sidebar-fact__label">${f.label}</span>
-              <span class="sidebar-fact__value">${f.value}</span>
-            </div>
-          `).join('');
-        }
-
-        // Navigation links
-        const navSection = config.sections.find(s => s.key === 'reflection-next-links');
-        const navContainer = document.getElementById('sidebar-nav');
-        let navHTML = '';
-        if (prevCh) navHTML += `<a href="journey/chapter/index.html?id=${prevCh.id}">← ${prevCh.title}</a>`;
-        if (nextCh) navHTML += `<a href="journey/chapter/index.html?id=${nextCh.id}">${nextCh.title} →</a>`;
-        navHTML += `<a href="chapters/index.html">Explore Chapters</a>`;
-        navHTML += `<a href="./">Home</a>`;
-        navContainer.innerHTML = navHTML;
-
-      } catch (err) {
-        console.warn('[Aion] Config load failed:', err);
-      }
-    }
-
-    // ── Initialize visualization ──
-    async function initViz() {
-      const vizLayer = document.getElementById('viz-layer');
-      try {
-        const { vizController } = await import('./src/features/viz-platform/VizController.js?v=4');
-        vizController.init(vizLayer);
-        await vizController.loadChapter(chapterId);
-        console.log(`[Aion] Viz mounted for ${chapterId}`);
-      } catch (err) {
-        console.error('[Aion] Viz failed:', err);
-        vizLayer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#666;font-size:0.9rem;">Visualization loading...</div>`;
-      }
-    }
-
-    // ── Boot ──
-    loadChapterConfig();
-    initViz();
-  </script>
-</body>
-
+        window.location.replace('../../');
+      }());
+    </script>
+  </body>
 </html>

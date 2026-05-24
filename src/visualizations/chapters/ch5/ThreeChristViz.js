@@ -57,6 +57,19 @@ const TRINITY_CLR = new THREE.Color('#c8a82a');
 export default class ThreeChristViz extends BaseViz {
     constructor(c, o = {}) {
         super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'cross', progress: 0 };
+        this.crossFocus = 1;
+        this.fourthFocus = 0;
+        this.treeFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+        this._syncPanelAnnotations?.();
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -177,6 +190,7 @@ export default class ThreeChristViz extends BaseViz {
      *  [D] Now visually obvious with stronger contrast
      * ══════════════════════════════════════════════════════ */
     _buildLightDarkSplit() {
+        this.splitPlanes = [];
         /* Light half (left) — warmer */
         const lightHalf = new THREE.Mesh(
             new THREE.PlaneGeometry(22, 24),
@@ -187,6 +201,7 @@ export default class ThreeChristViz extends BaseViz {
         );
         lightHalf.position.set(-6, 0, -4);
         this.scene.add(lightHalf);
+        this.splitPlanes.push({ mesh: lightHalf, baseOpacity: 0.4, side: 'light' });
 
         /* Dark half (right) — the shadow that follows */
         const darkHalf = new THREE.Mesh(
@@ -198,6 +213,7 @@ export default class ThreeChristViz extends BaseViz {
         );
         darkHalf.position.set(6, 0, -4);
         this.scene.add(darkHalf);
+        this.splitPlanes.push({ mesh: darkHalf, baseOpacity: 0.3, side: 'shadow' });
 
         /* Faint vertical divider at the cross — the cross IS the border */
         const dividerPts = [
@@ -316,7 +332,7 @@ export default class ThreeChristViz extends BaseViz {
                     opacity: 0.06
                 }));
                 this.scene.add(line);
-                this.connLines.push({ line, isExcluded: false });
+                this.connLines.push({ line, isExcluded: false, baseOpacity: 0.06 });
             } else {
                 /* Dashed / broken line — the rejected connection */
                 const segCount = 8;
@@ -332,7 +348,7 @@ export default class ThreeChristViz extends BaseViz {
                         opacity: 0.12
                     }));
                     this.scene.add(sl);
-                    this.connLines.push({ line: sl, isExcluded: true });
+                    this.connLines.push({ line: sl, isExcluded: true, baseOpacity: 0.12 });
                 }
             }
         }
@@ -389,6 +405,7 @@ export default class ThreeChristViz extends BaseViz {
         }
 
         /* Small dots at each luminous gem position on the ring */
+        this.trinityDots = [];
         for (let i = 0; i < 3; i++) {
             const dot = new THREE.Mesh(
                 new THREE.SphereGeometry(0.08, 6, 6),
@@ -403,6 +420,7 @@ export default class ThreeChristViz extends BaseViz {
                 -0.2
             );
             this.scene.add(dot);
+            this.trinityDots.push(dot);
         }
 
         /* Gap marker — faint X or void at excluded position */
@@ -506,11 +524,11 @@ export default class ThreeChristViz extends BaseViz {
             }
             const geo = new THREE.BufferGeometry().setFromPoints(pts);
             const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
-                color: SHADOW_CLR, transparent: true,
+                color: SHADOW_GLOW, transparent: true,
                 opacity: 0.06 + i * 0.012
             }));
             this.scene.add(line);
-            this.roots.push(line);
+            this.roots.push({ line, baseOpacity: 0.06 + i * 0.012 });
         }
     }
 
@@ -599,8 +617,6 @@ export default class ThreeChristViz extends BaseViz {
 
         const style = document.createElement('style');
         style.textContent = `
-            @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
-
             .ch5-annotations {
                 position: absolute; inset: 0;
                 pointer-events: none; z-index: 10;
@@ -619,6 +635,23 @@ export default class ThreeChristViz extends BaseViz {
             .ch5-annotations [data-phase].vis {
                 opacity: 1;
                 transform: translateY(0);
+            }
+
+            .ch5-header,
+            .ch5-framing,
+            .ch5-anno,
+            .ch5-leader,
+            .ch5-hint {
+                display: none;
+            }
+
+            .ch5-annotations [data-phase].ch5-tetra-label.vis,
+            .ch5-annotations [data-phase].ch5-trinity-label.vis {
+                transform: translateX(-50%);
+            }
+
+            .ch5-annotations [data-phase].ch5-center-label.vis {
+                transform: translate(-50%, -50%);
             }
 
             /* ── Header ── */
@@ -1090,24 +1123,27 @@ export default class ThreeChristViz extends BaseViz {
         ov.prepend(style);
         (this.container || this.canvas.parentElement).appendChild(ov);
 
-        /* ── Phased reveal ── */
         this._annTimers = [];
-        const phases = [
-            { sel: '[data-phase="1"]', delay: 1500 },
-            { sel: '[data-phase="2"]', delay: 4000 },
-            { sel: '[data-phase="3"]', delay: 9000 },
-            { sel: '[data-phase="4"]', delay: 15000 },
-            { sel: '[data-phase="5"]', delay: 22000 },
-            { sel: '[data-phase="6"]', delay: 29000 },
-            { sel: '[data-phase="7"]', delay: 35000 },
-        ];
-        for (const p of phases) {
-            const els = ov.querySelectorAll(p.sel);
-            els.forEach(el => {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
-                this._annTimers.push(t);
+        this._syncPanelAnnotations();
+    }
+
+    _syncPanelAnnotations() {
+        if (!this._annotationOverlay) return;
+        const panelId = this.panelState?.activePanelId || 'cross';
+        const cross = panelId === 'cross';
+        const fourth = panelId === 'fourth';
+        const tree = panelId === 'tree';
+        const toggleAll = (selector, enabled) => {
+            this._annotationOverlay.querySelectorAll(selector).forEach((el) => {
+                el.classList.toggle('vis', enabled);
             });
-        }
+        };
+
+        toggleAll('.ch5-center-label', cross || fourth);
+        toggleAll('.ch5-split-label', fourth || tree);
+        toggleAll('.ch5-gem-label', fourth);
+        toggleAll('.ch5-tetra-label', fourth);
+        toggleAll('.ch5-trinity-label', fourth);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -1118,17 +1154,26 @@ export default class ThreeChristViz extends BaseViz {
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.04);
         this.introT += dt;
+        const panelId = this.panelState?.activePanelId || 'cross';
+        const dampRate = this.reducedMotion ? 7 : 3.4;
+        this.crossFocus = THREE.MathUtils.damp(this.crossFocus, panelId === 'cross' ? 1 : 0.24, dampRate, dt);
+        this.fourthFocus = THREE.MathUtils.damp(this.fourthFocus, panelId === 'fourth' ? 1 : 0, dampRate, dt);
+        this.treeFocus = THREE.MathUtils.damp(this.treeFocus, panelId === 'tree' ? 1 : 0, dampRate, dt);
 
         /* ── Cross glow breathing ── */
-        const glow = (Math.sin(t * 0.4) + 1) / 2;
-        this.crossGlow.material.opacity = 0.03 + glow * 0.03;
-        this.crossHalo.material.opacity = 0.01 + glow * 0.015;
-        this.cross.rotation.z = Math.sin(t * 0.04) * 0.015;
+        const glow = (Math.sin(t * (this.reducedMotion ? 0.12 : 0.4)) + 1) / 2;
+        const mobileSafety = this.width < 700 ? 0.36 : 1;
+        this.crossGlow.material.opacity = (0.03 + glow * 0.03 + this.crossFocus * 0.06 + this.treeFocus * 0.02) * mobileSafety;
+        this.crossHalo.material.opacity = (0.01 + glow * 0.015 + this.crossFocus * 0.035) * mobileSafety;
+        this.cross.rotation.z = Math.sin(t * 0.04) * (this.reducedMotion ? 0.003 : 0.015);
+        this.cross.children.forEach((child) => {
+            if (child.material) child.material.opacity = (0.56 + this.crossFocus * 0.28 + this.treeFocus * 0.12) * mobileSafety;
+        });
 
         /* ── Gem rotation + hover-reveal ── */
         for (let i = 0; i < this.gems.length; i++) {
             const g = this.gems[i];
-            g.mesh.rotation.y += g.isExcluded ? -0.008 : 0.006;
+            g.mesh.rotation.y += (g.isExcluded ? -0.008 : 0.006) * (this.reducedMotion ? 0.18 : 1) * (1 + this.fourthFocus * 0.8);
             g.mesh.rotation.x = Math.sin(t * 0.25 + i) * 0.08;
             g.mesh.position.y += Math.sin(t * 0.3 + i * 1.5) * 0.001;
 
@@ -1137,25 +1182,26 @@ export default class ThreeChristViz extends BaseViz {
             const dy = g.mesh.position.y - this.mouseSmooth.y * 5;
             const d = Math.sqrt(dx * dx + dy * dy);
             const boost = Math.max(0, 1 - d / 4);
-            g.mesh.material.opacity = g.baseOp + boost * 0.35;
+            const focusBoost = g.isExcluded ? this.fourthFocus * 0.5 + this.treeFocus * 0.16 : this.crossFocus * 0.12 + this.fourthFocus * 0.2;
+            g.mesh.material.opacity = g.baseOp + boost * 0.22 + focusBoost;
         }
 
         /* ── Shadow void pulse ── */
         if (this.shadowVoid) {
             const shadowPulse = (Math.sin(t * 0.2) + 1) / 2;
-            this.shadowVoid.material.opacity = 0.05 + shadowPulse * 0.08;
-            this.shadowVoid.scale.setScalar(1 + shadowPulse * 0.35);
+            this.shadowVoid.material.opacity = 0.05 + shadowPulse * 0.08 + this.fourthFocus * 0.16 + this.treeFocus * 0.07;
+            this.shadowVoid.scale.setScalar(1 + shadowPulse * 0.28 + this.fourthFocus * 0.45);
         }
 
         /* ── Excluded sparks drift ── */
         if (this.excludedSparks) {
-            this.excludedSparks.rotation.z += 0.003;
-            this.excludedSparks.material.opacity = 0.2 + (Math.sin(t * 0.3) + 1) * 0.1;
+            this.excludedSparks.rotation.z += (this.reducedMotion ? 0.0007 : 0.003) * (1 + this.fourthFocus);
+            this.excludedSparks.material.opacity = 0.16 + (Math.sin(t * 0.3) + 1) * 0.08 + this.fourthFocus * 0.28;
         }
 
         /* ── Broken halo pulse ── */
         if (this.brokenHaloParts) {
-            const hp = 0.2 + (Math.sin(t * 0.25) + 1) * 0.1;
+            const hp = 0.16 + (Math.sin(t * 0.25) + 1) * 0.08 + this.fourthFocus * 0.28;
             this.brokenHaloParts.forEach(p => {
                 p.material.opacity = hp;
             });
@@ -1163,32 +1209,60 @@ export default class ThreeChristViz extends BaseViz {
 
         /* ── Trinity gap mark pulse ── */
         if (this.trinityGapMark) {
-            this.trinityGapMark.material.opacity = 0.08 + (Math.sin(t * 0.3) + 1) * 0.08;
+            this.trinityGapMark.material.opacity = 0.08 + (Math.sin(t * 0.3) + 1) * 0.07 + this.fourthFocus * 0.28;
+            this.trinityGapMark.scale.setScalar(1 + this.fourthFocus * 1.4);
         }
 
         /* ── Tetramorph ring subtle rotation ── */
-        this.tetramorphRing.rotation.z += 0.0008;
-        this.tetramorphInner.rotation.z -= 0.001;
+        this.tetramorphRing.rotation.z += (this.reducedMotion ? 0.00015 : 0.0008) * (1 + this.fourthFocus * 1.1);
+        this.tetramorphInner.rotation.z -= (this.reducedMotion ? 0.0002 : 0.001) * (1 + this.fourthFocus * 0.8);
+        this.tetramorphRing.material.opacity = 0.12 + this.fourthFocus * 0.26 + this.crossFocus * 0.06;
+        this.tetramorphInner.material.opacity = 0.06 + this.fourthFocus * 0.2 + this.crossFocus * 0.04;
+        this.trinityArcs?.forEach((arc) => {
+            arc.material.opacity = 0.12 + this.fourthFocus * 0.24 + this.crossFocus * 0.04;
+        });
+        this.trinityDots?.forEach((dot) => {
+            dot.material.opacity = 0.18 + this.fourthFocus * 0.38 + this.crossFocus * 0.06;
+        });
+        this.cardinalDots?.forEach((dot, index) => {
+            dot.material.opacity = index === 3 ? 0.12 + this.fourthFocus * 0.34 : 0.18 + this.fourthFocus * 0.32;
+        });
+        this.connLines?.forEach(({ line, isExcluded, baseOpacity }) => {
+            line.material.opacity = baseOpacity + (isExcluded ? this.fourthFocus * 0.22 + this.treeFocus * 0.08 : this.crossFocus * 0.08 + this.fourthFocus * 0.08);
+        });
+        this.roots?.forEach(({ line, baseOpacity }, index) => {
+            line.material.opacity = baseOpacity + this.treeFocus * (0.42 + index * 0.035) + this.fourthFocus * 0.04;
+        });
+        this.splitPlanes?.forEach(({ mesh, baseOpacity, side }) => {
+            const shadowBoost = side === 'shadow' ? this.fourthFocus * 0.24 + this.treeFocus * 0.18 : this.crossFocus * 0.08;
+            mesh.material.opacity = baseOpacity + shadowBoost;
+        });
 
         /* ── Spectrum particles drift ── */
-        this.specPts.rotation.z += 0.0008;
-        this.specPts.rotation.y += 0.0003;
+        this.specPts.rotation.z += (this.reducedMotion ? 0.00015 : 0.0008) * (1 + this.crossFocus * 0.5);
+        this.specPts.rotation.y += this.reducedMotion ? 0.00005 : 0.0003;
+        this.specPts.material.opacity = 0.2 + this.crossFocus * 0.2 + this.fourthFocus * 0.08;
 
         /* ── Starfield ── */
-        this.stars.rotation.y += 0.00008;
+        this.stars.rotation.y += this.reducedMotion ? 0.000015 : 0.00008;
 
         /* ── Camera — intro zoom + mouse parallax ── */
         const introF = Math.min(this.introT / 5, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
         const baseDist = THREE.MathUtils.lerp(24, 16, ease);
-        this.camera.position.z += (this.zoomTarget * (baseDist / 16) - this.camera.position.z) * 0.05;
-        this.camera.position.x = this.mouseSmooth.x * 2.5;
-        this.camera.position.y = 1.5 + this.mouseSmooth.y * 2;
-        this.camera.lookAt(0, 1.5, 0);
+        const targetZ = THREE.MathUtils.clamp(
+            this.zoomTarget * (baseDist / 16) - this.crossFocus * 1.6 + this.fourthFocus * 1.8 + this.treeFocus * 2.4,
+            8,
+            28,
+        );
+        this.camera.position.z += (targetZ - this.camera.position.z) * 0.05;
+        this.camera.position.x = this.mouseSmooth.x * (2.2 + this.fourthFocus * 0.7);
+        this.camera.position.y = 1.5 + this.mouseSmooth.y * 1.7 - this.treeFocus * 2.15;
+        this.camera.lookAt(0, 1.5 - this.treeFocus * 2.45, 0);
 
         /* ── Bloom ── */
         if (this.bloom) {
-            this.bloom.strength = 1.3 + glow * 0.3;
+            this.bloom.strength = 1.2 + glow * 0.25 + this.crossFocus * 0.16 + this.fourthFocus * 0.14;
         }
     }
 

@@ -49,8 +49,6 @@ export default class BaseViz {
         if (this.isMounted) return;
         this.isMounted = true;
 
-        console.log('[BaseViz] mount() start');
-
         // 1. Create canvas
         this.canvas = document.createElement('canvas');
         this.canvas.style.display = 'block';
@@ -83,11 +81,9 @@ export default class BaseViz {
         this._onResize();
 
         // 6. Call subclass init
-        console.log('[BaseViz] Calling init()...');
         await this.init();
 
         // 7. Start animation loop
-        console.log('[BaseViz] init resolved, calling start()');
         this.start();
     }
 
@@ -105,7 +101,6 @@ export default class BaseViz {
                 if (rect.width > 0 && rect.height > 0) {
                     this.width = rect.width;
                     this.height = rect.height;
-                    console.log(`[BaseViz] Container ready: ${this.width}x${this.height}`);
                     resolve();
                 } else if (attempts < maxAttempts) {
                     attempts++;

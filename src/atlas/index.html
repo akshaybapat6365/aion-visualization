@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Atlas Redirect - Aion</title>
+  </head>
+  <body data-compat-redirect="app-shell">
+    <script>
+      try {
+        sessionStorage.setItem('aion-spa-redirect', '/atlas');
+      } catch (error) {
+        console.warn('Could not persist redirect target', error);
+      }
+      window.location.replace('../../');
+    </script>
+  </body>
+</html>

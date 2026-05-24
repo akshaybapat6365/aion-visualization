@@ -35,6 +35,19 @@ const MANDALA_COUNT = 6;
 export default class ThreeUnusViz extends BaseViz {
     constructor(container, opts = {}) {
         super(container, Object.assign({ contextType: 'webgl' }, opts));
+        this.panelState = { activePanelId: 'background', progress: 0 };
+        this.backgroundFocus = 1;
+        this.rootsFocus = 0;
+        this.bridgeFocus = 0;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     async init() {
@@ -59,6 +72,8 @@ export default class ThreeUnusViz extends BaseViz {
 
         this._createGoldenStream();
         this._createFaithKnowledgeSplit();
+        this._createRootLattice();
+        this._createInterpretationLens();
         this._createSnakeSkin();
         this._createWitheringMandalas();
         this._createFishBridge();
@@ -144,6 +159,100 @@ export default class ThreeUnusViz extends BaseViz {
         labGroup.position.set(7, -3, 0);
         this.lab = labGroup;
         this.scene.add(labGroup);
+    }
+
+    _createRootLattice() {
+        const positions = [];
+        const colors = [];
+        const addLine = (a, b, colorA, colorB = colorA) => {
+            positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+            colors.push(colorA.r, colorA.g, colorA.b, colorB.r, colorB.g, colorB.b);
+        };
+
+        const source = new THREE.Vector3(-1.2, 0, -0.2);
+        const faith = new THREE.Vector3(6.2, 2.8, -0.2);
+        const knowledge = new THREE.Vector3(6.2, -2.8, -0.2);
+        const mixed = new THREE.Color('#f4d46a');
+
+        for (let branch = 0; branch < 9; branch++) {
+            const p = branch / 8;
+            const spine = new THREE.Vector3(
+                THREE.MathUtils.lerp(source.x, 3.8, p),
+                Math.sin(p * Math.PI * 1.2) * 0.34,
+                -0.35 + Math.sin(p * 5.3) * 0.16
+            );
+            addLine(source, spine, GNOSIS_GOLD, mixed);
+            const upper = spine.clone().lerp(faith, 0.34 + p * 0.32);
+            const lower = spine.clone().lerp(knowledge, 0.34 + p * 0.32);
+            upper.y += Math.sin(branch * 1.7) * 0.18;
+            lower.y -= Math.cos(branch * 1.4) * 0.18;
+            addLine(spine, upper, mixed, FAITH_BLUE);
+            addLine(spine, lower, mixed, KNOWLEDGE_GREEN);
+
+            for (let twig = -1; twig <= 1; twig += 2) {
+                const tip = spine.clone().add(new THREE.Vector3(0.35 + p * 0.4, twig * (0.32 + p * 0.5), Math.sin(branch + twig) * 0.24));
+                addLine(spine, tip, mixed);
+            }
+        }
+
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        this.rootLattice = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.28,
+            blending: THREE.AdditiveBlending,
+        }));
+        this.scene.add(this.rootLattice);
+
+        this.rootBeads = new THREE.Points(geo.clone(), new THREE.PointsMaterial({
+            vertexColors: true,
+            size: 0.075,
+            transparent: true,
+            opacity: 0.24,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        }));
+        this.scene.add(this.rootBeads);
+
+        this.sourceStone = new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.36, 0),
+            new THREE.MeshStandardMaterial({
+                color: GNOSIS_GOLD,
+                emissive: GNOSIS_GOLD,
+                emissiveIntensity: 0.46,
+                transparent: true,
+                opacity: 0.48,
+                metalness: 0.5,
+                roughness: 0.2,
+            })
+        );
+        this.sourceStone.position.copy(source);
+        this.scene.add(this.sourceStone);
+    }
+
+    _createInterpretationLens() {
+        this.lensGroup = new THREE.Group();
+        this.lensGroup.position.set(1.2, 0, 1.1);
+        this.lensRings = [];
+        for (let i = 0; i < 4; i++) {
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(0.72 + i * 0.28, 0.01, 8, 90),
+                new THREE.MeshBasicMaterial({
+                    color: i % 2 === 0 ? GNOSIS_GOLD : FISH_CYAN,
+                    transparent: true,
+                    opacity: 0.16,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            ring.rotation.x = i * 0.38;
+            ring.rotation.y = Math.PI / 2 + i * 0.16;
+            this.lensGroup.add(ring);
+            this.lensRings.push(ring);
+        }
+        this.scene.add(this.lensGroup);
     }
 
     _createBranchStream(color, yDir, count) {
@@ -241,6 +350,7 @@ export default class ThreeUnusViz extends BaseViz {
         const tail = new THREE.Mesh(tailGeo, bodyMat.clone());
         tail.position.x = -0.55;
         tail.rotation.z = Math.PI / 2;
+        this.fishTail = tail;
         this.fishGroup.add(tail);
 
         // Luminous trail
@@ -299,72 +409,124 @@ export default class ThreeUnusViz extends BaseViz {
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const panelId = this.panelState?.activePanelId || 'background';
+        const dampRate = this.reducedMotion ? 9 : 3.25;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
+        const isMobile = this.width < 680;
+        this.backgroundFocus = THREE.MathUtils.damp(this.backgroundFocus, panelId === 'background' ? 1 : 0.2, dampRate, dt);
+        this.rootsFocus = THREE.MathUtils.damp(this.rootsFocus, panelId === 'roots' ? 1 : 0.18, dampRate, dt);
+        this.bridgeFocus = THREE.MathUtils.damp(this.bridgeFocus, panelId === 'bridge' ? 1 : 0.16, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // ─── Golden stream flow ───
         const streamPos = this.goldenStream.geometry.attributes.position.array;
+        const streamSpeed = (0.18 + this.backgroundFocus * 0.28 + this.rootsFocus * 0.38) * motionScale;
         for (let i = 0; i < STREAM_PARTICLES; i++) {
-            streamPos[i * 3] += dt * 0.8;
+            streamPos[i * 3] += dt * streamSpeed;
             if (streamPos[i * 3] > 0) streamPos[i * 3] = -8;
-            streamPos[i * 3 + 1] = Math.sin(t * 0.5 + this.streamPhases[i]) * 0.3;
+            streamPos[i * 3 + 1] = Math.sin(t * 0.5 * motionScale + this.streamPhases[i]) * (0.18 + this.rootsFocus * 0.18);
         }
         this.goldenStream.geometry.attributes.position.needsUpdate = true;
+        this.goldenStream.material.opacity = 0.22 + this.backgroundFocus * 0.16 + this.rootsFocus * 0.32;
 
         // ─── Branch streams flow ───
-        this._updateBranchStream(this.faithParticles, dt, t);
-        this._updateBranchStream(this.knowledgeParticles, dt, t);
+        this._updateBranchStream(this.faithParticles, dt, t, motionScale);
+        this._updateBranchStream(this.knowledgeParticles, dt, t, motionScale);
+        this.faithParticles.points.material.opacity = 0.14 + this.rootsFocus * 0.42 + this.bridgeFocus * 0.08;
+        this.knowledgeParticles.points.material.opacity = 0.14 + this.rootsFocus * 0.42 + this.bridgeFocus * 0.08;
+        this.church.material.opacity = 0.14 + this.rootsFocus * 0.28;
+        this.church.material.emissiveIntensity = 0.16 + this.rootsFocus * 0.38;
+        this.lab.traverse((obj) => {
+            if (obj.material) {
+                obj.material.opacity = 0.14 + this.rootsFocus * 0.28;
+                if (obj.material.emissiveIntensity !== undefined) obj.material.emissiveIntensity = 0.16 + this.rootsFocus * 0.38;
+            }
+        });
+        this.rootLattice.material.opacity = 0.08 + this.rootsFocus * 0.55 + this.bridgeFocus * 0.12;
+        this.rootLattice.rotation.y = Math.sin(t * 0.08 * motionScale) * 0.08;
+        this.rootLattice.scale.setScalar((isMobile ? 0.86 : 1) + this.rootsFocus * 0.06);
+        this.rootBeads.material.opacity = 0.06 + this.rootsFocus * 0.44 + this.bridgeFocus * 0.14;
+        this.rootBeads.rotation.copy(this.rootLattice.rotation);
+        this.rootBeads.scale.copy(this.rootLattice.scale);
+        this.sourceStone.rotation.y = t * 0.14 * motionScale;
+        this.sourceStone.scale.setScalar(0.76 + this.rootsFocus * 0.3 + this.backgroundFocus * 0.12);
+        this.sourceStone.material.opacity = 0.26 + this.rootsFocus * 0.32 + this.backgroundFocus * 0.18;
+        this.sourceStone.material.emissiveIntensity = 0.28 + this.rootsFocus * 0.52;
+
+        this.lensGroup.position.x = THREE.MathUtils.damp(this.lensGroup.position.x, isMobile ? 3.2 : 2.2, 4, dt);
+        this.lensGroup.scale.setScalar((isMobile ? 0.68 : 0.86) + this.backgroundFocus * 0.24);
+        this.lensGroup.rotation.y = t * 0.06 * motionScale;
+        this._setGroupOpacity(this.lensGroup, 0.08 + this.backgroundFocus * 0.8 + this.bridgeFocus * 0.2);
+        this.lensRings.forEach((ring, index) => {
+            ring.rotation.z = t * (0.045 + index * 0.016) * motionScale;
+        });
 
         // ─── Snake skin shedding cycle (every 20s) ───
-        const shedCycle = (t * 0.05) % 1;
-        this.oldSkin.material.opacity = 0.4 * (1 - shedCycle);
-        this.newSkin.material.opacity = 0.6 * shedCycle;
+        const shedCycle = (t * 0.05 * motionScale) % 1;
+        this.oldSkin.material.opacity = (0.13 + this.backgroundFocus * 0.24) * (1 - shedCycle * 0.7);
+        this.newSkin.material.opacity = (0.08 + this.backgroundFocus * 0.46 + this.bridgeFocus * 0.08) * shedCycle;
         this.oldSkin.scale.setScalar(1 + shedCycle * 0.15);
-        this.snakeGroup.rotation.y = t * 0.1;
-        this.snakeGroup.rotation.x = t * 0.05;
+        this.snakeGroup.position.x = THREE.MathUtils.damp(this.snakeGroup.position.x, isMobile ? 2.5 : -3.4, 4, dt);
+        this.snakeGroup.rotation.y = t * 0.1 * motionScale;
+        this.snakeGroup.rotation.x = t * 0.05 * motionScale;
 
         // ─── Withering mandalas ───
         for (const m of this.mandalas) {
             // Toggle connectedness every ~15 seconds
-            const connected = Math.sin(t * 0.07 + m.phase) > 0;
+            const connected = Math.sin(t * 0.07 * motionScale + m.phase) > 0;
             if (connected) {
                 m.mat.color.lerp(m.originalColor, dt * 2);
-                m.mat.opacity = Math.min(0.3, m.mat.opacity + dt * 0.1);
+                m.mat.opacity = Math.min(0.12 + this.backgroundFocus * 0.22, m.mat.opacity + dt * 0.1);
             } else {
                 m.mat.color.lerp(WITHER_GREY, dt * 0.5);
                 m.mat.opacity = Math.max(0.05, m.mat.opacity - dt * 0.05);
             }
-            m.mesh.rotation.z += dt * 0.05;
+            m.mesh.rotation.z += dt * 0.05 * motionScale;
         }
 
         // ─── Fish bridge — swimming from left to right ───
-        const fishX = -6 + ((t * 0.3) % 14);
-        this.fishGroup.position.x = fishX > 8 ? -6 : fishX;
-        this.fishGroup.position.y = Math.sin(t * 0.5) * 0.3;
-        this.fishBody.material.emissiveIntensity = 0.4 + Math.sin(t * 0.8) * 0.2;
+        const fishX = -5.8 + ((t * 0.22 * motionScale * (0.6 + this.bridgeFocus)) % 13.8);
+        const swimX = fishX > 8 ? -5.8 : fishX;
+        const bridgeX = (isMobile ? 3.1 : 3.4) + Math.sin(t * 0.35 * motionScale) * 0.7;
+        this.fishGroup.position.x = THREE.MathUtils.lerp(swimX, bridgeX, this.bridgeFocus);
+        this.fishGroup.position.y = Math.sin(t * 0.5 * motionScale) * 0.24 + this.bridgeFocus * (isMobile ? 0.65 : 0.35);
+        this.fishGroup.position.z = 1.6 + this.bridgeFocus * 0.6;
+        this.fishGroup.scale.setScalar((isMobile ? 0.82 : 1) + this.bridgeFocus * 0.55);
+        this.fishBody.material.opacity = 0.28 + this.bridgeFocus * 0.48;
+        this.fishBody.material.emissiveIntensity = 0.28 + this.bridgeFocus * 0.62 + Math.sin(t * 0.8 * motionScale) * 0.16;
+        this.fishTail.material.opacity = 0.2 + this.bridgeFocus * 0.46;
+        this.fishTail.material.emissiveIntensity = 0.22 + this.bridgeFocus * 0.48;
+        this.fishTrail.material.opacity = 0.12 + this.bridgeFocus * 0.42;
 
         // ─── Camera ───
-        const camAngle = t * 0.015 + this.mouseSmooth.x * 0.3;
-        const camH = 3 + this.mouseSmooth.y * 3;
-        this.camera.position.set(
-            Math.sin(camAngle) * 14,
-            camH,
-            Math.cos(camAngle) * 14
+        const camAngle = t * 0.012 * motionScale + this.mouseSmooth.x * 0.22;
+        const radius = 13.2 - this.rootsFocus * 0.8 - this.bridgeFocus * 1.2;
+        const targetCam = new THREE.Vector3(
+            Math.sin(camAngle) * radius + this.rootsFocus * 1.2 + this.bridgeFocus * 1.9 + (isMobile ? 1.2 : 0.4),
+            2.5 + this.mouseSmooth.y * 2.1 + this.rootsFocus * 0.2 - this.bridgeFocus * 0.6,
+            Math.cos(camAngle) * radius
         );
-        this.camera.lookAt(0, 0, 0);
+        this.camera.position.lerp(targetCam, this.reducedMotion ? 1 : Math.min(1, dt * 1.8));
+        this.camera.lookAt(
+            this.rootsFocus * 2.2 + this.bridgeFocus * 2.6 + (isMobile ? 1.2 : 0.4),
+            this.bridgeFocus * 0.35,
+            0.2
+        );
 
-        this.ambientPts.rotation.y += dt * 0.002;
+        this.ambientPts.rotation.y += dt * 0.002 * motionScale;
+        this.ambientPts.material.opacity = 0.12 + this.backgroundFocus * 0.08 + this.bridgeFocus * 0.04;
 
         if (this.bloomPass) {
-            this.bloomPass.strength = 1.0 + Math.sin(t * 0.08) * 0.2;
+            this.bloomPass.strength = 0.92 + Math.sin(t * 0.08 * motionScale) * 0.16 + this.rootsFocus * 0.18 + this.bridgeFocus * 0.2;
         }
     }
 
-    _updateBranchStream(stream, dt, t) {
+    _updateBranchStream(stream, dt, t, motionScale = 1) {
         const pos = stream.points.geometry.attributes.position.array;
         for (let i = 0; i < stream.count; i++) {
-            pos[i * 3] += dt * 0.5;
+            pos[i * 3] += dt * 0.35 * motionScale;
             if (pos[i * 3] > 7) pos[i * 3] = 0;
-            pos[i * 3 + 1] = stream.yDir * (pos[i * 3] / 7) * 3 + Math.sin(t * 0.3 + stream.phases[i]) * 0.2;
+            pos[i * 3 + 1] = stream.yDir * (pos[i * 3] / 7) * 3 + Math.sin(t * 0.3 * motionScale + stream.phases[i]) * 0.2;
         }
         stream.points.geometry.attributes.position.needsUpdate = true;
     }
@@ -383,6 +545,18 @@ export default class ThreeUnusViz extends BaseViz {
     _onMouseMove(e) {
         this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
+
+    _setGroupOpacity(group, opacity) {
+        group?.traverse((obj) => {
+            const materials = obj.material ? (Array.isArray(obj.material) ? obj.material : [obj.material]) : [];
+            materials.forEach((material) => {
+                if (material.opacity === undefined) return;
+                if (material.userData.baseOpacity === undefined) material.userData.baseOpacity = material.opacity;
+                material.transparent = true;
+                material.opacity = material.userData.baseOpacity * opacity;
+            });
+        });
     }
 
     dispose() {

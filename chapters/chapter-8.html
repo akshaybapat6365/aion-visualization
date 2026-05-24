@@ -11,7 +11,7 @@
     (function () {
       var chapterId = 'ch8';
       var variant = 'base';
-      var target = '/journey/chapter/' + chapterId + '?legacy=' + variant;
+      var target = '/journey/chapter/' + chapterId;
       var usage = {
         event: 'legacy_chapter_redirect',
         chapterId: chapterId,
@@ -29,16 +29,13 @@
         console.warn('Could not persist legacy redirect log', error);
       }
 
-      try {
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/compatibility/legacy-chapter-usage', JSON.stringify(usage));
-        }
-      } catch (error) {
-        console.warn('Could not beacon legacy redirect usage', error);
-      }
-
       console.info('[compat] Redirecting legacy chapter URL', usage);
-      window.location.replace(target);
+      try {
+        sessionStorage.setItem('aion-spa-redirect', target);
+      } catch (error) {
+        console.warn('Could not persist SPA redirect target', error);
+      }
+      window.location.replace('../');
     })();
   </script>
 </body>

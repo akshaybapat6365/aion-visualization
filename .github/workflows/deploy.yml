@@ -2,286 +2,62 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  
-  # Allow manual triggering
+    branches: [main]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  # Quality assurance job
-  quality-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          
-      - name: Install dependencies
-        run: |
-          npm ci
-          
-      - name: Run ESLint
-        run: |
-          npx eslint assets/js/**/*.js --ext .js --format=json --output-file=eslint-report.json || true
-          echo "ESLint completed"
-          
-      - name: Validate HTML
-        run: |
-          # Install HTML validator
-          npm install -g html-validate
-          
-          # Validate key HTML files
-          echo "Validating HTML files..."
-          html-validate index.html 404.html chapters/index.html || true
-          
-          # Validate chapter files (sample)
-          html-validate chapters/enhanced/chapter-1.html chapters/standard/chapter-1.html || true
-          
-      - name: Check asset paths
-        run: |
-          echo "Checking for broken asset references..."
-          
-          # Check CSS files exist
-          test -f "assets/css/main.css" || { echo "❌ Missing main.css"; exit 1; }
-          test -f "assets/css/chapters.css" || { echo "❌ Missing chapters.css"; exit 1; }
-          
-          # Check core JS files exist
-          test -f "assets/js/core/github-pages-router.js" || { echo "❌ Missing router"; exit 1; }
-          test -f "assets/js/core/consolidated-utilities.js" || { echo "❌ Missing utilities"; exit 1; }
-          
-          echo "✅ Asset validation passed"
-          
-      - name: Test URL routing
-        run: |
-          echo "Testing URL routing configuration..."
-          
-          # Check sitemap exists and is valid
-          test -f "sitemap.xml" || { echo "❌ Missing sitemap.xml"; exit 1; }
-          
-          # Check robots.txt exists
-          test -f "robots.txt" || { echo "❌ Missing robots.txt"; exit 1; }
-          
-          # Check .nojekyll exists
-          test -f ".nojekyll" || { echo "❌ Missing .nojekyll"; exit 1; }
-          
-          echo "✅ URL routing validation passed"
-          
-      - name: Performance audit
-        run: |
-          echo "Running performance checks..."
-          
-          # Check file sizes
-          css_size=$(du -b assets/css/main.css | cut -f1)
-          if [ $css_size -gt 100000 ]; then
-            echo "⚠️ main.css is large: ${css_size} bytes"
-          else
-            echo "✅ CSS size acceptable: ${css_size} bytes"
-          fi
-          
-          # Check for minified versions
-          if [ -f "assets/css/main.min.css" ]; then
-            echo "✅ Minified CSS found"
-          else
-            echo "⚠️ No minified CSS found"
-          fi
-          
-          if [ -f "assets/js/core/github-pages-router.min.js" ]; then
-            echo "✅ Minified JS found"
-          else
-            echo "⚠️ No minified JS found"
-          fi
-          
-      - name: Security scan
-        run: |
-          echo "Running security scan..."
-          
-          # Check for sensitive files
-          if find . -name "*.env" -o -name "*.key" -o -name "*.pem" | grep -q .; then
-            echo "❌ Sensitive files found"
-            exit 1
-          fi
-          
-          # Check for development files in production
-          if find . -name "node_modules" -o -name ".git" | grep -q .; then
-            echo "⚠️ Development files present (will be excluded in build)"
-          fi
-          
-          echo "✅ Security scan passed"
-          
-      - name: Upload quality reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: quality-reports
-          path: |
-            eslint-report.json
-            
-  # Build and optimization job
   build:
-    needs: quality-check
+    name: Build and verify Vite app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Setup Node.js
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
+          node-version: 20
+          cache: npm
+
       - name: Install dependencies
         run: npm ci
-        
-      - name: Build optimized assets
-        run: |
-          echo "Building optimized assets..."
-          
-          # Create build directory
-          mkdir -p build
-          
-          # Copy all files to build directory excluding build itself
-          rsync -av --exclude='build' --exclude='.git' . build/
-          cd build
-          
-          # Remove development files
-          rm -rf node_modules
-          rm -rf .git
-          rm -rf PHASE*
-          rm -rf docs
-          rm -rf scripts
-          rm -rf tests
-          rm -f *.sh
-          rm -f *.md
-          rm -f package*.json
-          rm -f eslint.config.js
-          
-          echo "✅ Build directory prepared"
-          
-      - name: Optimize assets
-        run: |
-          cd build
-          
-          # Install optimization tools
-          npm install -g clean-css-cli uglify-js html-minifier-terser
-          
-          echo "Optimizing CSS files..."
-          for css_file in assets/css/*.css; do
-            if [[ ! "$css_file" == *.min.css ]]; then
-              base_name=$(basename "$css_file" .css)
-              cleancss -o "assets/css/${base_name}.min.css" "$css_file"
-              echo "✅ Minified $css_file"
-            fi
-          done
-          
-          echo "Optimizing JavaScript files..."
-          for js_file in assets/js/**/*.js; do
-            if [[ ! "$js_file" == *.min.js ]]; then
-              base_name=$(basename "$js_file" .js)
-              dir_name=$(dirname "$js_file")
-              uglifyjs "$js_file" -o "${dir_name}/${base_name}.min.js" --compress --mangle
-              echo "✅ Minified $js_file"
-            fi
-          done
-          
-          echo "Optimizing HTML files..."
-          for html_file in *.html chapters/*.html chapters/**/*.html; do
-            if [ -f "$html_file" ]; then
-              html-minifier-terser \
-                --collapse-whitespace \
-                --remove-comments \
-                --remove-optional-tags \
-                --remove-redundant-attributes \
-                --remove-script-type-attributes \
-                --remove-tag-whitespace \
-                --use-short-doctype \
-                --minify-css true \
-                --minify-js true \
-                --output "$html_file" "$html_file"
-              echo "✅ Minified $html_file"
-            fi
-          done
-          
-      - name: Update asset references for production
-        run: |
-          cd build
-          
-          echo "Updating asset references to use minified versions..."
-          
-          # Update HTML files to use minified assets
-          find . -name "*.html" -exec sed -i 's/main\.css/main.min.css/g' {} \;
-          find . -name "*.html" -exec sed -i 's/chapters\.css/chapters.min.css/g' {} \;
-          find . -name "*.html" -exec sed -i 's/github-pages-router\.js/github-pages-router.min.js/g' {} \;
-          find . -name "*.html" -exec sed -i 's/consolidated-utilities\.js/consolidated-utilities.min.js/g' {} \;
-          
-          echo "✅ Asset references updated"
-          
-      - name: Generate build report
-        run: |
-          cd build
-          
-          echo "Generating build report..."
-          
-          # Count files
-          total_files=$(find . -type f | wc -l)
-          html_files=$(find . -name "*.html" | wc -l)
-          css_files=$(find . -name "*.css" | wc -l)
-          js_files=$(find . -name "*.js" | wc -l)
-          
-          # Calculate sizes
-          total_size=$(du -sh . | cut -f1)
-          css_size=$(du -sh assets/css 2>/dev/null | cut -f1 || echo "0")
-          js_size=$(du -sh assets/js 2>/dev/null | cut -f1 || echo "0")
-          
-          echo "📊 Build Report" > build-report.txt
-          echo "==============" >> build-report.txt
-          echo "Total files: $total_files" >> build-report.txt
-          echo "HTML files: $html_files" >> build-report.txt
-          echo "CSS files: $css_files" >> build-report.txt
-          echo "JS files: $js_files" >> build-report.txt
-          echo "Total size: $total_size" >> build-report.txt
-          echo "CSS size: $css_size" >> build-report.txt
-          echo "JS size: $js_size" >> build-report.txt
-          echo "Built at: $(date)" >> build-report.txt
-          
-          cat build-report.txt
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload build artifact
+
+      - name: Validate canonical data
+        run: npm run validate:consistency
+
+      - name: Verify chapter shell contracts
+        run: npm run ci:chapter-shell
+
+      - name: Run app contract tests
+        run: npm run test:app
+
+      - name: Run legacy test suite
+        run: npm test
+
+      - name: Build GitHub Pages artifact
+        run: npm run build:pages
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/
-          
-      - name: Upload build report
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-report
-          path: build/build-report.txt
+          path: dist
 
-  # Deployment job
   deploy:
+    name: Deploy
+    if: github.event_name != 'pull_request'
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -290,79 +66,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
-      - name: Post-deployment validation
-        run: |
-          echo "Validating deployment..."
-          
-          # Wait for deployment to be available
-          sleep 30
-          
-          # Check if main page is accessible
-          if curl -s -f "https://akshaybapat6365.github.io/aion-visualization/" > /dev/null; then
-            echo "✅ Main page accessible"
-          else
-            echo "❌ Main page not accessible"
-            exit 1
-          fi
-          
-          # Check if sitemap is accessible
-          if curl -s -f "https://akshaybapat6365.github.io/aion-visualization/sitemap.xml" > /dev/null; then
-            echo "✅ Sitemap accessible"
-          else
-            echo "⚠️ Sitemap not accessible"
-          fi
-          
-          # Check if clean URLs work (this might not work immediately due to caching)
-          echo "🔗 Deployment completed successfully"
-          echo "📍 Site URL: https://akshaybapat6365.github.io/aion-visualization/"
-          
-  # Post-deployment testing
-  post-deploy-test:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Wait for deployment propagation
-        run: sleep 60
-        
-      - name: Test deployed site
-        run: |
-          echo "Testing deployed site functionality..."
-          
-          base_url="https://akshaybapat6365.github.io/aion-visualization"
-          
-          # Test main pages
-          pages=("/" "/chapters/" "/404.html")
-          
-          for page in "${pages[@]}"; do
-            url="${base_url}${page}"
-            if curl -s -f "$url" > /dev/null; then
-              echo "✅ $url accessible"
-            else
-              echo "❌ $url not accessible"
-            fi
-          done
-          
-          # Test a sample chapter (using direct file path since clean URLs need client-side routing)
-          chapter_url="${base_url}/chapters/enhanced/chapter-1.html"
-          if curl -s -f "$chapter_url" > /dev/null; then
-            echo "✅ Sample chapter accessible"
-          else
-            echo "⚠️ Sample chapter not accessible"
-          fi
-          
-          echo "🎉 Deployment testing completed"
-          
-      - name: Notify deployment status
-        run: |
-          echo "📢 Deployment Status Report"
-          echo "=========================="
-          echo "✅ GitHub Pages deployment successful"
-          echo "🌐 Site URL: https://akshaybapat6365.github.io/aion-visualization/"
-          echo "📄 Sitemap: https://akshaybapat6365.github.io/aion-visualization/sitemap.xml"
-          echo "🤖 Robots.txt: https://akshaybapat6365.github.io/aion-visualization/robots.txt"
-          echo "🔄 Clean URLs enabled with client-side routing"
-          echo "⚡ Optimized assets deployed"
-          echo "🛡️ Security checks passed"
-          echo "📊 Quality assurance completed"

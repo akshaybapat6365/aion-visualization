@@ -40,6 +40,19 @@ const COSMIC_PARTICLES = 2000;
 export default class ThreeAeonFinalViz extends BaseViz {
     constructor(container, opts = {}) {
         super(container, Object.assign({ contextType: 'webgl' }, opts));
+        this.panelState = { activePanelId: 'gather', progress: 0 };
+        this.gatherFocus = 1;
+        this.axisFocus = 0;
+        this.aeonFocus = 0;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
     }
 
     async init() {
@@ -68,6 +81,7 @@ export default class ThreeAeonFinalViz extends BaseViz {
 
         this._createQuaternioStack();
         this._createSerpent();
+        this._createMotifConstellation();
         this._createDescentAscentArrows();
         this._createCoagulaField();
         this._createHermeticVessel();
@@ -164,7 +178,8 @@ export default class ThreeAeonFinalViz extends BaseViz {
         const spineMat = new THREE.LineBasicMaterial({
             color: ARROW_WHITE, transparent: true, opacity: 0.12,
         });
-        this.mainGroup.add(new THREE.Line(spineGeo, spineMat));
+        this.spine = new THREE.Line(spineGeo, spineMat);
+        this.mainGroup.add(this.spine);
     }
 
     /* ═══════════════════════════════════════════════════
@@ -207,6 +222,35 @@ export default class ThreeAeonFinalViz extends BaseViz {
 
         this.serpentGroup.position.y = 0; // Exact center between Shadow and Paradise
         this.mainGroup.add(this.serpentGroup);
+    }
+
+    _createMotifConstellation() {
+        this.motifGroup = new THREE.Group();
+        this.motifs = [];
+        const motifConfigs = [
+            { name: 'Ego', color: 0xe8e8f0, geometry: new THREE.SphereGeometry(0.18, 12, 10) },
+            { name: 'Shadow', color: 0x7c4dff, geometry: new THREE.TetrahedronGeometry(0.28, 0) },
+            { name: 'Syzygy', color: 0xe91e63, geometry: new THREE.TorusGeometry(0.22, 0.035, 8, 28) },
+            { name: 'Fish', color: 0x22d3ee, geometry: new THREE.SphereGeometry(0.2, 12, 8) },
+            { name: 'Lapis', color: 0xd4af37, geometry: new THREE.DodecahedronGeometry(0.26, 0) },
+            { name: 'Gnosis', color: 0x2ecc71, geometry: new THREE.OctahedronGeometry(0.25, 0) },
+        ];
+
+        motifConfigs.forEach((cfg, index) => {
+            const mesh = new THREE.Mesh(cfg.geometry, new THREE.MeshBasicMaterial({
+                color: cfg.color,
+                transparent: true,
+                opacity: 0.45,
+                blending: THREE.AdditiveBlending,
+            }));
+            if (cfg.name === 'Fish') mesh.scale.set(1.9, 0.6, 0.5);
+            const angle = (index / motifConfigs.length) * Math.PI * 2;
+            mesh.position.set(Math.cos(angle) * 8.6, Math.sin(angle) * 1.8, Math.sin(angle) * 8.6);
+            this.motifGroup.add(mesh);
+            this.motifs.push({ mesh, angle, cfg });
+        });
+
+        this.mainGroup.add(this.motifGroup);
     }
 
     /* ═══════════════════════════════════════════════════
@@ -316,6 +360,7 @@ export default class ThreeAeonFinalViz extends BaseViz {
         this.mainGroup.add(this.vessel);
 
         // Vessel rim rings — subtle equatorial and meridional lines
+        this.vesselRims = [];
         for (let i = 0; i < 3; i++) {
             const rimGeo = new THREE.TorusGeometry(10, 0.02, 8, 128);
             const rimMat = new THREE.MeshBasicMaterial({
@@ -327,6 +372,7 @@ export default class ThreeAeonFinalViz extends BaseViz {
             if (i === 1) rim.rotation.x = Math.PI / 2; // meridian
             if (i === 2) rim.rotation.y = Math.PI / 2; // meridian 2
             this.mainGroup.add(rim);
+            this.vesselRims.push(rim);
         }
     }
 
@@ -423,47 +469,72 @@ export default class ThreeAeonFinalViz extends BaseViz {
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const panelId = this.panelState?.activePanelId || 'gather';
+        const dampRate = this.reducedMotion ? 9 : 3.25;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
+        const isMobile = this.width < 680;
+        this.gatherFocus = THREE.MathUtils.damp(this.gatherFocus, panelId === 'gather' ? 1 : 0.2, dampRate, dt);
+        this.axisFocus = THREE.MathUtils.damp(this.axisFocus, panelId === 'axis' ? 1 : 0.18, dampRate, dt);
+        this.aeonFocus = THREE.MathUtils.damp(this.aeonFocus, panelId === 'aeon' ? 1 : 0.18, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
+
+        this.mainGroup.position.x = THREE.MathUtils.damp(this.mainGroup.position.x, isMobile ? 2.7 : 3.3, 4, dt);
+        this.mainGroup.position.y = THREE.MathUtils.damp(this.mainGroup.position.y, isMobile ? -0.4 : 0, 4, dt);
+        this.mainGroup.scale.setScalar((isMobile ? 0.66 : 0.86) + this.gatherFocus * 0.04 + this.axisFocus * 0.04);
 
         // ─── Quaternio rotation (slow individual spin) ───
         for (let i = 0; i < this.quaternios.length; i++) {
             const q = this.quaternios[i];
-            q.group.rotation.y = t * (0.03 + i * 0.01) * (i % 2 === 0 ? 1 : -1);
+            q.group.rotation.y = t * (0.03 + i * 0.01) * motionScale * (i % 2 === 0 ? 1 : -1);
             // Subtle breathing scale
-            const breathe = 1 + Math.sin(t * 0.2 + i * 1.5) * 0.03;
+            const breathe = 1 + Math.sin(t * 0.2 * motionScale + i * 1.5) * 0.03 + this.gatherFocus * 0.04;
             q.mesh.scale.setScalar(breathe);
+            q.mesh.material.opacity = 0.18 + this.gatherFocus * 0.18 + this.axisFocus * 0.12;
+            q.wire.material.opacity = 0.16 + this.gatherFocus * 0.22 + this.axisFocus * 0.18;
         }
 
         // ─── UROBOROS — main group slowly curves / rotates ───
-        this.mainGroup.rotation.y = t * 0.015 + this.mouseSmooth.x * 0.3;
+        this.mainGroup.rotation.y = t * 0.015 * motionScale * (0.8 + this.aeonFocus * 0.6) + this.mouseSmooth.x * 0.22;
         // Gentle tilt to show depth
-        this.mainGroup.rotation.x = Math.sin(t * 0.04) * 0.08 + this.mouseSmooth.y * 0.15;
+        this.mainGroup.rotation.x = Math.sin(t * 0.04 * motionScale) * 0.08 + this.mouseSmooth.y * 0.12;
 
         // ─── Serpent rotation and pulse ───
-        this.serpentMesh.rotation.x = t * 0.15;
-        this.serpentMesh.rotation.y = t * 0.25;
+        this.serpentMesh.rotation.x = t * 0.15 * motionScale;
+        this.serpentMesh.rotation.y = t * 0.25 * motionScale;
         // Color oscillation between gold and red (max tension)
-        const tensionPhase = Math.sin(t * 0.4) * 0.5 + 0.5;
+        const tensionPhase = Math.sin(t * 0.4 * motionScale) * 0.5 + 0.5;
         this.serpentMesh.material.color.lerpColors(SERPENT_GOLD, SERPENT_RED, tensionPhase);
         this.serpentMesh.material.emissive.lerpColors(SERPENT_RED, SERPENT_GOLD, tensionPhase);
-        this.serpentMesh.material.emissiveIntensity = 0.4 + tensionPhase * 0.4;
+        this.serpentMesh.material.emissiveIntensity = 0.28 + tensionPhase * 0.36 + this.aeonFocus * 0.32;
+        this.serpentMesh.material.opacity = 0.42 + this.aeonFocus * 0.34 + this.axisFocus * 0.08;
         // Aura pulse
-        this.serpentAura.material.opacity = 0.03 + Math.sin(t * 0.6) * 0.03;
-        this.serpentAura.scale.setScalar(1 + Math.sin(t * 0.3) * 0.2);
+        this.serpentAura.material.opacity = 0.02 + this.aeonFocus * 0.08 + Math.sin(t * 0.6 * motionScale) * 0.02;
+        this.serpentAura.scale.setScalar(1 + Math.sin(t * 0.3 * motionScale) * 0.2 + this.aeonFocus * 0.18);
+
+        this.motifGroup.rotation.y = -t * 0.018 * motionScale;
+        this.motifs?.forEach(({ mesh, angle }, index) => {
+            mesh.position.y = Math.sin(t * 0.35 * motionScale + angle) * (1.3 + this.gatherFocus * 0.6);
+            mesh.rotation.x = t * 0.16 * motionScale + index;
+            mesh.rotation.y = -t * 0.12 * motionScale;
+            mesh.material.opacity = 0.12 + this.gatherFocus * 0.52 + this.aeonFocus * 0.12;
+            mesh.scale.multiplyScalar(1);
+        });
 
         // ─── Descent/Ascent arrows — flowing particles ───
         const arrowPos = this.arrowField.geometry.attributes.position.array;
         for (let i = 0; i < ARROW_PARTICLES; i++) {
-            arrowPos[i * 3 + 1] += this.arrowDirections[i] * this.arrowVelocities[i] * dt;
+            arrowPos[i * 3 + 1] += this.arrowDirections[i] * this.arrowVelocities[i] * dt * motionScale * (0.7 + this.axisFocus * 0.8);
             // Wrap around
             if (arrowPos[i * 3 + 1] > 9) arrowPos[i * 3 + 1] = -9;
             if (arrowPos[i * 3 + 1] < -9) arrowPos[i * 3 + 1] = 9;
         }
         this.arrowField.geometry.attributes.position.needsUpdate = true;
+        this.arrowField.material.opacity = 0.16 + this.axisFocus * 0.56 + this.aeonFocus * 0.1;
+        this.spine.material.opacity = 0.08 + this.axisFocus * 0.46;
 
         // ─── Solve et Coagula — breathing expansion/contraction ───
-        const solvePhase = Math.sin(t * 0.12); // Slow cycle: -1 = coagula, +1 = solve
-        const expansion = 1 + solvePhase * 0.6;
+        const solvePhase = Math.sin(t * 0.12 * motionScale); // Slow cycle: -1 = coagula, +1 = solve
+        const expansion = 1 + solvePhase * (0.35 + this.aeonFocus * 0.3);
         const coagulaPos = this.coagulaField.geometry.attributes.position.array;
         for (let i = 0; i < COAGULA_PARTICLES; i++) {
             const bx = this.coagulaBasePositions[i * 3];
@@ -477,36 +548,42 @@ export default class ThreeAeonFinalViz extends BaseViz {
             coagulaPos[i * 3 + 2] = bz * expansion;
         }
         this.coagulaField.geometry.attributes.position.needsUpdate = true;
-        this.coagulaField.material.opacity = 0.3 + (1 - Math.abs(solvePhase)) * 0.3;
+        this.coagulaField.material.opacity = 0.14 + this.gatherFocus * 0.22 + this.aeonFocus * 0.2 + (1 - Math.abs(solvePhase)) * 0.18;
 
         // ─── Phoenix Core — carbon-nitrogen rebirth pulse ───
-        const phoenixProgress = Math.min(1, t / 90); // Grows over 90 seconds
-        const phoenixPulse = Math.sin(t * 0.8) * 0.5 + 0.5;
-        this.phoenixCore.material.opacity = phoenixProgress * (0.3 + phoenixPulse * 0.5);
+        const phoenixProgress = Math.max(this.aeonFocus, Math.min(1, t / 90) * 0.35);
+        const phoenixPulse = Math.sin(t * 0.8 * motionScale) * 0.5 + 0.5;
+        this.phoenixCore.material.opacity = phoenixProgress * (0.24 + phoenixPulse * 0.5);
         this.phoenixCore.scale.setScalar(0.5 + phoenixPulse * 0.5);
         this.phoenixHalo.material.opacity = phoenixProgress * phoenixPulse * 0.08;
         this.phoenixHalo.scale.setScalar(1 + phoenixPulse * 1.5);
 
         // ─── Vessel subtle shimmer ───
-        this.vessel.material.opacity = 0.03 + Math.sin(t * 0.1) * 0.015;
+        this.vessel.material.opacity = 0.02 + this.gatherFocus * 0.025 + this.aeonFocus * 0.025 + Math.sin(t * 0.1 * motionScale) * 0.01;
+        this.vesselRims?.forEach((rim, index) => {
+            rim.material.opacity = 0.035 + this.gatherFocus * 0.045 + this.aeonFocus * 0.06;
+            rim.rotation.z += dt * 0.015 * motionScale * (index % 2 ? -1 : 1);
+        });
 
         // ─── Cosmic field slow rotation ───
-        this.cosmicField.rotation.y += dt * 0.002;
+        this.cosmicField.rotation.y += dt * 0.002 * motionScale;
+        this.cosmicField.material.opacity = 0.12 + this.aeonFocus * 0.18 + this.gatherFocus * 0.06;
 
         // ─── Camera — grand orbital ───
-        const camAngle = t * 0.018 + this.mouseSmooth.x * 0.4;
-        const camHeight = 4 + this.mouseSmooth.y * 5 + Math.sin(t * 0.03) * 3;
-        const camDist = 22 - phoenixProgress * 3;
-        this.camera.position.set(
+        const camAngle = t * 0.018 * motionScale + this.mouseSmooth.x * 0.26;
+        const camHeight = 3.5 + this.mouseSmooth.y * 3.2 + Math.sin(t * 0.03 * motionScale) * 1.8 - this.axisFocus * 0.6;
+        const camDist = 22 - phoenixProgress * 2.2 - this.axisFocus * 1.4;
+        const targetCam = new THREE.Vector3(
             Math.sin(camAngle) * camDist,
             camHeight,
             Math.cos(camAngle) * camDist
         );
-        this.camera.lookAt(0, 0, 0);
+        this.camera.position.lerp(targetCam, this.reducedMotion ? 1 : Math.min(1, dt * 1.8));
+        this.camera.lookAt(isMobile ? 1.8 : 2.2, 0, 0);
 
         // ─── Bloom breathing ───
         if (this.bloomPass) {
-            this.bloomPass.strength = 1.2 + Math.sin(t * 0.08) * 0.3 + phoenixPulse * 0.2;
+            this.bloomPass.strength = 1.05 + Math.sin(t * 0.08 * motionScale) * 0.22 + phoenixPulse * 0.16 + this.aeonFocus * 0.25;
         }
     }
 

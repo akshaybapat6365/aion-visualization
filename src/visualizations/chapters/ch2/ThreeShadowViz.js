@@ -72,7 +72,21 @@ const MIRROR_CLR = new THREE.Color('#403060');
 const INTEG_CLR = new THREE.Color('#e0c0ff');  // soft lavender
 
 export default class ThreeShadowViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'mirror', progress: 0 };
+        this.mirrorFocus = 1;
+        this.projectionFocus = 0;
+        this.integrationFocus = 0;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         /* ── Renderer ── */
@@ -466,10 +480,8 @@ export default class ThreeShadowViz extends BaseViz {
         ov.className = 'ch2-annotations';
         ov.innerHTML = `
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-
 .ch2-annotations {
-    position: fixed;
+    position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 10;
@@ -488,6 +500,13 @@ export default class ThreeShadowViz extends BaseViz {
 .ch2-a.vis {
     opacity: 1;
     transform: translateY(0);
+}
+
+.ch2-a--ego,
+.ch2-a--shadow,
+.ch2-a--projection,
+.ch2-a--quote {
+    display: none;
 }
 
 /* ─── Phase 1: Chapter heading ─── */
@@ -817,20 +836,25 @@ export default class ThreeShadowViz extends BaseViz {
         const t = this.time;
         this.mouseSmooth.lerp(this.mouse, 0.03);
         this.introT += dt;
+        const panelId = this.panelState?.activePanelId || 'mirror';
+        this.mirrorFocus = THREE.MathUtils.damp(this.mirrorFocus, panelId === 'mirror' ? 1 : 0.18, 3.4, dt);
+        this.projectionFocus = THREE.MathUtils.damp(this.projectionFocus, panelId === 'projection' ? 1 : 0, 3.4, dt);
+        this.integrationFocus = THREE.MathUtils.damp(this.integrationFocus, panelId === 'integration' ? 1 : 0, 3.4, dt);
 
         /* ── Ego follows mouse ── */
-        const egoTX = -3.5 + this.mouseSmooth.x * 1.5;
+        const egoSeparation = 3.5 + this.mirrorFocus * 0.7 - this.integrationFocus * 1.6;
+        const egoTX = -egoSeparation + this.mouseSmooth.x * 1.5;
         const egoTY = this.mouseSmooth.y * 1.2;
         this.egoGroup.position.x += (egoTX - this.egoGroup.position.x) * 0.06;
         this.egoGroup.position.y += (egoTY - this.egoGroup.position.y) * 0.06;
 
         // Ego pulse — breathing light
-        this.egoCore.material.emissiveIntensity = 0.4 + Math.sin(t * 1.2) * 0.15;
-        this.egoGlow.material.opacity = 0.1 + Math.sin(t * 0.6) * 0.04;
+        this.egoCore.material.emissiveIntensity = 0.4 + Math.sin(t * 1.2) * 0.15 + this.integrationFocus * 0.18;
+        this.egoGlow.material.opacity = 0.1 + Math.sin(t * 0.6) * 0.04 + this.mirrorFocus * 0.04 + this.integrationFocus * 0.05;
 
         // Ego rays pulse
         for (const ray of this.egoRays) {
-            ray.line.material.opacity = 0.1 + Math.sin(t * 0.8 + ray.ph) * 0.08;
+            ray.line.material.opacity = 0.1 + Math.sin(t * 0.8 + ray.ph) * 0.08 + this.mirrorFocus * 0.035;
         }
 
         // Persona shell drifts
@@ -838,33 +862,34 @@ export default class ThreeShadowViz extends BaseViz {
         this.personaShell.material.opacity = 0.06 + Math.sin(t * 0.4) * 0.04;
 
         /* ── Shadow mirrors ego with lag + distortion ── */
-        const sx = 3.5 - this.mouseSmooth.x * 1.5;   // mirrored
+        const sx = egoSeparation - this.mouseSmooth.x * 1.5;   // mirrored
         const sy = -this.mouseSmooth.y * 1.2 + Math.sin(t * 0.4) * 0.5; // inverted + wobble
         this.shadowGroup.position.x += (sx - this.shadowGroup.position.x) * 0.012; // VERY slow follow
         this.shadowGroup.position.y += (sy - this.shadowGroup.position.y) * 0.012;
 
         // Shadow scale distortion — squashes/stretches autonomously
-        const distort = 1 + Math.sin(t * 0.6) * 0.3;
+        const distort = 1 + Math.sin(t * 0.6) * (0.24 + this.projectionFocus * 0.16);
         this.shadowCore.scale.set(distort, 1 / distort, distort);
-        this.shadowAura.material.opacity = 0.06 + Math.sin(t * 0.35) * 0.04;
+        this.shadowAura.material.opacity = 0.06 + Math.sin(t * 0.35) * 0.04 + this.projectionFocus * 0.08 + this.integrationFocus * 0.04;
 
         // Tendrils pulse
         for (const td of this.tendrils) {
-            td.line.material.opacity = 0.08 + Math.sin(t * 0.5 + td.ph) * 0.08;
+            td.line.material.opacity = 0.08 + Math.sin(t * 0.5 + td.ph) * 0.08 + this.projectionFocus * 0.08;
         }
 
         /* ── Mirror shimmer ── */
-        this.mirrorPlane.material.opacity = 0.15 + Math.sin(t * 0.25) * 0.08;
+        this.mirrorPlane.material.opacity = 0.15 + Math.sin(t * 0.25) * 0.08 + this.mirrorFocus * 0.18 - this.integrationFocus * 0.08;
         for (const md of this.mirrorDots) {
-            md.dot.material.opacity = 0.08 + Math.sin(t * 0.6 + md.ph) * 0.1;
+            md.dot.material.opacity = 0.08 + Math.sin(t * 0.6 + md.ph) * 0.1 + this.mirrorFocus * 0.1;
         }
 
         /* ── Projection arcs — periodic visibility ── */
         const projCycle = t % 20;
         const projActive = projCycle > 5 && projCycle < 16;
-        const projFade = projActive
+        const cycleProjFade = projActive
             ? Math.sin(((projCycle - 5) / 11) * Math.PI)
             : 0;
+        const projFade = Math.max(cycleProjFade, this.projectionFocus * 0.95);
         for (const arc of this.projArcs) {
             const pulse = Math.sin(t * arc.speed + arc.ph) * 0.5 + 0.5;
             arc.line.material.opacity = projFade * 0.25;
@@ -875,9 +900,10 @@ export default class ThreeShadowViz extends BaseViz {
         /* ── Cocoon wraps ego during projection ── */
         const cocoonCycle = t % 24;
         const cocoonActive = cocoonCycle > 7 && cocoonCycle < 18;
-        const cocoonFade = cocoonActive
+        const cycleCocoonFade = cocoonActive
             ? Math.sin(((cocoonCycle - 7) / 11) * Math.PI) * 0.14
             : 0;
+        const cocoonFade = Math.max(cycleCocoonFade, this.projectionFocus * 0.16);
         for (const strand of this.cocoonStrands) {
             strand.line.material.opacity = cocoonFade;
             strand.line.position.set(
@@ -891,9 +917,10 @@ export default class ThreeShadowViz extends BaseViz {
         const intCycle = t % 35;
         const integrating = intCycle > 26;
         const intT = integrating ? (intCycle - 26) / 9 : 0;
-        const intPulse = integrating ? Math.sin(intT * Math.PI) : 0;
+        const cycleIntPulse = integrating ? Math.sin(intT * Math.PI) : 0;
+        const intPulse = Math.max(cycleIntPulse, this.integrationFocus * 0.95);
 
-        if (integrating) {
+        if (integrating || this.integrationFocus > 0.05) {
             const convergence = intPulse * 0.7;
             this.egoGroup.position.x += (0 - this.egoGroup.position.x) * convergence * 0.02;
             this.egoGroup.position.y += (0 - this.egoGroup.position.y) * convergence * 0.02;
@@ -911,7 +938,7 @@ export default class ThreeShadowViz extends BaseViz {
         // Integration annotation sync
         const intAnn = this._annotationOverlay?.querySelector('.ch2-a--integration');
         if (intAnn) {
-            if (integrating && intT > 0.1 && intT < 0.9) {
+            if ((integrating && intT > 0.1 && intT < 0.9) || this.integrationFocus > 0.35) {
                 intAnn.classList.add('vis');
                 intAnn.classList.remove('hid');
             } else {
@@ -927,9 +954,9 @@ export default class ThreeShadowViz extends BaseViz {
         /* ── Camera ── */
         const introF = Math.min(this.introT / 6, 1);
         const ease = 1 - Math.pow(1 - introF, 3);
-        const camD = THREE.MathUtils.lerp(22, 14, ease);
-        const camH = THREE.MathUtils.lerp(8, 1.5 + this.mouseSmooth.y * 1.2, ease);
-        const camA = t * 0.006 + this.mouseSmooth.x * 0.12;
+        const camD = THREE.MathUtils.lerp(22, 14 + this.projectionFocus * 2.5 - this.integrationFocus * 2, ease);
+        const camH = THREE.MathUtils.lerp(8, 1.5 + this.mouseSmooth.y * 1.2 + this.projectionFocus * 0.5, ease);
+        const camA = t * 0.006 + this.mouseSmooth.x * 0.12 + this.projectionFocus * 0.08;
         this.camera.position.set(
             Math.sin(camA) * camD,
             camH,
@@ -946,7 +973,7 @@ export default class ThreeShadowViz extends BaseViz {
 
         /* ── Bloom ── */
         if (this.bloom) {
-            this.bloom.strength = 1.2 + Math.sin(t * 0.05) * 0.2 + intPulse * 0.8;
+            this.bloom.strength = 1.2 + Math.sin(t * 0.05) * 0.2 + intPulse * 0.8 + this.projectionFocus * 0.25;
         }
     }
 

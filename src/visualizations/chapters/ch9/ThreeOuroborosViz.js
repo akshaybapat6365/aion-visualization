@@ -12,9 +12,26 @@ import BaseViz from '../../../features/viz-platform/BaseViz.js';
 const SERPENT_CLR = new THREE.Color('#2e7d32');
 const SERPENT_DARK = new THREE.Color('#0a2a0a');
 const GOLD = new THREE.Color('#ffd700');
+const SILVER = new THREE.Color('#b8c7dd');
+const SHADOW = new THREE.Color('#24304f');
 
 export default class ThreeOuroborosViz extends BaseViz {
-    constructor(c, o = {}) { super(c, Object.assign({ contextType: 'webgl' }, o)); }
+    constructor(c, o = {}) {
+        super(c, Object.assign({ contextType: 'webgl' }, o));
+        this.panelState = { activePanelId: 'ambivalence', progress: 0 };
+        this.ambivalenceFocus = 1;
+        this.ouroborosFocus = 0;
+        this.shadowFocus = 0;
+        this.reducedMotion = false;
+    }
+
+    setPanelState(state = {}) {
+        this.panelState = Object.assign(this.panelState || {}, state);
+    }
+
+    setReducedMotion(enabled) {
+        this.reducedMotion = Boolean(enabled);
+    }
 
     async init() {
         const R = this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false });
@@ -65,6 +82,82 @@ export default class ThreeOuroborosViz extends BaseViz {
         }));
         this.scene.add(this.flowPts);
 
+        const makeFish = (color, glowColor) => {
+            const group = new THREE.Group();
+            const bodyGeo = new THREE.SphereGeometry(0.22, 16, 12);
+            bodyGeo.scale(2.4, 0.65, 0.42);
+            const bodyMat = new THREE.MeshStandardMaterial({
+                color,
+                emissive: glowColor,
+                emissiveIntensity: 0.55,
+                transparent: true,
+                opacity: 0.7,
+                roughness: 0.35,
+                metalness: 0.35,
+            });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            group.add(body);
+
+            const tailGeo = new THREE.BufferGeometry();
+            tailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+                -0.52, 0, 0.03,
+                -0.95, 0.2, 0.03,
+                -0.95, -0.2, 0.03,
+            ]), 3));
+            tailGeo.setIndex([0, 1, 2]);
+            const tail = new THREE.Mesh(tailGeo, new THREE.MeshBasicMaterial({
+                color,
+                transparent: true,
+                opacity: 0.55,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide,
+                depthTest: false,
+            }));
+            group.add(tail);
+
+            const glow = new THREE.Mesh(
+                new THREE.SphereGeometry(0.9, 14, 14),
+                new THREE.MeshBasicMaterial({
+                    color: glowColor,
+                    transparent: true,
+                    opacity: 0.08,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            group.add(glow);
+            group.userData = { bodyMat, tailMat: tail.material, glowMat: glow.material };
+            this.scene.add(group);
+            return group;
+        };
+
+        this.lightFish = makeFish(SILVER, GOLD);
+        this.shadowFish = makeFish(SHADOW, SHADOW);
+
+        this.oppositionLine = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4, 0, 0), new THREE.Vector3(4, 0, 0)]),
+            new THREE.LineBasicMaterial({
+                color: GOLD,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending,
+            })
+        );
+        this.scene.add(this.oppositionLine);
+
+        this.shadowVeil = new THREE.Mesh(
+            new THREE.SphereGeometry(5.8, 28, 20),
+            new THREE.MeshBasicMaterial({
+                color: 0x111832,
+                transparent: true,
+                opacity: 0,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                depthWrite: false,
+            })
+        );
+        this.scene.add(this.shadowVeil);
+
         // Inner recursion — smaller ouroboros inside
         this.innerSerpent = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.12, 10, 60), new THREE.MeshBasicMaterial({
             color: SERPENT_CLR, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending,
@@ -90,47 +183,94 @@ export default class ThreeOuroborosViz extends BaseViz {
     update(dt) {
         if (!this.scene) return;
         const t = this.time;
+        const panelId = this.panelState?.activePanelId || 'ambivalence';
+        const dampRate = this.reducedMotion ? 9 : 3.6;
+        const motionScale = this.reducedMotion ? 0.12 : 1;
+        this.ambivalenceFocus = THREE.MathUtils.damp(this.ambivalenceFocus, panelId === 'ambivalence' ? 1 : 0.18, dampRate, dt);
+        this.ouroborosFocus = THREE.MathUtils.damp(this.ouroborosFocus, panelId === 'ouroboros' ? 1 : 0.12, dampRate, dt);
+        this.shadowFocus = THREE.MathUtils.damp(this.shadowFocus, panelId === 'shadow-fish' ? 1 : 0, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.04);
 
         // Serpent slow rotation (eating its tail)
-        this.serpentBody.rotation.z += 0.003;
-        this.serpentBody.rotation.x = Math.sin(t * 0.1) * 0.15;
+        this.serpentBody.rotation.z += 0.003 * motionScale * (0.7 + this.ouroborosFocus * 1.4);
+        this.serpentBody.rotation.x = Math.sin(t * 0.1 * motionScale) * (0.12 + this.ouroborosFocus * 0.1);
         this.serpentWire.rotation.z = this.serpentBody.rotation.z;
         this.serpentWire.rotation.x = this.serpentBody.rotation.x;
+        this.serpentBody.scale.setScalar(0.92 + this.ouroborosFocus * 0.14 + this.shadowFocus * 0.08);
+        this.serpentWire.material.opacity = 0.08 + this.ouroborosFocus * 0.12 + this.shadowFocus * 0.04;
 
         // Junction follows rotation
         const jA = this.serpentBody.rotation.z;
         this.junction.position.set(Math.cos(jA) * 4, Math.sin(jA) * 4 * Math.cos(this.serpentBody.rotation.x), 0);
-        this.junction.material.opacity = 0.4 + Math.sin(t * 2) * 0.3;
+        this.junction.material.opacity = 0.32 + Math.sin(t * 2 * motionScale) * 0.18 + this.ouroborosFocus * 0.28;
 
         // Cyclic flow along body
         const fp = this.flowPts.geometry.attributes.position.array;
         for (let i = 0; i < this.flowPhases.length; i++) {
-            this.flowPhases[i] = (this.flowPhases[i] + dt * 0.1) % 1;
+            this.flowPhases[i] = (this.flowPhases[i] + dt * 0.1 * motionScale * (0.6 + this.ouroborosFocus)) % 1;
             const a = this.flowPhases[i] * Math.PI * 2 + this.serpentBody.rotation.z;
             fp[i * 3] = Math.cos(a) * 4;
             fp[i * 3 + 1] = Math.sin(a) * 4 * Math.cos(this.serpentBody.rotation.x);
             fp[i * 3 + 2] = Math.sin(a) * 4 * Math.sin(this.serpentBody.rotation.x);
         }
         this.flowPts.geometry.attributes.position.needsUpdate = true;
+        this.flowPts.material.opacity = 0.35 + this.ouroborosFocus * 0.45 + this.shadowFocus * 0.16;
 
         // Inner recursion rotation (opposite direction)
-        this.innerSerpent.rotation.z -= 0.005;
-        this.innerSerpent.rotation.y = t * 0.05;
-        this.innerSerpent2.rotation.z += 0.008;
-        this.innerSerpent2.rotation.x = t * 0.08;
+        this.innerSerpent.rotation.z -= 0.005 * motionScale * (0.5 + this.ouroborosFocus);
+        this.innerSerpent.rotation.y = t * 0.05 * motionScale;
+        this.innerSerpent.material.opacity = 0.08 + this.ouroborosFocus * 0.25;
+        this.innerSerpent2.rotation.z += 0.008 * motionScale * (0.5 + this.ouroborosFocus);
+        this.innerSerpent2.rotation.x = t * 0.08 * motionScale;
+        this.innerSerpent2.material.opacity = 0.04 + this.ouroborosFocus * 0.16;
+
+        const fishAngle = t * 0.055 * motionScale + this.ambivalenceFocus * 0.65 - this.shadowFocus * 0.4;
+        const fishRadius = 4.55 - this.ouroborosFocus * 0.35;
+        const updateFish = (fish, angle, lift, isShadow) => {
+            fish.position.set(
+                Math.cos(angle) * fishRadius,
+                Math.sin(angle) * 0.8 + lift,
+                Math.sin(angle) * fishRadius * 0.45
+            );
+            fish.rotation.y = -angle + Math.PI / 2;
+            fish.rotation.z = Math.sin(t * 0.25 * motionScale + angle) * 0.08;
+            const focus = isShadow ? Math.max(this.ambivalenceFocus * 0.75, this.shadowFocus) : this.ambivalenceFocus;
+            const opacity = isShadow ? 0.34 + focus * 0.42 : 0.38 + focus * 0.5;
+            fish.userData.bodyMat.opacity = opacity;
+            fish.userData.tailMat.opacity = opacity * 0.8;
+            fish.userData.glowMat.opacity = (isShadow ? 0.04 : 0.07) + focus * (isShadow ? 0.1 : 0.16);
+            fish.scale.setScalar(0.82 + focus * 0.28 + (isShadow ? this.shadowFocus * 0.16 : 0));
+        };
+        updateFish(this.lightFish, fishAngle, 0.18, false);
+        updateFish(this.shadowFish, fishAngle + Math.PI, -0.18, true);
+
+        const linePositions = this.oppositionLine.geometry.attributes.position.array;
+        linePositions[0] = this.lightFish.position.x;
+        linePositions[1] = this.lightFish.position.y;
+        linePositions[2] = this.lightFish.position.z;
+        linePositions[3] = this.shadowFish.position.x;
+        linePositions[4] = this.shadowFish.position.y;
+        linePositions[5] = this.shadowFish.position.z;
+        this.oppositionLine.geometry.attributes.position.needsUpdate = true;
+        const lineScale = this.width < 700 ? 0 : 1;
+        this.oppositionLine.material.opacity = (0.04 + this.ambivalenceFocus * 0.14 + this.shadowFocus * 0.04) * lineScale;
+        this.shadowVeil.material.opacity = this.shadowFocus * 0.18;
 
         // Death-rebirth dissolution: periodic opacity pulse
-        const drCycle = Math.sin(t * 0.15);
-        this.serpentBody.material.opacity = 0.7 + drCycle * 0.3;
+        const drCycle = Math.sin(t * 0.15 * motionScale);
+        this.serpentBody.material.opacity = 0.58 + drCycle * 0.18 + this.ouroborosFocus * 0.22 + this.shadowFocus * 0.12;
         this.serpentBody.material.transparent = true;
 
         // Camera
-        const ca = t * 0.02 + this.mouseSmooth.x * 0.2;
-        this.camera.position.x = Math.sin(ca) * 16;
-        this.camera.position.y = 5 + this.mouseSmooth.y * 3;
-        this.camera.position.z = Math.cos(ca) * 16;
+        const ca = t * 0.02 * motionScale + this.mouseSmooth.x * 0.2;
+        const camRadius = 15.5 - this.ouroborosFocus * 1.8 + this.shadowFocus * 0.8;
+        this.camera.position.x = Math.sin(ca) * camRadius;
+        this.camera.position.y = 5 + this.mouseSmooth.y * 3 - this.shadowFocus * 0.4;
+        this.camera.position.z = Math.cos(ca) * camRadius;
         this.camera.lookAt(0, 0, 0);
+        if (this.bloom) {
+            this.bloom.strength = 1.05 + this.ouroborosFocus * 0.35 + this.ambivalenceFocus * 0.16 + this.shadowFocus * 0.2;
+        }
     }
 
     render() { this.composer?.render(); }
