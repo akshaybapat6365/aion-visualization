@@ -18,6 +18,7 @@ function startPreviewServer() {
     {
       cwd: process.cwd(),
       env: process.env,
+      detached: process.platform !== 'win32',
       stdio: ['ignore', 'pipe', 'pipe'],
     },
   );
@@ -31,6 +32,26 @@ function startPreviewServer() {
   });
 
   return { child, getOutput: () => output };
+}
+
+async function stopPreviewServer(server) {
+  if (server.child.exitCode !== null) return;
+
+  const pid = server.child.pid;
+  if (pid && process.platform !== 'win32') {
+    process.kill(-pid, 'SIGTERM');
+  } else {
+    server.child.kill('SIGTERM');
+  }
+
+  await Promise.race([once(server.child, 'exit'), delay(2_000)]);
+  if (server.child.exitCode !== null) return;
+
+  if (pid && process.platform !== 'win32') {
+    process.kill(-pid, 'SIGKILL');
+  } else {
+    server.child.kill('SIGKILL');
+  }
 }
 
 async function waitForServer(server) {
@@ -181,9 +202,7 @@ async function runAccessibilitySmoke() {
     console.log('Aion app accessibility smoke passed: landmarks, accessible names, keyboard semantics, tabindex, and 24px touch targets.');
   } finally {
     if (browser) await browser.close();
-    server.child.kill('SIGTERM');
-    await Promise.race([once(server.child, 'exit'), delay(2_000)]);
-    if (server.child.exitCode === null) server.child.kill('SIGKILL');
+    await stopPreviewServer(server);
   }
 }
 
