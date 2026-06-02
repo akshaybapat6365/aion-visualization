@@ -21,7 +21,22 @@
             "summary": { "type": "string", "minLength": 1 },
             "keyConceptIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true },
             "relatedChapterIds": { "type": "array", "items": { "type": "string", "pattern": "^ch[0-9]+$" }, "uniqueItems": true },
-            "learningObjectIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 2, "uniqueItems": true }
+            "learningObjectIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 2, "uniqueItems": true },
+            "sourceRefs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["work", "chapterId"],
+                "additionalProperties": false,
+                "properties": {
+                  "work": { "const": "Aion" },
+                  "chapterId": { "type": "string", "pattern": "^ch[0-9]+$" },
+                  "locator": { "type": "string", "minLength": 1 },
+                  "note": { "type": "string", "minLength": 1 }
+                }
+              },
+              "uniqueItems": true
+            }
           }
         }
       }

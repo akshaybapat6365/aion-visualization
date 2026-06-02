@@ -1,7 +1,10 @@
 {
   "routes": [
     "/",
-    "/journey/chapter/index.html"
+    "/chapters",
+    "/atlas",
+    "/journey/chapter/ch1",
+    "/journey/chapter/ch14"
   ],
   "webVitals": {
     "lcpMs": 2500,
