@@ -49,14 +49,32 @@ export default class ThreeEgoViz extends BaseViz {
         this.egoFocus = 1;
         this.rootFocus = 0;
         this.selfFocus = 0;
+        this.guidedAnnotations = true;
+        this.annotationPaused = false;
     }
 
     setPanelState(state = {}) {
+        const previousPanelId = this.panelState?.activePanelId;
         this.panelState = Object.assign(this.panelState || {}, state);
+        const nextPanelId = this.panelState?.activePanelId;
+        if (this._annotationOverlay && previousPanelId && nextPanelId && previousPanelId !== nextPanelId) {
+            this._usePanelAnnotationMode();
+        }
+        this._syncPanelAnnotations();
     }
 
     setReducedMotion(enabled) {
         this.reducedMotion = Boolean(enabled);
+    }
+
+    setPaused(paused) {
+        this.annotationPaused = Boolean(paused);
+        if (this.annotationPaused) {
+            this._clearAnnotationTimers();
+        } else if (this.guidedAnnotations) {
+            this._scheduleAnnotations();
+        }
+        this._syncPanelAnnotations();
     }
 
     async init() {
@@ -314,29 +332,42 @@ export default class ThreeEgoViz extends BaseViz {
     _buildAnnotations() {
         const ov = this._annotationOverlay = document.createElement('div');
         ov.className = 'ch1-annotations';
+        ov.setAttribute('aria-hidden', 'true');
         ov.innerHTML = `
 <style>
 .ch1-annotations {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 10;
+    z-index: 2;
     overflow: hidden;
 }
 
 /* ─── Shared annotation base ─── */
 .ch1-a {
     position: absolute;
-    font-family: 'Instrument Serif', serif;
+    font-family: var(--font-serif, 'Instrument Serif', serif);
     opacity: 0;
     transition: opacity 3s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 3s cubic-bezier(0.16, 1, 0.3, 1);
     transform: translateY(8px);
     will-change: opacity, transform;
 }
-.ch1-a.vis {
+.ch1-a.vis,
+.ch1-a.panel-vis {
     opacity: 1;
     transform: translateY(0);
+}
+
+.ch1-concept,
+.ch1-a--root,
+.ch1-a--self {
+    border: 1px solid rgba(244, 240, 232, 0.12);
+    border-radius: 8px;
+    background: rgba(3, 3, 7, 0.64);
+    padding: 0.5rem 0.65rem;
+    text-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(12px);
 }
 
 /* ─── Phase 1: Chapter heading ─── */
@@ -345,19 +376,20 @@ export default class ThreeEgoViz extends BaseViz {
     left: 4.5vw;
 }
 .ch1-a--heading .ch1-eyebrow {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, system-ui, sans-serif);
     font-size: clamp(0.55rem, 0.9vw, 0.7rem);
-    letter-spacing: 0.4em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(176, 176, 208, 0.18);
+    color: rgba(224, 225, 245, 0.72);
     margin-bottom: 0.4em;
 }
 .ch1-a--heading .ch1-title {
     font-size: clamp(1.8rem, 3.8vw, 3rem);
     font-style: italic;
-    color: rgba(176, 176, 208, 0.35);
-    letter-spacing: -0.02em;
+    color: rgba(244, 240, 232, 0.76);
+    letter-spacing: 0;
     line-height: 1.05;
+    text-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.8);
 }
 
 /* ─── Phase 2: Ego pointer ─── */
@@ -371,18 +403,18 @@ export default class ThreeEgoViz extends BaseViz {
     display: block;
     width: 50px;
     height: 1px;
-    background: linear-gradient(to right, rgba(176,176,208,0.3), rgba(176,176,208,0));
+    background: linear-gradient(to right, rgba(224,225,245,0.56), rgba(224,225,245,0));
     margin-bottom: 8px;
 }
 .ch1-a--ego .ch1-concept {
     font-size: clamp(0.8rem, 1.3vw, 1.05rem);
     font-style: italic;
-    color: rgba(200, 200, 220, 0.35);
+    color: rgba(232, 232, 240, 0.84);
     line-height: 1.6;
 }
 .ch1-a--ego .ch1-concept em {
     font-style: normal;
-    color: rgba(232, 232, 240, 0.5);
+    color: rgba(255, 255, 255, 0.96);
 }
 
 /* ─── Phase 3: Unconscious label ─── */
@@ -396,17 +428,21 @@ export default class ThreeEgoViz extends BaseViz {
 .ch1-a--unconscious.vis {
     transform: translateX(-50%) translateY(0);
 }
+.ch1-a--unconscious.panel-vis {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
 .ch1-a--unconscious .ch1-pointer-up {
     display: block;
     width: 1px;
     height: 28px;
-    background: linear-gradient(to top, rgba(50,70,120,0.25), rgba(50,70,120,0));
+    background: linear-gradient(to top, rgba(122,154,255,0.48), rgba(122,154,255,0));
     margin: 0 auto 10px;
 }
 .ch1-a--unconscious .ch1-concept {
     font-size: clamp(0.75rem, 1.1vw, 0.95rem);
     font-style: italic;
-    color: rgba(100, 130, 190, 0.3);
+    color: rgba(178, 198, 255, 0.84);
     line-height: 1.65;
 }
 
@@ -419,20 +455,20 @@ export default class ThreeEgoViz extends BaseViz {
 .ch1-a--root-somatic {
     bottom: 42vh;
     left: 8vw;
-    color: rgba(160, 70, 70, 0.35);
+    color: rgba(245, 153, 153, 0.86);
     max-width: 16ch;
 }
 .ch1-a--root-somatic .ch1-rootline {
     display: block;
     width: 30px;
     height: 1px;
-    background: linear-gradient(to right, rgba(160,70,70,0.25), rgba(160,70,70,0));
+    background: linear-gradient(to right, rgba(245,153,153,0.48), rgba(245,153,153,0));
     margin-bottom: 5px;
 }
 .ch1-a--root-psychic {
     bottom: 42vh;
     right: 8vw;
-    color: rgba(80, 100, 180, 0.35);
+    color: rgba(166, 185, 255, 0.86);
     text-align: right;
     max-width: 16ch;
 }
@@ -440,7 +476,7 @@ export default class ThreeEgoViz extends BaseViz {
     display: block;
     width: 30px;
     height: 1px;
-    background: linear-gradient(to left, rgba(80,100,180,0.25), rgba(80,100,180,0));
+    background: linear-gradient(to left, rgba(166,185,255,0.5), rgba(166,185,255,0));
     margin-left: auto;
     margin-bottom: 5px;
 }
@@ -455,17 +491,17 @@ export default class ThreeEgoViz extends BaseViz {
 .ch1-a--insight .ch1-concept {
     font-size: clamp(0.8rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(176, 176, 208, 0.22);
+    color: rgba(224, 225, 245, 0.82);
     line-height: 1.7;
 }
 .ch1-a--insight .ch1-attr {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, system-ui, sans-serif);
     font-style: normal;
     font-size: 0.5em;
-    letter-spacing: 0.25em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(176, 176, 208, 0.1);
+    color: rgba(224, 225, 245, 0.72);
     margin-top: 0.7em;
 }
 
@@ -481,11 +517,12 @@ export default class ThreeEgoViz extends BaseViz {
     font-size: clamp(0.95rem, 1.5vw, 1.2rem);
     font-style: italic;
     color: rgba(212, 175, 55, 0);
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     transition: color 2.5s ease;
 }
-.ch1-a--self.vis .ch1-self-name {
-    color: rgba(212, 175, 55, 0.35);
+.ch1-a--self.vis .ch1-self-name,
+.ch1-a--self.panel-vis .ch1-self-name {
+    color: rgba(255, 226, 113, 0.9);
 }
 .ch1-a--self .ch1-self-desc {
     font-size: clamp(0.6rem, 0.85vw, 0.72rem);
@@ -495,8 +532,9 @@ export default class ThreeEgoViz extends BaseViz {
     line-height: 1.6;
     transition: color 3s ease 0.5s;
 }
-.ch1-a--self.vis .ch1-self-desc {
-    color: rgba(212, 175, 55, 0.2);
+.ch1-a--self.vis .ch1-self-desc,
+.ch1-a--self.panel-vis .ch1-self-desc {
+    color: rgba(255, 236, 176, 0.82);
 }
 .ch1-a--self.hid .ch1-self-name,
 .ch1-a--self.hid .ch1-self-desc {
@@ -505,9 +543,7 @@ export default class ThreeEgoViz extends BaseViz {
 
 /* ─── Mobile ─── */
 @media (max-width: 768px) {
-    .ch1-a--root-somatic, .ch1-a--root-psychic { display: none; }
-    .ch1-a--insight { max-width: 20ch; bottom: 6vh; }
-    .ch1-a--ego { right: 6vw; max-width: 18ch; }
+    .ch1-annotations { display: none; }
 }
 </style>
 
@@ -572,9 +608,7 @@ export default class ThreeEgoViz extends BaseViz {
 
         (this.container || document.body).appendChild(ov);
 
-        /* ── Phased reveal schedule ── */
-        this._annTimers = [];
-        const phases = [
+        this._annPhases = [
             { sel: '[data-phase="1"]', delay: 2000 },
             { sel: '[data-phase="2"]', delay: 5000 },
             { sel: '[data-phase="3"]', delay: 10000 },
@@ -582,12 +616,63 @@ export default class ThreeEgoViz extends BaseViz {
             { sel: '[data-phase="4b"]', delay: 16000 },
             { sel: '[data-phase="5"]', delay: 21000 },
         ];
-        for (const p of phases) {
-            const el = ov.querySelector(p.sel);
+        this._scheduleAnnotations();
+        this._syncPanelAnnotations();
+    }
+
+    _scheduleAnnotations() {
+        this._clearAnnotationTimers();
+        if (!this._annotationOverlay || !this.guidedAnnotations || this.annotationPaused) return;
+        this._annTimers = [];
+        for (const p of this._annPhases || []) {
+            const el = this._annotationOverlay.querySelector(p.sel);
             if (el) {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
+                const t = setTimeout(() => {
+                    if (!this.annotationPaused && this.guidedAnnotations) el.classList.add('vis');
+                }, p.delay);
                 this._annTimers.push(t);
             }
+        }
+    }
+
+    _clearAnnotationTimers() {
+        this._annTimers?.forEach(t => clearTimeout(t));
+        this._annTimers = [];
+    }
+
+    _usePanelAnnotationMode() {
+        this.guidedAnnotations = false;
+        this._clearAnnotationTimers();
+        this._annotationOverlay?.querySelectorAll('.ch1-a[data-phase], .ch1-a--self').forEach(el => {
+            el.classList.remove('vis', 'panel-vis');
+        });
+    }
+
+    _syncPanelAnnotations() {
+        const ov = this._annotationOverlay;
+        if (!ov) return;
+        ov.querySelectorAll('.ch1-a[data-phase], .ch1-a--self').forEach(el => {
+            el.classList.remove('panel-vis');
+            if (!this.guidedAnnotations || this.annotationPaused) el.classList.remove('vis');
+        });
+
+        if (this.annotationPaused) return;
+
+        const panelId = this.panelState?.activePanelId || 'ego-light';
+        const panelPhases = {
+            'ego-light': ['1', '2'],
+            roots: ['3', '4a', '4b'],
+            'self-depth': ['5'],
+        }[panelId] || [];
+
+        for (const phase of panelPhases) {
+            ov.querySelector(`[data-phase="${phase}"]`)?.classList.add('panel-vis');
+        }
+
+        if (panelId === 'self-depth') {
+            const selfAnn = ov.querySelector('.ch1-a--self');
+            selfAnn?.classList.add('panel-vis');
+            selfAnn?.classList.remove('hid');
         }
     }
 
@@ -672,7 +757,8 @@ export default class ThreeEgoViz extends BaseViz {
         /* Self annotation sync */
         const selfAnn = this._annotationOverlay?.querySelector('.ch1-a--self');
         if (selfAnn) {
-            if (revealing && selfT > 0.08 && selfT < 0.92) {
+            const panelSelfReveal = panelId === 'self-depth' || this.selfFocus > 0.35;
+            if ((revealing && selfT > 0.08 && selfT < 0.92) || panelSelfReveal) {
                 selfAnn.classList.add('vis');
                 selfAnn.classList.remove('hid');
             } else {
@@ -712,7 +798,7 @@ export default class ThreeEgoViz extends BaseViz {
 
     dispose() {
         removeEventListener('mousemove', this._onMM);
-        this._annTimers?.forEach(t => clearTimeout(t));
+        this._clearAnnotationTimers();
         this._annotationOverlay?.remove();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
