@@ -31,7 +31,7 @@ export default function ChaptersPage() {
 
         <div className="chapters-orbit" aria-label="Interactive chapter orbit">
           <div className="chapters-orbit__rings" aria-hidden="true" />
-          <div className="chapters-orbit__center">
+          <div id="chapters-selected-detail" className="chapters-orbit__center" aria-live="polite">
             <ChapterSigil chapter={selected} compact />
             <span>Chapter {selected.order}</span>
             <strong>{selected.title}</strong>
@@ -44,7 +44,9 @@ export default function ChaptersPage() {
               type="button"
               onClick={() => setSelectedId(chapter.id)}
               style={{ ['--node-index' as string]: chapter.order - 1, ['--node-count' as string]: chapters.length }}
+              aria-controls="chapters-selected-detail"
               aria-label={`Preview chapter ${chapter.order}: ${chapter.title}`}
+              aria-pressed={chapter.id === selected.id}
             >
               {String(chapter.order).padStart(2, '0')}
             </button>

@@ -42,7 +42,7 @@ export default function TimelinePage() {
           <p className="lede">A focused chronology places Aion inside a longer rhythm of life, publication, encounter, and concept formation.</p>
         </div>
         <div className="timeline-orbit" aria-label="Timeline orbit">
-          <div className="timeline-orbit__core">
+          <div id="timeline-selected-orbit-detail" className="timeline-orbit__core" aria-live="polite">
             <span>{year(selected.date)}</span>
             <strong>{selected.title}</strong>
           </div>
@@ -53,7 +53,9 @@ export default function TimelinePage() {
               type="button"
               style={{ ['--node-index' as string]: index, ['--node-count' as string]: orbitEvents.length }}
               onClick={() => setSelectedId(event.id)}
+              aria-controls="timeline-selected-detail timeline-selected-orbit-detail"
               aria-label={`Select ${year(event.date)}: ${event.title}`}
+              aria-pressed={event.id === selected.id}
             >
               {year(event.date).slice(2)}
             </button>
@@ -80,6 +82,8 @@ export default function TimelinePage() {
                 type="button"
                 className={event.id === selected.id ? 'timeline-rail__item timeline-rail__item--active' : 'timeline-rail__item'}
                 onClick={() => setSelectedId(event.id)}
+                aria-controls="timeline-selected-detail timeline-selected-orbit-detail"
+                aria-pressed={event.id === selected.id}
               >
                 <span>{year(event.date)}</span>
                 <strong>{event.title}</strong>
@@ -87,7 +91,7 @@ export default function TimelinePage() {
             </li>
           ))}
         </ol>
-        <aside className="timeline-detail">
+        <aside id="timeline-selected-detail" className="timeline-detail" aria-live="polite">
           <p className="eyebrow">{selected.category}</p>
           <h2>{selected.title}</h2>
           <p>{selected.summary}</p>
