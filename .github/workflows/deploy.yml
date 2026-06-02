@@ -48,6 +48,13 @@ jobs:
       - name: Build GitHub Pages artifact
         run: npm run build:pages
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Pages artifact smoke
+        timeout-minutes: 5
+        run: npm run test:pages:artifact
+
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
