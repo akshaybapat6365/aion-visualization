@@ -16,6 +16,18 @@ export default function Shell({ children }: { children: ReactNode }) {
   const isChapter = location.pathname.startsWith('/journey/chapter/');
   const activeChapter = isChapter ? getChapterById(normalizeChapterId(location.pathname.split('/').pop())) : null;
   const adjacent = activeChapter ? getAdjacentChapters(activeChapter.id) : null;
+  const activeRoute = navRoutes.find((route) => route.path === location.pathname);
+  const navContext = activeChapter
+    ? {
+        kicker: 'Journey',
+        label: `${String(activeChapter.order).padStart(2, '0')} · ${activeChapter.title}`,
+        detail: activeChapter.cluster,
+      }
+    : {
+        kicker: 'Current route',
+        label: activeRoute?.label || 'Home',
+        detail: 'Visual learning path',
+      };
 
   return (
     <div className={isChapter ? 'app-shell app-shell--chapter' : 'app-shell'}>
@@ -23,9 +35,16 @@ export default function Shell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <header className="app-nav" aria-label="Global navigation">
-        <NavLink to="/" className="app-nav__brand" aria-label="Aion home">
-          Aion
-        </NavLink>
+        <div className="app-nav__identity">
+          <NavLink to="/" className="app-nav__brand" aria-label="Aion home">
+            Aion
+          </NavLink>
+          <div className="app-nav__context" aria-label={`Current route: ${navContext.label}`}>
+            <span>{navContext.kicker}</span>
+            <strong>{navContext.label}</strong>
+            <em>{navContext.detail}</em>
+          </div>
+        </div>
         <div className="app-nav__right">
           <nav className="app-nav__links" aria-label="Primary">
             {navRoutes.map((route) => (

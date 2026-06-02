@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const distDir = path.resolve('dist');
 const pagesBase = normalizeBase(process.env.PAGES_BASE || '/aion-visualization');
+const viteBase = pagesBase ? `${pagesBase}/` : '/';
 
 const shellRoutes = [
   '/',
@@ -160,7 +161,7 @@ async function materializePagesRoutes() {
   console.log(`Materialized ${canonicalRoutes.length} canonical Pages routes, ${legacyChapterRoutes.length} legacy chapter redirects, and the legacy query redirect.`);
 }
 
-await run('npx', ['vite', 'build'], {
+await run('npx', ['vite', 'build', '--base', viteBase], {
   env: {
     ...process.env,
     GITHUB_PAGES: 'true',
