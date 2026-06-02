@@ -1,7 +1,8 @@
 export type ChapterId = `ch${number}`;
 
 export interface SourceRef {
-  label: string;
+  work: 'Aion';
+  chapterId: ChapterId;
   locator?: string;
   note?: string;
 }
@@ -26,6 +27,7 @@ export interface ConceptRecord {
   symbolRefs: string[];
   difficulty: 'foundational' | 'intermediate' | 'advanced';
   prerequisites: string[];
+  sourceRefs?: SourceRef[];
 }
 
 export interface SymbolRecord {
@@ -34,6 +36,7 @@ export interface SymbolRecord {
   motif: string;
   historicPeriod: string;
   conceptIds: string[];
+  sourceRefs?: SourceRef[];
 }
 
 export interface LearningObjectRecord {

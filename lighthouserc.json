@@ -3,10 +3,13 @@
     "collect": {
       "numberOfRuns": 1,
       "startServerCommand": "npm run serve",
-      "startServerReadyPattern": "Serving HTTP on",
+      "startServerReadyPattern": "Local:",
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/journey/chapter/index.html?id=ch1"
+        "http://localhost:3000/chapters",
+        "http://localhost:3000/atlas",
+        "http://localhost:3000/journey/chapter/ch1",
+        "http://localhost:3000/journey/chapter/ch14"
       ]
     },
     "assert": {
