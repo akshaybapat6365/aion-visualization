@@ -76,6 +76,10 @@ export default function SceneHost({
         instance.setPanelState?.({ activePanelId: activePanelId || experience.panels[0]?.id || '', progress: panelProgress });
         if (!disposed) setState('ready');
       } catch (error) {
+        instance?.dispose?.();
+        instance = null;
+        instanceRef.current = null;
+        if (mountNode) mountNode.innerHTML = '';
         if (!disposed) {
           setState('fallback');
           setMessage(error instanceof Error ? error.message : experience.fallbackSummary);

@@ -50,7 +50,7 @@
  *   Phase 2 (5s):   Ego identification + leader line
  *   Phase 3 (10s):  Shadow identification + leader line
  *   Phase 4 (16s):  What "projection" means
- *   Phase 5 (22s):  Jung quote
+     *   Phase 5 (22s):  Relation insight
  *   Phase 6 (cyc):  Integration insight
  */
 import * as THREE from 'three';
@@ -78,14 +78,32 @@ export default class ThreeShadowViz extends BaseViz {
         this.mirrorFocus = 1;
         this.projectionFocus = 0;
         this.integrationFocus = 0;
+        this.guidedAnnotations = true;
+        this.annotationPaused = false;
     }
 
     setPanelState(state = {}) {
+        const previousPanelId = this.panelState?.activePanelId;
         this.panelState = Object.assign(this.panelState || {}, state);
+        const nextPanelId = this.panelState?.activePanelId;
+        if (this._annotationOverlay && previousPanelId && nextPanelId && previousPanelId !== nextPanelId) {
+            this._usePanelAnnotationMode();
+        }
+        this._syncPanelAnnotations();
     }
 
     setReducedMotion(enabled) {
         this.reducedMotion = Boolean(enabled);
+    }
+
+    setPaused(paused) {
+        this.annotationPaused = Boolean(paused);
+        if (this.annotationPaused) {
+            this._clearAnnotationTimers();
+        } else if (this.guidedAnnotations) {
+            this._scheduleAnnotations();
+        }
+        this._syncPanelAnnotations();
     }
 
     async init() {
@@ -108,14 +126,14 @@ export default class ThreeShadowViz extends BaseViz {
         );
         cam.position.set(0, 1.5, 14);
 
-        /* ── Mouse ── */
+        /* ── Pointer ── */
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
-        this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+        this._onPointerMove = e => {
+            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         };
-        addEventListener('mousemove', this._onMM);
+        addEventListener('pointermove', this._onPointerMove, { passive: true });
 
         /* ── Build scene ── */
         this._buildEgo();
@@ -123,6 +141,7 @@ export default class ThreeShadowViz extends BaseViz {
         this._buildMirror();
         this._buildProjections();
         this._buildCocoon();
+        this._buildIntegrationBridge();
         this._buildAtmosphere();
         this._buildGround();
         this._buildAnnotations();
@@ -330,6 +349,18 @@ export default class ThreeShadowViz extends BaseViz {
         );
         this.scene.add(this.mirrorPlane);
 
+        this.mirrorHalo = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.42, 14),
+            new THREE.MeshBasicMaterial({
+                color: MIRROR_CLR,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            })
+        );
+        this.scene.add(this.mirrorHalo);
+
         // Shimmer dots along mirror line
         this.mirrorDots = [];
         for (let i = 0; i < 20; i++) {
@@ -397,8 +428,23 @@ export default class ThreeShadowViz extends BaseViz {
             targetGlow.position.copy(dot.position);
             this.scene.add(targetGlow);
 
+            const returnPts = [
+                new THREE.Vector3(pts[2].x, pts[2].y, pts[2].z),
+                new THREE.Vector3(1.1 + d.x * 0.08, d.y * 0.28, d.z * 0.2),
+                new THREE.Vector3(-3.2, -0.2, d.z * 0.12)
+            ];
+            const returnCurve = new THREE.QuadraticBezierCurve3(...returnPts);
+            const returnLine = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints(returnCurve.getPoints(36)),
+                new THREE.LineBasicMaterial({
+                    color: INTEG_CLR, transparent: true, opacity: 0,
+                    blending: THREE.AdditiveBlending
+                })
+            );
+            this.scene.add(returnLine);
+
             this.projArcs.push({
-                line, dot, targetGlow,
+                line, dot, targetGlow, returnLine,
                 ph: Math.random() * Math.PI * 2,
                 speed: 0.2 + Math.random() * 0.2
             });
@@ -434,6 +480,28 @@ export default class ThreeShadowViz extends BaseViz {
             this.scene.add(line);
             this.cocoonStrands.push({ line, ph: Math.random() * Math.PI * 2 });
         }
+    }
+
+    _buildIntegrationBridge() {
+        const bridgeGeo = new THREE.BufferGeometry();
+        bridgeGeo.setAttribute(
+            'position',
+            new THREE.Float32BufferAttribute([
+                -3.5, 0, 0,
+                0, 0.35, 0.6,
+                3.5, 0, 0
+            ], 3)
+        );
+        this.integrationBridge = new THREE.Line(
+            bridgeGeo,
+            new THREE.LineBasicMaterial({
+                color: INTEG_CLR,
+                transparent: true,
+                opacity: 0,
+                blending: THREE.AdditiveBlending
+            })
+        );
+        this.scene.add(this.integrationBridge);
     }
 
     /* ══════════════════════════════════════════════════════
@@ -478,35 +546,47 @@ export default class ThreeShadowViz extends BaseViz {
     _buildAnnotations() {
         const ov = this._annotationOverlay = document.createElement('div');
         ov.className = 'ch2-annotations';
+        ov.setAttribute('aria-hidden', 'true');
         ov.innerHTML = `
 <style>
 .ch2-annotations {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 10;
+    z-index: 2;
     overflow: hidden;
 }
 
 .ch2-a {
     position: absolute;
-    font-family: 'Instrument Serif', serif;
+    font-family: var(--font-serif, 'Instrument Serif', serif);
     opacity: 0;
-    transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
     transform: translateY(6px);
     will-change: opacity, transform;
 }
-.ch2-a.vis {
+.ch2-a.vis,
+.ch2-a.panel-vis {
     opacity: 1;
     transform: translateY(0);
 }
 
+.ch2-a--heading,
 .ch2-a--ego,
-.ch2-a--shadow,
-.ch2-a--projection,
 .ch2-a--quote {
     display: none;
+}
+
+.ch2-a .ch2-text,
+.ch2-a .ch2-integ-text {
+    display: block;
+    border: 1px solid rgba(244, 240, 232, 0.12);
+    border-radius: 8px;
+    background: rgba(3, 3, 7, 0.64);
+    padding: 0.66rem 0.72rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.34);
 }
 
 /* ─── Phase 1: Chapter heading ─── */
@@ -515,19 +595,20 @@ export default class ThreeShadowViz extends BaseViz {
     left: 4.5vw;
 }
 .ch2-a--heading .ch2-eyebrow {
-    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-size: clamp(0.55rem, 0.9vw, 0.72rem);
-    letter-spacing: 0.45em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(140, 100, 180, 0.35);
+    color: rgba(218, 190, 255, 0.84);
     margin-bottom: 0.4em;
 }
 .ch2-a--heading .ch2-title {
     font-size: clamp(2rem, 4vw, 3.4rem);
     font-style: italic;
-    color: rgba(160, 120, 210, 0.45);
-    letter-spacing: -0.02em;
+    color: rgba(244, 240, 232, 0.86);
+    letter-spacing: 0;
     line-height: 1.05;
+    text-shadow: 0 0 2.4rem rgba(140, 100, 220, 0.38);
 }
 
 /* ─── Phase 2: Ego annotation (left, with leader line) ─── */
@@ -540,7 +621,7 @@ export default class ThreeShadowViz extends BaseViz {
     display: block;
     width: 50px;
     height: 1px;
-    background: linear-gradient(to right, rgba(208,176,128,0.5), rgba(208,176,128,0));
+    background: linear-gradient(to right, rgba(232,216,192,0.82), rgba(208,176,128,0));
     margin-bottom: 10px;
     transform-origin: left;
     animation: ch2-leaderPulse 4s ease-in-out infinite;
@@ -552,22 +633,22 @@ export default class ThreeShadowViz extends BaseViz {
 .ch2-a--ego .ch2-text {
     font-size: clamp(0.8rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(220, 210, 190, 0.5);
+    color: rgba(244, 230, 205, 0.92);
     line-height: 1.7;
 }
 .ch2-a--ego .ch2-text em {
     font-style: normal;
-    color: rgba(232, 216, 192, 0.7);
+    color: #ffe6ad;
     font-weight: 400;
 }
 .ch2-a--ego .ch2-note {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-style: normal;
     font-size: 0.55em;
-    letter-spacing: 0.2em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(208, 176, 128, 0.2);
+    color: rgba(236, 202, 132, 0.78);
     margin-top: 0.8em;
 }
 
@@ -582,7 +663,7 @@ export default class ThreeShadowViz extends BaseViz {
     display: block;
     width: 50px;
     height: 1px;
-    background: linear-gradient(to left, rgba(120,60,180,0.5), rgba(120,60,180,0));
+    background: linear-gradient(to left, rgba(196,154,255,0.82), rgba(120,60,180,0));
     margin-left: auto;
     margin-bottom: 10px;
     animation: ch2-leaderPulseShadow 4s ease-in-out infinite;
@@ -594,22 +675,22 @@ export default class ThreeShadowViz extends BaseViz {
 .ch2-a--shadow .ch2-text {
     font-size: clamp(0.8rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(160, 100, 220, 0.5);
+    color: rgba(218, 197, 250, 0.92);
     line-height: 1.7;
 }
 .ch2-a--shadow .ch2-text em {
     font-style: normal;
-    color: rgba(180, 120, 240, 0.7);
+    color: #d8b2ff;
     font-weight: 400;
 }
 .ch2-a--shadow .ch2-note {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-style: normal;
     font-size: 0.55em;
-    letter-spacing: 0.2em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(140, 80, 200, 0.25);
+    color: rgba(202, 166, 246, 0.78);
     margin-top: 0.8em;
 }
 
@@ -624,22 +705,22 @@ export default class ThreeShadowViz extends BaseViz {
     display: block;
     width: 35px;
     height: 1px;
-    background: linear-gradient(to left, rgba(156,39,176,0.4), rgba(156,39,176,0));
+    background: linear-gradient(to left, rgba(236,156,255,0.84), rgba(156,39,176,0));
     margin-left: auto;
     margin-bottom: 8px;
 }
 .ch2-a--projection .ch2-text {
     font-size: clamp(0.72rem, 1.05vw, 0.88rem);
     font-style: italic;
-    color: rgba(156, 39, 176, 0.4);
+    color: rgba(230, 198, 255, 0.94);
     line-height: 1.7;
 }
 .ch2-a--projection .ch2-text em {
     font-style: normal;
-    color: rgba(180, 60, 210, 0.6);
+    color: #f1a4ff;
 }
 
-/* ─── Phase 5: Jung quote (bottom left) ─── */
+/* ─── Phase 5: Relation insight (bottom left) ─── */
 .ch2-a--quote {
     bottom: 7vh;
     left: 4.5vw;
@@ -647,25 +728,28 @@ export default class ThreeShadowViz extends BaseViz {
 }
 .ch2-a--quote .ch2-quotemark {
     display: block;
-    font-size: 2rem;
-    line-height: 1;
-    color: rgba(140, 100, 200, 0.12);
+    font-family: var(--font-ui, Inter, sans-serif);
+    font-size: 0.58rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: rgba(198, 166, 246, 0.42);
     margin-bottom: 0.2em;
 }
 .ch2-a--quote .ch2-text {
     font-size: clamp(0.82rem, 1.2vw, 1rem);
     font-style: italic;
-    color: rgba(180, 150, 220, 0.4);
+    color: rgba(230, 215, 255, 0.9);
     line-height: 1.7;
 }
 .ch2-a--quote .ch2-attr {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-style: normal;
     font-size: 0.5em;
-    letter-spacing: 0.3em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(140, 110, 190, 0.2);
+    color: rgba(196, 166, 246, 0.76);
     margin-top: 0.8em;
 }
 
@@ -682,6 +766,10 @@ export default class ThreeShadowViz extends BaseViz {
     opacity: 1;
     transform: translate(-50%, -50%) translateY(0);
 }
+.ch2-a--integration.panel-vis {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+}
 .ch2-a--integration.hid {
     opacity: 0;
     transform: translate(-50%, -50%) translateY(6px);
@@ -689,55 +777,54 @@ export default class ThreeShadowViz extends BaseViz {
 .ch2-a--integration .ch2-integ-text {
     font-size: clamp(0.9rem, 1.4vw, 1.15rem);
     font-style: italic;
-    color: rgba(224, 192, 255, 0.55);
+    color: rgba(238, 224, 255, 0.94);
     line-height: 1.65;
-    letter-spacing: 0.03em;
+    letter-spacing: 0;
 }
 .ch2-a--integration .ch2-integ-sub {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-style: normal;
     font-size: 0.5em;
-    letter-spacing: 0.25em;
+    letter-spacing: 0;
     text-transform: uppercase;
-    color: rgba(200, 160, 240, 0.2);
+    color: rgba(205, 172, 250, 0.78);
     margin-top: 0.6em;
 }
 
 /* ─── Persistent micro-labels near objects ─── */
 .ch2-micro {
     position: absolute;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui, Inter, sans-serif);
     font-size: clamp(0.45rem, 0.65vw, 0.55rem);
-    letter-spacing: 0.35em;
+    letter-spacing: 0;
     text-transform: uppercase;
     opacity: 0;
     transition: opacity 3s ease;
 }
-.ch2-micro.vis { opacity: 1; }
+.ch2-micro.vis,
+.ch2-micro.panel-vis { opacity: 1; }
 
 .ch2-micro--ego {
     left: 20%;
     top: 55%;
-    color: rgba(208, 176, 128, 0.2);
+    color: rgba(236, 202, 132, 0.72);
 }
 .ch2-micro--shadow {
     right: 18%;
     top: 55%;
-    color: rgba(140, 80, 200, 0.2);
+    color: rgba(202, 166, 246, 0.72);
 }
 .ch2-micro--mirror {
     left: 50%;
     top: 45%;
     transform: translateX(-50%) rotate(-90deg);
-    color: rgba(80, 60, 120, 0.15);
-    letter-spacing: 0.5em;
+    color: rgba(196, 166, 246, 0.58);
+    letter-spacing: 0;
 }
 
 @media (max-width: 768px) {
-    .ch2-a--projection { bottom: 18vh; right: 3vw; max-width: 20ch; }
-    .ch2-a--ego, .ch2-a--shadow { max-width: 18ch; }
-    .ch2-micro { display: none; }
+    .ch2-annotations { display: none; }
 }
 </style>
 
@@ -754,7 +841,7 @@ export default class ThreeShadowViz extends BaseViz {
         The radiant figure is <em>the Ego</em> —
         the self you know, the face
         you show the world.
-        <span class="ch2-note">Move your mouse — it follows you</span>
+        <span class="ch2-note">Pointer and panel controls move the field</span>
     </div>
 </div>
 
@@ -765,7 +852,7 @@ export default class ThreeShadowViz extends BaseViz {
         Its dark mirror is <em>the Shadow</em> —
         everything about yourself
         you refuse to see.
-        <span class="ch2-note">It mirrors you, but distorted and delayed</span>
+        <span class="ch2-note">Distorted, delayed, and still related</span>
     </div>
 </div>
 
@@ -773,23 +860,20 @@ export default class ThreeShadowViz extends BaseViz {
 <div class="ch2-a ch2-a--projection" data-phase="4">
     <span class="ch2-leader"></span>
     <div class="ch2-text">
-        The arcs flying outward are
-        <em>Projections</em> — you see your
-        shadow in others, blaming them
-        for what you won't face
-        in yourself.
+        <em>Projection</em> throws the refused
+        image outward; the faint return
+        path shows it can be owned again.
     </div>
 </div>
 
-<!-- Phase 5: Jung quote -->
+<!-- Phase 5: Relation insight -->
 <div class="ch2-a ch2-a--quote" data-phase="5">
-    <span class="ch2-quotemark">"</span>
+    <span class="ch2-quotemark">return</span>
     <div class="ch2-text">
-        One does not become enlightened
-        by imagining figures of light,
-        but by making the
-        darkness conscious.
-        <span class="ch2-attr">— C. G. Jung, Aion §14</span>
+        Making darkness conscious turns
+        an outside enemy back into
+        inner relation.
+        <span class="ch2-attr">Shadow as relation</span>
     </div>
 </div>
 
@@ -810,21 +894,77 @@ export default class ThreeShadowViz extends BaseViz {
 
         (this.container || document.body).appendChild(ov);
 
-        /* ── Phased reveal schedule ── */
-        this._annTimers = [];
-        const phases = [
+        this._annPhases = [
             { sel: '[data-phase="1"]', delay: 2000 },
             { sel: '[data-phase="2"]', delay: 5000 },
             { sel: '[data-phase="3"]', delay: 10000 },
             { sel: '[data-phase="4"]', delay: 16000 },
             { sel: '[data-phase="5"]', delay: 22000 },
         ];
-        for (const p of phases) {
-            const els = ov.querySelectorAll(p.sel);
+        this._scheduleAnnotations();
+        this._syncPanelAnnotations();
+    }
+
+    _scheduleAnnotations() {
+        this._clearAnnotationTimers();
+        if (!this._annotationOverlay || !this.guidedAnnotations || this.annotationPaused) return;
+        this._annTimers = [];
+        for (const p of this._annPhases || []) {
+            const els = this._annotationOverlay.querySelectorAll(p.sel);
             els.forEach(el => {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
+                const t = setTimeout(() => {
+                    if (!this.annotationPaused && this.guidedAnnotations) el.classList.add('vis');
+                }, p.delay);
                 this._annTimers.push(t);
             });
+        }
+    }
+
+    _clearAnnotationTimers() {
+        this._annTimers?.forEach(t => clearTimeout(t));
+        this._annTimers = [];
+    }
+
+    _usePanelAnnotationMode() {
+        this.guidedAnnotations = false;
+        this._clearAnnotationTimers();
+        this._annotationOverlay?.querySelectorAll('.ch2-a[data-phase], .ch2-a--integration, .ch2-micro').forEach(el => {
+            el.classList.remove('vis', 'panel-vis');
+        });
+    }
+
+    _syncPanelAnnotations() {
+        const ov = this._annotationOverlay;
+        if (!ov) return;
+        ov.querySelectorAll('.ch2-a[data-phase], .ch2-a--integration, .ch2-micro').forEach(el => {
+            el.classList.remove('panel-vis');
+            if (!this.guidedAnnotations || this.annotationPaused) el.classList.remove('vis');
+        });
+
+        const integrationAnn = ov.querySelector('.ch2-a--integration');
+        integrationAnn?.classList.add('hid');
+        if (this.annotationPaused) return;
+
+        const panelId = this.panelState?.activePanelId || 'mirror';
+        const panelPhases = {
+            mirror: ['3'],
+            projection: ['4'],
+            integration: [],
+        }[panelId] || [];
+
+        for (const phase of panelPhases) {
+            ov.querySelectorAll(`[data-phase="${phase}"]`).forEach(el => el.classList.add('panel-vis'));
+        }
+
+        if (panelId === 'mirror') {
+            ov.querySelector('.ch2-micro--ego')?.classList.add('panel-vis');
+            ov.querySelector('.ch2-micro--shadow')?.classList.add('panel-vis');
+            ov.querySelector('.ch2-micro--mirror')?.classList.add('panel-vis');
+        }
+
+        if (panelId === 'integration') {
+            integrationAnn?.classList.add('vis', 'panel-vis');
+            integrationAnn?.classList.remove('hid');
         }
     }
 
@@ -879,6 +1019,9 @@ export default class ThreeShadowViz extends BaseViz {
 
         /* ── Mirror shimmer ── */
         this.mirrorPlane.material.opacity = 0.15 + Math.sin(t * 0.25) * 0.08 + this.mirrorFocus * 0.18 - this.integrationFocus * 0.08;
+        if (this.mirrorHalo) {
+            this.mirrorHalo.material.opacity = 0.05 + this.mirrorFocus * 0.11 - this.integrationFocus * 0.04;
+        }
         for (const md of this.mirrorDots) {
             md.dot.material.opacity = 0.08 + Math.sin(t * 0.6 + md.ph) * 0.1 + this.mirrorFocus * 0.1;
         }
@@ -895,6 +1038,7 @@ export default class ThreeShadowViz extends BaseViz {
             arc.line.material.opacity = projFade * 0.25;
             arc.dot.material.opacity = projFade * 0.5 * pulse;
             arc.targetGlow.material.opacity = projFade * 0.1 * pulse;
+            arc.returnLine.material.opacity = Math.max(this.projectionFocus * 0.18, this.integrationFocus * 0.24) * (0.45 + pulse * 0.55);
         }
 
         /* ── Cocoon wraps ego during projection ── */
@@ -935,9 +1079,18 @@ export default class ThreeShadowViz extends BaseViz {
             3
         );
 
+        if (this.integrationBridge) {
+            const pos = this.integrationBridge.geometry.attributes.position;
+            pos.setXYZ(0, this.egoGroup.position.x, this.egoGroup.position.y, this.egoGroup.position.z);
+            pos.setXYZ(1, 0, 0.35 + Math.sin(t * 0.7) * 0.16, 0.6);
+            pos.setXYZ(2, this.shadowGroup.position.x, this.shadowGroup.position.y, this.shadowGroup.position.z);
+            pos.needsUpdate = true;
+            this.integrationBridge.material.opacity = intPulse * 0.34;
+        }
+
         // Integration annotation sync
         const intAnn = this._annotationOverlay?.querySelector('.ch2-a--integration');
-        if (intAnn) {
+        if (intAnn && this.guidedAnnotations && !this.annotationPaused) {
             if ((integrating && intT > 0.1 && intT < 0.9) || this.integrationFocus > 0.35) {
                 intAnn.classList.add('vis');
                 intAnn.classList.remove('hid');
@@ -989,9 +1142,11 @@ export default class ThreeShadowViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
-        this._annTimers?.forEach(t => clearTimeout(t));
+        removeEventListener('pointermove', this._onPointerMove);
+        this._clearAnnotationTimers();
         this._annotationOverlay?.remove();
+        this.bloom?.dispose();
+        this.composer?.dispose();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {
@@ -1000,7 +1155,7 @@ export default class ThreeShadowViz extends BaseViz {
                 (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
             }
         });
-        this.composer = null; this.scene = null;
+        this.bloom = null; this.composer = null; this.scene = null;
         this.camera = null; this.renderer = null;
         super.dispose();
     }
