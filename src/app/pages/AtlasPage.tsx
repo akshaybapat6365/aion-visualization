@@ -31,7 +31,21 @@ export default function AtlasPage() {
   const active = chapters.find((chapter) => chapter.id === selected) || chapters[0];
   const activeConcepts = getConceptsForChapter(active.id);
   const linkedSymbols = symbols.filter((symbol) => symbol.conceptIds.some((id) => active.keyConceptIds.includes(id)));
-  const linkedRelationships = relationships.filter((rel) => rel.source === active.id || rel.target === active.id).slice(0, 4);
+  const relationshipEntityIds = new Set([
+    active.id,
+    ...active.keyConceptIds,
+    ...linkedSymbols.map((symbol) => symbol.id),
+  ]);
+  const linkedRelationships = relationships
+    .filter((rel) => relationshipEntityIds.has(rel.source) || relationshipEntityIds.has(rel.target))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 4);
+  const entityLabel = (id: string) => (
+    concepts.find((concept) => concept.id === id)?.label
+    || symbols.find((symbol) => symbol.id === id)?.label
+    || chapters.find((chapter) => chapter.id === id)?.title
+    || id
+  );
 
   return (
     <div className="page">
@@ -61,7 +75,9 @@ export default function AtlasPage() {
                   type="button"
                   onClick={() => setSelected(chapter.id)}
                   style={{ ['--node-index' as string]: chapter.order - 1, ['--node-count' as string]: filtered.length }}
+                  aria-controls="atlas-selected-detail"
                   aria-label={`Select chapter ${chapter.order}: ${chapter.title}`}
+                  aria-pressed={chapter.id === selected}
                 >
                   {chapter.order}
                 </button>
@@ -69,7 +85,7 @@ export default function AtlasPage() {
             </div>
           </div>
 
-          <aside className="atlas-detail" aria-label="Selected atlas chapter">
+          <aside id="atlas-selected-detail" className="atlas-detail" aria-label="Selected atlas chapter" aria-live="polite">
             <ChapterSigil chapter={active} compact />
             <p className="eyebrow">Chapter {active.order}</p>
             <h2>{active.title}</h2>
@@ -85,7 +101,17 @@ export default function AtlasPage() {
             </div>
             <div className="atlas-detail__section">
               <h3>Relations</h3>
-              <p>{linkedRelationships.map((rel) => rel.relationType).join(' · ') || 'Chapter sequence relation.'}</p>
+              {linkedRelationships.length > 0 ? (
+                <div className="relation-stack">
+                  {linkedRelationships.map((rel) => (
+                    <span key={rel.id}>
+                      {entityLabel(rel.source)} <em>{rel.relationType.replaceAll('_', ' ')}</em> {entityLabel(rel.target)}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p>Direct relationships are still being curated for this chapter.</p>
+              )}
             </div>
             <Link className="button button--primary" to={getChapterRoute(active.id)}>
               Open chapter

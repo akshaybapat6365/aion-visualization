@@ -1,11 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { ChapterRecord } from '../types';
 
-export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] }) {
-  const mountRef = useRef<HTMLDivElement | null>(null);
+function useReducedMotionPreference() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
+export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] }) {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const prefersReducedMotion = useReducedMotionPreference();
+
+  useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     let disposed = false;
     let frameId = 0;
     let cleanup = () => {};
@@ -17,7 +35,6 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
       const THREE = await import('three');
       if (disposed || !mountRef.current) return;
 
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       mount.appendChild(renderer.domElement);
@@ -161,15 +178,15 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
         const t = time * 0.001;
 
         root.rotation.x = pointerSmooth.y * 0.08;
-        root.rotation.y = pointerSmooth.x * 0.18 + (reduceMotion ? 0 : Math.sin(t * 0.08) * 0.035);
-        stars.rotation.y = reduceMotion ? 0 : t * 0.012;
+        root.rotation.y = pointerSmooth.x * 0.18 + Math.sin(t * 0.08) * 0.035;
+        stars.rotation.y = t * 0.012;
         stars.rotation.x = pointerSmooth.y * 0.03;
         core.rotation.x = t * 0.18;
         core.rotation.y = t * 0.28;
-        veil.scale.setScalar(1 + (reduceMotion ? 0 : Math.sin(t * 0.9) * 0.06));
+        veil.scale.setScalar(1 + Math.sin(t * 0.9) * 0.06);
 
         for (const item of chapterNodes) {
-          const pulse = reduceMotion ? 0 : (Math.sin(t * 1.2 + item.chapter.order * 0.7) + 1) * 0.5;
+          const pulse = (Math.sin(t * 1.2 + item.chapter.order * 0.7) + 1) * 0.5;
           item.node.scale.setScalar(1 + pulse * 0.45);
           item.halo.scale.setScalar(1 + pulse * 0.28);
           const material = item.thread.material as THREE.LineBasicMaterial;
@@ -177,14 +194,13 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
         }
 
         renderer.render(scene, camera);
-        if (!reduceMotion) frameId = window.requestAnimationFrame(render);
+        frameId = window.requestAnimationFrame(render);
       };
 
       resize();
       window.addEventListener('resize', resize);
       mount.addEventListener('pointermove', onPointerMove);
       render(0);
-      if (!reduceMotion) frameId = window.requestAnimationFrame(render);
 
       cleanup = () => {
         window.removeEventListener('resize', resize);
@@ -211,10 +227,45 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
       disposed = true;
       cleanup();
     };
-  }, [chapters]);
+  }, [chapters, prefersReducedMotion]);
+
+  if (prefersReducedMotion) {
+    return (
+      <div
+        className="home-aion-field home-aion-field--static"
+        role="img"
+        aria-label="Static Aion field connecting ego, shadow, fish, alchemy, and Self across fourteen chapters."
+      >
+        <div className="home-aion-field__static" aria-hidden="true">
+          <span className="home-aion-field__static-ring home-aion-field__static-ring--outer" />
+          <span className="home-aion-field__static-ring home-aion-field__static-ring--middle" />
+          <span className="home-aion-field__static-ring home-aion-field__static-ring--inner" />
+          <span className="home-aion-field__static-core" />
+          {chapters.map((chapter) => (
+            <span
+              key={chapter.id}
+              className="home-aion-field__static-node"
+              style={{ ['--node-index' as string]: chapter.order - 1, ['--node-count' as string]: chapters.length }}
+            />
+          ))}
+        </div>
+        <div className="home-aion-field__caption">
+          <span>ego</span>
+          <span>shadow</span>
+          <span>fish</span>
+          <span>alchemy</span>
+          <span>self</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="home-aion-field" aria-hidden="true">
+    <div
+      className="home-aion-field"
+      role="img"
+      aria-label="Animated Aion constellation connecting ego, shadow, fish, alchemy, and Self across fourteen chapters."
+    >
       <div ref={mountRef} className="home-aion-field__mount" />
       <div className="home-aion-field__caption">
         <span>ego</span>
