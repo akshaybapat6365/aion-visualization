@@ -56,3 +56,7 @@ jobs:
 
       - name: Build GitHub Pages artifact
         run: npm run build:pages
+
+      - name: Run Pages artifact smoke
+        timeout-minutes: 5
+        run: npm run test:pages:artifact
