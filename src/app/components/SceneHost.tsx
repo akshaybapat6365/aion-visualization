@@ -7,6 +7,7 @@ interface SceneInstance {
   mount?: () => Promise<void> | void;
   start?: () => void;
   stop?: () => void;
+  setPaused?: (paused: boolean) => void;
   setPanelState?: (state: { activePanelId: string; progress: number }) => void;
   setReducedMotion?: (enabled: boolean) => void;
   dispose?: () => void;
@@ -103,6 +104,7 @@ export default function SceneHost({
 
   useEffect(() => {
     if (state !== 'ready' || reducedMotion) return;
+    instanceRef.current?.setPaused?.(animationPaused);
     if (animationPaused) {
       instanceRef.current?.stop?.();
     } else {

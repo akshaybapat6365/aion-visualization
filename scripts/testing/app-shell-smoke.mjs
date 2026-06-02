@@ -273,8 +273,11 @@ async function smokeLegacyRedirect(page, failures) {
 
 async function smokeChapterJump(page, failures) {
   await gotoAppRoute(page, '/chapters');
+  await page.locator('#chapter-jump-select').waitFor({ state: 'visible', timeout: 10_000 });
   await page.selectOption('#chapter-jump-select', 'ch3');
   await page.waitForURL(/\/journey\/chapter\/ch3$/, { timeout: 10_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.waitForFunction(() => document.querySelector('#chapter-jump-select')?.value === 'ch3', null, { timeout: 10_000 }).catch(() => {});
 
   const selectValue = await page.locator('#chapter-jump-select').inputValue();
   const previousVisible = await page.locator('.chapter-jump__sequence a[aria-label^="Previous chapter"]').isVisible();
@@ -290,11 +293,26 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterOneReferenceCount = await page.locator('.chapter-stage__reference-node').count();
   if (chapterOneReferenceCount !== 3) failures.push(`chapter 1 reference node count mismatch: ${chapterOneReferenceCount}`);
 
+  const pauseAnimation = page.getByRole('button', { name: /Pause animation/ });
+  await pauseAnimation.click();
+  await page.waitForTimeout(5_400);
+  const paused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
+  const pausedAnnotationCount = await page.locator('.ch1-a.vis').count();
+  if (paused !== 'true') failures.push(`chapter animation pause control did not stay pressed: ${paused}`);
+  if (pausedAnnotationCount !== 0) failures.push(`chapter animation pause allowed timed annotations to reveal: ${pausedAnnotationCount}`);
+  await page.getByRole('button', { name: /Resume animation/ }).click();
+
   const rootsReference = page.locator('.chapter-stage__reference-node[data-panel-id="roots"]');
   await rootsReference.click();
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(5_400);
   const rootsReferencePressed = await rootsReference.getAttribute('aria-pressed');
+  const rootsAnnotationState = await page.evaluate(() => ({
+    egoVisible: document.querySelector('.ch1-a--ego')?.classList.contains('vis') || false,
+    rootsPanelVisible: document.querySelector('.ch1-a--unconscious')?.classList.contains('panel-vis') || false,
+  }));
   if (rootsReferencePressed !== 'true') failures.push(`chapter 1 reference node did not become active: ${rootsReferencePressed}`);
+  if (rootsAnnotationState.egoVisible) failures.push('chapter 1 timed ego annotation stayed visible after selecting roots');
+  if (!rootsAnnotationState.rootsPanelVisible) failures.push('chapter 1 roots annotation did not follow selected panel');
 
   const wholeness = page.getByRole('button', { name: /03\s+Wholeness/ });
   await wholeness.click();
@@ -306,13 +324,6 @@ async function smokeChapterSceneControls(page, failures) {
   if (pressed !== 'true') failures.push(`chapter scene control did not become active: ${pressed}`);
   if (scrollY > 10) failures.push(`chapter scene control unexpectedly scrolled page: ${scrollY}`);
   if (!sceneDescription?.includes('The Self holds the field')) failures.push(`chapter 1 scene description did not follow active panel: ${sceneDescription}`);
-
-  const pauseAnimation = page.getByRole('button', { name: /Pause animation/ });
-  await pauseAnimation.click();
-  await page.waitForTimeout(120);
-  const paused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
-  if (paused !== 'true') failures.push(`chapter animation pause control did not stay pressed: ${paused}`);
-  await page.getByRole('button', { name: /Resume animation/ }).click();
 
   await gotoAppRoute(page, '/journey/chapter/ch2');
   const projection = page.getByRole('button', { name: /02\s+Projection/ });

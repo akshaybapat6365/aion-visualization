@@ -49,15 +49,32 @@ export default class ThreeEgoViz extends BaseViz {
         this.egoFocus = 1;
         this.rootFocus = 0;
         this.selfFocus = 0;
+        this.guidedAnnotations = true;
+        this.annotationPaused = false;
     }
 
     setPanelState(state = {}) {
+        const previousPanelId = this.panelState?.activePanelId;
         this.panelState = Object.assign(this.panelState || {}, state);
+        const nextPanelId = this.panelState?.activePanelId;
+        if (this._annotationOverlay && previousPanelId && nextPanelId && previousPanelId !== nextPanelId) {
+            this._usePanelAnnotationMode();
+        }
         this._syncPanelAnnotations();
     }
 
     setReducedMotion(enabled) {
         this.reducedMotion = Boolean(enabled);
+    }
+
+    setPaused(paused) {
+        this.annotationPaused = Boolean(paused);
+        if (this.annotationPaused) {
+            this._clearAnnotationTimers();
+        } else if (this.guidedAnnotations) {
+            this._scheduleAnnotations();
+        }
+        this._syncPanelAnnotations();
     }
 
     async init() {
@@ -591,9 +608,7 @@ export default class ThreeEgoViz extends BaseViz {
 
         (this.container || document.body).appendChild(ov);
 
-        /* ── Phased reveal schedule ── */
-        this._annTimers = [];
-        const phases = [
+        this._annPhases = [
             { sel: '[data-phase="1"]', delay: 2000 },
             { sel: '[data-phase="2"]', delay: 5000 },
             { sel: '[data-phase="3"]', delay: 10000 },
@@ -601,14 +616,36 @@ export default class ThreeEgoViz extends BaseViz {
             { sel: '[data-phase="4b"]', delay: 16000 },
             { sel: '[data-phase="5"]', delay: 21000 },
         ];
-        for (const p of phases) {
-            const el = ov.querySelector(p.sel);
+        this._scheduleAnnotations();
+        this._syncPanelAnnotations();
+    }
+
+    _scheduleAnnotations() {
+        this._clearAnnotationTimers();
+        if (!this._annotationOverlay || !this.guidedAnnotations || this.annotationPaused) return;
+        this._annTimers = [];
+        for (const p of this._annPhases || []) {
+            const el = this._annotationOverlay.querySelector(p.sel);
             if (el) {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
+                const t = setTimeout(() => {
+                    if (!this.annotationPaused && this.guidedAnnotations) el.classList.add('vis');
+                }, p.delay);
                 this._annTimers.push(t);
             }
         }
-        this._syncPanelAnnotations();
+    }
+
+    _clearAnnotationTimers() {
+        this._annTimers?.forEach(t => clearTimeout(t));
+        this._annTimers = [];
+    }
+
+    _usePanelAnnotationMode() {
+        this.guidedAnnotations = false;
+        this._clearAnnotationTimers();
+        this._annotationOverlay?.querySelectorAll('.ch1-a[data-phase], .ch1-a--self').forEach(el => {
+            el.classList.remove('vis', 'panel-vis');
+        });
     }
 
     _syncPanelAnnotations() {
@@ -616,7 +653,10 @@ export default class ThreeEgoViz extends BaseViz {
         if (!ov) return;
         ov.querySelectorAll('.ch1-a[data-phase], .ch1-a--self').forEach(el => {
             el.classList.remove('panel-vis');
+            if (!this.guidedAnnotations || this.annotationPaused) el.classList.remove('vis');
         });
+
+        if (this.annotationPaused) return;
 
         const panelId = this.panelState?.activePanelId || 'ego-light';
         const panelPhases = {
@@ -758,7 +798,7 @@ export default class ThreeEgoViz extends BaseViz {
 
     dispose() {
         removeEventListener('mousemove', this._onMM);
-        this._annTimers?.forEach(t => clearTimeout(t));
+        this._clearAnnotationTimers();
         this._annotationOverlay?.remove();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
