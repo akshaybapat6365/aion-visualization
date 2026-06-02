@@ -3,7 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import type { ChapterRecord } from '../types';
 
 function useReducedMotionPreference() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return null;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -22,7 +25,7 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
   const prefersReducedMotion = useReducedMotionPreference();
 
   useEffect(() => {
-    if (prefersReducedMotion) return undefined;
+    if (prefersReducedMotion !== false) return undefined;
 
     let disposed = false;
     let frameId = 0;
@@ -229,7 +232,7 @@ export default function HomeAionField({ chapters }: { chapters: ChapterRecord[] 
     };
   }, [chapters, prefersReducedMotion]);
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion !== false) {
     return (
       <div
         className="home-aion-field home-aion-field--static"

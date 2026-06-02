@@ -7,6 +7,14 @@ import { chromium } from 'playwright';
 const port = Number(process.env.AION_SMOKE_PORT || 4174);
 const baseUrl = `http://127.0.0.1:${port}`;
 const canonicalRoutes = ['/', '/chapters', '/atlas', '/timeline', '/symbols', '/about'];
+const canonicalRouteLabels = new Map([
+  ['/', 'Home'],
+  ['/chapters', 'Chapters'],
+  ['/atlas', 'Atlas'],
+  ['/timeline', 'Timeline'],
+  ['/symbols', 'Symbols'],
+  ['/about', 'About'],
+]);
 const chapterRoutes = Array.from({ length: 14 }, (_, index) => `/journey/chapter/ch${index + 1}`);
 const desktopViewport = { width: 1440, height: 1000 };
 const mobileViewport = { width: 390, height: 844 };
@@ -151,6 +159,36 @@ async function smokeCanonicalRoutes(page, failures) {
   for (const route of canonicalRoutes) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, route, failures);
+
+    const routeContext = await page.locator('.app-nav__context strong').textContent();
+    const expectedRouteContext = canonicalRouteLabels.get(route);
+    if (routeContext?.trim() !== expectedRouteContext) {
+      failures.push(`route context mismatch for ${route}: ${routeContext}`);
+    }
+  }
+}
+
+async function smokeHomeVisualDetail(page, failures) {
+  await gotoAppRoute(page, '/');
+
+  const routeContext = await page.locator('.app-nav__context strong').textContent();
+  const pathPanelCount = await page.locator('.path-panel').count();
+  const pathDiagramCount = await page.locator('.path-panel__diagram').count();
+  const metricCellCount = await page.locator('.metrics-strip__cell').count();
+  const orbitNodeCount = await page.locator('.home-chapter-orbit a').count();
+  const featuredOrbitNodeCount = await page.locator('.home-chapter-orbit__item--featured a').count();
+  const previewLabels = await page.locator('.chapter-preview').evaluateAll((links) => links.map((link) => link.getAttribute('aria-label') || ''));
+
+  if (routeContext?.trim() !== 'Home') failures.push(`home route context mismatch: ${routeContext}`);
+  if (pathPanelCount !== 3) failures.push(`home path panel count mismatch: ${pathPanelCount}`);
+  if (pathDiagramCount !== 3) failures.push(`home path diagram count mismatch: ${pathDiagramCount}`);
+  if (metricCellCount !== 3) failures.push(`home metric cell count mismatch: ${metricCellCount}`);
+  if (orbitNodeCount !== 14) failures.push(`home chapter orbit node count mismatch: ${orbitNodeCount}`);
+  if (featuredOrbitNodeCount !== 4) failures.push(`home featured orbit node count mismatch: ${featuredOrbitNodeCount}`);
+  for (const label of previewLabels) {
+    if (!/^Chapter \d+: /.test(label) || label.includes('Visual sigil')) {
+      failures.push(`noisy home chapter preview label: ${label}`);
+    }
   }
 }
 
@@ -180,8 +218,30 @@ async function smokeKeyboard(page, failures) {
   if (!brandFocused) failures.push('keyboard focus did not proceed to brand link');
 }
 
-async function smokeReducedMotion(page, failures) {
+async function smokeReducedMotion(browser, failures) {
+  const page = await browser.newPage({ viewport: desktopViewport });
+  const routeFailures = watchForRouteFailures(page);
+  const threeRequests = [];
+
+  page.on('request', (request) => {
+    const url = request.url();
+    if (/\/assets\/three-|three.*\.js/i.test(url)) {
+      threeRequests.push(url);
+    }
+  });
+
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await gotoAppRoute(page, '/');
+  const staticHomeFieldVisible = await page.locator('.home-aion-field--static').isVisible();
+  const animatedHomeCanvasCount = await page.locator('.home-aion-field__mount canvas').count();
+  const navTransitionProperty = await page.locator('.app-nav__link').first().evaluate((element) => window.getComputedStyle(element).transitionProperty);
+  const pathTransitionProperty = await page.locator('.path-panel').first().evaluate((element) => window.getComputedStyle(element).transitionProperty);
+
+  if (!staticHomeFieldVisible) failures.push('reduced-motion home field is not visible');
+  if (animatedHomeCanvasCount !== 0) failures.push(`reduced-motion home rendered animated canvas: ${animatedHomeCanvasCount}`);
+  if (navTransitionProperty !== 'none') failures.push(`reduced-motion nav transition remains active: ${navTransitionProperty}`);
+  if (pathTransitionProperty !== 'none') failures.push(`reduced-motion path transition remains active: ${pathTransitionProperty}`);
+
   await gotoAppRoute(page, '/journey/chapter/ch1');
   await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
   const fallbackVisible = await page.locator('.scene-host__fallback').isVisible();
@@ -189,7 +249,11 @@ async function smokeReducedMotion(page, failures) {
 
   if (!fallbackVisible) failures.push('reduced-motion fallback is not visible for chapter scene');
   if (reducedMotionAttribute !== 'true') failures.push('chapter did not record reduced-motion state');
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
+
+  failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
+  failures.push(...routeFailures.consoleErrors.map((message) => `reduced-motion console error: ${message}`));
+  await page.close();
 }
 
 async function smokeLegacyRedirect(page, failures) {
@@ -363,6 +427,23 @@ async function smokeMobile(page, failures) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
+
+  for (const viewport of [mobileViewport, { width: 320, height: 568 }]) {
+    await page.setViewportSize(viewport);
+    await gotoAppRoute(page, '/');
+
+    const navBox = await page.locator('.app-nav').boundingBox();
+    const heroCopyBox = await page.locator('.home-hero__copy').boundingBox();
+    if (!navBox || !heroCopyBox) {
+      failures.push(`mobile home geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const navBottom = navBox.y + navBox.height;
+    if (navBottom > heroCopyBox.y - 1) {
+      failures.push(`mobile nav overlaps home hero copy at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(navBottom)}, copy top ${Math.round(heroCopyBox.y)}`);
+    }
+  }
 }
 
 async function runSmoke() {
@@ -373,13 +454,15 @@ async function runSmoke() {
   try {
     await waitForServer(server);
     browser = await chromium.launch({ headless: true });
+    await smokeReducedMotion(browser, failures);
+
     const page = await browser.newPage({ viewport: desktopViewport });
     const routeFailures = watchForRouteFailures(page);
 
     await smokeCanonicalRoutes(page, failures);
+    await smokeHomeVisualDetail(page, failures);
     await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
-    await smokeReducedMotion(page, failures);
     await smokeLegacyRedirect(page, failures);
     await smokeChapterJump(page, failures);
     await smokeChapterSceneControls(page, failures);

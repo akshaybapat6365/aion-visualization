@@ -15,7 +15,10 @@ import type { ChapterRecord } from '../types';
 import { CHAPTER_SCENES } from '../visualization/chapterScenes';
 
 function useReducedMotionPreference() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return null;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -41,7 +44,8 @@ export default function ChapterPage({ chapterId }: { chapterId: string }) {
 }
 
 function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
-  const reducedMotion = useReducedMotionPreference();
+  const reducedMotionPreference = useReducedMotionPreference();
+  const reducedMotion = reducedMotionPreference !== false;
   const experience = CHAPTER_SCENES[chapter.id];
   const [activePanelId, setActivePanelId] = useState(experience.panels[0]?.id || '');
   const concepts = getConceptsForChapter(chapter.id);
