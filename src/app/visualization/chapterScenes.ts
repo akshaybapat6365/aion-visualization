@@ -19,12 +19,12 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
     visualTheme: 'Shadow mirror and projection arcs',
     sceneModule: '../visualizations/chapters/ch2/ThreeShadowViz.js',
     motionGrammar: 'opposition',
-    fallbackSummary: 'A split mirror shows ego and shadow as related opposites, with projection arcs returning to the viewer.',
-    checkpoints: ['Identify the rejected figure.', 'Distinguish shadow from evil.', 'Notice projection returning home.'],
+    fallbackSummary: 'A split mirror sets ego and shadow as related opposites; projection arcs throw the refused image outward, then return it as material for integration.',
+    checkpoints: ['Find the refused likeness in the mirror.', 'Trace projection outward and back.', 'Describe integration without erasing the shadow.'],
     panels: [
-      { id: 'mirror', kicker: 'Opposition', title: 'The refused likeness', body: 'The shadow appears as what the ego would rather not recognize.', insight: 'Recognition begins when the image becomes personal.' },
-      { id: 'projection', kicker: 'Projection', title: 'Thrown outward', body: 'Shadow contents distort the world when they are not owned.', insight: 'Projection makes inner conflict look external.' },
-      { id: 'integration', kicker: 'Integration', title: 'Return without collapse', body: 'Integration does not erase darkness; it gives it relation.', insight: 'The ego grows by admitting what it excludes.' },
+      { id: 'mirror', kicker: 'Opposition', title: 'The refused likeness', body: 'The shadow appears as the ego sees a distorted version of what it rejects.', insight: 'Recognition begins when the image becomes personal.' },
+      { id: 'projection', kicker: 'Projection', title: 'Thrown outward', body: 'Shadow contents look like they belong to the outside world when they are not owned.', insight: 'Projection makes inner conflict look external.' },
+      { id: 'integration', kicker: 'Integration', title: 'Return without collapse', body: 'Integration keeps the darkness visible while placing it back in relation.', insight: 'The ego grows by admitting what it excludes.' },
     ],
   },
   ch3: {

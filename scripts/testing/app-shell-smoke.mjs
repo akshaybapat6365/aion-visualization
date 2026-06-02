@@ -255,6 +255,26 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterReferenceVisible) failures.push('reduced-motion chapter reference map is not visible');
   if (chapterPauseControlCount !== 0) failures.push(`reduced-motion chapter rendered pause controls: ${chapterPauseControlCount}`);
   if (!fallbackText?.includes('small surface light')) failures.push('reduced-motion chapter fallback lost Chapter 1 teaching summary');
+
+  await gotoAppRoute(page, '/journey/chapter/ch2');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterTwoFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterTwoReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterTwoReferenceCount = await page.locator('.chapter-stage__reference-node').count();
+  const chapterTwoPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterTwoCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterTwoAnnotationCount = await page.locator('.ch2-annotations').count();
+  const chapterTwoFallbackText = await page.locator('.scene-host__fallback').textContent();
+
+  if (!chapterTwoFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 2 scene');
+  if (chapterTwoReducedMotionAttribute !== 'true') failures.push('Chapter 2 did not record reduced-motion state');
+  if (chapterTwoReferenceCount !== 3) failures.push(`reduced-motion Chapter 2 reference node count mismatch: ${chapterTwoReferenceCount}`);
+  if (chapterTwoPauseControlCount !== 0) failures.push(`reduced-motion Chapter 2 rendered pause controls: ${chapterTwoPauseControlCount}`);
+  if (chapterTwoCanvasCount !== 0) failures.push(`reduced-motion Chapter 2 rendered canvas: ${chapterTwoCanvasCount}`);
+  if (chapterTwoAnnotationCount !== 0) failures.push(`reduced-motion Chapter 2 rendered annotation overlay: ${chapterTwoAnnotationCount}`);
+  if (!chapterTwoFallbackText?.includes('split mirror') || !chapterTwoFallbackText?.includes('projection arcs')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 2 shadow teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -325,15 +345,64 @@ async function smokeChapterSceneControls(page, failures) {
   if (scrollY > 10) failures.push(`chapter scene control unexpectedly scrolled page: ${scrollY}`);
   if (!sceneDescription?.includes('The Self holds the field')) failures.push(`chapter 1 scene description did not follow active panel: ${sceneDescription}`);
 
+  await page.evaluate(() => window.localStorage.removeItem('aion:scene-animation-paused'));
   await gotoAppRoute(page, '/journey/chapter/ch2');
-  const projection = page.getByRole('button', { name: /02\s+Projection/ });
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterTwoReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterTwoReferenceCount = await chapterTwoReferenceNodes.count();
+  const chapterTwoPanelIds = await chapterTwoReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  if (chapterTwoReferenceCount !== 3) failures.push(`chapter 2 reference node count mismatch: ${chapterTwoReferenceCount}`);
+  if (chapterTwoPanelIds.join(',') !== 'mirror,projection,integration') failures.push(`chapter 2 reference nodes out of order: ${chapterTwoPanelIds.join(',')}`);
+
+  const chapterTwoPause = page.getByRole('button', { name: /Pause animation/ });
+  await chapterTwoPause.click();
+  await page.waitForTimeout(5_400);
+  const chapterTwoPaused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
+  const chapterTwoPausedAnnotationCount = await page.locator('.ch2-a--ego.vis, .ch2-micro--ego.vis').count();
+  if (chapterTwoPaused !== 'true') failures.push(`chapter 2 pause control did not stay pressed: ${chapterTwoPaused}`);
+  if (chapterTwoPausedAnnotationCount !== 0) failures.push(`chapter 2 pause allowed timed annotations to reveal: ${chapterTwoPausedAnnotationCount}`);
+  await page.getByRole('button', { name: /Resume animation/ }).click();
+
+  const projection = page.locator('.chapter-stage__reference-node[data-panel-id="projection"]');
   await projection.click();
   await page.waitForTimeout(250);
 
   const projectionPressed = await projection.getAttribute('aria-pressed');
+  const projectionPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="projection"]').count();
+  const projectionPanelAnnotationVisible = await page.locator('.ch2-a--projection.panel-vis').count();
   const chapterTwoScrollY = await page.evaluate(() => window.scrollY);
+  const chapterTwoSceneDescription = await page.locator('#scene-host-description-ch2').textContent();
   if (projectionPressed !== 'true') failures.push(`chapter 2 scene control did not become active: ${projectionPressed}`);
+  if (projectionPanelActive !== 1) failures.push(`chapter 2 projection panel did not become active: ${projectionPanelActive}`);
+  if (projectionPanelAnnotationVisible !== 1) failures.push(`chapter 2 projection annotation did not follow selected panel: ${projectionPanelAnnotationVisible}`);
   if (chapterTwoScrollY > 10) failures.push(`chapter 2 scene control unexpectedly scrolled page: ${chapterTwoScrollY}`);
+  if (!chapterTwoSceneDescription?.includes('Projection: Thrown outward')) failures.push(`chapter 2 scene description did not follow projection panel: ${chapterTwoSceneDescription}`);
+
+  const integration = page.locator('.chapter-stage__reference-node[data-panel-id="integration"]');
+  await integration.click();
+  await page.waitForFunction(() => document.querySelector('.ch2-a--integration')?.classList.contains('vis'), null, { timeout: 2_000 }).catch(() => {});
+  const integrationPressed = await integration.getAttribute('aria-pressed');
+  const integrationAnnotationVisible = await page.locator('.ch2-a--integration.vis').count();
+  if (integrationPressed !== 'true') failures.push(`chapter 2 integration reference did not become active: ${integrationPressed}`);
+  if (integrationAnnotationVisible !== 1) failures.push(`chapter 2 integration annotation did not follow selected panel: ${integrationAnnotationVisible}`);
+
+  const mirror = page.locator('.chapter-stage__reference-node[data-panel-id="mirror"]');
+  await mirror.click();
+  await page.waitForTimeout(850);
+  const integrationAnnotationState = await page.locator('.ch2-a--integration').evaluate((node) => ({
+    visible: node.classList.contains('vis'),
+    hidden: node.classList.contains('hid'),
+  }));
+  if (integrationAnnotationState.visible) failures.push('chapter 2 integration annotation stayed visible after returning to mirror panel');
+  if (!integrationAnnotationState.hidden) failures.push('chapter 2 integration annotation did not enter hidden state after returning to mirror panel');
+
+  const chapterTwoCanvas = page.locator('.scene-host canvas').first();
+  const chapterTwoCanvasBox = await chapterTwoCanvas.boundingBox();
+  const chapterTwoVisiblePixels = await countCanvasPixels(chapterTwoCanvas);
+  if (!chapterTwoCanvasBox || chapterTwoCanvasBox.width < 300 || chapterTwoCanvasBox.height < 300) {
+    failures.push(`chapter 2 canvas geometry too small: ${chapterTwoCanvasBox ? `${Math.round(chapterTwoCanvasBox.width)}x${Math.round(chapterTwoCanvasBox.height)}` : 'missing'}`);
+  }
+  if (chapterTwoVisiblePixels <= 8) failures.push(`chapter 2 canvas appears blank: ${chapterTwoVisiblePixels}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch3');
   const conjunction = page.getByRole('button', { name: /03\s+Conjunction/ });
@@ -458,7 +527,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -493,6 +562,26 @@ async function smokeMobile(page, failures) {
       failures.push(`mobile nav overlaps chapter 1 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterNavBottom)}, heading top ${Math.round(chapterHeadingBox.y)}`);
     }
     if (referenceCount !== 3) failures.push(`mobile chapter 1 reference node count mismatch at ${viewport.width}x${viewport.height}: ${referenceCount}`);
+
+    await gotoAppRoute(page, '/journey/chapter/ch2');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterTwoNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterTwoHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterTwoReferenceCount = await page.locator('.chapter-stage__reference-node').count();
+    const chapterTwoAnnotationDisplay = await page.locator('.ch2-annotations').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
+    const chapterTwoScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    if (!chapterTwoNavBox || !chapterTwoHeadingBox) {
+      failures.push(`mobile chapter 2 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterTwoNavBottom = chapterTwoNavBox.y + chapterTwoNavBox.height;
+    if (chapterTwoNavBottom > chapterTwoHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 2 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterTwoNavBottom)}, heading top ${Math.round(chapterTwoHeadingBox.y)}`);
+    }
+    if (chapterTwoReferenceCount !== 3) failures.push(`mobile chapter 2 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterTwoReferenceCount}`);
+    if (chapterTwoAnnotationDisplay !== 'none') failures.push(`mobile chapter 2 annotation overlay remains visible at ${viewport.width}x${viewport.height}: ${chapterTwoAnnotationDisplay}`);
+    if (chapterTwoScrollWidth > viewport.width + 2) failures.push(`mobile chapter 2 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterTwoScrollWidth}`);
   }
 }
 

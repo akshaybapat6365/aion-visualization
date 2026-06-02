@@ -68,6 +68,16 @@ describe('Aion framework data contract', () => {
       expect(CHAPTER_SCENES[chapter.id].fallbackSummary.length).toBeGreaterThan(20);
     }
   });
+
+  test('keeps Chapter 2 shadow panels in the canonical learning sequence', () => {
+    expect(CHAPTER_SCENES.ch2.panels.map((panel) => panel.id)).toEqual([
+      'mirror',
+      'projection',
+      'integration',
+    ]);
+    expect(CHAPTER_SCENES.ch2.motionGrammar).toBe('opposition');
+    expect(CHAPTER_SCENES.ch2.fallbackSummary).toContain('projection arcs');
+  });
 });
 
 describe('Aion framework route contract', () => {
