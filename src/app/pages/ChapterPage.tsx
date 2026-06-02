@@ -53,6 +53,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const adjacent = getAdjacentChapters(chapter.id);
   const activePanelIndex = Math.max(0, experience.panels.findIndex((panel) => panel.id === activePanelId));
   const panelProgress = experience.panels.length > 1 ? activePanelIndex / (experience.panels.length - 1) : 0;
+  const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -106,12 +107,35 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
                 type="button"
                 onClick={() => setActivePanelId(panel.id)}
                 aria-pressed={panel.id === activePanelId}
+                aria-controls={`${chapter.id}-${panel.id}`}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 {panel.kicker}
               </button>
             ))}
           </div>
+          <div className="chapter-stage__reference-map" aria-label={`${chapter.title} visual reference`} role="group">
+            {experience.panels.map((panel, index) => (
+              <button
+                key={panel.id}
+                className={panel.id === activePanelId ? 'chapter-stage__reference-node chapter-stage__reference-node--active' : 'chapter-stage__reference-node'}
+                type="button"
+                onClick={() => setActivePanelId(panel.id)}
+                aria-pressed={panel.id === activePanelId}
+                aria-controls={`${chapter.id}-${panel.id}`}
+                aria-label={`Show ${panel.title}: ${panel.insight}`}
+                data-panel-id={panel.id}
+              >
+                <span className="chapter-stage__reference-mark" aria-hidden="true" />
+                <span className="chapter-stage__reference-label">{String(index + 1).padStart(2, '0')} {panel.kicker}</span>
+              </button>
+            ))}
+          </div>
+          {activePanel && (
+            <p className="sr-only" role="status" aria-live="polite">
+              Active scene state: {activePanel.title}. {activePanel.insight}
+            </p>
+          )}
         </div>
       </section>
 
@@ -123,6 +147,8 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
             className={panel.id === activePanelId ? 'chapter-panel chapter-panel--active' : 'chapter-panel'}
             data-chapter-panel={chapter.id}
             data-panel-id={panel.id}
+            role="region"
+            aria-labelledby={`${chapter.id}-${panel.id}-title`}
           >
             <div className="chapter-panel__symbol" aria-hidden="true">
               <span className="chapter-panel__ring chapter-panel__ring--outer" />
@@ -131,11 +157,13 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="chapter-panel__axis chapter-panel__axis--horizontal" />
               <span className="chapter-panel__spark chapter-panel__spark--one" />
               <span className="chapter-panel__spark chapter-panel__spark--two" />
+              <span className="chapter-panel__depth chapter-panel__depth--one" />
+              <span className="chapter-panel__depth chapter-panel__depth--two" />
             </div>
             <div className="chapter-panel__copy">
               <span className="chapter-panel__count">{String(index + 1).padStart(2, '0')}</span>
               <p className="eyebrow">{panel.kicker}</p>
-              <h2>{panel.title}</h2>
+              <h2 id={`${chapter.id}-${panel.id}-title`}>{panel.title}</h2>
               <p>{panel.body}</p>
               <strong>{panel.insight}</strong>
             </div>

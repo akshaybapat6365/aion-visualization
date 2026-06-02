@@ -6,12 +6,12 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
     visualTheme: 'Ego/Self depth field',
     sceneModule: '../visualizations/chapters/ch1/ThreeEgoViz.js',
     motionGrammar: 'cyclical-return',
-    fallbackSummary: 'A still diagram places the ego above the deeper Self, with somatic and psychic roots held in a dark field.',
-    checkpoints: ['Locate the ego as a small light.', 'Name what exceeds ego control.', 'Connect the Self to the whole sequence.'],
+    fallbackSummary: 'A still depth diagram places the ego as a small surface light, splits its somatic and psychic roots, and sets the deeper Self as the whole field.',
+    checkpoints: ['Locate the ego as a small surface light.', 'Distinguish the somatic root from the psychic root.', 'Explain why the Self is larger than the conscious I.'],
     panels: [
-      { id: 'ego-light', kicker: 'Orientation', title: 'A point of consciousness', body: 'Begin with the ego as the bright center of immediate identity.', insight: 'The ego is necessary, but not total.' },
-      { id: 'roots', kicker: 'Depth', title: 'Two roots feed the I', body: 'Somatic and psychic roots pull the ego into a wider life-field.', insight: 'Consciousness rests on what it cannot fully command.' },
-      { id: 'self-depth', kicker: 'Wholeness', title: 'The Self holds the field', body: 'The final image subordinates ego to a larger ordering center.', insight: 'The journey starts by scaling the I correctly.' },
+      { id: 'ego-light', kicker: 'Orientation', title: 'A point of consciousness', body: 'Begin with the ego as a bright, local center of identity and attention.', insight: 'The ego is necessary, but not total.' },
+      { id: 'roots', kicker: 'Depth', title: 'Two roots feed the I', body: 'Body, instinct, memory, dream, and intuition pull the ego into a deeper life-field.', insight: 'Consciousness rests on what it cannot fully command.' },
+      { id: 'self-depth', kicker: 'Wholeness', title: 'The Self holds the field', body: 'The final view scales the ego against a larger ordering center below it.', insight: 'The journey starts by scaling the I correctly.' },
     ],
   },
   ch2: {

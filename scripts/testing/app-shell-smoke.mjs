@@ -246,9 +246,15 @@ async function smokeReducedMotion(browser, failures) {
   await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
   const fallbackVisible = await page.locator('.scene-host__fallback').isVisible();
   const reducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterReferenceVisible = await page.locator('.chapter-stage__reference-map').isVisible();
+  const chapterPauseControlCount = await page.locator('.scene-host__pause').count();
+  const fallbackText = await page.locator('.scene-host__fallback').textContent();
 
   if (!fallbackVisible) failures.push('reduced-motion fallback is not visible for chapter scene');
   if (reducedMotionAttribute !== 'true') failures.push('chapter did not record reduced-motion state');
+  if (!chapterReferenceVisible) failures.push('reduced-motion chapter reference map is not visible');
+  if (chapterPauseControlCount !== 0) failures.push(`reduced-motion chapter rendered pause controls: ${chapterPauseControlCount}`);
+  if (!fallbackText?.includes('small surface light')) failures.push('reduced-motion chapter fallback lost Chapter 1 teaching summary');
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -281,14 +287,32 @@ async function smokeChapterJump(page, failures) {
 
 async function smokeChapterSceneControls(page, failures) {
   await gotoAppRoute(page, '/journey/chapter/ch1');
+  const chapterOneReferenceCount = await page.locator('.chapter-stage__reference-node').count();
+  if (chapterOneReferenceCount !== 3) failures.push(`chapter 1 reference node count mismatch: ${chapterOneReferenceCount}`);
+
+  const rootsReference = page.locator('.chapter-stage__reference-node[data-panel-id="roots"]');
+  await rootsReference.click();
+  await page.waitForTimeout(200);
+  const rootsReferencePressed = await rootsReference.getAttribute('aria-pressed');
+  if (rootsReferencePressed !== 'true') failures.push(`chapter 1 reference node did not become active: ${rootsReferencePressed}`);
+
   const wholeness = page.getByRole('button', { name: /03\s+Wholeness/ });
   await wholeness.click();
   await page.waitForTimeout(250);
 
   const pressed = await wholeness.getAttribute('aria-pressed');
   const scrollY = await page.evaluate(() => window.scrollY);
+  const sceneDescription = await page.locator('#scene-host-description-ch1').textContent();
   if (pressed !== 'true') failures.push(`chapter scene control did not become active: ${pressed}`);
   if (scrollY > 10) failures.push(`chapter scene control unexpectedly scrolled page: ${scrollY}`);
+  if (!sceneDescription?.includes('The Self holds the field')) failures.push(`chapter 1 scene description did not follow active panel: ${sceneDescription}`);
+
+  const pauseAnimation = page.getByRole('button', { name: /Pause animation/ });
+  await pauseAnimation.click();
+  await page.waitForTimeout(120);
+  const paused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
+  if (paused !== 'true') failures.push(`chapter animation pause control did not stay pressed: ${paused}`);
+  await page.getByRole('button', { name: /Resume animation/ }).click();
 
   await gotoAppRoute(page, '/journey/chapter/ch2');
   const projection = page.getByRole('button', { name: /02\s+Projection/ });
@@ -423,7 +447,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -443,6 +467,21 @@ async function smokeMobile(page, failures) {
     if (navBottom > heroCopyBox.y - 1) {
       failures.push(`mobile nav overlaps home hero copy at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(navBottom)}, copy top ${Math.round(heroCopyBox.y)}`);
     }
+
+    await gotoAppRoute(page, '/journey/chapter/ch1');
+    const chapterNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const referenceCount = await page.locator('.chapter-stage__reference-node').count();
+    if (!chapterNavBox || !chapterHeadingBox) {
+      failures.push(`mobile chapter 1 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterNavBottom = chapterNavBox.y + chapterNavBox.height;
+    if (chapterNavBottom > chapterHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 1 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterNavBottom)}, heading top ${Math.round(chapterHeadingBox.y)}`);
+    }
+    if (referenceCount !== 3) failures.push(`mobile chapter 1 reference node count mismatch at ${viewport.width}x${viewport.height}: ${referenceCount}`);
   }
 }
 
