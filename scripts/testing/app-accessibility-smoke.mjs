@@ -178,6 +178,45 @@ async function checkRoute(page, route, failures) {
   }
 }
 
+async function checkAtlasDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/atlas`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+
+  const fieldImage = page.getByRole('img', { name: /The Ego Concept Field/ });
+  const search = page.locator('#atlas-search');
+  const chapterRail = page.locator('.atlas-constellation__chapter-rail');
+  const initialRailLabel = await chapterRail.getAttribute('aria-label');
+  const initialCheckedCount = await page.locator('.atlas-constellation__chapter[role="radio"][aria-checked="true"]').count();
+
+  if (!await fieldImage.isVisible()) failures.push('/atlas: constellation image is missing an accessible name');
+  if (initialRailLabel !== '14 chapters in view') failures.push(`/atlas: initial chapter rail label mismatch: ${initialRailLabel}`);
+  if (initialCheckedCount !== 1) failures.push(`/atlas: checked radio count mismatch: ${initialCheckedCount}`);
+
+  await search.fill('syzygy');
+  await page.waitForFunction(() => {
+    const count = document.querySelectorAll('.atlas-constellation__chapter').length;
+    return count > 0 && count < 14;
+  }, null, { timeout: 2_000 }).catch(() => {});
+
+  const filteredChapterCount = await page.locator('.atlas-constellation__chapter').count();
+  const filteredRailLabel = await chapterRail.getAttribute('aria-label');
+  const filteredRailLabelExpected = `${filteredChapterCount} chapter${filteredChapterCount === 1 ? '' : 's'} in view`;
+  const syzygyRadioVisible = await page.getByRole('radio', { name: /Select chapter 3: The Syzygy/ }).isVisible();
+  const filteredImageVisible = await page.getByRole('img', { name: /The Syzygy: Anima and Animus Concept Field/ }).isVisible();
+
+  if (filteredChapterCount <= 0 || filteredChapterCount >= 14) failures.push(`/atlas: filtered chapter count did not narrow: ${filteredChapterCount}`);
+  if (filteredRailLabel !== filteredRailLabelExpected) failures.push(`/atlas: filtered chapter rail label mismatch: ${filteredRailLabel}`);
+  if (!syzygyRadioVisible) failures.push('/atlas: filtered syzygy radio is not visible');
+  if (!filteredImageVisible) failures.push('/atlas: filtered constellation image did not update accessible name');
+
+  await search.fill('not-a-real-term');
+  await page.waitForTimeout(100);
+  const emptyRailLabel = await chapterRail.getAttribute('aria-label');
+  const emptyFieldVisible = await page.getByRole('img', { name: /Empty Atlas Field/ }).isVisible();
+  if (emptyRailLabel !== '0 chapters in view') failures.push(`/atlas: empty chapter rail label mismatch: ${emptyRailLabel}`);
+  if (!emptyFieldVisible) failures.push('/atlas: empty constellation field is missing an accessible name');
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -191,6 +230,7 @@ async function runAccessibilitySmoke() {
     for (const route of [...canonicalRoutes, ...chapterRoutes]) {
       await checkRoute(desktop, route, failures);
     }
+    await checkAtlasDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });

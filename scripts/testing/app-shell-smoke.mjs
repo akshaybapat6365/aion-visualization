@@ -200,6 +200,96 @@ async function smokeHomeVisualDetail(page, failures) {
   }
 }
 
+async function smokeAtlasVisualSearch(page, failures) {
+  await gotoAppRoute(page, '/atlas');
+
+  const search = page.locator('#atlas-search');
+  const constellation = page.locator('.atlas-constellation');
+  const stage = page.locator('.atlas-constellation__stage[role="img"]');
+  const chapters = page.locator('.atlas-constellation__chapter');
+  const chapterRail = page.locator('.atlas-constellation__chapter-rail');
+
+  await search.waitFor({ state: 'visible', timeout: 10_000 });
+
+  const constellationCount = await constellation.count();
+  const initialChapterCount = await chapters.count();
+  const initialConceptNodeCount = await page.locator('.atlas-constellation__field-node--concept').count();
+  const initialSymbolNodeCount = await page.locator('.atlas-constellation__field-node--symbol').count();
+  const initialRelationCount = await page.locator('.atlas-constellation__relation-band span').count();
+  const initialRailRole = await chapterRail.getAttribute('role');
+  const initialRailLabel = await chapterRail.getAttribute('aria-label');
+  const initiallyChecked = await page.locator('.atlas-constellation__chapter[aria-checked="true"]').count();
+
+  if (constellationCount !== 1) failures.push(`atlas constellation count mismatch: ${constellationCount}`);
+  if (!await stage.isVisible()) failures.push('atlas constellation stage is not visible');
+  if (await page.locator('.atlas-constellation__ring').count() !== 2) failures.push('atlas constellation ring count mismatch');
+  if (initialConceptNodeCount < 1) failures.push(`atlas initial concept nodes missing: ${initialConceptNodeCount}`);
+  if (initialSymbolNodeCount < 1) failures.push(`atlas initial symbol nodes missing: ${initialSymbolNodeCount}`);
+  if (initialChapterCount !== 14) failures.push(`atlas chapter rail count mismatch: ${initialChapterCount}`);
+  if (initialRelationCount < 1) failures.push(`atlas initial relation entries missing: ${initialRelationCount}`);
+  if (initialRailRole !== 'radiogroup') failures.push(`atlas chapter rail role mismatch: ${initialRailRole}`);
+  if (initialRailLabel !== '14 chapters in view') failures.push(`atlas chapter rail label mismatch: ${initialRailLabel}`);
+  if (initiallyChecked !== 1) failures.push(`atlas checked chapter count mismatch: ${initiallyChecked}`);
+
+  await search.fill('syzygy');
+  await page.waitForFunction(() => {
+    const count = document.querySelectorAll('.atlas-constellation__chapter').length;
+    return count > 0 && count < 14;
+  }, null, { timeout: 2_000 }).catch(() => {});
+
+  const searchedChapterCount = await chapters.count();
+  const searchedRailLabel = await chapterRail.getAttribute('aria-label');
+  const searchedRailLabelExpected = `${searchedChapterCount} chapter${searchedChapterCount === 1 ? '' : 's'} in view`;
+  const syzygyRadio = page.getByRole('radio', { name: /Select chapter 3: The Syzygy/ });
+  const syzygyVisible = await syzygyRadio.isVisible();
+
+  if (searchedChapterCount <= 0 || searchedChapterCount >= 14) failures.push(`atlas search did not narrow chapter results: ${searchedChapterCount}`);
+  if (searchedRailLabel !== searchedRailLabelExpected) failures.push(`atlas filtered rail label mismatch: ${searchedRailLabel}`);
+  if (!syzygyVisible) failures.push('atlas search did not expose Chapter 3 syzygy result');
+
+  await syzygyRadio.click();
+  const detailTitle = await page.locator('#atlas-selected-detail h2').textContent();
+  const selectedConceptNodeCount = await page.locator('.atlas-constellation__field-node--concept').count();
+  const selectedSymbolNodeCount = await page.locator('.atlas-constellation__field-node--symbol').count();
+  const selectedRelationCount = await page.locator('.atlas-constellation__relation-band span').count();
+  const syzygyChecked = await syzygyRadio.getAttribute('aria-checked');
+  const scrollYAfterSelect = await page.evaluate(() => window.scrollY);
+
+  if (!detailTitle?.includes('The Syzygy')) failures.push(`atlas detail did not follow selected search result: ${detailTitle}`);
+  if (selectedConceptNodeCount < 1) failures.push(`atlas selected concept nodes missing: ${selectedConceptNodeCount}`);
+  if (selectedSymbolNodeCount < 1) failures.push(`atlas selected symbol nodes missing: ${selectedSymbolNodeCount}`);
+  if (selectedRelationCount < 1) failures.push(`atlas selected relation entries missing: ${selectedRelationCount}`);
+  if (syzygyChecked !== 'true') failures.push(`atlas selected radio did not become checked: ${syzygyChecked}`);
+  if (scrollYAfterSelect > 10) failures.push(`atlas chapter selection unexpectedly scrolled page: ${scrollYAfterSelect}`);
+
+  await search.fill('Relational Psyche');
+  await page.waitForFunction(() => document.querySelectorAll('.atlas-constellation__chapter').length === 1, null, { timeout: 2_000 }).catch(() => {});
+  const relationalChapterCount = await chapters.count();
+  const relationalRadio = page.getByRole('radio', { name: /Select chapter 3: The Syzygy/ });
+  if (relationalChapterCount !== 1) failures.push(`atlas cluster search did not filter to one chapter: ${relationalChapterCount}`);
+
+  await relationalRadio.press('ArrowLeft');
+  await page.waitForTimeout(100);
+  const arrowSelectedTitle = await page.locator('#atlas-selected-detail h2').textContent();
+  if (!arrowSelectedTitle?.includes('The Syzygy')) failures.push(`atlas one-result arrow navigation changed selection: ${arrowSelectedTitle}`);
+
+  await search.fill('not-a-real-term');
+  await page.waitForTimeout(100);
+  const emptyChapterCount = await chapters.count();
+  const emptyVisible = await page.locator('.atlas-constellation__empty').isVisible();
+  const emptyDetailTitle = await page.locator('#atlas-selected-detail h2').textContent();
+  const emptyRailLabel = await chapterRail.getAttribute('aria-label');
+  const emptyFieldNodeCount = await page.locator('.atlas-constellation__field-node').count();
+  const emptyImageVisible = await page.getByRole('img', { name: /Empty Atlas Field/ }).isVisible();
+
+  if (emptyChapterCount !== 0) failures.push(`atlas empty search still rendered chapter buttons: ${emptyChapterCount}`);
+  if (!emptyVisible) failures.push('atlas empty search message is not visible');
+  if (!emptyDetailTitle?.includes('Nothing in the field')) failures.push(`atlas empty detail did not render: ${emptyDetailTitle}`);
+  if (emptyRailLabel !== '0 chapters in view') failures.push(`atlas empty rail label mismatch: ${emptyRailLabel}`);
+  if (emptyFieldNodeCount !== 0) failures.push(`atlas empty field still rendered nodes: ${emptyFieldNodeCount}`);
+  if (!emptyImageVisible) failures.push('atlas empty field did not expose empty accessible name');
+}
+
 async function smokeChapterRoutes(page, failures) {
   for (const route of chapterRoutes) {
     await gotoAppRoute(page, route);
@@ -249,6 +339,12 @@ async function smokeReducedMotion(browser, failures) {
   if (animatedHomeCanvasCount !== 0) failures.push(`reduced-motion home rendered animated canvas: ${animatedHomeCanvasCount}`);
   if (navTransitionProperty !== 'none') failures.push(`reduced-motion nav transition remains active: ${navTransitionProperty}`);
   if (pathTransitionProperty !== 'none') failures.push(`reduced-motion path transition remains active: ${pathTransitionProperty}`);
+
+  await gotoAppRoute(page, '/atlas');
+  const atlasChapterTransitionProperty = await page.locator('.atlas-constellation__chapter').first().evaluate((element) => window.getComputedStyle(element).transitionProperty);
+  const atlasCoreAnimationName = await page.locator('.atlas-constellation__core-glow').evaluate((element) => window.getComputedStyle(element).animationName);
+  if (atlasChapterTransitionProperty !== 'none') failures.push(`reduced-motion atlas chapter transition remains active: ${atlasChapterTransitionProperty}`);
+  if (atlasCoreAnimationName !== 'none') failures.push(`reduced-motion atlas core animation remains active: ${atlasCoreAnimationName}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch1');
   await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
@@ -737,6 +833,7 @@ async function runSmoke() {
 
     await smokeCanonicalRoutes(page, failures);
     await smokeHomeVisualDetail(page, failures);
+    await smokeAtlasVisualSearch(page, failures);
     await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
     await smokeLegacyRedirect(page, failures);

@@ -1575,9 +1575,13 @@ h3 {
 }
 
 .chip-row span,
-.concept-cloud span {
+.chip-row button,
+.concept-cloud span,
+.concept-cloud button {
+  min-height: 2rem;
   border: 1px solid var(--line);
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
   color: var(--muted);
   font-family: var(--font-ui);
   padding: 0.32rem 0.58rem;
@@ -1588,11 +1592,18 @@ h3 {
     transform 0.38s var(--motion-spring);
 }
 
-.chip-row span:hover,
-.concept-cloud span:hover {
+.chip-row button:hover,
+.chip-row button:focus-visible,
+.concept-cloud button:hover,
+.concept-cloud button:focus-visible {
   border-color: rgba(212, 175, 55, 0.28);
   color: var(--text);
   transform: translateY(-1px);
+}
+
+.chip-row button,
+.concept-cloud button {
+  cursor: pointer;
 }
 
 .atlas-layout,
@@ -1607,19 +1618,20 @@ h3 {
 .atlas-hero {
   min-height: 100dvh;
   display: grid;
-  grid-template-columns: minmax(0, 0.86fr) minmax(36rem, 1.14fr);
+  grid-template-columns: minmax(16rem, 0.58fr) minmax(0, 1.42fr);
   align-items: center;
   gap: clamp(1.5rem, 4vw, 4rem);
   padding-top: 7rem;
 }
 
 .atlas-hero__copy h1 {
-  max-width: 10ch;
-  font-size: clamp(4rem, 9vw, 8rem);
+  max-width: 11ch;
+  font-size: clamp(3.6rem, 8vw, 7rem);
+  text-wrap: balance;
 }
 
 .atlas-layout--hero {
-  grid-template-columns: minmax(0, 1.15fr) minmax(15rem, 0.85fr);
+  grid-template-columns: minmax(0, 1.34fr) minmax(16.5rem, 0.66fr);
   width: 100%;
 }
 
@@ -1629,21 +1641,73 @@ h3 {
 .chapter-knowledge__block {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-machined);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(5, 5, 8, 0.72);
   box-shadow: var(--shadow-inset);
   padding: 1.2rem;
 }
 
 .atlas-map {
-  min-height: min(66vh, 38rem);
+  min-height: min(72vh, 45rem);
   position: relative;
   overflow: hidden;
+  box-shadow:
+    var(--shadow-inset),
+    0 2rem 6rem rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(20px) saturate(120%);
+}
+
+.atlas-map::before {
+  content: '';
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid rgba(212, 175, 55, 0.11);
+  pointer-events: none;
+}
+
+.atlas-map::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 4.4rem 4.4rem;
+  mask-image: radial-gradient(circle at 54% 54%, black 0 42%, transparent 78%);
 }
 
 .atlas-map__controls {
-  display: flex;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.8fr) minmax(12rem, 1fr);
   gap: 0.7rem;
-  align-items: center;
+  align-items: end;
+  margin-bottom: 0.65rem;
+}
+
+.atlas-map__controls h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.2vw, 2.1rem);
+  text-wrap: balance;
+}
+
+.atlas-map__controls output {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 2.5rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(83, 216, 232, 0.24);
+  border-radius: 999px;
+  color: var(--ink-cyan);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  padding: 0.46rem 0.75rem;
+  white-space: nowrap;
 }
 
 .atlas-map input,
@@ -1657,47 +1721,257 @@ h3 {
   padding: 0.5rem 0.75rem;
 }
 
-.atlas-orbit {
-  --node-count: 14;
-  --orbit-radius: min(13vw, 7.6rem);
-  position: absolute;
-  left: 50%;
-  top: 54%;
-  width: min(calc(100% - 5rem), 25rem);
-  aspect-ratio: 1;
-  border: 1px solid rgba(212, 175, 55, 0.14);
-  border-radius: 50%;
-  box-shadow: inset 0 0 5rem rgba(212, 175, 55, 0.04);
-  transform: translate(-50%, -50%);
+.atlas-constellation {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.85rem;
 }
 
-.atlas-node {
-  --angle: calc((360deg / var(--node-count)) * var(--node-index));
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: #06060b;
+.atlas-constellation__stage {
+  min-height: clamp(24rem, 52vw, 36rem);
+  border-top: 1px solid rgba(212, 175, 55, 0.11);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.11);
+  position: relative;
+  overflow: hidden;
+}
+
+.atlas-constellation__stage svg {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  display: block;
+}
+
+.atlas-constellation__grid-line,
+.atlas-constellation__ring {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.11);
+  stroke-width: 1;
+}
+
+.atlas-constellation__grid-line--vertical {
+  stroke: rgba(83, 216, 232, 0.1);
+}
+
+.atlas-constellation__ring--inner {
+  stroke: rgba(212, 175, 55, 0.35);
+  stroke-dasharray: 2 10;
+}
+
+.atlas-constellation__ring--outer {
+  stroke: rgba(83, 216, 232, 0.23);
+  stroke-dasharray: 1 13;
+}
+
+.atlas-constellation__core-glow {
+  animation: atlas-core-breathe 7.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.atlas-constellation__thread {
+  fill: none;
+  stroke-width: 1.4;
+  opacity: 0.72;
+}
+
+.atlas-constellation__thread--concept {
+  stroke: rgba(212, 175, 55, 0.42);
+}
+
+.atlas-constellation__thread--symbol {
+  stroke: rgba(83, 216, 232, 0.34);
+}
+
+.atlas-constellation__field-node circle,
+.atlas-constellation__center circle {
+  stroke-width: 1.1;
+  filter: drop-shadow(0 1rem 1.2rem rgba(0, 0, 0, 0.36));
+}
+
+.atlas-constellation__field-node--concept circle {
+  fill: rgba(212, 175, 55, 0.11);
+  stroke: rgba(255, 227, 156, 0.72);
+}
+
+.atlas-constellation__field-node--symbol circle {
+  fill: rgba(83, 216, 232, 0.09);
+  stroke: rgba(143, 231, 237, 0.68);
+}
+
+.atlas-constellation__field-node text {
+  fill: var(--text);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: #050508;
+  stroke-linejoin: round;
+  stroke-width: 4px;
+}
+
+.atlas-constellation__center circle {
+  fill: rgba(5, 5, 8, 0.74);
+  stroke: rgba(212, 175, 55, 0.76);
+}
+
+.atlas-constellation__center--empty circle {
+  fill: rgba(5, 5, 8, 0.58);
+  stroke: rgba(255, 255, 255, 0.2);
+}
+
+.atlas-constellation__center-order {
+  fill: var(--gold-soft);
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-variant-numeric: tabular-nums;
+}
+
+.atlas-constellation__center-label {
+  fill: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.atlas-constellation__chapter-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(12rem, 1fr);
+  gap: 0.55rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: 0.2rem 0.1rem 0.45rem;
+  scrollbar-width: none;
+}
+
+.atlas-constellation__chapter-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.atlas-constellation__chapter,
+.atlas-constellation__empty {
+  min-height: 5.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.035);
   color: var(--text);
-  cursor: pointer;
-  transform: rotate(var(--angle)) translateX(var(--orbit-radius)) rotate(calc(-1 * var(--angle)));
-  transition:
-    transform 0.45s var(--motion-spring),
-    border-color 0.45s var(--motion-spring),
-    background 0.45s var(--motion-spring);
+  display: grid;
+  gap: 0.1rem;
+  justify-items: start;
+  padding: 0.72rem;
 }
 
-.atlas-node--active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: #050508;
+.atlas-constellation__chapter {
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background 0.38s var(--motion-spring),
+    border-color 0.38s var(--motion-spring),
+    transform 0.38s var(--motion-spring);
+}
+
+.atlas-constellation__chapter:hover,
+.atlas-constellation__chapter:focus-visible {
+  border-color: rgba(212, 175, 55, 0.35);
+  transform: translateY(-1px);
+}
+
+.atlas-constellation__chapter--active {
+  border-color: rgba(212, 175, 55, 0.74);
+  background: linear-gradient(145deg, rgba(212, 175, 55, 0.18), rgba(83, 216, 232, 0.055));
+}
+
+.atlas-constellation__chapter span {
+  color: var(--gold-soft);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.atlas-constellation__chapter strong {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 550;
+  line-height: 1.05;
+}
+
+.atlas-constellation__chapter em {
+  color: var(--dim);
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.atlas-constellation__relation-band {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.atlas-constellation__relation-band::-webkit-scrollbar {
+  display: none;
+}
+
+.atlas-constellation__relation-band span {
+  flex: 0 0 min(21rem, 82vw);
+  min-height: 3.1rem;
+  border: 1px solid rgba(83, 216, 232, 0.15);
+  border-radius: var(--radius);
+  background: rgba(83, 216, 232, 0.035);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.58rem 0.7rem;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+}
+
+.atlas-constellation__relation-band strong {
+  color: var(--text);
+  font-weight: 520;
+}
+
+.atlas-constellation__relation-band em {
+  color: var(--gold-soft);
+  font-style: normal;
+  white-space: nowrap;
 }
 
 .concept-cloud {
   max-width: 58rem;
+}
+
+.atlas-detail {
+  min-height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+}
+
+.atlas-detail .chapter-sigil {
+  justify-self: start;
+}
+
+.atlas-detail h2 {
+  margin-block: -0.35rem 0;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  text-wrap: balance;
+}
+
+.atlas-detail__empty {
+  display: grid;
+  gap: 0.8rem;
+  align-content: center;
+  min-height: 23rem;
+}
+
+.atlas-detail__empty h2 {
+  max-width: 10ch;
 }
 
 .relation-stack {
@@ -2811,6 +3085,19 @@ h3 {
   font-size: 1.8rem;
 }
 
+@keyframes atlas-core-breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2819,6 +3106,9 @@ h3 {
   .button:hover,
 	  .chapter-card:hover,
 	  .path-panel:hover,
+  .chip-row button:hover,
+  .concept-cloud button:hover,
+  .atlas-constellation__chapter:hover,
 	  .chapter-preview:hover,
 	  .chapter-stage__reference-node:hover,
 	  .scene-host__pause:hover,
@@ -2838,6 +3128,9 @@ h3 {
   .chapter-jump__sequence a,
   .path-panel,
   .chapter-preview,
+  .chip-row button,
+  .concept-cloud button,
+  .atlas-constellation__chapter,
 	  .chapter-card,
 		  .home-narrative__legend-item a,
 		  .chapter-panel,
@@ -2848,7 +3141,36 @@ h3 {
 	  .scene-host__pause {
 	    transition: none;
 	  }
+
+  .atlas-constellation__core-glow {
+    animation: none;
+  }
 	}
+
+@media (max-width: 1120px) {
+  .atlas-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 9rem;
+  }
+
+  .atlas-hero__copy h1 {
+    max-width: 11ch;
+    font-size: clamp(4rem, 10vw, 6.4rem);
+  }
+
+  .atlas-hero__copy .lede {
+    max-width: 33rem;
+  }
+
+  .atlas-layout--hero {
+    grid-template-columns: 1fr;
+  }
+
+  .atlas-map {
+    min-height: 40rem;
+  }
+}
 
 @media (max-width: 860px) {
   .app-nav {
@@ -3016,7 +3338,7 @@ h3 {
 
   .atlas-hero {
     display: grid;
-    padding-top: 7rem;
+    padding-top: 11.5rem;
   }
 
   .atlas-layout--hero {
@@ -3024,13 +3346,28 @@ h3 {
   }
 
   .atlas-map {
-    min-height: 29rem;
+    min-height: auto;
   }
 
-  .atlas-orbit {
-    --orbit-radius: min(31vw, 7.4rem);
-    width: min(calc(100% - 4rem), 20rem);
-    top: 58%;
+  .atlas-map__controls {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .atlas-map__controls output {
+    justify-self: start;
+  }
+
+  .atlas-constellation__stage {
+    min-height: clamp(17.5rem, 78vw, 25rem);
+  }
+
+  .atlas-constellation__chapter-rail {
+    grid-auto-columns: minmax(10.5rem, 76vw);
+  }
+
+  .atlas-constellation__relation-band span {
+    flex-basis: 78vw;
   }
 
   .timeline-orbit,
@@ -3053,7 +3390,12 @@ h3 {
   }
 
   .atlas-hero__copy h1 {
-    font-size: 4.4rem;
+    max-width: 11ch;
+    font-size: clamp(2.85rem, 13.5vw, 4.2rem);
+  }
+
+  .atlas-hero__copy .lede {
+    display: none;
   }
 
   .path-grid,
