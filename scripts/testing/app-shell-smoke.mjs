@@ -475,6 +475,18 @@ async function smokeChapterJump(page, failures) {
   if (selectValue !== 'ch3') failures.push(`chapter jump did not hold active value: ${selectValue}`);
   if (!previousVisible) failures.push('chapter route missing previous chapter control');
   if (!nextVisible) failures.push('chapter route missing next chapter control');
+
+  await gotoAppRoute(page, '/journey/chapter/ch5/');
+  await page.waitForFunction(() => document.querySelector('#chapter-jump-select')?.value === 'ch5', null, { timeout: 10_000 }).catch(() => {});
+  const trailingSlashSelectValue = await page.locator('#chapter-jump-select').inputValue();
+  const trailingSlashContext = await page.locator('.app-nav__context strong').textContent();
+  const trailingSlashReferenceLabels = await page.locator('.chapter-stage__reference-label').evaluateAll((nodes) => nodes.map((node) => node.textContent?.replace(/\s+/g, ' ').trim()));
+
+  if (trailingSlashSelectValue !== 'ch5') failures.push(`trailing-slash chapter route selected ${trailingSlashSelectValue} instead of ch5`);
+  if (trailingSlashContext?.trim() !== '05 · Christ, a Symbol of the Self') failures.push(`trailing-slash chapter route context mismatch: ${trailingSlashContext}`);
+  if (trailingSlashReferenceLabels.join(',') !== '01 Cross,02 Fourth,03 Root') {
+    failures.push(`trailing-slash chapter 5 reference labels mismatch: ${trailingSlashReferenceLabels.join(',')}`);
+  }
 }
 
 async function smokeChapterSceneControls(page, failures) {
@@ -752,7 +764,7 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFiveFourthDescription = await page.locator('#scene-host-description-ch5').textContent();
   if (fourthPressed !== 'true') failures.push(`chapter 5 fourth reference did not become active: ${fourthPressed}`);
   if (fourthPanelActive !== 1) failures.push(`chapter 5 fourth panel did not become active: ${fourthPanelActive}`);
-  if (!chapterFiveFourthDescription?.includes('Shadow: The fourth is missing')) {
+  if (!chapterFiveFourthDescription?.includes('Fourth: The fourth is missing')) {
     failures.push(`chapter 5 scene description did not follow fourth panel: ${chapterFiveFourthDescription}`);
   }
 
@@ -766,7 +778,7 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFiveScrollY = await page.evaluate(() => window.scrollY);
   if (treePressed !== 'true') failures.push(`chapter 5 tree reference did not become active: ${treePressed}`);
   if (treePanelActive !== 1) failures.push(`chapter 5 tree panel did not become active: ${treePanelActive}`);
-  if (!chapterFiveTreeDescription?.includes('Depth: The roots go downward')) failures.push(`chapter 5 scene description did not follow tree panel: ${chapterFiveTreeDescription}`);
+  if (!chapterFiveTreeDescription?.includes('Root: The roots go downward')) failures.push(`chapter 5 scene description did not follow tree panel: ${chapterFiveTreeDescription}`);
   if (chapterFiveScrollY > 10) failures.push(`chapter 5 scene control unexpectedly scrolled page: ${chapterFiveScrollY}`);
 
   const chapterFiveCanvas = page.locator('.scene-host canvas').first();

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 import { getAdjacentChapters, getChapterById, getChapterRoute, getChapters, normalizeChapterId } from '../data/aionData';
-import { APP_ROUTES } from '../routes';
+import { APP_ROUTES, resolveRoute } from '../routes';
 
 const navRoutes = APP_ROUTES.filter((route) => route.name !== 'chapter');
 
@@ -13,10 +13,11 @@ function routeClass({ isActive }: { isActive: boolean }) {
 export default function Shell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const isChapter = location.pathname.startsWith('/journey/chapter/');
-  const activeChapter = isChapter ? getChapterById(normalizeChapterId(location.pathname.split('/').pop())) : null;
+  const routeMatch = resolveRoute(location.pathname);
+  const isChapter = routeMatch.name === 'chapter';
+  const activeChapter = isChapter ? getChapterById(normalizeChapterId(routeMatch.params?.chapterId)) : null;
   const adjacent = activeChapter ? getAdjacentChapters(activeChapter.id) : null;
-  const activeRoute = navRoutes.find((route) => route.path === location.pathname);
+  const activeRoute = navRoutes.find((route) => route.name === routeMatch.name);
   const navContext = activeChapter
     ? {
         kicker: 'Journey',
