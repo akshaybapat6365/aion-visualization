@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import ChapterSigil from '../components/ChapterSigil';
 import HomeAionField from '../components/HomeAionField';
+import HomeNarrativeMap from '../components/HomeNarrativeMap';
 import { getChapterRoute, getChapters, getConcepts, getSymbols } from '../data/aionData';
 
 export default function HomePage() {
@@ -62,22 +63,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section-band section-band--tight">
-        <div className="metrics-strip" aria-label="Aion knowledge model summary">
-          <div className="metrics-strip__cell">
-            <strong>{chapters.length}</strong>
-            <span>chapters</span>
-          </div>
-          <div className="metrics-strip__cell">
-            <strong>{concepts.length}</strong>
-            <span>concepts</span>
-          </div>
-          <div className="metrics-strip__cell">
-            <strong>{symbols.length}</strong>
-            <span>symbols</span>
-          </div>
-        </div>
-      </section>
+      <HomeNarrativeMap chapters={chapters} />
 
       <section className="section-band">
         <div className="section-heading">
@@ -95,7 +81,8 @@ export default function HomePage() {
               </span>
               <h3>{path.title}</h3>
               <p>{path.body}</p>
-              <span className="path-panel__tags" aria-hidden="true">
+              <span className="path-panel__tags">
+                <span className="sr-only">Key concepts: </span>
                 {path.tags.map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}
