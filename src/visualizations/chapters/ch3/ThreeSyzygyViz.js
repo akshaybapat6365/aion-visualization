@@ -71,7 +71,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         this.pairFocus = 1;
         this.orbitFocus = 0;
         this.unionFocus = 0;
-        this.guidedAnnotations = true;
+        this.guidedAnnotations = false;
         this.annotationPaused = false;
     }
 
@@ -544,9 +544,60 @@ export default class ThreeSyzygyViz extends BaseViz {
     transition-delay: 0s;
 }
 .ch3-a.panel-hidden,
+.ch3-panel-note.panel-hidden,
 .ch3-micro.panel-hidden,
 .ch3-quat-label.panel-hidden {
     display: none;
+}
+
+.ch3-panel-note {
+    position: absolute;
+    right: clamp(1rem, 4vw, 4.5rem);
+    bottom: clamp(4.8rem, 10vh, 7rem);
+    width: min(23rem, calc(100vw - 2rem));
+    border-top: 1px solid rgba(255, 224, 160, 0.36);
+    padding-top: 0.85rem;
+    font-family: 'Instrument Serif', serif;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 1.2s;
+}
+
+.ch3-panel-note.panel-vis {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.ch3-panel-note__index {
+    display: block;
+    margin-bottom: 0.38rem;
+    font-family: 'Outfit', 'Helvetica Neue', sans-serif;
+    font-size: clamp(0.54rem, 0.75vw, 0.66rem);
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: rgba(255, 213, 120, 0.74);
+}
+
+.ch3-panel-note__title {
+    display: block;
+    margin-bottom: 0.34rem;
+    color: rgba(255, 244, 224, 0.9);
+    font-size: clamp(1.28rem, 2vw, 1.85rem);
+    font-style: italic;
+    line-height: 1.03;
+}
+
+.ch3-panel-note__body {
+    display: block;
+    color: rgba(212, 206, 224, 0.68);
+    font-size: clamp(0.82rem, 1.05vw, 0.95rem);
+    line-height: 1.55;
 }
 
 /* ─── Phase 1: Chapter heading ─── */
@@ -754,7 +805,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     transform: translate(-50%, -50%) translateY(6px);
 }
 .ch3-a--conjunction .ch3-conj-text {
-    font-size: clamp(0.88rem, 1.3vw, 1.1rem);
+    font-size: clamp(0.82rem, 1.15vw, 1rem);
     font-style: italic;
     color: rgba(255, 236, 246, 0.86);
     line-height: 1.65;
@@ -870,6 +921,7 @@ export default class ThreeSyzygyViz extends BaseViz {
 
 @media (max-width: 768px) {
     .ch3-annotations { display: none; }
+    .ch3-panel-note { display: none; }
     .ch3-a--dance { max-width: 24ch; bottom: 16vh; }
     .ch3-a--anima, .ch3-a--animus { max-width: 18ch; }
     .ch3-a--projection, .ch3-a--quaternio { max-width: 22ch; }
@@ -942,10 +994,29 @@ export default class ThreeSyzygyViz extends BaseViz {
 <div class="ch3-a ch3-a--conjunction">
     <div class="ch3-conj-text">
         Conjunction<br>
-        two poles overlap into a <em>mandorla</em><br>
-        a brief image of wholeness
+        a brief <em>mandorla</em><br>
+        not a final fusion
         <span class="ch3-conj-sub">Glimpsed, not possessed</span>
     </div>
+</div>
+
+<!-- Panel-led lab notes -->
+<div class="ch3-panel-note ch3-panel-note--pair" data-panel-note="pair">
+    <span class="ch3-panel-note__index">01 / Inner Pair</span>
+    <span class="ch3-panel-note__title">Two poles, one psyche</span>
+    <span class="ch3-panel-note__body">Anima and animus mediate relation to the unconscious without becoming fixed identities.</span>
+</div>
+
+<div class="ch3-panel-note ch3-panel-note--orbit" data-panel-note="orbit">
+    <span class="ch3-panel-note__index">02 / Relation Field</span>
+    <span class="ch3-panel-note__title">Projection becomes orbit</span>
+    <span class="ch3-panel-note__body">The image first appears outside, then returns as a pattern the ego can recognize.</span>
+</div>
+
+<div class="ch3-panel-note ch3-panel-note--union" data-panel-note="union">
+    <span class="ch3-panel-note__index">03 / Conjunction</span>
+    <span class="ch3-panel-note__title">Union flashes, then moves</span>
+    <span class="ch3-panel-note__body">Wholeness is glimpsed as rhythm: contact, separation, relation.</span>
 </div>
 
 <!-- Quaternio cardinal labels -->
@@ -969,7 +1040,7 @@ export default class ThreeSyzygyViz extends BaseViz {
             { sel: '[data-phase="5"]', delay: 35000 },
             { sel: '[data-phase="6"]', delay: 42000 },
         ];
-        this._scheduleAnnotations();
+        if (this.guidedAnnotations) this._scheduleAnnotations();
         this._syncPanelAnnotations();
     }
 
@@ -997,7 +1068,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     _usePanelAnnotationMode() {
         this.guidedAnnotations = false;
         this._clearAnnotationTimers();
-        this._annotationOverlay?.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-micro, .ch3-quat-label').forEach(el => {
+        this._annotationOverlay?.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-panel-note, .ch3-micro, .ch3-quat-label').forEach(el => {
             el.classList.remove('vis', 'panel-vis');
             el.classList.add('panel-hidden');
         });
@@ -1007,7 +1078,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         const ov = this._annotationOverlay;
         if (!ov) return;
 
-        ov.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-micro, .ch3-quat-label').forEach(el => {
+        ov.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-panel-note, .ch3-micro, .ch3-quat-label').forEach(el => {
             el.classList.remove('panel-vis');
             if (!this.guidedAnnotations || this.annotationPaused) el.classList.remove('vis');
             if (!this.guidedAnnotations) {
@@ -1019,14 +1090,16 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         const conjAnn = ov.querySelector('.ch3-a--conjunction');
         conjAnn?.classList.add('hid');
-        if (this.annotationPaused) return;
 
         const panelId = this.panelState?.activePanelId || 'pair';
         const panelPhases = {
             pair: [],
-            orbit: ['3', '5', '6'],
+            orbit: [],
             union: [],
         }[panelId] || [];
+
+        ov.querySelector(`[data-panel-note="${panelId}"]`)?.classList.remove('panel-hidden');
+        ov.querySelector(`[data-panel-note="${panelId}"]`)?.classList.add('panel-vis');
 
         for (const phase of panelPhases) {
             ov.querySelectorAll(`[data-phase="${phase}"]`).forEach(el => {

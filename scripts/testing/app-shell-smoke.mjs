@@ -597,8 +597,8 @@ async function smokeChapterSceneControls(page, failures) {
 
   const orbitPressed = await orbit.getAttribute('aria-pressed');
   const orbitPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="orbit"]').count();
-  const orbitPanelAnnotationVisible = await page.locator('.ch3-a--dance.panel-vis').count();
-  const orbitAnnotationDisplay = await page.locator('.ch3-a--dance.panel-vis').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
+  const orbitPanelAnnotationVisible = await page.locator('.ch3-panel-note--orbit.panel-vis').count();
+  const orbitAnnotationDisplay = await page.locator('.ch3-panel-note--orbit.panel-vis').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
   const chapterThreeOrbitScrollY = await page.evaluate(() => window.scrollY);
   const chapterThreeOrbitDescription = await page.locator('#scene-host-description-ch3').textContent();
   if (orbitPressed !== 'true') failures.push(`chapter 3 orbit reference did not become active: ${orbitPressed}`);
@@ -606,7 +606,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (orbitPanelAnnotationVisible !== 1) failures.push(`chapter 3 orbit annotation did not follow selected panel: ${orbitPanelAnnotationVisible}`);
   if (orbitAnnotationDisplay === 'none' || orbitAnnotationDisplay === 'missing') failures.push(`chapter 3 orbit annotation display is not visible: ${orbitAnnotationDisplay}`);
   if (chapterThreeOrbitScrollY > 10) failures.push(`chapter 3 orbit control unexpectedly scrolled page: ${chapterThreeOrbitScrollY}`);
-  if (!chapterThreeOrbitDescription?.includes('Relation: Neither pole stands alone')) failures.push(`chapter 3 scene description did not follow orbit panel: ${chapterThreeOrbitDescription}`);
+  if (!chapterThreeOrbitDescription?.includes('Relation: Projection becomes orbit')) failures.push(`chapter 3 scene description did not follow orbit panel: ${chapterThreeOrbitDescription}`);
 
   const conjunction = page.locator('.chapter-stage__reference-node[data-panel-id="union"]');
   await conjunction.click();
@@ -633,7 +633,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (conjunctionAnnotationState.display === 'none') failures.push('chapter 3 conjunction annotation is still display none');
   if (conjunctionAnnotationState.opacity <= 0) failures.push(`chapter 3 conjunction annotation opacity stayed hidden: ${conjunctionAnnotationState.opacity}`);
   if (chapterThreeUnionScrollY > 10) failures.push(`chapter 3 union control unexpectedly scrolled page: ${chapterThreeUnionScrollY}`);
-  if (!chapterThreeUnionDescription?.includes('Conjunction: A brief union')) failures.push(`chapter 3 scene description did not follow union panel: ${chapterThreeUnionDescription}`);
+  if (!chapterThreeUnionDescription?.includes('Conjunction: Union flashes, then moves')) failures.push(`chapter 3 scene description did not follow union panel: ${chapterThreeUnionDescription}`);
 
   const pair = page.locator('.chapter-stage__reference-node[data-panel-id="pair"]');
   await pair.click();
