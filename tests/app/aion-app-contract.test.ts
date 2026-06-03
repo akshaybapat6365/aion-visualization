@@ -95,6 +95,18 @@ describe('Aion framework data contract', () => {
       'animus',
     ]);
   });
+
+  test('keeps Chapter 4 Self panels tied to mandala and quaternity learning', () => {
+    expect(CHAPTER_SCENES.ch4.panels.map((panel) => panel.id)).toEqual([
+      'seed',
+      'quaternity',
+      'mandala',
+    ]);
+    expect(CHAPTER_SCENES.ch4.motionGrammar).toBe('cyclical-return');
+    expect(CHAPTER_SCENES.ch4.visualTheme).toContain('Self mandala');
+    expect(CHAPTER_SCENES.ch4.fallbackSummary).toContain('Concentric mandala rings');
+    expect(CHAPTER_SCENES.ch4.fallbackSummary).toContain('fourfold ordering image');
+  });
 });
 
 describe('Aion framework route contract', () => {
