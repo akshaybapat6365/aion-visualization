@@ -78,6 +78,23 @@ describe('Aion framework data contract', () => {
     expect(CHAPTER_SCENES.ch2.motionGrammar).toBe('opposition');
     expect(CHAPTER_SCENES.ch2.fallbackSummary).toContain('projection arcs');
   });
+
+  test('keeps Chapter 3 syzygy panels tied to the canonical concept sequence', () => {
+    expect(CHAPTER_SCENES.ch3.panels.map((panel) => panel.id)).toEqual([
+      'pair',
+      'orbit',
+      'union',
+    ]);
+    expect(CHAPTER_SCENES.ch3.motionGrammar).toBe('integration');
+    expect(CHAPTER_SCENES.ch3.fallbackSummary).toContain('projection makes the inner image appear outside');
+    expect(CHAPTER_SCENES.ch3.fallbackSummary).toContain('brief symbolic union');
+
+    expect(getConceptsForChapter('ch3').map((concept) => concept.id)).toEqual([
+      'syzygy',
+      'anima',
+      'animus',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

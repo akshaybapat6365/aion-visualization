@@ -19,7 +19,7 @@ const canonicalRoutes = [
   ...Array.from({ length: 14 }, (_, index) => `/journey/chapter/ch${index + 1}`),
 ];
 
-const mobileRoutes = ['/', '/chapters', '/atlas', '/journey/chapter/ch2', '/journey/chapter/ch6', '/journey/chapter/ch14'];
+const mobileRoutes = ['/', '/chapters', '/atlas', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch6', '/journey/chapter/ch14'];
 
 const mimeTypes = new Map([
   ['.html', 'text/html; charset=utf-8'],
