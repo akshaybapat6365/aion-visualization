@@ -1769,6 +1769,68 @@ h3 {
   background: linear-gradient(90deg, rgba(232, 216, 192, 0.2), rgba(224, 192, 255, 0.72), rgba(196, 166, 246, 0.2));
 }
 
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="pair"] .chapter-stage__reference-mark::before {
+  top: 1.08rem;
+  width: 0.58rem;
+  height: 0.58rem;
+  background: #f4f0e8;
+  box-shadow:
+    -1.25rem 0 0 -0.08rem rgba(184, 200, 232, 0.94),
+    1.25rem 0 0 -0.08rem rgba(255, 208, 96, 0.94),
+    -1.25rem 0 1.45rem rgba(83, 216, 232, 0.34),
+    1.25rem 0 1.45rem rgba(212, 175, 55, 0.38);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="pair"] .chapter-stage__reference-mark::after {
+  top: 1.37rem;
+  width: 2.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(184, 200, 232, 0.16), rgba(255, 236, 246, 0.72), rgba(255, 208, 96, 0.18));
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="orbit"] .chapter-stage__reference-mark::before {
+  top: 0.78rem;
+  width: 2.38rem;
+  height: 1.66rem;
+  border: 1px solid rgba(229, 214, 255, 0.28);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 25% 50%, rgba(184, 200, 232, 0.92), transparent 0.32rem),
+    radial-gradient(circle at 75% 50%, rgba(255, 208, 96, 0.9), transparent 0.32rem),
+    radial-gradient(circle at 50% 50%, rgba(255, 236, 246, 0.2), transparent 0.52rem);
+  box-shadow: 0 0 1.45rem rgba(202, 188, 246, 0.24);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="orbit"] .chapter-stage__reference-mark::after {
+  top: 1.58rem;
+  width: 2.9rem;
+  height: 1.8rem;
+  border-top: 1px solid rgba(202, 188, 246, 0.45);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="union"] .chapter-stage__reference-mark::before {
+  top: 0.92rem;
+  width: 2.4rem;
+  height: 1.62rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 42% 50%, rgba(184, 200, 232, 0.9), transparent 0.56rem),
+    radial-gradient(circle at 58% 50%, rgba(255, 208, 96, 0.9), transparent 0.56rem),
+    radial-gradient(circle at 50% 50%, rgba(255, 236, 246, 0.74), transparent 0.38rem);
+  box-shadow:
+    0 0 1.7rem rgba(255, 224, 240, 0.44),
+    0 0 3rem rgba(212, 175, 55, 0.14);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node[data-panel-id="union"] .chapter-stage__reference-mark::after {
+  top: 0.76rem;
+  width: 1px;
+  height: 2.35rem;
+  background: linear-gradient(180deg, transparent, rgba(255, 236, 246, 0.66), transparent);
+}
+
 .scene-host__status,
 .scene-host__fallback {
   position: absolute;
@@ -2208,6 +2270,68 @@ h3 {
   top: 50%;
   background: var(--gold-soft);
   box-shadow: 0 0 1.35rem rgba(212, 175, 55, 0.65);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel__symbol {
+  background:
+    radial-gradient(circle at 30% 48%, rgba(83, 216, 232, 0.14), transparent 4.4rem),
+    radial-gradient(circle at 70% 48%, rgba(212, 175, 55, 0.16), transparent 4.4rem),
+    radial-gradient(circle at 50% 50%, rgba(255, 224, 240, 0.12), transparent 5rem),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.014));
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel__symbol::before {
+  inset: 20% 24%;
+  border-radius: 50%;
+  border-color: rgba(229, 214, 255, 0.16);
+  box-shadow:
+    inset 2.8rem 0 4rem rgba(83, 216, 232, 0.045),
+    inset -2.8rem 0 4rem rgba(212, 175, 55, 0.052),
+    0 0 3.2rem rgba(255, 224, 240, 0.08);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel__symbol::after {
+  width: 0.62rem;
+  height: 0.62rem;
+  background: #ffe8f1;
+  box-shadow:
+    -4rem 0 1.45rem rgba(83, 216, 232, 0.58),
+    4rem 0 1.45rem rgba(212, 175, 55, 0.62),
+    0 0 3rem rgba(255, 224, 240, 0.42);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="pair"] .chapter-panel__axis--horizontal {
+  width: 54%;
+  background: linear-gradient(90deg, rgba(83, 216, 232, 0.12), rgba(255, 236, 246, 0.48), rgba(212, 175, 55, 0.14));
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="orbit"] .chapter-panel__ring--outer {
+  width: 82%;
+  border-color: rgba(229, 214, 255, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="orbit"] .chapter-panel__axis--horizontal {
+  width: 72%;
+  background: linear-gradient(90deg, transparent, rgba(202, 188, 246, 0.48), transparent);
+  transform: translate(-50%, -50%) rotate(-12deg);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="union"] .chapter-panel__ring--inner {
+  width: 31%;
+  border-color: rgba(255, 224, 240, 0.34);
+  box-shadow:
+    0 0 2.2rem rgba(255, 224, 240, 0.16),
+    inset 0 0 2.8rem rgba(255, 224, 240, 0.08);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="union"] .chapter-panel__spark--one {
+  left: 44%;
+  background: #b8c8e8;
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-panel[data-panel-id="union"] .chapter-panel__spark--two {
+  right: 44%;
+  background: #ffd060;
 }
 
 .chapter-experience[data-motion-grammar="cyclical-return"] .chapter-panel__symbol {

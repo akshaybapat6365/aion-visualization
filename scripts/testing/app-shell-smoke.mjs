@@ -275,6 +275,29 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterTwoFallbackText?.includes('split mirror') || !chapterTwoFallbackText?.includes('projection arcs')) {
     failures.push('reduced-motion chapter fallback lost Chapter 2 shadow teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch3');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterThreeFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterThreeReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterThreeReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterThreeReferenceCount = await chapterThreeReferenceNodes.count();
+  const chapterThreePanelIds = await chapterThreeReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterThreePauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterThreeCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterThreeAnnotationCount = await page.locator('.ch3-annotations').count();
+  const chapterThreeFallbackText = await page.locator('.scene-host__fallback').textContent();
+
+  if (!chapterThreeFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 3 scene');
+  if (chapterThreeReducedMotionAttribute !== 'true') failures.push('Chapter 3 did not record reduced-motion state');
+  if (chapterThreeReferenceCount !== 3) failures.push(`reduced-motion Chapter 3 reference node count mismatch: ${chapterThreeReferenceCount}`);
+  if (chapterThreePanelIds.join(',') !== 'pair,orbit,union') failures.push(`reduced-motion Chapter 3 reference nodes out of order: ${chapterThreePanelIds.join(',')}`);
+  if (chapterThreePauseControlCount !== 0) failures.push(`reduced-motion Chapter 3 rendered pause controls: ${chapterThreePauseControlCount}`);
+  if (chapterThreeCanvasCount !== 0) failures.push(`reduced-motion Chapter 3 rendered canvas: ${chapterThreeCanvasCount}`);
+  if (chapterThreeAnnotationCount !== 0) failures.push(`reduced-motion Chapter 3 rendered annotation overlay: ${chapterThreeAnnotationCount}`);
+  if (!chapterThreeFallbackText?.includes('projection makes the inner image appear outside') || !chapterThreeFallbackText?.includes('brief symbolic union')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 3 syzygy teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -404,15 +427,85 @@ async function smokeChapterSceneControls(page, failures) {
   }
   if (chapterTwoVisiblePixels <= 8) failures.push(`chapter 2 canvas appears blank: ${chapterTwoVisiblePixels}`);
 
+  await page.evaluate(() => window.localStorage.removeItem('aion:scene-animation-paused'));
   await gotoAppRoute(page, '/journey/chapter/ch3');
-  const conjunction = page.getByRole('button', { name: /03\s+Conjunction/ });
-  await conjunction.click();
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterThreeReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterThreeReferenceCount = await chapterThreeReferenceNodes.count();
+  const chapterThreePanelIds = await chapterThreeReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  if (chapterThreeReferenceCount !== 3) failures.push(`chapter 3 reference node count mismatch: ${chapterThreeReferenceCount}`);
+  if (chapterThreePanelIds.join(',') !== 'pair,orbit,union') failures.push(`chapter 3 reference nodes out of order: ${chapterThreePanelIds.join(',')}`);
+
+  const chapterThreePause = page.getByRole('button', { name: /Pause animation/ });
+  await chapterThreePause.click();
+  await page.waitForTimeout(5_400);
+  const chapterThreePaused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
+  const chapterThreePausedAnnotationCount = await page.locator('.ch3-a--anima.vis, .ch3-micro--anima.vis').count();
+  if (chapterThreePaused !== 'true') failures.push(`chapter 3 pause control did not stay pressed: ${chapterThreePaused}`);
+  if (chapterThreePausedAnnotationCount !== 0) failures.push(`chapter 3 pause allowed timed annotations to reveal: ${chapterThreePausedAnnotationCount}`);
+  await page.getByRole('button', { name: /Resume animation/ }).click();
+
+  const orbit = page.locator('.chapter-stage__reference-node[data-panel-id="orbit"]');
+  await orbit.click();
   await page.waitForTimeout(250);
 
+  const orbitPressed = await orbit.getAttribute('aria-pressed');
+  const orbitPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="orbit"]').count();
+  const orbitPanelAnnotationVisible = await page.locator('.ch3-a--dance.panel-vis').count();
+  const orbitAnnotationDisplay = await page.locator('.ch3-a--dance.panel-vis').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
+  const chapterThreeOrbitScrollY = await page.evaluate(() => window.scrollY);
+  const chapterThreeOrbitDescription = await page.locator('#scene-host-description-ch3').textContent();
+  if (orbitPressed !== 'true') failures.push(`chapter 3 orbit reference did not become active: ${orbitPressed}`);
+  if (orbitPanelActive !== 1) failures.push(`chapter 3 orbit panel did not become active: ${orbitPanelActive}`);
+  if (orbitPanelAnnotationVisible !== 1) failures.push(`chapter 3 orbit annotation did not follow selected panel: ${orbitPanelAnnotationVisible}`);
+  if (orbitAnnotationDisplay === 'none' || orbitAnnotationDisplay === 'missing') failures.push(`chapter 3 orbit annotation display is not visible: ${orbitAnnotationDisplay}`);
+  if (chapterThreeOrbitScrollY > 10) failures.push(`chapter 3 orbit control unexpectedly scrolled page: ${chapterThreeOrbitScrollY}`);
+  if (!chapterThreeOrbitDescription?.includes('Relation: Neither pole stands alone')) failures.push(`chapter 3 scene description did not follow orbit panel: ${chapterThreeOrbitDescription}`);
+
+  const conjunction = page.locator('.chapter-stage__reference-node[data-panel-id="union"]');
+  await conjunction.click();
+  await page.waitForFunction(() => {
+    const node = document.querySelector('.ch3-a--conjunction');
+    return node?.classList.contains('vis') && Number(window.getComputedStyle(node).opacity) > 0.01;
+  }, null, { timeout: 2_000 }).catch(() => {});
+
   const conjunctionPressed = await conjunction.getAttribute('aria-pressed');
-  const chapterThreeScrollY = await page.evaluate(() => window.scrollY);
-  if (conjunctionPressed !== 'true') failures.push(`chapter 3 scene control did not become active: ${conjunctionPressed}`);
-  if (chapterThreeScrollY > 10) failures.push(`chapter 3 scene control unexpectedly scrolled page: ${chapterThreeScrollY}`);
+  const conjunctionPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="union"]').count();
+  const conjunctionAnnotationState = await page.locator('.ch3-a--conjunction').evaluate((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      visible: node.classList.contains('vis'),
+      display: styles.display,
+      opacity: Number(styles.opacity),
+    };
+  });
+  const chapterThreeUnionScrollY = await page.evaluate(() => window.scrollY);
+  const chapterThreeUnionDescription = await page.locator('#scene-host-description-ch3').textContent();
+  if (conjunctionPressed !== 'true') failures.push(`chapter 3 union reference did not become active: ${conjunctionPressed}`);
+  if (conjunctionPanelActive !== 1) failures.push(`chapter 3 union panel did not become active: ${conjunctionPanelActive}`);
+  if (!conjunctionAnnotationState.visible) failures.push('chapter 3 conjunction annotation did not follow selected panel');
+  if (conjunctionAnnotationState.display === 'none') failures.push('chapter 3 conjunction annotation is still display none');
+  if (conjunctionAnnotationState.opacity <= 0) failures.push(`chapter 3 conjunction annotation opacity stayed hidden: ${conjunctionAnnotationState.opacity}`);
+  if (chapterThreeUnionScrollY > 10) failures.push(`chapter 3 union control unexpectedly scrolled page: ${chapterThreeUnionScrollY}`);
+  if (!chapterThreeUnionDescription?.includes('Conjunction: A brief union')) failures.push(`chapter 3 scene description did not follow union panel: ${chapterThreeUnionDescription}`);
+
+  const pair = page.locator('.chapter-stage__reference-node[data-panel-id="pair"]');
+  await pair.click();
+  await page.waitForTimeout(250);
+  const conjunctionHiddenAfterPair = await page.locator('.ch3-a--conjunction').evaluate((node) => ({
+    visible: node.classList.contains('vis'),
+    hidden: node.classList.contains('hid'),
+  }));
+  if (conjunctionHiddenAfterPair.visible) failures.push('chapter 3 conjunction annotation stayed visible after returning to pair panel');
+  if (!conjunctionHiddenAfterPair.hidden) failures.push('chapter 3 conjunction annotation did not enter hidden state after returning to pair panel');
+
+  const chapterThreeCanvas = page.locator('.scene-host canvas').first();
+  const chapterThreeCanvasBox = await chapterThreeCanvas.boundingBox();
+  const chapterThreeVisiblePixels = await countCanvasPixels(chapterThreeCanvas);
+  if (!chapterThreeCanvasBox || chapterThreeCanvasBox.width < 300 || chapterThreeCanvasBox.height < 300) {
+    failures.push(`chapter 3 canvas geometry too small: ${chapterThreeCanvasBox ? `${Math.round(chapterThreeCanvasBox.width)}x${Math.round(chapterThreeCanvasBox.height)}` : 'missing'}`);
+  }
+  if (chapterThreeVisiblePixels <= 8) failures.push(`chapter 3 canvas appears blank: ${chapterThreeVisiblePixels}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch4');
   const mandala = page.getByRole('button', { name: /03\s+Mandala/ });
@@ -527,7 +620,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -582,6 +675,42 @@ async function smokeMobile(page, failures) {
     if (chapterTwoReferenceCount !== 3) failures.push(`mobile chapter 2 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterTwoReferenceCount}`);
     if (chapterTwoAnnotationDisplay !== 'none') failures.push(`mobile chapter 2 annotation overlay remains visible at ${viewport.width}x${viewport.height}: ${chapterTwoAnnotationDisplay}`);
     if (chapterTwoScrollWidth > viewport.width + 2) failures.push(`mobile chapter 2 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterTwoScrollWidth}`);
+
+    await gotoAppRoute(page, '/journey/chapter/ch3');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterThreeNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterThreeHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterThreeReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterThreeReferenceCount = await chapterThreeReferenceNodes.count();
+    const chapterThreePanelIds = await chapterThreeReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterThreeAnnotationDisplay = await page.locator('.ch3-annotations').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
+    const chapterThreeScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterThreeReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    if (!chapterThreeNavBox || !chapterThreeHeadingBox) {
+      failures.push(`mobile chapter 3 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterThreeNavBottom = chapterThreeNavBox.y + chapterThreeNavBox.height;
+    if (chapterThreeNavBottom > chapterThreeHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 3 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterThreeNavBottom)}, heading top ${Math.round(chapterThreeHeadingBox.y)}`);
+    }
+    if (chapterThreeReferenceCount !== 3) failures.push(`mobile chapter 3 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterThreeReferenceCount}`);
+    if (chapterThreePanelIds.join(',') !== 'pair,orbit,union') failures.push(`mobile chapter 3 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterThreePanelIds.join(',')}`);
+    if (chapterThreeAnnotationDisplay !== 'none') failures.push(`mobile chapter 3 annotation overlay remains visible at ${viewport.width}x${viewport.height}: ${chapterThreeAnnotationDisplay}`);
+    if (chapterThreeScrollWidth > viewport.width + 2) failures.push(`mobile chapter 3 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterThreeScrollWidth}`);
+    if (chapterThreeReferenceMapBox && chapterThreeReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 3 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterThreeReferenceMapBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterThreeCanvas = page.locator('.scene-host canvas').first();
+      const chapterThreeCanvasCount = await chapterThreeCanvas.count();
+      if (chapterThreeCanvasCount > 0) {
+        const chapterThreeVisiblePixels = await countCanvasPixels(chapterThreeCanvas);
+        if (chapterThreeVisiblePixels <= 8) failures.push(`mobile chapter 3 canvas appears blank at ${viewport.width}x${viewport.height}: ${chapterThreeVisiblePixels}`);
+      }
+    }
   }
 }
 

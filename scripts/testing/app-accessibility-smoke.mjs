@@ -190,7 +190,7 @@ async function runAccessibilitySmoke() {
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch6', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch6', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();

@@ -2,17 +2,10 @@
  * ThreeSyzygyViz.js — Chapter 3: "The Syzygy: Anima and Animus"
  *
  * Jung, Aion §20–§42:
- *   "Every man carries within him the eternal image of woman…
- *    This image is fundamentally unconscious, an hereditary factor
- *    of primordial origin."
- *
- *   "What is not-I, not masculine, is most probably feminine,
- *    and because the not-I is felt as not belonging to me and
- *    therefore as outside me, the anima-image is usually
- *    projected upon women."
- *
- *   "The syzygy motif… appears as pairs of divine figures,
- *    of Christ and Church, of bridegroom and bride."
+ *   This scene treats anima, animus, syzygy, projection, and
+ *   quaternio as visual concepts. Source anchoring stays light here:
+ *   the React shell carries the accessible teaching copy, while the
+ *   canvas annotations remain sparse visual cues.
  *
  * ── VISUAL DESIGN RATIONALE ──────────────────────────────
  *
@@ -46,12 +39,13 @@
  *
  * ── ANNOTATION DESIGN ────────────────────────────────────
  *
- *   Phase 1 (2s):   Chapter heading
- *   Phase 2 (6s):   Anima identification — "the inner feminine"
- *   Phase 3 (11s):  Animus identification — "the inner masculine"
- *   Phase 4 (17s):  The dance / relationship concept
- *   Phase 5 (23s):  Jung quote about the eternal image
- *   Phase 6 (cyc):  Conjunction annotation — "sacred union"
+ *   Phase 1 (7s):   Anima identification
+ *   Phase 2 (14s):  Animus identification
+ *   Phase 3 (21s):  The dance / relationship concept
+ *   Phase 4 (28s):  Relation insight
+ *   Phase 5 (35s):  Projection
+ *   Phase 6 (42s):  Quaternio
+ *   Cyclic:          Conjunction annotation
  */
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -77,14 +71,32 @@ export default class ThreeSyzygyViz extends BaseViz {
         this.pairFocus = 1;
         this.orbitFocus = 0;
         this.unionFocus = 0;
+        this.guidedAnnotations = true;
+        this.annotationPaused = false;
     }
 
     setPanelState(state = {}) {
+        const previousPanelId = this.panelState?.activePanelId;
         this.panelState = Object.assign(this.panelState || {}, state);
+        const nextPanelId = this.panelState?.activePanelId;
+        if (this._annotationOverlay && previousPanelId && nextPanelId && previousPanelId !== nextPanelId) {
+            this._usePanelAnnotationMode();
+        }
+        this._syncPanelAnnotations();
     }
 
     setReducedMotion(enabled) {
         this.reducedMotion = Boolean(enabled);
+    }
+
+    setPaused(paused) {
+        this.annotationPaused = Boolean(paused);
+        if (this.annotationPaused) {
+            this._clearAnnotationTimers();
+        } else if (this.guidedAnnotations) {
+            this._scheduleAnnotations();
+        }
+        this._syncPanelAnnotations();
     }
 
     async init() {
@@ -107,14 +119,14 @@ export default class ThreeSyzygyViz extends BaseViz {
         );
         cam.position.set(0, 3, 16);
 
-        /* ── Mouse ── */
+        /* ── Pointer ── */
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
-        this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+        this._onPointerMove = e => {
+            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
         };
-        addEventListener('mousemove', this._onMM);
+        addEventListener('pointermove', this._onPointerMove, { passive: true });
 
         /* ── Build scene ── */
         this._buildAnima();
@@ -502,13 +514,14 @@ export default class ThreeSyzygyViz extends BaseViz {
     _buildAnnotations() {
         const ov = this._annotationOverlay = document.createElement('div');
         ov.className = 'ch3-annotations';
+        ov.setAttribute('aria-hidden', 'true');
         ov.innerHTML = `
 <style>
 .ch3-annotations {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 10;
+    z-index: 2;
     overflow: hidden;
 }
 
@@ -516,22 +529,23 @@ export default class ThreeSyzygyViz extends BaseViz {
     position: absolute;
     font-family: 'Instrument Serif', serif;
     opacity: 0;
+    visibility: hidden;
     transition: opacity 2.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 2.8s cubic-bezier(0.16, 1, 0.3, 1);
+                transform 2.8s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 2.8s;
     transform: translateY(6px);
     will-change: opacity, transform;
 }
-.ch3-a.vis {
+.ch3-a.vis,
+.ch3-a.panel-vis {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
+    transition-delay: 0s;
 }
-
-.ch3-a--anima,
-.ch3-a--animus,
-.ch3-a--dance,
-.ch3-a--quote,
-.ch3-a--projection,
-.ch3-a--quaternio {
+.ch3-a.panel-hidden,
+.ch3-micro.panel-hidden,
+.ch3-quat-label.panel-hidden {
     display: none;
 }
 
@@ -545,14 +559,14 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: clamp(0.55rem, 0.9vw, 0.72rem);
     letter-spacing: 0.45em;
     text-transform: uppercase;
-    color: rgba(100, 100, 160, 0.35);
+    color: rgba(196, 186, 255, 0.58);
     margin-bottom: 0.4em;
 }
 .ch3-a--heading .ch3-title {
     font-size: clamp(2rem, 4vw, 3.4rem);
     font-style: italic;
-    color: rgba(140, 140, 200, 0.4);
-    letter-spacing: -0.02em;
+    color: rgba(229, 226, 255, 0.7);
+    letter-spacing: 0;
     line-height: 1.05;
 }
 .ch3-a--heading .ch3-subtitle {
@@ -560,7 +574,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: clamp(0.6rem, 0.85vw, 0.72rem);
     font-style: italic;
     letter-spacing: 0.12em;
-    color: rgba(140, 130, 190, 0.28);
+    color: rgba(190, 182, 230, 0.48);
     margin-top: 0.5em;
 }
 
@@ -585,17 +599,17 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a--anima .ch3-text {
     font-size: clamp(0.8rem, 1.15vw, 0.98rem);
     font-style: italic;
-    color: rgba(160, 175, 220, 0.5);
+    color: rgba(196, 210, 244, 0.76);
     line-height: 1.7;
 }
 .ch3-a--anima .ch3-text em {
     font-style: normal;
-    color: rgba(184, 200, 232, 0.7);
+    color: rgba(230, 238, 255, 0.92);
 }
 .ch3-a--anima .ch3-life {
     display: block;
     font-size: 0.85em;
-    color: rgba(140, 160, 210, 0.35);
+    color: rgba(172, 190, 232, 0.62);
     margin-top: 0.5em;
     line-height: 1.6;
 }
@@ -606,7 +620,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(128, 144, 192, 0.25);
+    color: rgba(164, 182, 236, 0.54);
     margin-top: 0.7em;
 }
 
@@ -633,17 +647,17 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a--animus .ch3-text {
     font-size: clamp(0.8rem, 1.15vw, 0.98rem);
     font-style: italic;
-    color: rgba(220, 190, 120, 0.5);
+    color: rgba(242, 212, 145, 0.78);
     line-height: 1.7;
 }
 .ch3-a--animus .ch3-text em {
     font-style: normal;
-    color: rgba(255, 208, 96, 0.7);
+    color: rgba(255, 226, 148, 0.94);
 }
 .ch3-a--animus .ch3-life {
     display: block;
     font-size: 0.85em;
-    color: rgba(210, 180, 100, 0.35);
+    color: rgba(232, 204, 132, 0.62);
     margin-top: 0.5em;
     line-height: 1.6;
 }
@@ -654,7 +668,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(208, 160, 48, 0.25);
+    color: rgba(230, 184, 82, 0.56);
     margin-top: 0.7em;
 }
 
@@ -669,18 +683,21 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a--dance.vis {
     transform: translateX(-50%) translateY(0);
 }
+.ch3-a--dance.panel-vis {
+    transform: translateX(-50%) translateY(0);
+}
 .ch3-a--dance .ch3-text {
     font-size: clamp(0.75rem, 1.05vw, 0.9rem);
     font-style: italic;
-    color: rgba(160, 150, 200, 0.38);
+    color: rgba(206, 196, 242, 0.72);
     line-height: 1.7;
 }
 .ch3-a--dance .ch3-text em {
     font-style: normal;
-    color: rgba(200, 180, 240, 0.55);
+    color: rgba(226, 212, 255, 0.88);
 }
 
-/* ─── Phase 5: Jung quote ─── */
+/* ─── Phase 5: Relation insight ─── */
 .ch3-a--quote {
     bottom: 7vh;
     left: 4.5vw;
@@ -690,13 +707,13 @@ export default class ThreeSyzygyViz extends BaseViz {
     display: block;
     font-size: 2rem;
     line-height: 1;
-    color: rgba(120, 110, 180, 0.1);
+    color: rgba(170, 158, 220, 0.18);
     margin-bottom: 0.2em;
 }
 .ch3-a--quote .ch3-text {
     font-size: clamp(0.82rem, 1.15vw, 0.98rem);
     font-style: italic;
-    color: rgba(160, 150, 210, 0.38);
+    color: rgba(192, 182, 232, 0.66);
     line-height: 1.7;
 }
 .ch3-a--quote .ch3-attr {
@@ -706,32 +723,40 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: rgba(130, 120, 180, 0.18);
+    color: rgba(172, 160, 216, 0.46);
     margin-top: 0.7em;
 }
 
 /* ─── Phase 6: Conjunction (synced) ─── */
 .ch3-a--conjunction {
-    display: none;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) translateY(6px);
     text-align: center;
     max-width: 24ch;
-    transition: opacity 2s ease, transform 2s ease;
+    transition: opacity 2s ease, transform 2s ease, visibility 0s linear 2s;
 }
 .ch3-a--conjunction.vis {
     opacity: 1;
+    visibility: visible;
     transform: translate(-50%, -50%) translateY(0);
+    transition-delay: 0s;
+}
+.ch3-a--conjunction.panel-vis {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) translateY(0);
+    transition-delay: 0s;
 }
 .ch3-a--conjunction.hid {
     opacity: 0;
+    visibility: hidden;
     transform: translate(-50%, -50%) translateY(6px);
 }
 .ch3-a--conjunction .ch3-conj-text {
     font-size: clamp(0.88rem, 1.3vw, 1.1rem);
     font-style: italic;
-    color: rgba(255, 224, 240, 0.5);
+    color: rgba(255, 236, 246, 0.86);
     line-height: 1.65;
     letter-spacing: 0.03em;
 }
@@ -742,7 +767,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.5em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(240, 200, 220, 0.18);
+    color: rgba(248, 214, 232, 0.52);
     margin-top: 0.6em;
 }
 
@@ -756,12 +781,12 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a--projection .ch3-text {
     font-size: clamp(0.78rem, 1.05vw, 0.92rem);
     font-style: italic;
-    color: rgba(180, 160, 220, 0.42);
+    color: rgba(204, 184, 238, 0.72);
     line-height: 1.7;
 }
 .ch3-a--projection .ch3-text em {
     font-style: normal;
-    color: rgba(210, 180, 255, 0.6);
+    color: rgba(230, 214, 255, 0.9);
 }
 .ch3-a--projection .ch3-attr {
     display: block;
@@ -770,7 +795,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.45em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(160, 140, 200, 0.2);
+    color: rgba(184, 166, 224, 0.48);
     margin-top: 0.7em;
 }
 
@@ -784,12 +809,12 @@ export default class ThreeSyzygyViz extends BaseViz {
 .ch3-a--quaternio .ch3-text {
     font-size: clamp(0.75rem, 1vw, 0.88rem);
     font-style: italic;
-    color: rgba(150, 140, 200, 0.35);
+    color: rgba(190, 182, 232, 0.68);
     line-height: 1.7;
 }
 .ch3-a--quaternio .ch3-text em {
     font-style: normal;
-    color: rgba(180, 170, 230, 0.5);
+    color: rgba(222, 214, 255, 0.86);
 }
 .ch3-a--quaternio .ch3-note {
     display: block;
@@ -798,7 +823,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: 0.45em;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(140, 130, 190, 0.2);
+    color: rgba(176, 166, 222, 0.46);
     margin-top: 0.7em;
 }
 
@@ -809,11 +834,12 @@ export default class ThreeSyzygyViz extends BaseViz {
     font-size: clamp(0.4rem, 0.55vw, 0.48rem);
     letter-spacing: 0.35em;
     text-transform: uppercase;
-    color: rgba(100, 95, 150, 0.22);
+    color: rgba(178, 166, 228, 0.48);
     opacity: 0;
     transition: opacity 3s ease;
 }
-.ch3-quat-label.vis { opacity: 1; }
+.ch3-quat-label.vis,
+.ch3-quat-label.panel-vis { opacity: 1; }
 .ch3-quat-label--top { top: 20%; left: 50%; transform: translateX(-50%); }
 .ch3-quat-label--bottom { bottom: 20%; left: 50%; transform: translateX(-50%); }
 .ch3-quat-label--left { top: 50%; left: 8%; transform: translateY(-50%); }
@@ -829,19 +855,21 @@ export default class ThreeSyzygyViz extends BaseViz {
     opacity: 0;
     transition: opacity 3s ease;
 }
-.ch3-micro.vis { opacity: 1; }
+.ch3-micro.vis,
+.ch3-micro.panel-vis { opacity: 1; }
 .ch3-micro--anima {
     left: 22%;
     top: 52%;
-    color: rgba(128, 144, 192, 0.35);
+    color: rgba(184, 200, 232, 0.72);
 }
 .ch3-micro--animus {
     right: 20%;
     top: 52%;
-    color: rgba(208, 160, 48, 0.35);
+    color: rgba(255, 208, 96, 0.72);
 }
 
 @media (max-width: 768px) {
+    .ch3-annotations { display: none; }
     .ch3-a--dance { max-width: 24ch; bottom: 16vh; }
     .ch3-a--anima, .ch3-a--animus { max-width: 18ch; }
     .ch3-a--projection, .ch3-a--quaternio { max-width: 22ch; }
@@ -849,126 +877,182 @@ export default class ThreeSyzygyViz extends BaseViz {
 }
 </style>
 
-<!-- Phase 1: Chapter heading -->
-<div class="ch3-a ch3-a--heading" data-phase="1">
-    <div class="ch3-eyebrow">Chapter III</div>
-    <div class="ch3-title">The Syzygy</div>
-    <div class="ch3-subtitle">the divine pair within</div>
-</div>
-
-<!-- Phase 2: Anima -->
-<div class="ch3-a ch3-a--anima" data-phase="2">
+<!-- Phase 1: Anima -->
+<div class="ch3-a ch3-a--anima" data-phase="1">
     <span class="ch3-leader"></span>
     <div class="ch3-text">
-        The silver figure is <em>the Anima</em> —
-        the inner feminine image that lives
-        in every man's unconscious.
-        She appears as moods, hunches,
-        and sudden irrational feelings.
-        <span class="ch3-life">When you fall in love at first sight — you have met your Anima, projected onto another.</span>
-        <span class="ch3-note">Lunar · feeling · eros · relationship</span>
+        <em>Anima</em> - a lunar image of feeling,
+        relation, and imaginative depth.
+        <span class="ch3-life">It mediates what the ego has not yet made conscious.</span>
+        <span class="ch3-note">Lunar / feeling / relation</span>
     </div>
 </div>
 
-<!-- Phase 3: Animus -->
-<div class="ch3-a ch3-a--animus" data-phase="3">
+<!-- Phase 2: Animus -->
+<div class="ch3-a ch3-a--animus" data-phase="2">
     <span class="ch3-leader"></span>
     <div class="ch3-text">
-        The golden figure is <em>the Animus</em> —
-        the inner masculine image that lives
-        in every woman's unconscious.
-        He appears as strong opinions,
-        snap judgments, and convictions.
-        <span class="ch3-life">When certainty feels absolute but unbending — the Animus speaks.</span>
-        <span class="ch3-note">Solar · judgment · logos · meaning</span>
+        <em>Animus</em> - a solar image of logos,
+        judgment, and meaning-making.
+        <span class="ch3-life">It gives form to what would otherwise remain vague force.</span>
+        <span class="ch3-note">Solar / logos / meaning</span>
     </div>
 </div>
 
-<!-- Phase 4: The dance -->
-<div class="ch3-a ch3-a--dance" data-phase="4">
+<!-- Phase 3: The dance -->
+<div class="ch3-a ch3-a--dance" data-phase="3">
     <div class="ch3-text">
-        Their orbit is <em>the Syzygy</em> — the eternal dance
-        of opposites within every psyche. Neither dominates;
-        each needs the other to be whole.<br>
-        <em>Look at any relationship — this dance is playing out beneath the surface.</em>
+        Their orbit is <em>syzygy</em>:
+        the pair is not a static identity,
+        but a relation you can track.
     </div>
 </div>
 
-<!-- Phase 5: Jung quote -->
-<div class="ch3-a ch3-a--quote" data-phase="5">
-    <span class="ch3-quotemark">"</span>
+<!-- Phase 4: Relation insight -->
+<div class="ch3-a ch3-a--quote" data-phase="4">
     <div class="ch3-text">
-        Every man carries within him
-        the eternal image of woman…
-        an hereditary factor of
-        primordial origin.
-        <span class="ch3-attr">— C. G. Jung, Aion §24</span>
+        The inner pair turns relationship
+        into a symbolic field: attraction,
+        resistance, projection, return.
+        <span class="ch3-attr">Aion III / editorial anchor</span>
     </div>
 </div>
 
-<!-- Phase 6: Projection -->
-<div class="ch3-a ch3-a--projection" data-phase="6">
+<!-- Phase 5: Projection -->
+<div class="ch3-a ch3-a--projection" data-phase="5">
     <div class="ch3-text">
-        <em>Projection</em> — you never see
-        your Anima or Animus directly.
-        You project them onto others:
-        the woman who seems magical,
-        the man who seems to know everything.
-        <span class="ch3-attr">"What is not-I is felt as outside me" — §24</span>
+        <em>Projection</em> makes the inner image
+        appear outside first. Recognition
+        begins when the orbit turns back.
+        <span class="ch3-attr">image / relation / return</span>
     </div>
 </div>
 
-<!-- Phase 7: Quaternio -->
-<div class="ch3-a ch3-a--quaternio" data-phase="7">
+<!-- Phase 6: Quaternio -->
+<div class="ch3-a ch3-a--quaternio" data-phase="6">
     <div class="ch3-text">
-        Jung called this the <em>marriage quaternio</em> —
-        a four-fold bond beneath every relationship:
-        man ↔ woman on the outside,
-        animus ↔ anima on the inside.
-        <span class="ch3-note">The faint cross behind the dance is this quaternio</span>
+        The <em>marriage quaternio</em> appears
+        as a faint cross beneath the orbit:
+        outer relation, inner counterpart.
+        <span class="ch3-note">The field doubles into four directions</span>
     </div>
 </div>
 
 <!-- Conjunction (synced to union event) -->
 <div class="ch3-a ch3-a--conjunction">
     <div class="ch3-conj-text">
-        Coniunctio — the sacred marriage<br>
-        Two circles overlap to form the <em>mandorla</em> —<br>
-        the place where opposites briefly become one
-        <span class="ch3-conj-sub">Wholeness glimpsed, not possessed</span>
+        Conjunction<br>
+        two poles overlap into a <em>mandorla</em><br>
+        a brief image of wholeness
+        <span class="ch3-conj-sub">Glimpsed, not possessed</span>
     </div>
 </div>
 
 <!-- Quaternio cardinal labels -->
-<div class="ch3-quat-label ch3-quat-label--top" data-phase="7">animus</div>
-<div class="ch3-quat-label ch3-quat-label--bottom" data-phase="7">anima</div>
-<div class="ch3-quat-label ch3-quat-label--left" data-phase="7">woman</div>
-<div class="ch3-quat-label ch3-quat-label--right" data-phase="7">man</div>
+<div class="ch3-quat-label ch3-quat-label--top" data-phase="6">animus</div>
+<div class="ch3-quat-label ch3-quat-label--bottom" data-phase="6">anima</div>
+<div class="ch3-quat-label ch3-quat-label--left" data-phase="6">outer</div>
+<div class="ch3-quat-label ch3-quat-label--right" data-phase="6">inner</div>
 
 <!-- Micro-labels -->
-<div class="ch3-micro ch3-micro--anima" data-phase="2">anima ☽</div>
-<div class="ch3-micro ch3-micro--animus" data-phase="3">animus ☉</div>
+<div class="ch3-micro ch3-micro--anima" data-phase="1">anima</div>
+<div class="ch3-micro ch3-micro--animus" data-phase="2">animus</div>
 `;
 
         (this.container || document.body).appendChild(ov);
 
-        /* ── Phased reveal ── */
-        this._annTimers = [];
-        const phases = [
-            { sel: '[data-phase="1"]', delay: 2000 },
-            { sel: '[data-phase="2"]', delay: 7000 },
-            { sel: '[data-phase="3"]', delay: 14000 },
-            { sel: '[data-phase="4"]', delay: 21000 },
-            { sel: '[data-phase="5"]', delay: 28000 },
-            { sel: '[data-phase="6"]', delay: 35000 },
-            { sel: '[data-phase="7"]', delay: 42000 },
+        this._annPhases = [
+            { sel: '[data-phase="1"]', delay: 7000 },
+            { sel: '[data-phase="2"]', delay: 14000 },
+            { sel: '[data-phase="3"]', delay: 21000 },
+            { sel: '[data-phase="4"]', delay: 28000 },
+            { sel: '[data-phase="5"]', delay: 35000 },
+            { sel: '[data-phase="6"]', delay: 42000 },
         ];
-        for (const p of phases) {
+        this._scheduleAnnotations();
+        this._syncPanelAnnotations();
+    }
+
+    _scheduleAnnotations() {
+        this._clearAnnotationTimers();
+        if (!this._annotationOverlay || !this.guidedAnnotations || this.annotationPaused) return;
+        this._annTimers = [];
+        for (const p of this._annPhases || []) {
+            const ov = this._annotationOverlay;
             const els = ov.querySelectorAll(p.sel);
             els.forEach(el => {
-                const t = setTimeout(() => el.classList.add('vis'), p.delay);
+                const t = setTimeout(() => {
+                    if (!this.annotationPaused && this.guidedAnnotations) el.classList.add('vis');
+                }, p.delay);
                 this._annTimers.push(t);
             });
+        }
+    }
+
+    _clearAnnotationTimers() {
+        this._annTimers?.forEach(t => clearTimeout(t));
+        this._annTimers = [];
+    }
+
+    _usePanelAnnotationMode() {
+        this.guidedAnnotations = false;
+        this._clearAnnotationTimers();
+        this._annotationOverlay?.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-micro, .ch3-quat-label').forEach(el => {
+            el.classList.remove('vis', 'panel-vis');
+            el.classList.add('panel-hidden');
+        });
+    }
+
+    _syncPanelAnnotations() {
+        const ov = this._annotationOverlay;
+        if (!ov) return;
+
+        ov.querySelectorAll('.ch3-a[data-phase], .ch3-a--conjunction, .ch3-micro, .ch3-quat-label').forEach(el => {
+            el.classList.remove('panel-vis');
+            if (!this.guidedAnnotations || this.annotationPaused) el.classList.remove('vis');
+            if (!this.guidedAnnotations) {
+                el.classList.add('panel-hidden');
+            } else {
+                el.classList.remove('panel-hidden');
+            }
+        });
+
+        const conjAnn = ov.querySelector('.ch3-a--conjunction');
+        conjAnn?.classList.add('hid');
+        if (this.annotationPaused) return;
+
+        const panelId = this.panelState?.activePanelId || 'pair';
+        const panelPhases = {
+            pair: [],
+            orbit: ['3', '5', '6'],
+            union: [],
+        }[panelId] || [];
+
+        for (const phase of panelPhases) {
+            ov.querySelectorAll(`[data-phase="${phase}"]`).forEach(el => {
+                el.classList.remove('panel-hidden');
+                el.classList.add('panel-vis');
+            });
+        }
+
+        if (panelId === 'pair') {
+            ov.querySelector('.ch3-micro--anima')?.classList.remove('panel-hidden');
+            ov.querySelector('.ch3-micro--anima')?.classList.add('panel-vis');
+            ov.querySelector('.ch3-micro--animus')?.classList.remove('panel-hidden');
+            ov.querySelector('.ch3-micro--animus')?.classList.add('panel-vis');
+        }
+
+        if (panelId === 'orbit') {
+            ov.querySelectorAll('.ch3-quat-label').forEach(el => {
+                el.classList.remove('panel-hidden');
+                el.classList.add('panel-vis');
+            });
+        }
+
+        if (panelId === 'union') {
+            conjAnn?.classList.remove('panel-hidden');
+            conjAnn?.classList.add('vis', 'panel-vis');
+            conjAnn?.classList.remove('hid');
         }
     }
 
@@ -1107,7 +1191,7 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         // Conjunction annotation sync
         const conjAnn = this._annotationOverlay?.querySelector('.ch3-a--conjunction');
-        if (conjAnn) {
+        if (conjAnn && this.guidedAnnotations && !this.annotationPaused) {
             if (this.conjTimer > 1 || this.unionFocus > 0.35) {
                 conjAnn.classList.add('vis');
                 conjAnn.classList.remove('hid');
@@ -1187,9 +1271,11 @@ export default class ThreeSyzygyViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
-        this._annTimers?.forEach(t => clearTimeout(t));
+        removeEventListener('pointermove', this._onPointerMove);
+        this._clearAnnotationTimers();
         this._annotationOverlay?.remove();
+        this.bloom?.dispose();
+        this.composer?.dispose();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {
@@ -1198,7 +1284,7 @@ export default class ThreeSyzygyViz extends BaseViz {
                 (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
             }
         });
-        this.composer = null; this.scene = null;
+        this.bloom = null; this.composer = null; this.scene = null;
         this.camera = null; this.renderer = null;
         super.dispose();
     }
