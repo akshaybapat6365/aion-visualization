@@ -32,12 +32,12 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
     visualTheme: 'Anima/animus orbital relation',
     sceneModule: '../visualizations/chapters/ch3/ThreeSyzygyViz.js',
     motionGrammar: 'integration',
-    fallbackSummary: 'Two luminous poles orbit one another: projection makes the inner image appear outside, relation keeps the pair in motion, and conjunction flashes as a brief symbolic union.',
-    checkpoints: ['Distinguish anima and animus as symbolic poles.', 'Trace projection into relationship.', 'Find conjunction without freezing the orbit.'],
+    fallbackSummary: 'A relation lab sets anima and animus as two symbolic poles: projection makes the inner image appear outside, orbit keeps the tension readable, and conjunction appears as a brief symbolic union rather than a final fusion.',
+    checkpoints: ['Name anima and animus as symbolic poles, not fixed identities.', 'Trace projection outward and back into relation.', 'Explain why conjunction flashes and then releases into motion.'],
     panels: [
-      { id: 'pair', kicker: 'Syzygy', title: 'The inner pair', body: 'Anima and animus appear as symbolic poles mediating relation to the unconscious.', insight: 'The psyche thinks in living opposites.' },
-      { id: 'orbit', kicker: 'Relation', title: 'Neither pole stands alone', body: 'The orbit is the lesson: projection, attraction, and resistance become intelligible through relation.', insight: 'Wholeness needs tension, not sameness.' },
-      { id: 'union', kicker: 'Conjunction', title: 'A brief union', body: 'Alignment flashes as a symbolic marriage, then releases back into motion.', insight: 'Integration is rhythmic, not static.' },
+      { id: 'pair', kicker: 'Syzygy', title: 'Two poles, one psyche', body: 'Anima and animus mediate relation to the unconscious without becoming fixed identities.', insight: 'The psyche thinks in living opposites.' },
+      { id: 'orbit', kicker: 'Relation', title: 'Projection becomes orbit', body: 'Attraction, resistance, and return become readable only when the image stays in relation.', insight: 'Wholeness needs tension, not sameness.' },
+      { id: 'union', kicker: 'Conjunction', title: 'Union flashes, then moves', body: 'Alignment forms a symbolic mandorla, then releases back into motion.', insight: 'Integration is rhythmic, not static.' },
     ],
   },
   ch4: {

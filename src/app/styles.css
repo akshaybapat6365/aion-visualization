@@ -2065,6 +2065,51 @@ h3 {
   font-size: clamp(3rem, 6.2vw, 6rem);
 }
 
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 56% 48%, rgba(83, 216, 232, 0.08), transparent 18rem),
+    radial-gradient(circle at 74% 46%, rgba(212, 175, 55, 0.09), transparent 18rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.78), rgba(3, 3, 7, 0.18) 39%, rgba(3, 3, 7, 0.5) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro {
+  width: min(34rem, calc(100% - 2rem));
+  justify-content: flex-end;
+  margin-left: clamp(1rem, 4.8vw, 4rem);
+  padding-bottom: clamp(2.8rem, 7vh, 5.25rem);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro h1 {
+  max-width: 9.8ch;
+  font-size: clamp(3.25rem, 6.4vw, 5.85rem);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 34ch;
+  font-size: clamp(1rem, 1.35vw, 1.08rem);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__thesis-map {
+  max-width: 28rem;
+  margin-top: 1.25rem;
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-map {
+  width: min(24rem, 100%);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-node {
+  min-height: 3.9rem;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 224, 240, 0.08), transparent 2.1rem),
+    linear-gradient(180deg, rgba(7, 7, 18, 0.48), rgba(7, 7, 18, 0.18));
+  backdrop-filter: blur(8px);
+}
+
+.chapter-experience[data-chapter-id="ch3"] .chapter-stage__reference-label {
+  margin-top: 2.15rem;
+}
+
 .chapter-stage__thesis-map {
   display: flex;
   flex-wrap: wrap;
