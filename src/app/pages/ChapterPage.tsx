@@ -14,6 +14,9 @@ import {
 import type { ChapterRecord } from '../types';
 import { CHAPTER_SCENES } from '../visualization/chapterScenes';
 
+const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
+const mandalaBands = ['outer', 'middle', 'inner'] as const;
+
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return null;
@@ -126,7 +129,11 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
                 aria-label={`Show ${panel.title}: ${panel.insight}`}
                 data-panel-id={panel.id}
               >
-                <span className="chapter-stage__reference-mark" aria-hidden="true" />
+                <span className="chapter-stage__reference-mark" aria-hidden="true">
+                  {quaternityDirections.map((direction) => (
+                    <span key={direction} className={`chapter-stage__reference-quadrant chapter-stage__reference-quadrant--${direction}`} />
+                  ))}
+                </span>
                 <span className="chapter-stage__reference-label">{String(index + 1).padStart(2, '0')} {panel.kicker}</span>
               </button>
             ))}
@@ -159,6 +166,12 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="chapter-panel__spark chapter-panel__spark--two" />
               <span className="chapter-panel__depth chapter-panel__depth--one" />
               <span className="chapter-panel__depth chapter-panel__depth--two" />
+              {quaternityDirections.map((direction) => (
+                <span key={direction} className={`chapter-panel__quaternity-point chapter-panel__quaternity-point--${direction}`} />
+              ))}
+              {mandalaBands.map((band) => (
+                <span key={band} className={`chapter-panel__mandala-band chapter-panel__mandala-band--${band}`} />
+              ))}
             </div>
             <div className="chapter-panel__copy">
               <span className="chapter-panel__count">{String(index + 1).padStart(2, '0')}</span>

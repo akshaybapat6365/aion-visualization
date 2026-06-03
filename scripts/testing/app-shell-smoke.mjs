@@ -402,6 +402,27 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterThreeFallbackText?.includes('projection makes the inner image appear outside') || !chapterThreeFallbackText?.includes('brief symbolic union')) {
     failures.push('reduced-motion chapter fallback lost Chapter 3 syzygy teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch4');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterFourFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterFourReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterFourReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterFourReferenceCount = await chapterFourReferenceNodes.count();
+  const chapterFourPanelIds = await chapterFourReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterFourPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterFourCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterFourFallbackText = await page.locator('.scene-host__fallback').textContent();
+
+  if (!chapterFourFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 4 scene');
+  if (chapterFourReducedMotionAttribute !== 'true') failures.push('Chapter 4 did not record reduced-motion state');
+  if (chapterFourReferenceCount !== 3) failures.push(`reduced-motion Chapter 4 reference node count mismatch: ${chapterFourReferenceCount}`);
+  if (chapterFourPanelIds.join(',') !== 'seed,quaternity,mandala') failures.push(`reduced-motion Chapter 4 reference nodes out of order: ${chapterFourPanelIds.join(',')}`);
+  if (chapterFourPauseControlCount !== 0) failures.push(`reduced-motion Chapter 4 rendered pause controls: ${chapterFourPauseControlCount}`);
+  if (chapterFourCanvasCount !== 0) failures.push(`reduced-motion Chapter 4 rendered canvas: ${chapterFourCanvasCount}`);
+  if (!chapterFourFallbackText?.includes('Concentric mandala rings') || !chapterFourFallbackText?.includes('fourfold ordering image')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 4 Self teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -612,14 +633,65 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterThreeVisiblePixels <= 8) failures.push(`chapter 3 canvas appears blank: ${chapterThreeVisiblePixels}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch4');
-  const mandala = page.getByRole('button', { name: /03\s+Mandala/ });
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterFourReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterFourReferenceCount = await chapterFourReferenceNodes.count();
+  const chapterFourPanelIds = await chapterFourReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterFourQuaternityGlyphs = await page.locator('.chapter-stage__reference-node[data-panel-id="quaternity"] .chapter-stage__reference-quadrant').count();
+  const chapterFourPanelQuaternityPoints = await page.locator('.chapter-panel[data-panel-id="quaternity"] .chapter-panel__quaternity-point').count();
+  const chapterFourPanelMandalaBands = await page.locator('.chapter-panel[data-panel-id="mandala"] .chapter-panel__mandala-band').count();
+  const chapterFourQuaternityGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="quaternity"] .chapter-stage__reference-quadrant').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterFourPanelGlyphsVisible = await page.locator('.chapter-panel[data-panel-id="quaternity"] .chapter-panel__quaternity-point, .chapter-panel[data-panel-id="mandala"] .chapter-panel__mandala-band').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+
+  if (chapterFourReferenceCount !== 3) failures.push(`chapter 4 reference node count mismatch: ${chapterFourReferenceCount}`);
+  if (chapterFourPanelIds.join(',') !== 'seed,quaternity,mandala') failures.push(`chapter 4 reference nodes out of order: ${chapterFourPanelIds.join(',')}`);
+  if (chapterFourQuaternityGlyphs !== 4) failures.push(`chapter 4 reference quaternity glyph count mismatch: ${chapterFourQuaternityGlyphs}`);
+  if (chapterFourPanelQuaternityPoints !== 4) failures.push(`chapter 4 panel quaternity point count mismatch: ${chapterFourPanelQuaternityPoints}`);
+  if (chapterFourPanelMandalaBands !== 3) failures.push(`chapter 4 panel mandala band count mismatch: ${chapterFourPanelMandalaBands}`);
+  if (!chapterFourQuaternityGlyphsVisible) failures.push('chapter 4 reference quaternity glyphs are not visibly rendered');
+  if (!chapterFourPanelGlyphsVisible) failures.push('chapter 4 panel quaternity/mandala glyphs are not visibly rendered');
+
+  const quaternity = page.locator('.chapter-stage__reference-node[data-panel-id="quaternity"]');
+  await quaternity.click();
+  await page.waitForTimeout(250);
+
+  const quaternityPressed = await quaternity.getAttribute('aria-pressed');
+  const quaternityPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="quaternity"]').count();
+  const chapterFourQuaternityDescription = await page.locator('#scene-host-description-ch4').textContent();
+  if (quaternityPressed !== 'true') failures.push(`chapter 4 quaternity reference did not become active: ${quaternityPressed}`);
+  if (quaternityPanelActive !== 1) failures.push(`chapter 4 quaternity panel did not become active: ${quaternityPanelActive}`);
+  if (!chapterFourQuaternityDescription?.includes('Fourfold: Wholeness takes four directions')) {
+    failures.push(`chapter 4 scene description did not follow quaternity panel: ${chapterFourQuaternityDescription}`);
+  }
+
+  const mandala = page.locator('.chapter-stage__reference-node[data-panel-id="mandala"]');
   await mandala.click();
   await page.waitForTimeout(250);
 
   const mandalaPressed = await mandala.getAttribute('aria-pressed');
+  const mandalaPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="mandala"]').count();
+  const chapterFourMandalaDescription = await page.locator('#scene-host-description-ch4').textContent();
   const chapterFourScrollY = await page.evaluate(() => window.scrollY);
   if (mandalaPressed !== 'true') failures.push(`chapter 4 scene control did not become active: ${mandalaPressed}`);
+  if (mandalaPanelActive !== 1) failures.push(`chapter 4 mandala panel did not become active: ${mandalaPanelActive}`);
+  if (!chapterFourMandalaDescription?.includes('Mandala: Chaos receives a form')) failures.push(`chapter 4 scene description did not follow mandala panel: ${chapterFourMandalaDescription}`);
   if (chapterFourScrollY > 10) failures.push(`chapter 4 scene control unexpectedly scrolled page: ${chapterFourScrollY}`);
+
+  const chapterFourCanvas = page.locator('.scene-host canvas').first();
+  const chapterFourCanvasBox = await chapterFourCanvas.boundingBox();
+  const chapterFourVisiblePixels = await countCanvasPixels(chapterFourCanvas);
+  if (!chapterFourCanvasBox || chapterFourCanvasBox.width < 300 || chapterFourCanvasBox.height < 300) {
+    failures.push(`chapter 4 canvas geometry too small: ${chapterFourCanvasBox ? `${Math.round(chapterFourCanvasBox.width)}x${Math.round(chapterFourCanvasBox.height)}` : 'missing'}`);
+  }
+  if (chapterFourVisiblePixels <= 8) failures.push(`chapter 4 canvas appears blank: ${chapterFourVisiblePixels}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch5');
   const depth = page.getByRole('button', { name: /03\s+Depth/ });
@@ -724,7 +796,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -814,6 +886,31 @@ async function smokeMobile(page, failures) {
         const chapterThreeVisiblePixels = await countCanvasPixels(chapterThreeCanvas);
         if (chapterThreeVisiblePixels <= 8) failures.push(`mobile chapter 3 canvas appears blank at ${viewport.width}x${viewport.height}: ${chapterThreeVisiblePixels}`);
       }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch4');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterFourNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterFourHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterFourReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterFourReferenceCount = await chapterFourReferenceNodes.count();
+    const chapterFourPanelIds = await chapterFourReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterFourScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterFourReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    if (!chapterFourNavBox || !chapterFourHeadingBox) {
+      failures.push(`mobile chapter 4 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterFourNavBottom = chapterFourNavBox.y + chapterFourNavBox.height;
+    if (chapterFourNavBottom > chapterFourHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 4 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterFourNavBottom)}, heading top ${Math.round(chapterFourHeadingBox.y)}`);
+    }
+    if (chapterFourReferenceCount !== 3) failures.push(`mobile chapter 4 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterFourReferenceCount}`);
+    if (chapterFourPanelIds.join(',') !== 'seed,quaternity,mandala') failures.push(`mobile chapter 4 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterFourPanelIds.join(',')}`);
+    if (chapterFourScrollWidth > viewport.width + 2) failures.push(`mobile chapter 4 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterFourScrollWidth}`);
+    if (chapterFourReferenceMapBox && chapterFourReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 4 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFourReferenceMapBox.width)}`);
     }
   }
 }
