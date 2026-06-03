@@ -42,24 +42,28 @@ function startPreviewServer() {
   return { child, getOutput: () => output };
 }
 
+function terminateProcess(server, signal) {
+  const pid = server.child.pid;
+  try {
+    if (pid && process.platform !== 'win32') {
+      process.kill(-pid, signal);
+    } else {
+      server.child.kill(signal);
+    }
+  } catch (error) {
+    if (error?.code !== 'ESRCH') throw error;
+  }
+}
+
 async function stopPreviewServer(server) {
   if (server.child.exitCode !== null) return;
 
-  const pid = server.child.pid;
-  if (pid && process.platform !== 'win32') {
-    process.kill(-pid, 'SIGTERM');
-  } else {
-    server.child.kill('SIGTERM');
-  }
+  terminateProcess(server, 'SIGTERM');
 
   await Promise.race([once(server.child, 'exit'), delay(2_000)]);
   if (server.child.exitCode !== null) return;
 
-  if (pid && process.platform !== 'win32') {
-    process.kill(-pid, 'SIGKILL');
-  } else {
-    server.child.kill('SIGKILL');
-  }
+  terminateProcess(server, 'SIGKILL');
 }
 
 async function waitForServer(server) {
