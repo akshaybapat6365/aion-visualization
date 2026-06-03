@@ -1,15 +1,18 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 
+import AtlasConstellation from '../components/AtlasConstellation';
 import ChapterSigil from '../components/ChapterSigil';
 import {
   getChapterRoute,
   getChapters,
   getConcepts,
   getConceptsForChapter,
+  getLearningObjectsForChapter,
   getRelationships,
   getSymbols,
 } from '../data/aionData';
+import type { ChapterRecord } from '../types';
 
 export default function AtlasPage() {
   const chapters = getChapters();
@@ -17,105 +20,172 @@ export default function AtlasPage() {
   const symbols = getSymbols();
   const relationships = getRelationships();
   const [query, setQuery] = useState('');
-  const [selected, setSelected] = useState(chapters[0].id);
+  const [selected, setSelected] = useState<ChapterRecord['id']>(chapters[0].id);
+
+  const entityLabel = useMemo(() => (id: string) => (
+    concepts.find((concept) => concept.id === id)?.label
+    || symbols.find((symbol) => symbol.id === id)?.label
+    || chapters.find((chapter) => chapter.id === id)?.title
+    || id
+  ), [chapters, concepts, symbols]);
+
+  const getChapterSearchText = (chapter: ChapterRecord) => {
+    const chapterConcepts = getConceptsForChapter(chapter.id);
+    const chapterSymbols = symbols.filter((symbol) => symbol.conceptIds.some((id) => chapter.keyConceptIds.includes(id)));
+    const chapterEntityIds = new Set([
+      chapter.id,
+      ...chapter.keyConceptIds,
+      ...chapter.relatedChapterIds,
+      ...chapterSymbols.map((symbol) => symbol.id),
+    ]);
+    const chapterRelationships = relationships.filter((relationship) => (
+      chapterEntityIds.has(relationship.source) || chapterEntityIds.has(relationship.target)
+    ));
+    const learningObjects = getLearningObjectsForChapter(chapter.id);
+    const relatedChapterTitles = chapter.relatedChapterIds
+      .map((id) => chapters.find((item) => item.id === id)?.title)
+      .filter(Boolean);
+
+    return [
+      chapter.order,
+      chapter.title,
+      chapter.summary,
+      chapter.cluster,
+      ...relatedChapterTitles,
+      ...chapterConcepts.flatMap((concept) => [
+        concept.label,
+        concept.definition,
+        concept.difficulty,
+        ...concept.prerequisites.map(entityLabel),
+      ]),
+      ...chapterSymbols.flatMap((symbol) => [symbol.label, symbol.motif, symbol.historicPeriod]),
+      ...chapterRelationships.flatMap((relationship) => [
+        entityLabel(relationship.source),
+        entityLabel(relationship.target),
+        relationship.relationType.replaceAll('_', ' '),
+        relationship.narrativeNotes,
+      ]),
+      ...learningObjects.flatMap((item) => [item.title, item.prompt, item.type]),
+    ].join(' ');
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return chapters;
-    return chapters.filter((chapter) => {
-      const conceptText = getConceptsForChapter(chapter.id).map((concept) => concept.label).join(' ');
-      return `${chapter.title} ${chapter.summary} ${chapter.cluster} ${conceptText}`.toLowerCase().includes(q);
-    });
+    return chapters.filter((chapter) => getChapterSearchText(chapter).toLowerCase().includes(q));
   }, [chapters, query]);
 
-  const active = chapters.find((chapter) => chapter.id === selected) || chapters[0];
-  const activeConcepts = getConceptsForChapter(active.id);
-  const linkedSymbols = symbols.filter((symbol) => symbol.conceptIds.some((id) => active.keyConceptIds.includes(id)));
+  const hasNoSearchMatches = query.trim().length > 0 && filtered.length === 0;
+
+  useEffect(() => {
+    if (hasNoSearchMatches || filtered.some((chapter) => chapter.id === selected)) return;
+    setSelected(filtered[0].id);
+  }, [filtered, hasNoSearchMatches, selected]);
+
+  const selectedChapter = chapters.find((chapter) => chapter.id === selected) || chapters[0];
+  const active = hasNoSearchMatches
+    ? null
+    : filtered.find((chapter) => chapter.id === selected) || (query.trim() ? filtered[0] : null) || selectedChapter;
+  const detailChapter = active || selectedChapter;
+  const activeConcepts = active ? getConceptsForChapter(active.id) : [];
+  const linkedSymbols = active ? symbols.filter((symbol) => symbol.conceptIds.some((id) => active.keyConceptIds.includes(id))) : [];
   const relationshipEntityIds = new Set([
-    active.id,
-    ...active.keyConceptIds,
+    ...(active ? [active.id] : []),
+    ...(active?.keyConceptIds || []),
     ...linkedSymbols.map((symbol) => symbol.id),
   ]);
   const linkedRelationships = relationships
     .filter((rel) => relationshipEntityIds.has(rel.source) || relationshipEntityIds.has(rel.target))
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 4);
-  const entityLabel = (id: string) => (
-    concepts.find((concept) => concept.id === id)?.label
-    || symbols.find((symbol) => symbol.id === id)?.label
-    || chapters.find((chapter) => chapter.id === id)?.title
-    || id
-  );
+  const chapterResultText = `${filtered.length} chapter${filtered.length === 1 ? '' : 's'} in view`;
 
   return (
     <div className="page">
-      <section className="atlas-hero section-band">
+      <section className="atlas-hero section-band" aria-labelledby="atlas-title">
         <div className="atlas-hero__copy">
           <p className="eyebrow">Atlas</p>
-          <h1>Chapter, concept, and symbol field</h1>
-          <p className="lede">The missing Atlas becomes the canonical navigation map, joining the old Explore graph with Aion core data.</p>
+          <h1 id="atlas-title">Chapter, concept, and symbol field</h1>
+          <p className="lede">Search the symbolic field. Each selection redraws the chapter at the center, its concepts on the inner ring, and its symbols at the perimeter.</p>
         </div>
 
         <div className="atlas-layout atlas-layout--hero">
-          <div className="atlas-map" aria-label="Aion chapter map">
+          <section className="atlas-map" aria-labelledby="atlas-map-title">
             <div className="atlas-map__controls">
-              <label htmlFor="atlas-search">Search</label>
+              <div>
+                <p className="eyebrow">Field Filter</p>
+                <h2 id="atlas-map-title">Living Atlas Field</h2>
+              </div>
               <input
                 id="atlas-search"
+                name="atlas-search"
+                type="search"
+                autoComplete="off"
+                aria-label="Search Atlas field"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="shadow, fish, quaternity"
+                aria-describedby="atlas-search-status"
+                placeholder="shadow, fish, quaternity…"
               />
+              <output id="atlas-search-status" role="status" aria-live="polite">{chapterResultText}</output>
             </div>
-            <div className="atlas-orbit">
-              {filtered.map((chapter) => (
-                <button
-                  key={chapter.id}
-                  className={chapter.id === selected ? 'atlas-node atlas-node--active' : 'atlas-node'}
-                  type="button"
-                  onClick={() => setSelected(chapter.id)}
-                  style={{ ['--node-index' as string]: chapter.order - 1, ['--node-count' as string]: filtered.length }}
-                  aria-controls="atlas-selected-detail"
-                  aria-label={`Select chapter ${chapter.order}: ${chapter.title}`}
-                  aria-pressed={chapter.id === selected}
-                >
-                  {chapter.order}
-                </button>
-              ))}
-            </div>
-          </div>
+            <AtlasConstellation
+              active={active}
+              activeConcepts={activeConcepts}
+              filteredChapters={filtered}
+              linkedRelationships={linkedRelationships}
+              linkedSymbols={linkedSymbols}
+              entityLabel={entityLabel}
+              onSelectChapter={setSelected}
+            />
+          </section>
 
           <aside id="atlas-selected-detail" className="atlas-detail" aria-label="Selected atlas chapter" aria-live="polite">
-            <ChapterSigil chapter={active} compact />
-            <p className="eyebrow">Chapter {active.order}</p>
-            <h2>{active.title}</h2>
-            <p>{active.summary}</p>
-            <div className="chip-row">
-              {activeConcepts.map((concept) => (
-                <span key={concept.id}>{concept.label}</span>
-              ))}
-            </div>
-            <div className="atlas-detail__section">
-              <h3>Symbols</h3>
-              <p>{linkedSymbols.map((symbol) => symbol.label).join(' · ') || 'No direct symbol links yet.'}</p>
-            </div>
-            <div className="atlas-detail__section">
-              <h3>Relations</h3>
-              {linkedRelationships.length > 0 ? (
-                <div className="relation-stack">
-                  {linkedRelationships.map((rel) => (
-                    <span key={rel.id}>
-                      {entityLabel(rel.source)} <em>{rel.relationType.replaceAll('_', ' ')}</em> {entityLabel(rel.target)}
-                    </span>
+            {hasNoSearchMatches ? (
+              <div className="atlas-detail__empty">
+                <p className="eyebrow">No Match</p>
+                <h2>Nothing in the field</h2>
+                <p>Try a chapter, concept, symbol, relation, or learning prompt such as shadow, fish, coniunctio, or mandala.</p>
+                <button className="button button--primary" type="button" onClick={() => setQuery('')}>
+                  Clear Search
+                </button>
+              </div>
+            ) : (
+              <>
+                <ChapterSigil chapter={detailChapter} compact />
+                <p className="eyebrow">Chapter {detailChapter.order}</p>
+                <h2>{detailChapter.title}</h2>
+                <p>{detailChapter.summary}</p>
+                <div className="chip-row">
+                  {activeConcepts.map((concept) => (
+                    <button key={concept.id} type="button" onClick={() => setQuery(concept.label)} aria-label={`Filter Atlas by ${concept.label}`}>
+                      {concept.label}
+                    </button>
                   ))}
                 </div>
-              ) : (
-                <p>Direct relationships are still being curated for this chapter.</p>
-              )}
-            </div>
-            <Link className="button button--primary" to={getChapterRoute(active.id)}>
-              Open chapter
-            </Link>
+                <div className="atlas-detail__section">
+                  <h3>Symbols</h3>
+                  <p>{linkedSymbols.map((symbol) => symbol.label).join(' · ') || 'No direct symbol links yet.'}</p>
+                </div>
+                <div className="atlas-detail__section">
+                  <h3>Relations</h3>
+                  {linkedRelationships.length > 0 ? (
+                    <div className="relation-stack">
+                      {linkedRelationships.map((rel) => (
+                        <span key={rel.id}>
+                          {entityLabel(rel.source)} <em>{rel.relationType.replaceAll('_', ' ')}</em> {entityLabel(rel.target)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>Direct relationships are still being curated for this chapter.</p>
+                  )}
+                </div>
+                <Link className="button button--primary" to={getChapterRoute(detailChapter.id)}>
+                  Open chapter
+                </Link>
+              </>
+            )}
           </aside>
         </div>
       </section>
@@ -127,7 +197,9 @@ export default function AtlasPage() {
         </div>
         <div className="concept-cloud">
           {concepts.map((concept) => (
-            <span key={concept.id}>{concept.label}</span>
+            <button key={concept.id} type="button" onClick={() => setQuery(concept.label)} aria-label={`Filter Atlas by ${concept.label}`}>
+              {concept.label}
+            </button>
           ))}
         </div>
       </section>
