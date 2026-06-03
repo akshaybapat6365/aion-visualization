@@ -16,6 +16,7 @@ import { CHAPTER_SCENES } from '../visualization/chapterScenes';
 
 const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
 const mandalaBands = ['outer', 'middle', 'inner'] as const;
+const rootLines = ['left', 'center', 'right'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -171,6 +172,9 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               ))}
               {mandalaBands.map((band) => (
                 <span key={band} className={`chapter-panel__mandala-band chapter-panel__mandala-band--${band}`} />
+              ))}
+              {rootLines.map((line) => (
+                <span key={line} className={`chapter-panel__root-line chapter-panel__root-line--${line}`} />
               ))}
             </div>
             <div className="chapter-panel__copy">
