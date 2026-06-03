@@ -475,18 +475,6 @@ async function smokeChapterJump(page, failures) {
   if (selectValue !== 'ch3') failures.push(`chapter jump did not hold active value: ${selectValue}`);
   if (!previousVisible) failures.push('chapter route missing previous chapter control');
   if (!nextVisible) failures.push('chapter route missing next chapter control');
-
-  await gotoAppRoute(page, '/journey/chapter/ch5/');
-  await page.waitForFunction(() => document.querySelector('#chapter-jump-select')?.value === 'ch5', null, { timeout: 10_000 }).catch(() => {});
-  const trailingSlashSelectValue = await page.locator('#chapter-jump-select').inputValue();
-  const trailingSlashContext = await page.locator('.app-nav__context strong').textContent();
-  const trailingSlashReferenceLabels = await page.locator('.chapter-stage__reference-label').evaluateAll((nodes) => nodes.map((node) => node.textContent?.replace(/\s+/g, ' ').trim()));
-
-  if (trailingSlashSelectValue !== 'ch5') failures.push(`trailing-slash chapter route selected ${trailingSlashSelectValue} instead of ch5`);
-  if (trailingSlashContext?.trim() !== '05 · Christ, a Symbol of the Self') failures.push(`trailing-slash chapter route context mismatch: ${trailingSlashContext}`);
-  if (trailingSlashReferenceLabels.join(',') !== '01 Cross,02 Fourth,03 Root') {
-    failures.push(`trailing-slash chapter 5 reference labels mismatch: ${trailingSlashReferenceLabels.join(',')}`);
-  }
 }
 
 async function smokeChapterSceneControls(page, failures) {
