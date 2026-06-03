@@ -107,6 +107,19 @@ describe('Aion framework data contract', () => {
     expect(CHAPTER_SCENES.ch4.fallbackSummary).toContain('Concentric mandala rings');
     expect(CHAPTER_SCENES.ch4.fallbackSummary).toContain('fourfold ordering image');
   });
+
+  test('keeps Chapter 5 Christ symbol panels tied to the excluded fourth', () => {
+    expect(CHAPTER_SCENES.ch5.panels.map((panel) => panel.id)).toEqual([
+      'cross',
+      'fourth',
+      'tree',
+    ]);
+    expect(CHAPTER_SCENES.ch5.motionGrammar).toBe('opposition');
+    expect(CHAPTER_SCENES.ch5.visualTheme).toContain('Christ symbol');
+    expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('luminous cross');
+    expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('excluded fourth');
+    expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('three-plus-one');
+  });
 });
 
 describe('Aion framework route contract', () => {

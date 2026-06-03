@@ -58,7 +58,7 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
     visualTheme: 'Christ symbol and excluded fourth',
     sceneModule: '../visualizations/chapters/ch5/ThreeChristViz.js',
     motionGrammar: 'opposition',
-    fallbackSummary: 'A luminous cross and three-plus-one gem field reveal the Christ symbol as powerful yet psychologically one-sided.',
+    fallbackSummary: 'A luminous cross and three-plus-one gem field reveal the Christ symbol as powerful, psychologically one-sided, and pressured by the excluded fourth.',
     checkpoints: ['See the bright trinity.', 'Find the excluded fourth.', 'Relate Christ symbol to Self.'],
     panels: [
       { id: 'cross', kicker: 'Axis', title: 'A Western Self image', body: 'The Christ symbol carries the axis of wholeness for Western imagination.', insight: 'A religious image can be read psychologically without reducing it.' },
