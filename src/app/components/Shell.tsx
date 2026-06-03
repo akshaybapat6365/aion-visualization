@@ -53,7 +53,7 @@ export default function Shell({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
           </nav>
-          <div className="chapter-jump" aria-label="Chapter navigation">
+          <nav className="chapter-jump" aria-label="Chapter navigation">
             {activeChapter && adjacent && (
               <div className="chapter-jump__sequence" aria-label="Adjacent chapters">
                 {adjacent.previous ? (
@@ -90,7 +90,7 @@ export default function Shell({ children }: { children: ReactNode }) {
                 </option>
               ))}
             </select>
-          </div>
+          </nav>
         </div>
       </header>
       <main id="main-content" className="app-main">

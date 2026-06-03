@@ -174,7 +174,9 @@ async function smokeHomeVisualDetail(page, failures) {
   const routeContext = await page.locator('.app-nav__context strong').textContent();
   const pathPanelCount = await page.locator('.path-panel').count();
   const pathDiagramCount = await page.locator('.path-panel__diagram').count();
-  const metricCellCount = await page.locator('.metrics-strip__cell').count();
+  const narrativeMapVisible = await page.locator('.home-narrative__diagram svg').isVisible();
+  const narrativeNodeCount = await page.locator('.home-narrative__node').count();
+  const narrativeLinkCount = await page.locator('.home-narrative__legend a').count();
   const orbitNodeCount = await page.locator('.home-chapter-orbit a').count();
   const featuredOrbitNodeCount = await page.locator('.home-chapter-orbit__item--featured a').count();
   const previewLabels = await page.locator('.chapter-preview').evaluateAll((links) => links.map((link) => link.getAttribute('aria-label') || ''));
@@ -182,7 +184,9 @@ async function smokeHomeVisualDetail(page, failures) {
   if (routeContext?.trim() !== 'Home') failures.push(`home route context mismatch: ${routeContext}`);
   if (pathPanelCount !== 3) failures.push(`home path panel count mismatch: ${pathPanelCount}`);
   if (pathDiagramCount !== 3) failures.push(`home path diagram count mismatch: ${pathDiagramCount}`);
-  if (metricCellCount !== 3) failures.push(`home metric cell count mismatch: ${metricCellCount}`);
+  if (!narrativeMapVisible) failures.push('home narrative map is not visible');
+  if (narrativeNodeCount !== 6) failures.push(`home narrative node count mismatch: ${narrativeNodeCount}`);
+  if (narrativeLinkCount !== 6) failures.push(`home narrative link count mismatch: ${narrativeLinkCount}`);
   if (orbitNodeCount !== 14) failures.push(`home chapter orbit node count mismatch: ${orbitNodeCount}`);
   if (featuredOrbitNodeCount !== 4) failures.push(`home featured orbit node count mismatch: ${featuredOrbitNodeCount}`);
   for (const label of previewLabels) {
