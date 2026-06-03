@@ -752,7 +752,7 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFiveFourthDescription = await page.locator('#scene-host-description-ch5').textContent();
   if (fourthPressed !== 'true') failures.push(`chapter 5 fourth reference did not become active: ${fourthPressed}`);
   if (fourthPanelActive !== 1) failures.push(`chapter 5 fourth panel did not become active: ${fourthPanelActive}`);
-  if (!chapterFiveFourthDescription?.includes('Shadow: The fourth is missing')) {
+  if (!chapterFiveFourthDescription?.includes('Fourth: The fourth is missing')) {
     failures.push(`chapter 5 scene description did not follow fourth panel: ${chapterFiveFourthDescription}`);
   }
 
@@ -766,7 +766,7 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFiveScrollY = await page.evaluate(() => window.scrollY);
   if (treePressed !== 'true') failures.push(`chapter 5 tree reference did not become active: ${treePressed}`);
   if (treePanelActive !== 1) failures.push(`chapter 5 tree panel did not become active: ${treePanelActive}`);
-  if (!chapterFiveTreeDescription?.includes('Depth: The roots go downward')) failures.push(`chapter 5 scene description did not follow tree panel: ${chapterFiveTreeDescription}`);
+  if (!chapterFiveTreeDescription?.includes('Root: The roots go downward')) failures.push(`chapter 5 scene description did not follow tree panel: ${chapterFiveTreeDescription}`);
   if (chapterFiveScrollY > 10) failures.push(`chapter 5 scene control unexpectedly scrolled page: ${chapterFiveScrollY}`);
 
   const chapterFiveCanvas = page.locator('.scene-host canvas').first();

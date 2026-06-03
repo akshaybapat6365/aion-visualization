@@ -114,6 +114,11 @@ describe('Aion framework data contract', () => {
       'fourth',
       'tree',
     ]);
+    expect(CHAPTER_SCENES.ch5.panels.map((panel) => panel.kicker)).toEqual([
+      'Cross',
+      'Fourth',
+      'Root',
+    ]);
     expect(CHAPTER_SCENES.ch5.motionGrammar).toBe('opposition');
     expect(CHAPTER_SCENES.ch5.visualTheme).toContain('Christ symbol');
     expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('luminous cross');
@@ -139,6 +144,10 @@ describe('Aion framework route contract', () => {
     expect(resolveRoute('/journey/chapter/ch3')).toMatchObject({
       name: 'chapter',
       params: { chapterId: 'ch3' },
+    });
+    expect(resolveRoute('/journey/chapter/ch5/')).toMatchObject({
+      name: 'chapter',
+      params: { chapterId: 'ch5' },
     });
     expect(resolveRoute('/atlas')).toMatchObject({ name: 'atlas' });
     expect(resolveRoute('/missing')).toMatchObject({ name: 'home' });
