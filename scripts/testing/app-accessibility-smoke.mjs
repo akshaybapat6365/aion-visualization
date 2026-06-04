@@ -1,22 +1,28 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { dirname, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 
 import { chromium } from 'playwright';
 
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const port = Number(process.env.AION_A11Y_PORT || 4175);
 const baseUrl = `http://127.0.0.1:${port}`;
 const canonicalRoutes = ['/', '/chapters', '/atlas', '/timeline', '/symbols', '/about'];
 const chapterRoutes = Array.from({ length: 14 }, (_, index) => `/journey/chapter/ch${index + 1}`);
 const desktopViewport = { width: 1440, height: 1000 };
 const mobileViewport = { width: 390, height: 844 };
+const viteBin = process.platform === 'win32'
+  ? resolve(repoRoot, 'node_modules/.bin/vite.cmd')
+  : resolve(repoRoot, 'node_modules/.bin/vite');
 
 function startPreviewServer() {
   const child = spawn(
-    'npx',
-    ['vite', 'preview', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
+    viteBin,
+    ['preview', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
     {
-      cwd: process.cwd(),
+      cwd: repoRoot,
       env: process.env,
       detached: process.platform !== 'win32',
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -59,7 +65,7 @@ async function stopPreviewServer(server) {
 }
 
 async function waitForServer(server) {
-  const deadline = Date.now() + 30_000;
+  const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
     if (server.child.exitCode !== null) {
       throw new Error(`Vite preview exited early.\n${server.getOutput()}`);
