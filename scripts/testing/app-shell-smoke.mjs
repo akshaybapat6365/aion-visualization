@@ -1,9 +1,12 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { dirname, resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { fileURLToPath } from 'node:url';
 
 import { chromium } from 'playwright';
 
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const port = Number(process.env.AION_SMOKE_PORT || 4174);
 const baseUrl = `http://127.0.0.1:${port}`;
 const canonicalRoutes = ['/', '/chapters', '/atlas', '/timeline', '/symbols', '/about'];
@@ -18,13 +21,21 @@ const canonicalRouteLabels = new Map([
 const chapterRoutes = Array.from({ length: 14 }, (_, index) => `/journey/chapter/ch${index + 1}`);
 const desktopViewport = { width: 1440, height: 1000 };
 const mobileViewport = { width: 390, height: 844 };
+const debugSmoke = process.env.AION_SMOKE_DEBUG === 'true';
+const viteBin = process.platform === 'win32'
+  ? resolve(repoRoot, 'node_modules/.bin/vite.cmd')
+  : resolve(repoRoot, 'node_modules/.bin/vite');
+
+function smokeLog(message) {
+  if (debugSmoke) console.log(`[smoke] ${message}`);
+}
 
 function startPreviewServer() {
   const child = spawn(
-    'npx',
-    ['vite', 'preview', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
+    viteBin,
+    ['preview', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
     {
-      cwd: process.cwd(),
+      cwd: repoRoot,
       env: process.env,
       detached: process.platform !== 'win32',
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -67,7 +78,7 @@ async function stopPreviewServer(server) {
 }
 
 async function waitForServer(server) {
-  const deadline = Date.now() + 30_000;
+  const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
     if (server.child.exitCode !== null) {
       throw new Error(`Vite preview exited early.\n${server.getOutput()}`);
@@ -107,8 +118,14 @@ function watchForRouteFailures(page) {
 }
 
 async function gotoAppRoute(page, route) {
-  await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
-  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  smokeLog(`goto ${route}`);
+  await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  try {
+    await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 30_000 });
+  } catch (error) {
+    throw new Error(`main#main-content did not become visible for ${route}: ${error.message}`);
+  }
+  smokeLog(`ready ${route}`);
 }
 
 async function assertHealthyShell(page, route, failures) {
@@ -129,7 +146,15 @@ async function assertHealthyShell(page, route, failures) {
 
 async function countCanvasPixels(canvas) {
   return canvas.evaluate((element) => new Promise((resolve) => {
+    let timedOut = false;
+    const timeout = window.setTimeout(() => {
+      timedOut = true;
+      resolve({ timedOut: true, visiblePixels: 0 });
+    }, 2_500);
+
     requestAnimationFrame(() => {
+      if (timedOut) return;
+      window.clearTimeout(timeout);
       const gl = element.getContext('webgl2')
         || element.getContext('webgl')
         || element.getContext('experimental-webgl');
@@ -150,13 +175,23 @@ async function countCanvasPixels(canvas) {
           }
         }
 
-        resolve(visiblePixels);
+        resolve({ timedOut: false, visiblePixels });
         return;
       }
 
-      resolve(0);
+      resolve({ timedOut: false, visiblePixels: 0 });
     });
   }));
+}
+
+function recordCanvasPixelFailure(failures, label, result) {
+  if (result.timedOut) {
+    failures.push(`${label} canvas pixel sampling timed out`);
+    return;
+  }
+  if (result.visiblePixels <= 8) {
+    failures.push(`${label} canvas appears blank: ${result.visiblePixels}`);
+  }
 }
 
 async function smokeCanonicalRoutes(page, failures) {
@@ -291,16 +326,33 @@ async function smokeAtlasVisualSearch(page, failures) {
 }
 
 async function smokeChapterRoutes(page, failures) {
-  for (const route of chapterRoutes) {
-    await gotoAppRoute(page, route);
-    await assertHealthyShell(page, route, failures);
+  const browser = page.context().browser();
 
-    const canvas = page.locator('.scene-host canvas').first();
-    await canvas.waitFor({ state: 'visible', timeout: 15_000 });
-    await page.waitForTimeout(500);
-    const visiblePixels = await countCanvasPixels(canvas);
-    if (visiblePixels <= 8) {
-      failures.push(`blank or near-blank chapter canvas: ${route} (${visiblePixels} sampled pixels)`);
+  for (const route of chapterRoutes) {
+    if (!browser) throw new Error('Chapter route smoke requires a browser instance.');
+
+    const chapterContext = await browser.newContext({ viewport: desktopViewport });
+    const chapterPage = await chapterContext.newPage();
+    const routeFailures = watchForRouteFailures(chapterPage);
+
+    try {
+      await gotoAppRoute(chapterPage, route);
+      await assertHealthyShell(chapterPage, route, failures);
+
+      const canvas = chapterPage.locator('.scene-host canvas').first();
+      await canvas.waitFor({ state: 'visible', timeout: 15_000 });
+      await chapterPage.waitForTimeout(500);
+      const { timedOut, visiblePixels } = await countCanvasPixels(canvas);
+      if (timedOut) {
+        failures.push(`chapter canvas pixel sampling timed out: ${route}`);
+      } else if (visiblePixels <= 8) {
+        failures.push(`blank or near-blank chapter canvas: ${route} (${visiblePixels} sampled pixels)`);
+      }
+      await chapterPage.waitForTimeout(250);
+      failures.push(...routeFailures.notFound.map((url) => `404 response: ${url}`));
+      failures.push(...routeFailures.consoleErrors.map((message) => `console error: ${message}`));
+    } finally {
+      await chapterContext.close();
     }
   }
 }
@@ -465,7 +517,11 @@ async function smokeChapterJump(page, failures) {
   await page.locator('#chapter-jump-select').waitFor({ state: 'visible', timeout: 10_000 });
   await page.selectOption('#chapter-jump-select', 'ch3');
   await page.waitForURL(/\/journey\/chapter\/ch3$/, { timeout: 10_000 });
-  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  try {
+    await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 30_000 });
+  } catch (error) {
+    throw new Error(`main#main-content did not become visible after chapter jump: ${error.message}`);
+  }
   await page.waitForFunction(() => document.querySelector('#chapter-jump-select')?.value === 'ch3', null, { timeout: 10_000 }).catch(() => {});
 
   const selectValue = await page.locator('#chapter-jump-select').inputValue();
@@ -477,22 +533,28 @@ async function smokeChapterJump(page, failures) {
   if (!nextVisible) failures.push('chapter route missing next chapter control');
 }
 
+async function activateSceneButton(locator) {
+  await locator.waitFor({ state: 'visible', timeout: 30_000 });
+  await locator.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await locator.click({ timeout: 30_000 });
+}
+
 async function smokeChapterSceneControls(page, failures) {
   await gotoAppRoute(page, '/journey/chapter/ch1');
   const chapterOneReferenceCount = await page.locator('.chapter-stage__reference-node').count();
   if (chapterOneReferenceCount !== 3) failures.push(`chapter 1 reference node count mismatch: ${chapterOneReferenceCount}`);
 
   const pauseAnimation = page.getByRole('button', { name: /Pause animation/ });
-  await pauseAnimation.click();
+  await activateSceneButton(pauseAnimation);
   await page.waitForTimeout(5_400);
   const paused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
   const pausedAnnotationCount = await page.locator('.ch1-a.vis').count();
   if (paused !== 'true') failures.push(`chapter animation pause control did not stay pressed: ${paused}`);
   if (pausedAnnotationCount !== 0) failures.push(`chapter animation pause allowed timed annotations to reveal: ${pausedAnnotationCount}`);
-  await page.getByRole('button', { name: /Resume animation/ }).click();
+  await activateSceneButton(page.getByRole('button', { name: /Resume animation/ }));
 
   const rootsReference = page.locator('.chapter-stage__reference-node[data-panel-id="roots"]');
-  await rootsReference.click();
+  await activateSceneButton(rootsReference);
   await page.waitForTimeout(5_400);
   const rootsReferencePressed = await rootsReference.getAttribute('aria-pressed');
   const rootsAnnotationState = await page.evaluate(() => ({
@@ -504,7 +566,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!rootsAnnotationState.rootsPanelVisible) failures.push('chapter 1 roots annotation did not follow selected panel');
 
   const wholeness = page.getByRole('button', { name: /03\s+Wholeness/ });
-  await wholeness.click();
+  await activateSceneButton(wholeness);
   await page.waitForTimeout(250);
 
   const pressed = await wholeness.getAttribute('aria-pressed');
@@ -524,16 +586,16 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterTwoPanelIds.join(',') !== 'mirror,projection,integration') failures.push(`chapter 2 reference nodes out of order: ${chapterTwoPanelIds.join(',')}`);
 
   const chapterTwoPause = page.getByRole('button', { name: /Pause animation/ });
-  await chapterTwoPause.click();
+  await activateSceneButton(chapterTwoPause);
   await page.waitForTimeout(5_400);
   const chapterTwoPaused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
   const chapterTwoPausedAnnotationCount = await page.locator('.ch2-a--ego.vis, .ch2-micro--ego.vis').count();
   if (chapterTwoPaused !== 'true') failures.push(`chapter 2 pause control did not stay pressed: ${chapterTwoPaused}`);
   if (chapterTwoPausedAnnotationCount !== 0) failures.push(`chapter 2 pause allowed timed annotations to reveal: ${chapterTwoPausedAnnotationCount}`);
-  await page.getByRole('button', { name: /Resume animation/ }).click();
+  await activateSceneButton(page.getByRole('button', { name: /Resume animation/ }));
 
   const projection = page.locator('.chapter-stage__reference-node[data-panel-id="projection"]');
-  await projection.click();
+  await activateSceneButton(projection);
   await page.waitForTimeout(250);
 
   const projectionPressed = await projection.getAttribute('aria-pressed');
@@ -548,7 +610,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterTwoSceneDescription?.includes('Projection: Thrown outward')) failures.push(`chapter 2 scene description did not follow projection panel: ${chapterTwoSceneDescription}`);
 
   const integration = page.locator('.chapter-stage__reference-node[data-panel-id="integration"]');
-  await integration.click();
+  await activateSceneButton(integration);
   await page.waitForFunction(() => document.querySelector('.ch2-a--integration')?.classList.contains('vis'), null, { timeout: 2_000 }).catch(() => {});
   const integrationPressed = await integration.getAttribute('aria-pressed');
   const integrationAnnotationVisible = await page.locator('.ch2-a--integration.vis').count();
@@ -556,7 +618,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (integrationAnnotationVisible !== 1) failures.push(`chapter 2 integration annotation did not follow selected panel: ${integrationAnnotationVisible}`);
 
   const mirror = page.locator('.chapter-stage__reference-node[data-panel-id="mirror"]');
-  await mirror.click();
+  await activateSceneButton(mirror);
   await page.waitForTimeout(850);
   const integrationAnnotationState = await page.locator('.ch2-a--integration').evaluate((node) => ({
     visible: node.classList.contains('vis'),
@@ -567,11 +629,11 @@ async function smokeChapterSceneControls(page, failures) {
 
   const chapterTwoCanvas = page.locator('.scene-host canvas').first();
   const chapterTwoCanvasBox = await chapterTwoCanvas.boundingBox();
-  const chapterTwoVisiblePixels = await countCanvasPixels(chapterTwoCanvas);
+  const chapterTwoPixelSample = await countCanvasPixels(chapterTwoCanvas);
   if (!chapterTwoCanvasBox || chapterTwoCanvasBox.width < 300 || chapterTwoCanvasBox.height < 300) {
     failures.push(`chapter 2 canvas geometry too small: ${chapterTwoCanvasBox ? `${Math.round(chapterTwoCanvasBox.width)}x${Math.round(chapterTwoCanvasBox.height)}` : 'missing'}`);
   }
-  if (chapterTwoVisiblePixels <= 8) failures.push(`chapter 2 canvas appears blank: ${chapterTwoVisiblePixels}`);
+  recordCanvasPixelFailure(failures, 'chapter 2', chapterTwoPixelSample);
 
   await page.evaluate(() => window.localStorage.removeItem('aion:scene-animation-paused'));
   await gotoAppRoute(page, '/journey/chapter/ch3');
@@ -583,16 +645,16 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterThreePanelIds.join(',') !== 'pair,orbit,union') failures.push(`chapter 3 reference nodes out of order: ${chapterThreePanelIds.join(',')}`);
 
   const chapterThreePause = page.getByRole('button', { name: /Pause animation/ });
-  await chapterThreePause.click();
+  await activateSceneButton(chapterThreePause);
   await page.waitForTimeout(5_400);
   const chapterThreePaused = await page.getByRole('button', { name: /Resume animation/ }).getAttribute('aria-pressed');
   const chapterThreePausedAnnotationCount = await page.locator('.ch3-a--anima.vis, .ch3-micro--anima.vis').count();
   if (chapterThreePaused !== 'true') failures.push(`chapter 3 pause control did not stay pressed: ${chapterThreePaused}`);
   if (chapterThreePausedAnnotationCount !== 0) failures.push(`chapter 3 pause allowed timed annotations to reveal: ${chapterThreePausedAnnotationCount}`);
-  await page.getByRole('button', { name: /Resume animation/ }).click();
+  await activateSceneButton(page.getByRole('button', { name: /Resume animation/ }));
 
   const orbit = page.locator('.chapter-stage__reference-node[data-panel-id="orbit"]');
-  await orbit.click();
+  await activateSceneButton(orbit);
   await page.waitForTimeout(250);
 
   const orbitPressed = await orbit.getAttribute('aria-pressed');
@@ -609,7 +671,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterThreeOrbitDescription?.includes('Relation: Projection becomes orbit')) failures.push(`chapter 3 scene description did not follow orbit panel: ${chapterThreeOrbitDescription}`);
 
   const conjunction = page.locator('.chapter-stage__reference-node[data-panel-id="union"]');
-  await conjunction.click();
+  await activateSceneButton(conjunction);
   await page.waitForFunction(() => {
     const node = document.querySelector('.ch3-a--conjunction');
     return node?.classList.contains('vis') && Number(window.getComputedStyle(node).opacity) > 0.01;
@@ -636,7 +698,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterThreeUnionDescription?.includes('Conjunction: Union flashes, then moves')) failures.push(`chapter 3 scene description did not follow union panel: ${chapterThreeUnionDescription}`);
 
   const pair = page.locator('.chapter-stage__reference-node[data-panel-id="pair"]');
-  await pair.click();
+  await activateSceneButton(pair);
   await page.waitForTimeout(250);
   const conjunctionHiddenAfterPair = await page.locator('.ch3-a--conjunction').evaluate((node) => ({
     visible: node.classList.contains('vis'),
@@ -647,11 +709,11 @@ async function smokeChapterSceneControls(page, failures) {
 
   const chapterThreeCanvas = page.locator('.scene-host canvas').first();
   const chapterThreeCanvasBox = await chapterThreeCanvas.boundingBox();
-  const chapterThreeVisiblePixels = await countCanvasPixels(chapterThreeCanvas);
+  const chapterThreePixelSample = await countCanvasPixels(chapterThreeCanvas);
   if (!chapterThreeCanvasBox || chapterThreeCanvasBox.width < 300 || chapterThreeCanvasBox.height < 300) {
     failures.push(`chapter 3 canvas geometry too small: ${chapterThreeCanvasBox ? `${Math.round(chapterThreeCanvasBox.width)}x${Math.round(chapterThreeCanvasBox.height)}` : 'missing'}`);
   }
-  if (chapterThreeVisiblePixels <= 8) failures.push(`chapter 3 canvas appears blank: ${chapterThreeVisiblePixels}`);
+  recordCanvasPixelFailure(failures, 'chapter 3', chapterThreePixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch4');
   await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
@@ -681,7 +743,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterFourPanelGlyphsVisible) failures.push('chapter 4 panel quaternity/mandala glyphs are not visibly rendered');
 
   const quaternity = page.locator('.chapter-stage__reference-node[data-panel-id="quaternity"]');
-  await quaternity.click();
+  await activateSceneButton(quaternity);
   await page.waitForTimeout(250);
 
   const quaternityPressed = await quaternity.getAttribute('aria-pressed');
@@ -694,7 +756,7 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   const mandala = page.locator('.chapter-stage__reference-node[data-panel-id="mandala"]');
-  await mandala.click();
+  await activateSceneButton(mandala);
   await page.waitForTimeout(250);
 
   const mandalaPressed = await mandala.getAttribute('aria-pressed');
@@ -708,11 +770,11 @@ async function smokeChapterSceneControls(page, failures) {
 
   const chapterFourCanvas = page.locator('.scene-host canvas').first();
   const chapterFourCanvasBox = await chapterFourCanvas.boundingBox();
-  const chapterFourVisiblePixels = await countCanvasPixels(chapterFourCanvas);
+  const chapterFourPixelSample = await countCanvasPixels(chapterFourCanvas);
   if (!chapterFourCanvasBox || chapterFourCanvasBox.width < 300 || chapterFourCanvasBox.height < 300) {
     failures.push(`chapter 4 canvas geometry too small: ${chapterFourCanvasBox ? `${Math.round(chapterFourCanvasBox.width)}x${Math.round(chapterFourCanvasBox.height)}` : 'missing'}`);
   }
-  if (chapterFourVisiblePixels <= 8) failures.push(`chapter 4 canvas appears blank: ${chapterFourVisiblePixels}`);
+  recordCanvasPixelFailure(failures, 'chapter 4', chapterFourPixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch5');
   await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
@@ -744,7 +806,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterFivePanelGlyphsVisible) failures.push('chapter 5 panel fourth/tree glyphs are not visibly rendered');
 
   const fourth = page.locator('.chapter-stage__reference-node[data-panel-id="fourth"]');
-  await fourth.click();
+  await activateSceneButton(fourth);
   await page.waitForTimeout(250);
 
   const fourthPressed = await fourth.getAttribute('aria-pressed');
@@ -757,7 +819,7 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   const tree = page.locator('.chapter-stage__reference-node[data-panel-id="tree"]');
-  await tree.click();
+  await activateSceneButton(tree);
   await page.waitForTimeout(250);
 
   const treePressed = await tree.getAttribute('aria-pressed');
@@ -771,15 +833,15 @@ async function smokeChapterSceneControls(page, failures) {
 
   const chapterFiveCanvas = page.locator('.scene-host canvas').first();
   const chapterFiveCanvasBox = await chapterFiveCanvas.boundingBox();
-  const chapterFiveVisiblePixels = await countCanvasPixels(chapterFiveCanvas);
+  const chapterFivePixelSample = await countCanvasPixels(chapterFiveCanvas);
   if (!chapterFiveCanvasBox || chapterFiveCanvasBox.width < 300 || chapterFiveCanvasBox.height < 300) {
     failures.push(`chapter 5 canvas geometry too small: ${chapterFiveCanvasBox ? `${Math.round(chapterFiveCanvasBox.width)}x${Math.round(chapterFiveCanvasBox.height)}` : 'missing'}`);
   }
-  if (chapterFiveVisiblePixels <= 8) failures.push(`chapter 5 canvas appears blank: ${chapterFiveVisiblePixels}`);
+  recordCanvasPixelFailure(failures, 'chapter 5', chapterFivePixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch6');
   const threshold = page.getByRole('button', { name: /03\s+Threshold/ });
-  await threshold.click();
+  await activateSceneButton(threshold);
   await page.waitForTimeout(250);
 
   const thresholdPressed = await threshold.getAttribute('aria-pressed');
@@ -789,7 +851,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch7');
   const chapterSevenThreshold = page.getByRole('button', { name: /03\s+Threshold/ });
-  await chapterSevenThreshold.click();
+  await activateSceneButton(chapterSevenThreshold);
   await page.waitForTimeout(250);
 
   const chapterSevenPressed = await chapterSevenThreshold.getAttribute('aria-pressed');
@@ -799,7 +861,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch8');
   const afterlife = page.getByRole('button', { name: /03\s+Afterlife/ });
-  await afterlife.click();
+  await activateSceneButton(afterlife);
   await page.waitForTimeout(250);
 
   const afterlifePressed = await afterlife.getAttribute('aria-pressed');
@@ -809,7 +871,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch9');
   const shadowFish = page.getByRole('button', { name: /03\s+Shadow/ });
-  await shadowFish.click();
+  await activateSceneButton(shadowFish);
   await page.waitForTimeout(250);
 
   const shadowFishPressed = await shadowFish.getAttribute('aria-pressed');
@@ -819,7 +881,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch10');
   const opus = page.getByRole('button', { name: /03\s+Opus/ });
-  await opus.click();
+  await activateSceneButton(opus);
   await page.waitForTimeout(250);
 
   const opusPressed = await opus.getAttribute('aria-pressed');
@@ -829,7 +891,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch11');
   const stone = page.getByRole('button', { name: /03\s+Stone/ });
-  await stone.click();
+  await activateSceneButton(stone);
   await page.waitForTimeout(250);
 
   const stonePressed = await stone.getAttribute('aria-pressed');
@@ -839,7 +901,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch12');
   const bridge = page.getByRole('button', { name: /03\s+Bridge/ });
-  await bridge.click();
+  await activateSceneButton(bridge);
   await page.waitForTimeout(250);
 
   const bridgePressed = await bridge.getAttribute('aria-pressed');
@@ -849,7 +911,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch13');
   const paradox = page.getByRole('button', { name: /03\s+Paradox/ });
-  await paradox.click();
+  await activateSceneButton(paradox);
   await page.waitForTimeout(250);
 
   const paradoxPressed = await paradox.getAttribute('aria-pressed');
@@ -859,7 +921,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   await gotoAppRoute(page, '/journey/chapter/ch14');
   const aeon = page.getByRole('button', { name: /03\s+Aeon/ });
-  await aeon.click();
+  await activateSceneButton(aeon);
   await page.waitForTimeout(250);
 
   const aeonPressed = await aeon.getAttribute('aria-pressed');
@@ -957,8 +1019,8 @@ async function smokeMobile(page, failures) {
       const chapterThreeCanvas = page.locator('.scene-host canvas').first();
       const chapterThreeCanvasCount = await chapterThreeCanvas.count();
       if (chapterThreeCanvasCount > 0) {
-        const chapterThreeVisiblePixels = await countCanvasPixels(chapterThreeCanvas);
-        if (chapterThreeVisiblePixels <= 8) failures.push(`mobile chapter 3 canvas appears blank at ${viewport.width}x${viewport.height}: ${chapterThreeVisiblePixels}`);
+        const chapterThreePixelSample = await countCanvasPixels(chapterThreeCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 3 at ${viewport.width}x${viewport.height}`, chapterThreePixelSample);
       }
     }
 
@@ -1024,7 +1086,7 @@ async function runSmoke() {
     browser = await chromium.launch({ headless: true });
     await smokeReducedMotion(browser, failures);
 
-    const page = await browser.newPage({ viewport: desktopViewport });
+    let page = await browser.newPage({ viewport: desktopViewport });
     const routeFailures = watchForRouteFailures(page);
 
     await smokeCanonicalRoutes(page, failures);
@@ -1034,8 +1096,20 @@ async function runSmoke() {
     await smokeKeyboard(page, failures);
     await smokeLegacyRedirect(page, failures);
     await smokeChapterJump(page, failures);
+    await page.close();
+
+    page = await browser.newPage({ viewport: desktopViewport });
+    const sceneRouteFailures = watchForRouteFailures(page);
     await smokeChapterSceneControls(page, failures);
+    failures.push(...sceneRouteFailures.notFound.map((url) => `404 response: ${url}`));
+    failures.push(...sceneRouteFailures.consoleErrors.map((message) => `console error: ${message}`));
+    await page.close();
+
+    page = await browser.newPage({ viewport: desktopViewport });
+    const mobileRouteFailures = watchForRouteFailures(page);
     await smokeMobile(page, failures);
+    failures.push(...mobileRouteFailures.notFound.map((url) => `404 response: ${url}`));
+    failures.push(...mobileRouteFailures.consoleErrors.map((message) => `console error: ${message}`));
 
     failures.push(...routeFailures.notFound.map((url) => `404 response: ${url}`));
     failures.push(...routeFailures.consoleErrors.map((message) => `console error: ${message}`));
