@@ -103,6 +103,27 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
           <p className="eyebrow">Chapter {chapter.order} · {chapter.cluster}</p>
           <h1>{chapter.title}</h1>
           <p>{chapter.summary}</p>
+          {chapter.id === 'ch2' && (
+            <div
+              className="shadow-projection-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label="Shadow projection model: the ego stands before a mirror, casts refused material outward as a shadow, and begins returning it through integration."
+            >
+              <span className="shadow-projection-instrument__vessel" aria-hidden="true" />
+              <span className="shadow-projection-instrument__mirror" aria-hidden="true" />
+              <span className="shadow-projection-instrument__ego" aria-hidden="true" />
+              <span className="shadow-projection-instrument__shadow" aria-hidden="true" />
+              <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--projection" aria-hidden="true" />
+              <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--return" aria-hidden="true" />
+              <span className="shadow-projection-instrument__bridge" aria-hidden="true" />
+              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--ego" aria-hidden="true">ego</span>
+              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--mirror" aria-hidden="true">mirror</span>
+              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--shadow" aria-hidden="true">shadow</span>
+              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--projection" aria-hidden="true">projection</span>
+              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--return" aria-hidden="true">return</span>
+            </div>
+          )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
             {experience.panels.map((panel, index) => (
               <button
