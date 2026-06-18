@@ -3343,6 +3343,271 @@ h3 {
   }
 }
 
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument {
+  position: relative;
+  width: min(29rem, 100%);
+  min-height: clamp(5.8rem, 9vh, 6.15rem);
+  overflow: hidden;
+  margin-top: 0.95rem;
+  border: 1px solid rgba(244, 240, 232, 0.11);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(244, 240, 232, 0.13), transparent 1.25rem),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.12), transparent 4.8rem),
+    conic-gradient(from 45deg, rgba(83, 216, 232, 0.12), rgba(212, 175, 55, 0.13), rgba(204, 109, 134, 0.12), rgba(132, 201, 155, 0.12), rgba(83, 216, 232, 0.12)),
+    linear-gradient(180deg, rgba(4, 5, 10, 0.74), rgba(8, 8, 16, 0.46));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::before,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::before {
+  inset: 0.66rem;
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::after {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 23%, rgba(244, 240, 232, 0.08) 49%, transparent 77%),
+    linear-gradient(0deg, transparent 0 24%, rgba(244, 240, 232, 0.07) 50%, transparent 76%),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 1.15rem, rgba(244, 240, 232, 0.03) 1.18rem 1.2rem, transparent 1.24rem 2.18rem);
+  opacity: 0.86;
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, transparent 80%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring {
+  left: 50%;
+  top: 50%;
+  border: 1px solid rgba(244, 240, 232, 0.16);
+  border-radius: 50%;
+  opacity: 0.64;
+  transform: translate(-50%, -50%);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring--outer {
+  width: 68%;
+  height: 84%;
+  border-color: rgba(212, 175, 55, 0.18);
+  animation: self-mandala-turn 18s linear infinite;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring--middle {
+  width: 45%;
+  height: 58%;
+  border-color: rgba(83, 216, 232, 0.14);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring--inner {
+  width: 22%;
+  height: 30%;
+  border-color: rgba(244, 240, 232, 0.2);
+  background: radial-gradient(circle, rgba(244, 240, 232, 0.06), transparent 62%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis {
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.42), transparent);
+  opacity: 0.58;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis--vertical {
+  width: 1px;
+  height: 70%;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.42), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis--horizontal {
+  width: 72%;
+  height: 1px;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point {
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  opacity: 0.74;
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--north {
+  left: 50%;
+  top: 15%;
+  background: var(--cyan);
+  box-shadow: 0 0 1.45rem rgba(83, 216, 232, 0.34);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--east {
+  left: 84%;
+  top: 50%;
+  background: var(--gold-soft);
+  box-shadow: 0 0 1.45rem rgba(212, 175, 55, 0.36);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--south {
+  left: 50%;
+  top: 85%;
+  background: var(--rose);
+  box-shadow: 0 0 1.45rem rgba(204, 109, 134, 0.3);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--west {
+  left: 16%;
+  top: 50%;
+  background: var(--green);
+  box-shadow: 0 0 1.45rem rgba(132, 201, 155, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
+  left: 50%;
+  top: 50%;
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 50%;
+  background: #f4f0e8;
+  box-shadow:
+    0 0 1.4rem rgba(244, 240, 232, 0.74),
+    0 0 3.2rem rgba(212, 175, 55, 0.16);
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+  animation: self-mandala-core-pulse 5.8s ease-in-out infinite;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label {
+  color: rgba(244, 240, 232, 0.6);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--center {
+  left: 50%;
+  top: 20%;
+  color: rgba(244, 240, 232, 0.76);
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--fourfold {
+  right: 9%;
+  bottom: 17%;
+  color: rgba(255, 227, 156, 0.75);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--mandala {
+  left: 9%;
+  bottom: 17%;
+  color: rgba(184, 200, 232, 0.72);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__center {
+  box-shadow:
+    0 0 1.9rem rgba(244, 240, 232, 0.92),
+    0 0 4.2rem rgba(212, 175, 55, 0.22);
+  transform: translate(-50%, -50%) scale(1.34);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__ring,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__point {
+  opacity: 0.4;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__axis {
+  opacity: 0.9;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__point {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.24);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__ring--middle {
+  border-color: rgba(212, 175, 55, 0.36);
+  box-shadow: 0 0 1.8rem rgba(212, 175, 55, 0.1);
+  opacity: 0.9;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__ring {
+  border-color: rgba(255, 227, 156, 0.36);
+  box-shadow:
+    0 0 1.8rem rgba(212, 175, 55, 0.12),
+    inset 0 0 1.2rem rgba(83, 216, 232, 0.07);
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__ring--outer {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__ring--middle {
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__center,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__point {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+@keyframes self-mandala-turn {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes self-mandala-core-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
 .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
   left: auto;
   right: clamp(1rem, 4vw, 3.5rem);
@@ -4911,6 +5176,10 @@ h3 {
 	  .syzygy-relation-instrument__mandorla,
 	  .syzygy-relation-instrument__conjunction-core,
 	  .syzygy-relation-instrument__pole,
+	  .self-mandala-instrument__ring,
+	  .self-mandala-instrument__axis,
+	  .self-mandala-instrument__point,
+	  .self-mandala-instrument__center,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -4921,8 +5190,19 @@ h3 {
     animation: none;
   }
 
-  .syzygy-relation-instrument__orbit--outer {
+  .syzygy-relation-instrument__orbit--outer,
+  .self-mandala-instrument__ring--outer,
+  .self-mandala-instrument__center,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring--outer,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
     animation: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
+    transition: none;
   }
 	}
 
@@ -5282,6 +5562,26 @@ h3 {
       radial-gradient(circle at 50% 44%, rgba(3, 3, 7, 0.28), rgba(3, 3, 7, 0.78) 62%);
   }
 
+  .chapter-experience[data-chapter-id="ch4"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 23.55rem;
+    width: auto;
+    transform: none;
+    padding: 0.72rem 0.82rem;
+    text-align: left;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"][data-reduced-motion="true"] .scene-host__fallback h2 {
+    font-size: 1.18rem;
+    line-height: 1;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
   .chapter-experience[data-chapter-id="ch4"] .chapter-stage__reference-node[data-panel-id="seed"] .chapter-stage__reference-mark::before,
   .chapter-experience[data-chapter-id="ch4"] .chapter-stage__reference-node[data-panel-id="quaternity"] .chapter-stage__reference-mark::before,
   .chapter-experience[data-chapter-id="ch4"] .chapter-stage__reference-node[data-panel-id="mandala"] .chapter-stage__reference-mark::before,
@@ -5498,6 +5798,23 @@ h3 {
     font-size: 0.54rem;
   }
 
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument {
+    min-height: 8.25rem;
+    margin-top: 0.78rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label {
+    font-size: 0.54rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--east {
+    left: 81%;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point--west {
+    left: 19%;
+  }
+
   .chapter-experience[data-chapter-id="ch3"] .scene-host__pause {
     justify-content: center;
     width: 2.35rem;
@@ -5623,6 +5940,62 @@ h3 {
   .syzygy-relation-instrument {
     min-height: 7.85rem;
     margin-top: 0.75rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .chapter-stage__intro {
+    justify-content: flex-start;
+    padding-top: 10.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .chapter-stage__intro h1 {
+    font-size: clamp(2.7rem, 14vw, 3.55rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .chapter-stage__intro p:not(.eyebrow) {
+    margin-top: 0.72rem;
+    font-size: 0.94rem;
+    line-height: 1.48;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .scene-host__controls {
+    top: 14.55rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument {
+    min-height: 7.7rem;
+    margin-top: 0.72rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--center {
+    top: 16%;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--fourfold {
+    right: 7%;
+  }
+
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--mandala {
+    left: 7%;
   }
 
   .home-hero {

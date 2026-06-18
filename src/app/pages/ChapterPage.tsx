@@ -148,6 +148,27 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--conjunction" aria-hidden="true">conjunction</span>
             </div>
           )}
+          {chapter.id === 'ch4' && (
+            <div
+              className="self-mandala-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label="Self mandala model: a small center opens into a wider totality, four directions make wholeness readable, and concentric mandala rings order conflict without flattening difference."
+            >
+              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--outer" aria-hidden="true" />
+              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--middle" aria-hidden="true" />
+              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--inner" aria-hidden="true" />
+              <span className="self-mandala-instrument__axis self-mandala-instrument__axis--vertical" aria-hidden="true" />
+              <span className="self-mandala-instrument__axis self-mandala-instrument__axis--horizontal" aria-hidden="true" />
+              {quaternityDirections.map((direction) => (
+                <span key={direction} className={`self-mandala-instrument__point self-mandala-instrument__point--${direction}`} aria-hidden="true" />
+              ))}
+              <span className="self-mandala-instrument__center" aria-hidden="true" />
+              <span className="self-mandala-instrument__label self-mandala-instrument__label--center" aria-hidden="true">center</span>
+              <span className="self-mandala-instrument__label self-mandala-instrument__label--fourfold" aria-hidden="true">fourfold</span>
+              <span className="self-mandala-instrument__label self-mandala-instrument__label--mandala" aria-hidden="true">mandala</span>
+            </div>
+          )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
             {experience.panels.map((panel, index) => (
               <button
