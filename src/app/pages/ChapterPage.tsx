@@ -58,6 +58,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const activePanelIndex = Math.max(0, experience.panels.findIndex((panel) => panel.id === activePanelId));
   const panelProgress = experience.panels.length > 1 ? activePanelIndex / (experience.panels.length - 1) : 0;
   const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
+  const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -167,6 +168,35 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="self-mandala-instrument__label self-mandala-instrument__label--center" aria-hidden="true">center</span>
               <span className="self-mandala-instrument__label self-mandala-instrument__label--fourfold" aria-hidden="true">fourfold</span>
               <span className="self-mandala-instrument__label self-mandala-instrument__label--mandala" aria-hidden="true">mandala</span>
+            </div>
+          )}
+          {chapter.id === 'ch5' && (
+            <div
+              className="christ-symbol-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={christSymbolInstrumentLabel}
+            >
+              <span className="christ-symbol-instrument__field christ-symbol-instrument__field--light" aria-hidden="true" />
+              <span className="christ-symbol-instrument__field christ-symbol-instrument__field--shadow" aria-hidden="true" />
+              <span className="christ-symbol-instrument__ring christ-symbol-instrument__ring--quaternity" aria-hidden="true" />
+              <span className="christ-symbol-instrument__ring christ-symbol-instrument__ring--trinity" aria-hidden="true" />
+              <span className="christ-symbol-instrument__axis christ-symbol-instrument__axis--vertical" aria-hidden="true" />
+              <span className="christ-symbol-instrument__axis christ-symbol-instrument__axis--horizontal" aria-hidden="true" />
+              <span className="christ-symbol-instrument__connector christ-symbol-instrument__connector--accepted christ-symbol-instrument__connector--one" aria-hidden="true" />
+              <span className="christ-symbol-instrument__connector christ-symbol-instrument__connector--accepted christ-symbol-instrument__connector--two" aria-hidden="true" />
+              <span className="christ-symbol-instrument__connector christ-symbol-instrument__connector--accepted christ-symbol-instrument__connector--three" aria-hidden="true" />
+              <span className="christ-symbol-instrument__connector christ-symbol-instrument__connector--broken" aria-hidden="true" />
+              <span className="christ-symbol-instrument__point christ-symbol-instrument__point--one" aria-hidden="true" />
+              <span className="christ-symbol-instrument__point christ-symbol-instrument__point--two" aria-hidden="true" />
+              <span className="christ-symbol-instrument__point christ-symbol-instrument__point--three" aria-hidden="true" />
+              <span className="christ-symbol-instrument__point christ-symbol-instrument__point--fourth" aria-hidden="true" />
+              <span className="christ-symbol-instrument__root christ-symbol-instrument__root--left" aria-hidden="true" />
+              <span className="christ-symbol-instrument__root christ-symbol-instrument__root--center" aria-hidden="true" />
+              <span className="christ-symbol-instrument__root christ-symbol-instrument__root--right" aria-hidden="true" />
+              <span className="christ-symbol-instrument__label christ-symbol-instrument__label--cross" aria-hidden="true">cross</span>
+              <span className="christ-symbol-instrument__label christ-symbol-instrument__label--fourth" aria-hidden="true">fourth</span>
+              <span className="christ-symbol-instrument__label christ-symbol-instrument__label--root" aria-hidden="true">root</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
