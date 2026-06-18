@@ -14,6 +14,18 @@ import {
 } from '../data/aionData';
 import type { ChapterRecord } from '../types';
 
+const symbolGlyphs: Record<string, string> = {
+  fish: 'F',
+  mandala: 'M',
+  dragon: 'D',
+  sophia: 'S',
+  sword: 'L',
+  lapis: 'P',
+  cross: 'C',
+  ouroboros: 'O',
+  zodiac: 'Z',
+};
+
 export default function AtlasPage() {
   const chapters = getChapters();
   const concepts = getConcepts();
@@ -105,8 +117,22 @@ export default function AtlasPage() {
       <section className="atlas-hero section-band" aria-labelledby="atlas-title">
         <div className="atlas-hero__copy">
           <p className="eyebrow">Atlas</p>
-          <h1 id="atlas-title">Chapter, concept, and symbol field</h1>
-          <p className="lede">Search the symbolic field. Each selection redraws the chapter at the center, its concepts on the inner ring, and its symbols at the perimeter.</p>
+          <h1 id="atlas-title">Aion as a living field</h1>
+          <p className="lede">Search or select a chapter; the constellation redraws its concepts, symbols, and relations.</p>
+          <div className="atlas-hero__metrics" aria-label="Atlas inventory">
+            <span>
+              <strong>{chapters.length}</strong>
+              <em>Chapters</em>
+            </span>
+            <span>
+              <strong>{concepts.length}</strong>
+              <em>Concepts</em>
+            </span>
+            <span>
+              <strong>{symbols.length}</strong>
+              <em>Symbols</em>
+            </span>
+          </div>
         </div>
 
         <div className="atlas-layout atlas-layout--hero">
@@ -114,19 +140,21 @@ export default function AtlasPage() {
             <div className="atlas-map__controls">
               <div>
                 <p className="eyebrow">Field Filter</p>
-                <h2 id="atlas-map-title">Living Atlas Field</h2>
+                <h2 id="atlas-map-title">Concept Field</h2>
               </div>
-              <input
-                id="atlas-search"
-                name="atlas-search"
-                type="search"
-                autoComplete="off"
-                aria-label="Search Atlas field"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                aria-describedby="atlas-search-status"
-                placeholder="shadow, fish, quaternity…"
-              />
+              <div className="atlas-map__search">
+                <label htmlFor="atlas-search">Search Atlas Field</label>
+                <input
+                  id="atlas-search"
+                  name="atlas-search"
+                  type="search"
+                  autoComplete="off"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  aria-describedby="atlas-search-status"
+                  placeholder="shadow, fish, quaternity…"
+                />
+              </div>
               <output id="atlas-search-status" role="status" aria-live="polite">{chapterResultText}</output>
             </div>
             <AtlasConstellation
@@ -153,6 +181,20 @@ export default function AtlasPage() {
             ) : (
               <>
                 <ChapterSigil chapter={detailChapter} compact />
+                <div className="atlas-detail__meta" aria-label="Selected chapter field counts">
+                  <span>
+                    <strong>{String(detailChapter.order).padStart(2, '0')}</strong>
+                    <em>Chapter</em>
+                  </span>
+                  <span>
+                    <strong>{activeConcepts.length}</strong>
+                    <em>Concepts</em>
+                  </span>
+                  <span>
+                    <strong>{linkedSymbols.length}</strong>
+                    <em>Symbols</em>
+                  </span>
+                </div>
                 <p className="eyebrow">Chapter {detailChapter.order}</p>
                 <h2>{detailChapter.title}</h2>
                 <p>{detailChapter.summary}</p>
@@ -165,7 +207,19 @@ export default function AtlasPage() {
                 </div>
                 <div className="atlas-detail__section">
                   <h3>Symbols</h3>
-                  <p>{linkedSymbols.map((symbol) => symbol.label).join(' · ') || 'No direct symbol links yet.'}</p>
+                  {linkedSymbols.length > 0 ? (
+                    <div className="atlas-symbol-strip">
+                      {linkedSymbols.map((symbol) => (
+                        <button key={symbol.id} type="button" onClick={() => setQuery(symbol.label)} aria-label={`Filter Atlas by ${symbol.label}`}>
+                          <span aria-hidden="true">{symbolGlyphs[symbol.id] || symbol.label[0]}</span>
+                          <strong>{symbol.label}</strong>
+                          <em>{symbol.historicPeriod}</em>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No direct symbol links yet.</p>
+                  )}
                 </div>
                 <div className="atlas-detail__section">
                   <h3>Relations</h3>
