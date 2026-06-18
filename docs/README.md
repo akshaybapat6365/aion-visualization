@@ -3,6 +3,9 @@
 This folder collects plans, reports and helper files for the Aion Visualization project. Brief descriptions of each document are listed below.
 
 
+- **AION_SKILL_ROUTING_PLAYBOOK.md** - Compact daily guide for using design, Browser, testing, subagent, Creative Production, Imagegen, and GitHub skills without overloading each batch.
+- **AION_CONTINUAL_VISUAL_POLISH_LOOP.md** - Repeatable loop for route-by-route visual polish, verification, and focused PR delivery.
+- **SKILL_DRIVEN_AION_REDESIGN_PLAN.md** - Deeper skill-driven redesign roadmap and phase inventory.
 - **BUG_FIXES_SUMMARY.md** - Summary of bug fixes completed in Phase 2.
 - **BUG_REPORT.md** - Initial bug report and test results.
 - **COMPLETE_UPDATE_SUMMARY.md** - Overview of all updates across phases.
@@ -46,4 +49,3 @@ This folder collects plans, reports and helper files for the Aion Visualization 
 - **index-original.html** - Original HTML page preserved for reference.
 - **setup-github-pages.md** - How to host the site using GitHub Pages.
 - **verify-phase3-integration.html** - HTML file for verifying Phase 3 integration.
-
