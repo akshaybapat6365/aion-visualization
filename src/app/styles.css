@@ -2307,6 +2307,26 @@ h3 {
   max-width: 38ch;
 }
 
+.chapter-experience[data-chapter-id="ch2"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 58% 42%, rgba(196, 166, 246, 0.075), transparent 17rem),
+    radial-gradient(circle at 31% 52%, rgba(212, 175, 55, 0.055), transparent 19rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.86), rgba(3, 3, 7, 0.25) 43%, rgba(3, 3, 7, 0.62) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro {
+  width: min(37rem, calc(100% - 2rem));
+  margin-left: clamp(1rem, 4.8vw, 4.25rem);
+}
+
+.chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro h1 {
+  max-width: 8.6ch;
+}
+
+.chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 36ch;
+}
+
 .chapter-experience[data-chapter-id="ch12"] .chapter-stage__intro {
   justify-content: flex-start;
   padding-top: clamp(7rem, 14vh, 8.8rem);
@@ -2768,6 +2788,245 @@ h3 {
 
 .ego-depth-instrument[data-active-panel="self-depth"] .ego-depth-instrument__wake--two {
   border-color: rgba(83, 216, 232, 0.22);
+}
+
+.shadow-projection-instrument {
+  position: relative;
+  width: min(30rem, 100%);
+  min-height: clamp(9.7rem, 23vh, 12.6rem);
+  overflow: hidden;
+  margin-top: 0.95rem;
+  border: 1px solid rgba(244, 240, 232, 0.1);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 30% 46%, rgba(232, 216, 192, 0.15), transparent 4.9rem),
+    radial-gradient(circle at 72% 43%, rgba(168, 112, 236, 0.17), transparent 5.9rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.72), rgba(3, 3, 7, 0.42) 49%, rgba(22, 12, 33, 0.5) 51%, rgba(3, 3, 7, 0.36));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.shadow-projection-instrument::before,
+.shadow-projection-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.shadow-projection-instrument::before {
+  inset: 0.72rem;
+  border: 1px solid rgba(212, 175, 55, 0.075);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.shadow-projection-instrument::after {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 46%, rgba(196, 166, 246, 0.15) 50%, transparent 54%),
+    repeating-linear-gradient(180deg, transparent 0 2.6rem, rgba(244, 240, 232, 0.045) 2.64rem, transparent 2.7rem);
+  mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+}
+
+.shadow-projection-instrument__vessel,
+.shadow-projection-instrument__mirror,
+.shadow-projection-instrument__ego,
+.shadow-projection-instrument__shadow,
+.shadow-projection-instrument__arc,
+.shadow-projection-instrument__bridge,
+.shadow-projection-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.shadow-projection-instrument__vessel {
+  left: 11%;
+  right: 11%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 216, 192, 0.26), rgba(196, 166, 246, 0.28), transparent);
+  box-shadow: 0 0 1.8rem rgba(196, 166, 246, 0.12);
+}
+
+.shadow-projection-instrument__mirror {
+  left: 50%;
+  top: 15%;
+  width: 1px;
+  height: 70%;
+  background: linear-gradient(180deg, transparent, rgba(196, 166, 246, 0.72), rgba(232, 216, 192, 0.42), transparent);
+  box-shadow:
+    0 0 1.2rem rgba(196, 166, 246, 0.34),
+    -0.34rem 0 1.8rem rgba(212, 175, 55, 0.06),
+    0.34rem 0 2rem rgba(168, 112, 236, 0.13);
+  transform: translateX(-50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.shadow-projection-instrument__ego {
+  left: 31%;
+  top: 51%;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f4f0e8, rgba(232, 216, 192, 0.82) 42%, rgba(212, 175, 55, 0.18) 74%, transparent);
+  box-shadow:
+    0 0 1.8rem rgba(232, 216, 192, 0.72),
+    0 0 4rem rgba(212, 175, 55, 0.12);
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.shadow-projection-instrument__shadow {
+  left: 69%;
+  top: 50%;
+  width: 2.35rem;
+  height: 3.25rem;
+  border-radius: 55% 45% 48% 52%;
+  background:
+    radial-gradient(circle at 47% 36%, rgba(244, 240, 232, 0.1), transparent 0.3rem),
+    radial-gradient(circle, rgba(196, 166, 246, 0.4), rgba(74, 44, 103, 0.38) 58%, rgba(5, 5, 8, 0.2));
+  box-shadow:
+    0 0 2.5rem rgba(168, 112, 236, 0.26),
+    inset 0 0 1.5rem rgba(5, 5, 8, 0.54);
+  transform: translate(-50%, -50%) scale(0.9);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.shadow-projection-instrument__arc {
+  width: 38%;
+  height: 48%;
+  border-radius: 50%;
+  opacity: 0.55;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring);
+}
+
+.shadow-projection-instrument__arc--projection {
+  left: 35%;
+  top: 23%;
+  border-top: 1px solid rgba(214, 122, 255, 0.52);
+  border-right: 1px solid rgba(214, 122, 255, 0.34);
+  transform: rotate(-18deg);
+}
+
+.shadow-projection-instrument__arc--return {
+  left: 27%;
+  top: 39%;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.34);
+  border-left: 1px solid rgba(232, 216, 192, 0.2);
+  transform: rotate(-14deg);
+}
+
+.shadow-projection-instrument__bridge {
+  left: 35%;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(232, 216, 192, 0.18), rgba(196, 166, 246, 0.54), rgba(168, 112, 236, 0.18));
+  opacity: 0.48;
+  transform: translateY(-50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.shadow-projection-instrument__label {
+  color: rgba(244, 240, 232, 0.58);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.shadow-projection-instrument__label--ego {
+  left: 20%;
+  top: 24%;
+  color: rgba(232, 216, 192, 0.78);
+}
+
+.shadow-projection-instrument__label--mirror {
+  left: 53%;
+  top: 14%;
+  color: rgba(224, 192, 255, 0.72);
+}
+
+.shadow-projection-instrument__label--shadow {
+  right: 12%;
+  top: 25%;
+  color: rgba(196, 166, 246, 0.78);
+}
+
+.shadow-projection-instrument__label--projection {
+  right: 12%;
+  bottom: 18%;
+  color: rgba(214, 122, 255, 0.7);
+}
+
+.shadow-projection-instrument__label--return {
+  left: 13%;
+  bottom: 18%;
+  color: rgba(255, 227, 156, 0.68);
+}
+
+.shadow-projection-instrument[data-active-panel="mirror"] .shadow-projection-instrument__mirror {
+  box-shadow:
+    0 0 1.8rem rgba(196, 166, 246, 0.48),
+    -0.48rem 0 2.6rem rgba(232, 216, 192, 0.1),
+    0.48rem 0 2.8rem rgba(168, 112, 236, 0.2);
+  transform: translateX(-50%) scaleY(1.08);
+}
+
+.shadow-projection-instrument[data-active-panel="mirror"] .shadow-projection-instrument__ego,
+.shadow-projection-instrument[data-active-panel="mirror"] .shadow-projection-instrument__shadow {
+  transform: translate(-50%, -50%) scale(1.03);
+}
+
+.shadow-projection-instrument[data-active-panel="projection"] .shadow-projection-instrument__arc--projection {
+  border-top-color: rgba(214, 122, 255, 0.86);
+  border-right-color: rgba(214, 122, 255, 0.58);
+  opacity: 1;
+  transform: rotate(-18deg) translateX(0.35rem);
+}
+
+.shadow-projection-instrument[data-active-panel="projection"] .shadow-projection-instrument__shadow {
+  box-shadow:
+    0 0 3.2rem rgba(168, 112, 236, 0.38),
+    inset 0 0 1.5rem rgba(5, 5, 8, 0.58);
+  transform: translate(-48%, -52%) scale(1.08);
+}
+
+.shadow-projection-instrument[data-active-panel="integration"] .shadow-projection-instrument__arc--return {
+  border-bottom-color: rgba(255, 227, 156, 0.7);
+  border-left-color: rgba(232, 216, 192, 0.42);
+  opacity: 1;
+  transform: rotate(-14deg) translateX(-0.28rem);
+}
+
+.shadow-projection-instrument[data-active-panel="integration"] .shadow-projection-instrument__bridge {
+  opacity: 0.9;
+  box-shadow: 0 0 1.5rem rgba(224, 192, 255, 0.36);
+  transform: translateY(-50%) scaleX(1.12);
+}
+
+.shadow-projection-instrument[data-active-panel="integration"] .shadow-projection-instrument__ego,
+.shadow-projection-instrument[data-active-panel="integration"] .shadow-projection-instrument__shadow {
+  box-shadow:
+    0 0 2.4rem rgba(224, 192, 255, 0.36),
+    inset 0 0 1.1rem rgba(5, 5, 8, 0.34);
+  transform: translate(-50%, -50%) scale(1.02);
 }
 
 .chapter-experience[data-chapter-id="ch2"] .chapter-stage__reference-node[data-panel-id="mirror"] .chapter-stage__reference-mark::before {
@@ -4301,12 +4560,17 @@ h3 {
   .atlas-constellation__chapter,
 	  .chapter-card,
 	  .home-narrative__legend-item a,
-		  .chapter-panel,
+	  .chapter-panel,
 	  .chapter-stage__reference-node,
 	  .chapter-stage__thesis-node,
 	  .ego-depth-instrument__ego,
 	  .ego-depth-instrument__root,
 	  .ego-depth-instrument__self,
+	  .shadow-projection-instrument__arc,
+	  .shadow-projection-instrument__bridge,
+	  .shadow-projection-instrument__ego,
+	  .shadow-projection-instrument__mirror,
+	  .shadow-projection-instrument__shadow,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -4820,6 +5084,48 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch1"] .chapter-sigil {
     margin-top: 2.1rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro {
+    width: min(24rem, calc(100% - 2rem));
+    margin-inline: auto;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .chapter-sigil {
+    width: 5.4rem;
+    height: 5.4rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro h1 {
+    max-width: 100%;
+    font-size: clamp(2.9rem, 15vw, 4rem);
+    line-height: 0.92;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .chapter-stage__intro p:not(.eyebrow) {
+    max-width: 26ch;
+    font-size: 0.98rem;
+    line-height: 1.56;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .scene-host__controls {
+    top: 15.55rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch2"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 
   .ego-depth-instrument {
