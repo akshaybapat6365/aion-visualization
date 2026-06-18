@@ -520,6 +520,40 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterFiveFallbackText?.includes('luminous cross') || !chapterFiveFallbackText?.includes('excluded fourth')) {
     failures.push('reduced-motion chapter fallback lost Chapter 5 Christ symbol teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch6');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterSixFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterSixReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterSixReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterSixReferenceCount = await chapterSixReferenceNodes.count();
+  const chapterSixPanelIds = await chapterSixReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterSixPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterSixCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterSixFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterSixInstrumentCount = await page.locator('.aeon-fish-instrument').count();
+  const chapterSixInstrumentMotion = await page.locator('.aeon-fish-instrument__field, .aeon-fish-instrument__ring, .aeon-fish-instrument__sign, .aeon-fish-instrument__thread, .aeon-fish-instrument__fish, .aeon-fish-instrument__hand, .aeon-fish-instrument__threshold').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterSixAnimatedParts = chapterSixInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterSixTransitioningParts = chapterSixInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterSixFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 6 scene');
+  if (chapterSixReducedMotionAttribute !== 'true') failures.push('Chapter 6 did not record reduced-motion state');
+  if (chapterSixReferenceCount !== 3) failures.push(`reduced-motion Chapter 6 reference node count mismatch: ${chapterSixReferenceCount}`);
+  if (chapterSixPanelIds.join(',') !== 'fish,zodiac,transition') failures.push(`reduced-motion Chapter 6 reference nodes out of order: ${chapterSixPanelIds.join(',')}`);
+  if (chapterSixPauseControlCount !== 0) failures.push(`reduced-motion Chapter 6 rendered pause controls: ${chapterSixPauseControlCount}`);
+  if (chapterSixCanvasCount !== 0) failures.push(`reduced-motion Chapter 6 rendered canvas: ${chapterSixCanvasCount}`);
+  if (chapterSixInstrumentCount !== 1) failures.push(`reduced-motion Chapter 6 aeon fish instrument count mismatch: ${chapterSixInstrumentCount}`);
+  if (chapterSixAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 6 aeon fish instrument still animates: ${JSON.stringify(chapterSixAnimatedParts)}`);
+  if (chapterSixTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 6 aeon fish instrument still transitions: ${JSON.stringify(chapterSixTransitioningParts)}`);
+  if (!chapterSixFallbackText?.includes('Opposing fish') || !chapterSixFallbackText?.includes('zodiacal time')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 6 fish/aeon teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -949,14 +983,126 @@ async function smokeChapterSceneControls(page, failures) {
   recordCanvasPixelFailure(failures, 'chapter 5', chapterFivePixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch6');
-  const threshold = page.getByRole('button', { name: /03\s+Threshold/ });
-  await activateSceneButton(threshold);
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterSixReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterSixReferenceCount = await chapterSixReferenceNodes.count();
+  const chapterSixPanelIds = await chapterSixReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterSixInstrument = page.locator('.aeon-fish-instrument');
+  const chapterSixInstrumentCount = await chapterSixInstrument.count();
+  const chapterSixInstrumentRole = await chapterSixInstrument.getAttribute('role');
+  const chapterSixInstrumentLabel = await chapterSixInstrument.getAttribute('aria-label');
+  const chapterSixInstrumentPanel = await chapterSixInstrument.getAttribute('data-active-panel');
+  const chapterSixInstrumentFieldCount = await page.locator('.aeon-fish-instrument__field').count();
+  const chapterSixInstrumentRingCount = await page.locator('.aeon-fish-instrument__ring').count();
+  const chapterSixInstrumentSignCount = await page.locator('.aeon-fish-instrument__sign').count();
+  const chapterSixInstrumentFishCount = await page.locator('.aeon-fish-instrument__fish').count();
+  const chapterSixInstrumentThreadCount = await page.locator('.aeon-fish-instrument__thread').count();
+  const chapterSixInstrumentHandCount = await page.locator('.aeon-fish-instrument__hand').count();
+  const chapterSixInstrumentThresholdCount = await page.locator('.aeon-fish-instrument__threshold').count();
+  const chapterSixInstrumentLabelCount = await page.locator('.aeon-fish-instrument__label').count();
+  const chapterSixInstrumentMarksVisible = await page.locator('.aeon-fish-instrument__field, .aeon-fish-instrument__ring, .aeon-fish-instrument__sign, .aeon-fish-instrument__thread, .aeon-fish-instrument__fish, .aeon-fish-instrument__hand, .aeon-fish-instrument__threshold').evaluateAll((nodes) => nodes.length >= 21 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterSixReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="zodiac"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="transition"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+
+  if (chapterSixReferenceCount !== 3) failures.push(`chapter 6 reference node count mismatch: ${chapterSixReferenceCount}`);
+  if (chapterSixPanelIds.join(',') !== 'fish,zodiac,transition') failures.push(`chapter 6 reference nodes out of order: ${chapterSixPanelIds.join(',')}`);
+  if (chapterSixInstrumentCount !== 1) failures.push(`chapter 6 aeon fish instrument count mismatch: ${chapterSixInstrumentCount}`);
+  if (chapterSixInstrumentFieldCount !== 2) failures.push(`chapter 6 aeon fish instrument field count mismatch: ${chapterSixInstrumentFieldCount}`);
+  if (chapterSixInstrumentRingCount !== 2) failures.push(`chapter 6 aeon fish instrument ring count mismatch: ${chapterSixInstrumentRingCount}`);
+  if (chapterSixInstrumentSignCount !== 12) failures.push(`chapter 6 aeon fish instrument sign count mismatch: ${chapterSixInstrumentSignCount}`);
+  if (chapterSixInstrumentFishCount !== 2) failures.push(`chapter 6 aeon fish instrument fish count mismatch: ${chapterSixInstrumentFishCount}`);
+  if (chapterSixInstrumentThreadCount !== 1) failures.push(`chapter 6 aeon fish instrument thread count mismatch: ${chapterSixInstrumentThreadCount}`);
+  if (chapterSixInstrumentHandCount !== 1) failures.push(`chapter 6 aeon fish instrument hand count mismatch: ${chapterSixInstrumentHandCount}`);
+  if (chapterSixInstrumentThresholdCount !== 1) failures.push(`chapter 6 aeon fish instrument threshold count mismatch: ${chapterSixInstrumentThresholdCount}`);
+  if (chapterSixInstrumentLabelCount !== 3) failures.push(`chapter 6 aeon fish instrument label count mismatch: ${chapterSixInstrumentLabelCount}`);
+  if (chapterSixInstrumentRole !== 'img') failures.push(`chapter 6 aeon fish instrument role mismatch: ${chapterSixInstrumentRole}`);
+  if (!chapterSixInstrumentLabel?.includes('Sign of the Fishes') || !chapterSixInstrumentLabel?.includes('two Pisces fish') || !chapterSixInstrumentLabel?.includes('zodiac wheel') || !chapterSixInstrumentLabel?.includes('Current emphasis: Pisces')) {
+    failures.push(`chapter 6 aeon fish instrument label missing teaching text: ${chapterSixInstrumentLabel}`);
+  }
+  if (chapterSixInstrumentPanel !== 'fish') failures.push(`chapter 6 aeon fish instrument did not start on fish panel: ${chapterSixInstrumentPanel}`);
+  if (!chapterSixInstrumentMarksVisible) failures.push('chapter 6 aeon fish instrument marks are not visibly rendered');
+  if (!chapterSixReferenceGlyphsVisible) failures.push('chapter 6 reference glyphs are not visibly rendered');
+
+  const zodiac = page.locator('.chapter-stage__reference-node[data-panel-id="zodiac"]');
+  await zodiac.waitFor({ state: 'visible', timeout: 30_000 });
+  await zodiac.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await zodiac.focus();
+  await page.keyboard.press('Enter');
   await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const signs = Array.from(document.querySelectorAll('.aeon-fish-instrument__sign'));
+    const hand = document.querySelector('.aeon-fish-instrument__hand');
+    return signs.length === 12
+      && signs.every((node) => Number(window.getComputedStyle(node).opacity) >= 0.9)
+      && hand
+      && Number(window.getComputedStyle(hand).opacity) >= 0.95;
+  }, null, { timeout: 3_000 }).catch(() => {});
+
+  const zodiacPressed = await zodiac.getAttribute('aria-pressed');
+  const zodiacPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="zodiac"]').count();
+  const chapterSixZodiacDescription = await page.locator('#scene-host-description-ch6').textContent();
+  const chapterSixInstrumentZodiacPanel = await chapterSixInstrument.getAttribute('data-active-panel');
+  const chapterSixInstrumentZodiacLabel = await chapterSixInstrument.getAttribute('aria-label');
+  const chapterSixZodiacVisualState = await page.locator('.aeon-fish-instrument__sign, .aeon-fish-instrument__hand').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (zodiacPressed !== 'true') failures.push(`chapter 6 zodiac reference did not become active: ${zodiacPressed}`);
+  if (zodiacPanelActive !== 1) failures.push(`chapter 6 zodiac panel did not become active: ${zodiacPanelActive}`);
+  if (chapterSixInstrumentZodiacPanel !== 'zodiac') failures.push(`chapter 6 aeon fish instrument did not follow zodiac panel: ${chapterSixInstrumentZodiacPanel}`);
+  if (!chapterSixInstrumentZodiacLabel?.includes('Current emphasis: Aeon') || !chapterSixInstrumentZodiacLabel?.includes('History gains a wheel')) {
+    failures.push(`chapter 6 aeon fish instrument label did not follow zodiac panel: ${chapterSixInstrumentZodiacLabel}`);
+  }
+  if (chapterSixZodiacVisualState.length !== 13 || chapterSixZodiacVisualState.some((opacity) => opacity < 0.9)) {
+    failures.push(`chapter 6 aeon fish instrument did not visually emphasize zodiac wheel: ${chapterSixZodiacVisualState.join(',')}`);
+  }
+  if (!chapterSixZodiacDescription?.includes('Aeon: History gains a wheel')) failures.push(`chapter 6 scene description did not follow zodiac panel: ${chapterSixZodiacDescription}`);
+
+  const threshold = page.locator('.chapter-stage__reference-node[data-panel-id="transition"]');
+  await threshold.waitFor({ state: 'visible', timeout: 30_000 });
+  await threshold.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await threshold.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const thresholdLine = document.querySelector('.aeon-fish-instrument__threshold');
+    const aquarius = document.querySelector('.aeon-fish-instrument__sign--11');
+    return thresholdLine
+      && aquarius
+      && Number(window.getComputedStyle(thresholdLine).opacity) >= 0.95
+      && Number(window.getComputedStyle(aquarius).opacity) >= 0.95;
+  }, null, { timeout: 3_000 }).catch(() => {});
 
   const thresholdPressed = await threshold.getAttribute('aria-pressed');
+  const thresholdPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="transition"]').count();
+  const chapterSixThresholdDescription = await page.locator('#scene-host-description-ch6').textContent();
   const chapterSixScrollY = await page.evaluate(() => window.scrollY);
+  const chapterSixInstrumentThresholdPanel = await chapterSixInstrument.getAttribute('data-active-panel');
+  const chapterSixInstrumentThresholdLabel = await chapterSixInstrument.getAttribute('aria-label');
+  const chapterSixThresholdVisualState = await page.locator('.aeon-fish-instrument__threshold, .aeon-fish-instrument__sign--11').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   if (thresholdPressed !== 'true') failures.push(`chapter 6 scene control did not become active: ${thresholdPressed}`);
+  if (thresholdPanelActive !== 1) failures.push(`chapter 6 threshold panel did not become active: ${thresholdPanelActive}`);
+  if (chapterSixInstrumentThresholdPanel !== 'transition') failures.push(`chapter 6 aeon fish instrument did not follow threshold panel: ${chapterSixInstrumentThresholdPanel}`);
+  if (!chapterSixInstrumentThresholdLabel?.includes('Current emphasis: Threshold') || !chapterSixInstrumentThresholdLabel?.includes('The age turns slowly')) {
+    failures.push(`chapter 6 aeon fish instrument label did not follow threshold panel: ${chapterSixInstrumentThresholdLabel}`);
+  }
+  if (chapterSixThresholdVisualState.length !== 2 || chapterSixThresholdVisualState.some((opacity) => opacity < 0.95)) {
+    failures.push(`chapter 6 aeon fish instrument did not visually emphasize threshold: ${chapterSixThresholdVisualState.join(',')}`);
+  }
+  if (!chapterSixThresholdDescription?.includes('Threshold: The age turns slowly')) failures.push(`chapter 6 scene description did not follow threshold panel: ${chapterSixThresholdDescription}`);
   if (chapterSixScrollY > 10) failures.push(`chapter 6 scene control unexpectedly scrolled page: ${chapterSixScrollY}`);
+
+  const chapterSixCanvas = page.locator('.scene-host canvas').first();
+  const chapterSixCanvasBox = await chapterSixCanvas.boundingBox();
+  const chapterSixPixelSample = await countCanvasPixels(chapterSixCanvas);
+  if (!chapterSixCanvasBox || chapterSixCanvasBox.width < 300 || chapterSixCanvasBox.height < 300) {
+    failures.push(`chapter 6 canvas geometry too small: ${chapterSixCanvasBox ? `${Math.round(chapterSixCanvasBox.width)}x${Math.round(chapterSixCanvasBox.height)}` : 'missing'}`);
+  }
+  recordCanvasPixelFailure(failures, 'chapter 6', chapterSixPixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch7');
   const chapterSevenThreshold = page.getByRole('button', { name: /03\s+Threshold/ });
@@ -1041,7 +1187,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -1191,6 +1337,47 @@ async function smokeMobile(page, failures) {
     if (!chapterFiveInstrumentBox) failures.push(`mobile chapter 5 Christ symbol instrument missing at ${viewport.width}x${viewport.height}`);
     if (chapterFiveInstrumentBox && chapterFiveInstrumentBox.width > viewport.width + 2) {
       failures.push(`mobile chapter 5 Christ symbol instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFiveInstrumentBox.width)}`);
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch6');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterSixNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterSixHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterSixReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterSixReferenceCount = await chapterSixReferenceNodes.count();
+    const chapterSixPanelIds = await chapterSixReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterSixAnnotationLabelsHidden = await page.locator('.ch6-fish-label, .ch6-commissure-label, .ch6-sign-name, .ch6-spring-label, .ch6-saturn-label, .ch6-jupiter-label, .ch6-conjunction-label, .ch6-orbiter-label, .ch6-leaders-svg').evaluateAll((nodes) => nodes.every((node) => window.getComputedStyle(node).display === 'none'));
+    const chapterSixScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterSixReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterSixInstrumentBox = await page.locator('.aeon-fish-instrument').boundingBox();
+    if (!chapterSixNavBox || !chapterSixHeadingBox) {
+      failures.push(`mobile chapter 6 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterSixNavBottom = chapterSixNavBox.y + chapterSixNavBox.height;
+    if (chapterSixNavBottom > chapterSixHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 6 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterSixNavBottom)}, heading top ${Math.round(chapterSixHeadingBox.y)}`);
+    }
+    if (chapterSixReferenceCount !== 3) failures.push(`mobile chapter 6 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterSixReferenceCount}`);
+    if (chapterSixPanelIds.join(',') !== 'fish,zodiac,transition') failures.push(`mobile chapter 6 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterSixPanelIds.join(',')}`);
+    if (!chapterSixAnnotationLabelsHidden) failures.push(`mobile chapter 6 annotation overlay labels remain visible at ${viewport.width}x${viewport.height}`);
+    if (chapterSixScrollWidth > viewport.width + 2) failures.push(`mobile chapter 6 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterSixScrollWidth}`);
+    if (chapterSixReferenceMapBox && chapterSixReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 6 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterSixReferenceMapBox.width)}`);
+    }
+    if (!chapterSixInstrumentBox) failures.push(`mobile chapter 6 aeon fish instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterSixInstrumentBox && chapterSixInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 6 aeon fish instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterSixInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterSixCanvas = page.locator('.scene-host canvas').first();
+      const chapterSixCanvasCount = await chapterSixCanvas.count();
+      if (chapterSixCanvasCount > 0) {
+        const chapterSixPixelSample = await countCanvasPixels(chapterSixCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 6 at ${viewport.width}x${viewport.height}`, chapterSixPixelSample);
+      }
     }
   }
 }

@@ -125,6 +125,29 @@ describe('Aion framework data contract', () => {
     expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('excluded fourth');
     expect(CHAPTER_SCENES.ch5.fallbackSummary).toContain('three-plus-one');
   });
+
+  test('keeps Chapter 6 fish panels tied to aeon and zodiacal time', () => {
+    expect(CHAPTER_SCENES.ch6.panels.map((panel) => panel.id)).toEqual([
+      'fish',
+      'zodiac',
+      'transition',
+    ]);
+    expect(CHAPTER_SCENES.ch6.panels.map((panel) => panel.kicker)).toEqual([
+      'Pisces',
+      'Aeon',
+      'Threshold',
+    ]);
+    expect(CHAPTER_SCENES.ch6.motionGrammar).toBe('cyclical-return');
+    expect(CHAPTER_SCENES.ch6.visualTheme).toContain('Zodiac fish');
+    expect(CHAPTER_SCENES.ch6.fallbackSummary).toContain('Opposing fish');
+    expect(CHAPTER_SCENES.ch6.fallbackSummary).toContain('zodiacal time');
+
+    expect(getConceptsForChapter('ch6').map((concept) => concept.id)).toEqual([
+      'aeon',
+      'fish-symbol',
+      'opposites',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

@@ -17,6 +17,7 @@ import { CHAPTER_SCENES } from '../visualization/chapterScenes';
 const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
 const mandalaBands = ['outer', 'middle', 'inner'] as const;
 const rootLines = ['left', 'center', 'right'] as const;
+const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -59,6 +60,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const panelProgress = experience.panels.length > 1 ? activePanelIndex / (experience.panels.length - 1) : 0;
   const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
   const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -197,6 +199,36 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="christ-symbol-instrument__label christ-symbol-instrument__label--cross" aria-hidden="true">cross</span>
               <span className="christ-symbol-instrument__label christ-symbol-instrument__label--fourth" aria-hidden="true">fourth</span>
               <span className="christ-symbol-instrument__label christ-symbol-instrument__label--root" aria-hidden="true">root</span>
+            </div>
+          )}
+          {chapter.id === 'ch6' && (
+            <div
+              className="aeon-fish-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={aeonFishInstrumentLabel}
+            >
+              <span className="aeon-fish-instrument__field aeon-fish-instrument__field--pisces" aria-hidden="true" />
+              <span className="aeon-fish-instrument__field aeon-fish-instrument__field--aquarius" aria-hidden="true" />
+              <span className="aeon-fish-instrument__ring aeon-fish-instrument__ring--outer" aria-hidden="true" />
+              <span className="aeon-fish-instrument__ring aeon-fish-instrument__ring--inner" aria-hidden="true" />
+              {zodiacMarkers.map((marker, index) => (
+                <span
+                  key={marker}
+                  className={`aeon-fish-instrument__sign aeon-fish-instrument__sign--${index + 1}`}
+                  aria-hidden="true"
+                >
+                  {marker}
+                </span>
+              ))}
+              <span className="aeon-fish-instrument__thread" aria-hidden="true" />
+              <span className="aeon-fish-instrument__fish aeon-fish-instrument__fish--light" aria-hidden="true" />
+              <span className="aeon-fish-instrument__fish aeon-fish-instrument__fish--shadow" aria-hidden="true" />
+              <span className="aeon-fish-instrument__hand" aria-hidden="true" />
+              <span className="aeon-fish-instrument__threshold" aria-hidden="true" />
+              <span className="aeon-fish-instrument__label aeon-fish-instrument__label--fish" aria-hidden="true">two fish</span>
+              <span className="aeon-fish-instrument__label aeon-fish-instrument__label--wheel" aria-hidden="true">aeon wheel</span>
+              <span className="aeon-fish-instrument__label aeon-fish-instrument__label--threshold" aria-hidden="true">threshold</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">

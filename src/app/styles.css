@@ -2427,6 +2427,48 @@ h3 {
   margin-top: 2.05rem;
 }
 
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 63% 47%, rgba(83, 216, 232, 0.08), transparent 17rem),
+    linear-gradient(90deg, rgba(5, 5, 8, 0.88) 0%, rgba(5, 5, 8, 0.48) 43%, rgba(5, 5, 8, 0.12) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro {
+  width: min(38rem, calc(100% - 2rem));
+  justify-content: flex-end;
+  margin-left: clamp(1rem, 4.6vw, 4.2rem);
+  padding-bottom: clamp(2.1rem, 5.3vh, 3.8rem);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro h1 {
+  max-width: 9.2ch;
+  font-size: clamp(3rem, 6vw, 5.55rem);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 35ch;
+  font-size: clamp(0.98rem, 1.24vw, 1.08rem);
+  line-height: 1.62;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__thesis-map {
+  max-width: 29rem;
+  margin-top: 1rem;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-map {
+  width: min(25rem, 100%);
+  margin-top: 0.68rem;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node {
+  min-height: 3.75rem;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-label {
+  margin-top: 2.05rem;
+}
+
 .chapter-experience[data-chapter-id="ch8"] .chapter-stage__intro {
   width: min(35rem, calc(100% - 2rem));
   justify-content: flex-end;
@@ -3949,6 +3991,384 @@ h3 {
   transform: rotate(-34deg) scaleY(1.12);
 }
 
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument {
+  position: relative;
+  width: min(29.5rem, 100%);
+  min-height: clamp(6.25rem, 9.6vh, 7.2rem);
+  overflow: hidden;
+  margin-top: 0.85rem;
+  border: 1px solid rgba(244, 240, 232, 0.105);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 47% 50%, rgba(83, 216, 232, 0.13), transparent 4.6rem),
+    radial-gradient(circle at 28% 48%, rgba(212, 175, 55, 0.16), transparent 4.1rem),
+    radial-gradient(circle at 80% 45%, rgba(103, 186, 214, 0.12), transparent 4.6rem),
+    linear-gradient(90deg, rgba(8, 7, 14, 0.82), rgba(5, 8, 15, 0.52) 50%, rgba(5, 16, 22, 0.48));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument::before,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument::before {
+  inset: 0.64rem;
+  border: 1px solid rgba(83, 216, 232, 0.09);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument::after {
+  left: 50%;
+  top: 50%;
+  width: 7.6rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 227, 156, 0.09);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 1.4rem rgba(83, 216, 232, 0.08),
+    0 0 1.9rem rgba(212, 175, 55, 0.08);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__field,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__thread,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__hand,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__threshold,
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__field {
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.58;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__field--pisces {
+  left: 0;
+  background:
+    radial-gradient(circle at 38% 50%, rgba(255, 227, 156, 0.15), transparent 4.2rem),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.09), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__field--aquarius {
+  right: 0;
+  background:
+    radial-gradient(circle at 65% 48%, rgba(83, 216, 232, 0.17), transparent 4.5rem),
+    linear-gradient(270deg, rgba(83, 216, 232, 0.09), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring {
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    filter 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring--outer {
+  width: 7.1rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 240, 232, 0.32);
+  background:
+    conic-gradient(from -28deg, rgba(212, 175, 55, 0.36), rgba(83, 216, 232, 0.24), rgba(244, 240, 232, 0.16), rgba(212, 175, 55, 0.36));
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0 61%, #000 63% 66%, transparent 68%);
+  opacity: 0.9;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring--inner {
+  width: 4.35rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(83, 216, 232, 0.28);
+  opacity: 0.68;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign {
+  --sign-angle: 0deg;
+  --sign-counter: 0deg;
+  left: 50%;
+  top: 50%;
+  width: 1.05rem;
+  height: 1.05rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(244, 240, 232, 0.1);
+  border-radius: 50%;
+  background: rgba(4, 5, 10, 0.72);
+  color: rgba(244, 240, 232, 0.78);
+  font-family: var(--font-ui);
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  opacity: 0.72;
+  transform: translate(-50%, -50%) rotate(var(--sign-angle)) translateY(-3.65rem) rotate(var(--sign-counter));
+  transition:
+    background 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring),
+    color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--1 {
+  --sign-angle: -90deg;
+  --sign-counter: 90deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--2 {
+  --sign-angle: -60deg;
+  --sign-counter: 60deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--3 {
+  --sign-angle: -30deg;
+  --sign-counter: 30deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--4 {
+  --sign-angle: 0deg;
+  --sign-counter: 0deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--5 {
+  --sign-angle: 30deg;
+  --sign-counter: -30deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--6 {
+  --sign-angle: 60deg;
+  --sign-counter: -60deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--7 {
+  --sign-angle: 90deg;
+  --sign-counter: -90deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--8 {
+  --sign-angle: 120deg;
+  --sign-counter: -120deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--9 {
+  --sign-angle: 150deg;
+  --sign-counter: -150deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--10 {
+  --sign-angle: 180deg;
+  --sign-counter: -180deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--11 {
+  --sign-angle: 210deg;
+  --sign-counter: -210deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign--12 {
+  --sign-angle: 240deg;
+  --sign-counter: -240deg;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__thread {
+  left: 50%;
+  top: 50%;
+  width: 43%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 227, 156, 0.08), rgba(244, 240, 232, 0.54), rgba(83, 216, 232, 0.08));
+  opacity: 0.68;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish {
+  top: 50%;
+  width: 2.75rem;
+  height: 0.76rem;
+  border-radius: 999px 60% 60% 999px;
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish::before {
+  content: '';
+  position: absolute;
+  right: -0.24rem;
+  top: 50%;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish--light {
+  left: 35%;
+  color: rgba(255, 227, 156, 0.9);
+  background: linear-gradient(90deg, rgba(255, 227, 156, 0.18), rgba(255, 227, 156, 0.82));
+  box-shadow: 0 0 1.5rem rgba(212, 175, 55, 0.28);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish--shadow {
+  left: 65%;
+  color: rgba(143, 231, 237, 0.88);
+  background: linear-gradient(90deg, rgba(83, 216, 232, 0.78), rgba(83, 216, 232, 0.16));
+  box-shadow: 0 0 1.5rem rgba(83, 216, 232, 0.24);
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__hand {
+  left: 50%;
+  top: 50%;
+  width: 21%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(244, 240, 232, 0.86), rgba(83, 216, 232, 0.44), transparent);
+  border-radius: 999px;
+  opacity: 0.76;
+  transform: rotate(28deg);
+  transform-origin: left center;
+  transition:
+    background 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__threshold {
+  right: 22%;
+  top: 17%;
+  bottom: 17%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(83, 216, 232, 0.66), rgba(255, 227, 156, 0.24), transparent);
+  box-shadow: 0 0 1.5rem rgba(83, 216, 232, 0.24);
+  opacity: 0.56;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--fish {
+  left: 7%;
+  top: 15%;
+  color: rgba(255, 227, 156, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--wheel {
+  left: 39%;
+  bottom: 9%;
+  color: rgba(244, 240, 232, 0.84);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--threshold {
+  right: 6%;
+  top: 15%;
+  color: rgba(143, 231, 237, 0.95);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="fish"] .aeon-fish-instrument__fish--light {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateX(-0.3rem) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="fish"] .aeon-fish-instrument__fish--shadow {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateX(0.3rem) rotate(180deg) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="fish"] .aeon-fish-instrument__thread {
+  opacity: 0.92;
+  transform: translate(-50%, -50%) scaleX(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="fish"] .aeon-fish-instrument__sign {
+  opacity: 0.46;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="fish"] .aeon-fish-instrument__sign--12 {
+  border-color: rgba(255, 227, 156, 0.58);
+  color: var(--gold-soft);
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="zodiac"] .aeon-fish-instrument__ring {
+  border-color: rgba(244, 240, 232, 0.46);
+  filter: drop-shadow(0 0 0.7rem rgba(83, 216, 232, 0.12));
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="zodiac"] .aeon-fish-instrument__sign {
+  border-color: rgba(83, 216, 232, 0.24);
+  color: rgba(244, 240, 232, 0.92);
+  opacity: 0.95;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="zodiac"] .aeon-fish-instrument__hand {
+  opacity: 1;
+  transform: rotate(44deg) scaleX(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="zodiac"] .aeon-fish-instrument__fish {
+  opacity: 0.66;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__field--aquarius {
+  opacity: 0.9;
+  transform: scaleX(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__threshold {
+  opacity: 1;
+  transform: scaleY(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__hand {
+  background: linear-gradient(90deg, rgba(244, 240, 232, 0.74), rgba(143, 231, 237, 0.92), transparent);
+  opacity: 1;
+  transform: rotate(62deg) scaleX(1.16);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__sign--11 {
+  border-color: rgba(143, 231, 237, 0.66);
+  background: rgba(7, 37, 48, 0.76);
+  color: var(--ink-cyan);
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(var(--sign-angle)) translateY(-3.65rem) rotate(var(--sign-counter)) scale(1.2);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__fish {
+  opacity: 0.78;
+}
+
 .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
   left: auto;
   right: clamp(1rem, 4vw, 3.5rem);
@@ -4287,6 +4707,75 @@ h3 {
   background:
     linear-gradient(138deg, transparent 48%, rgba(204, 109, 134, 0.24) 49%, transparent 51%),
     linear-gradient(42deg, transparent 48%, rgba(204, 109, 134, 0.2) 49%, transparent 51%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node {
+  background:
+    radial-gradient(circle at 50% 28%, rgba(83, 216, 232, 0.1), transparent 2.4rem),
+    linear-gradient(180deg, rgba(3, 6, 12, 0.6), rgba(3, 3, 7, 0.34));
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark::before {
+  left: 50%;
+  top: 1.12rem;
+  width: 2.55rem;
+  height: 0.86rem;
+  border-top: 1px solid rgba(255, 227, 156, 0.46);
+  border-bottom: 1px solid rgba(143, 231, 237, 0.38);
+  border-radius: 50%;
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark::after {
+  left: 50%;
+  top: 1.22rem;
+  width: 2.55rem;
+  height: 0.86rem;
+  border-top: 1px solid rgba(143, 231, 237, 0.38);
+  border-bottom: 1px solid rgba(255, 227, 156, 0.44);
+  border-radius: 50%;
+  transform: translateX(-50%) rotate(168deg);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="zodiac"] .chapter-stage__reference-mark::before {
+  left: 50%;
+  top: 0.72rem;
+  width: 2.55rem;
+  height: 2.55rem;
+  border: 1px solid rgba(244, 240, 232, 0.32);
+  border-radius: 50%;
+  background: conic-gradient(from -20deg, rgba(212, 175, 55, 0.36), rgba(83, 216, 232, 0.24), rgba(244, 240, 232, 0.1), rgba(212, 175, 55, 0.36));
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0 55%, #000 57% 61%, transparent 63%);
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="zodiac"] .chapter-stage__reference-mark::after {
+  left: 50%;
+  top: 1.96rem;
+  width: 1.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(244, 240, 232, 0.74), rgba(83, 216, 232, 0.35), transparent);
+  transform: rotate(36deg);
+  transform-origin: left center;
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="transition"] .chapter-stage__reference-mark::before {
+  left: 39%;
+  top: 0.8rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(83, 216, 232, 0.28);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="transition"] .chapter-stage__reference-mark::after {
+  left: 62%;
+  top: 0.72rem;
+  width: 1px;
+  height: 2.5rem;
+  background: linear-gradient(180deg, transparent, rgba(143, 231, 237, 0.68), rgba(255, 227, 156, 0.24), transparent);
+  box-shadow: 0 0 1rem rgba(83, 216, 232, 0.24);
 }
 
 .scene-host__status,
@@ -5527,6 +6016,13 @@ h3 {
 	  .christ-symbol-instrument__connector,
 	  .christ-symbol-instrument__point,
 	  .christ-symbol-instrument__root,
+	  .aeon-fish-instrument__field,
+	  .aeon-fish-instrument__ring,
+	  .aeon-fish-instrument__sign,
+	  .aeon-fish-instrument__thread,
+	  .aeon-fish-instrument__fish,
+	  .aeon-fish-instrument__hand,
+	  .aeon-fish-instrument__threshold,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -5558,6 +6054,16 @@ h3 {
   .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector,
   .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point,
   .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root {
+    transition: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__field,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__thread,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__hand,
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__threshold {
     transition: none;
   }
 	}
@@ -6053,6 +6559,55 @@ h3 {
     top: calc(50% + 0.56rem);
   }
 
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__scrim {
+    background:
+      linear-gradient(180deg, rgba(3, 3, 7, 0.94), rgba(3, 3, 7, 0.78) 54%, rgba(3, 3, 7, 0.86)),
+      radial-gradient(circle at 52% 44%, rgba(8, 53, 66, 0.26), rgba(3, 3, 7, 0.78) 62%);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    width: 1.9rem;
+    height: 0.62rem;
+    transform: translate(-50%, -50%) rotate(-12deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="fish"] .chapter-stage__reference-mark::after {
+    transform: translate(-50%, -50%) rotate(168deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="zodiac"] .chapter-stage__reference-mark::before {
+    left: 1.35rem;
+    top: 50%;
+    width: 1.9rem;
+    height: 1.9rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="zodiac"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    width: 1.25rem;
+    transform: rotate(36deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="transition"] .chapter-stage__reference-mark::before {
+    left: 1.15rem;
+    top: 50%;
+    width: 1.65rem;
+    height: 1.65rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__reference-node[data-panel-id="transition"] .chapter-stage__reference-mark::after {
+    left: 2.35rem;
+    top: 50%;
+    height: 2rem;
+    transform: translateY(-50%);
+  }
+
   .chapter-experience[data-chapter-id="ch12"] .chapter-stage__intro {
     padding-top: 2rem;
   }
@@ -6450,6 +7005,111 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback h2,
   .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro {
+    justify-content: flex-start;
+    padding-top: 10.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro h1 {
+    max-width: 8.6ch;
+    font-size: clamp(2.34rem, 12.5vw, 3.08rem);
+    line-height: 0.92;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .chapter-stage__intro p:not(.eyebrow) {
+    margin-top: 0.72rem;
+    max-width: 29ch;
+    font-size: 0.92rem;
+    line-height: 1.48;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument {
+    min-height: 6.75rem;
+    margin-top: 0.7rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring--outer {
+    width: 6.15rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__ring--inner {
+    width: 3.75rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__sign {
+    transform: translate(-50%, -50%) rotate(var(--sign-angle)) translateY(-3.12rem) rotate(var(--sign-counter));
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument[data-active-panel="transition"] .aeon-fish-instrument__sign--11 {
+    transform: translate(-50%, -50%) rotate(var(--sign-angle)) translateY(-3.12rem) rotate(var(--sign-counter)) scale(1.16);
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish {
+    width: 2.3rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label {
+    font-size: 0.53rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--fish {
+    left: 6%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--wheel {
+    left: 37%;
+    bottom: 8%;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__label--threshold {
+    right: 5%;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 20.8rem;
+    width: auto;
+    padding: 0.56rem 0.7rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
     position: absolute;
     width: 1px;
     height: 1px;

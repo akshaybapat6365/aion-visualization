@@ -223,6 +223,45 @@ async function checkAtlasDynamicAccessibility(page, failures) {
   if (!emptyFieldVisible) failures.push('/atlas: empty constellation field is missing an accessible name');
 }
 
+async function checkChapterSixDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch6`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Sign of the Fishes model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = await instrument.getAttribute('aria-label');
+  const initialDescription = await page.locator('#scene-host-description-ch6').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch6: aeon fish instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Pisces')) failures.push(`/journey/chapter/ch6: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Pisces: Two fish, two directions')) failures.push(`/journey/chapter/ch6: initial scene description mismatch: ${initialDescription}`);
+
+  const aeon = page.getByRole('button', { name: /02\s+Aeon/ });
+  await aeon.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const aeonPressed = await aeon.getAttribute('aria-pressed');
+  const aeonLabel = await instrument.getAttribute('aria-label');
+  const aeonDescription = await page.locator('#scene-host-description-ch6').textContent();
+  if (aeonPressed !== 'true') failures.push(`/journey/chapter/ch6: aeon button did not become pressed: ${aeonPressed}`);
+  if (!aeonLabel?.includes('Current emphasis: Aeon') || !aeonLabel?.includes('History gains a wheel')) failures.push(`/journey/chapter/ch6: aeon instrument label mismatch: ${aeonLabel}`);
+  if (!aeonDescription?.includes('Aeon: History gains a wheel')) failures.push(`/journey/chapter/ch6: aeon scene description mismatch: ${aeonDescription}`);
+
+  const threshold = page.getByRole('button', { name: /03\s+Threshold/ });
+  await threshold.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const thresholdPressed = await threshold.getAttribute('aria-pressed');
+  const thresholdLabel = await instrument.getAttribute('aria-label');
+  const thresholdDescription = await page.locator('#scene-host-description-ch6').textContent();
+  if (thresholdPressed !== 'true') failures.push(`/journey/chapter/ch6: threshold button did not become pressed: ${thresholdPressed}`);
+  if (!thresholdLabel?.includes('Current emphasis: Threshold') || !thresholdLabel?.includes('The age turns slowly')) failures.push(`/journey/chapter/ch6: threshold instrument label mismatch: ${thresholdLabel}`);
+  if (!thresholdDescription?.includes('Threshold: The age turns slowly')) failures.push(`/journey/chapter/ch6: threshold scene description mismatch: ${thresholdDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -237,6 +276,7 @@ async function runAccessibilitySmoke() {
       await checkRoute(desktop, route, failures);
     }
     await checkAtlasDynamicAccessibility(desktop, failures);
+    await checkChapterSixDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
