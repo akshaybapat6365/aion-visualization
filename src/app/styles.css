@@ -3029,6 +3029,339 @@ h3 {
   transform: translate(-50%, -50%) scale(1.02);
 }
 
+.syzygy-relation-instrument {
+  position: relative;
+  width: min(30rem, 100%);
+  min-height: clamp(5.8rem, 9vh, 6.1rem);
+  overflow: hidden;
+  margin-top: 0.95rem;
+  border: 1px solid rgba(244, 240, 232, 0.105);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 29% 47%, rgba(83, 216, 232, 0.16), transparent 5.8rem),
+    radial-gradient(circle at 72% 47%, rgba(212, 175, 55, 0.17), transparent 5.8rem),
+    radial-gradient(circle at 50% 50%, rgba(255, 224, 240, 0.1), transparent 4.8rem),
+    linear-gradient(90deg, rgba(4, 5, 12, 0.72), rgba(8, 8, 21, 0.46) 48%, rgba(18, 14, 8, 0.38));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.syzygy-relation-instrument::before,
+.syzygy-relation-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.syzygy-relation-instrument::before {
+  inset: 0.72rem;
+  border: 1px solid rgba(212, 175, 55, 0.075);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.syzygy-relation-instrument::after {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 18%, rgba(184, 200, 232, 0.06) 34%, rgba(255, 224, 240, 0.12) 50%, rgba(255, 208, 96, 0.06) 66%, transparent 82%),
+    repeating-linear-gradient(180deg, transparent 0 2.42rem, rgba(244, 240, 232, 0.042) 2.46rem, transparent 2.52rem);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.syzygy-relation-instrument__axis,
+.syzygy-relation-instrument__orbit,
+.syzygy-relation-instrument__field,
+.syzygy-relation-instrument__projection,
+.syzygy-relation-instrument__mandorla,
+.syzygy-relation-instrument__conjunction-core,
+.syzygy-relation-instrument__pole,
+.syzygy-relation-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.syzygy-relation-instrument__axis {
+  left: 13%;
+  right: 13%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 200, 232, 0.38), rgba(255, 224, 240, 0.5), rgba(255, 208, 96, 0.34), transparent);
+  box-shadow: 0 0 1.7rem rgba(255, 224, 240, 0.12);
+  transform: translateY(-50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__orbit {
+  left: 50%;
+  top: 50%;
+  border: 1px solid rgba(229, 214, 255, 0.14);
+  border-radius: 50%;
+  opacity: 0.62;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__orbit--outer {
+  width: 74%;
+  height: 50%;
+  animation: syzygy-orbit-breathe 8s ease-in-out infinite;
+}
+
+.syzygy-relation-instrument__orbit--inner {
+  width: 48%;
+  height: 31%;
+  border-color: rgba(83, 216, 232, 0.11);
+  transform: translate(-50%, -50%) rotate(12deg);
+}
+
+.syzygy-relation-instrument__field {
+  left: 29%;
+  width: 42%;
+  height: 33%;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__field--upper {
+  top: 27%;
+  border-top: 1px solid rgba(229, 214, 255, 0.28);
+  transform: rotate(-7deg);
+}
+
+.syzygy-relation-instrument__field--lower {
+  bottom: 24%;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.24);
+  transform: rotate(7deg);
+}
+
+.syzygy-relation-instrument__projection {
+  width: 35%;
+  height: 45%;
+  border-radius: 50%;
+  opacity: 0.42;
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__projection--outward {
+  left: 31%;
+  top: 20%;
+  border-top: 1px solid rgba(83, 216, 232, 0.36);
+  border-right: 1px solid rgba(83, 216, 232, 0.18);
+  transform: rotate(-19deg);
+}
+
+.syzygy-relation-instrument__projection--return {
+  right: 31%;
+  bottom: 21%;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.34);
+  border-left: 1px solid rgba(212, 175, 55, 0.18);
+  transform: rotate(-19deg);
+}
+
+.syzygy-relation-instrument__mandorla {
+  left: 50%;
+  top: 50%;
+  width: 6.6rem;
+  height: 4.9rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 41% 50%, rgba(184, 200, 232, 0.23), transparent 1.9rem),
+    radial-gradient(circle at 59% 50%, rgba(255, 208, 96, 0.24), transparent 1.9rem);
+  box-shadow:
+    inset 0 0 1.8rem rgba(255, 224, 240, 0.08),
+    0 0 2.4rem rgba(255, 224, 240, 0.06);
+  opacity: 0.34;
+  transform: translate(-50%, -50%) scale(0.82);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__conjunction-core {
+  left: 50%;
+  top: 50%;
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  background: #ffe8f1;
+  box-shadow:
+    0 0 1.6rem rgba(255, 224, 240, 0.62),
+    0 0 3.4rem rgba(212, 175, 55, 0.16);
+  opacity: 0.58;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__pole {
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.syzygy-relation-instrument__pole--anima {
+  left: 31%;
+  background: radial-gradient(circle, #f4f0e8, #b8c8e8 42%, rgba(83, 216, 232, 0.18) 72%, transparent);
+  box-shadow:
+    0 0 1.8rem rgba(184, 200, 232, 0.74),
+    0 0 4rem rgba(83, 216, 232, 0.18);
+}
+
+.syzygy-relation-instrument__pole--animus {
+  left: 69%;
+  background: radial-gradient(circle, #fff0b8, #ffd060 45%, rgba(212, 175, 55, 0.2) 74%, transparent);
+  box-shadow:
+    0 0 1.9rem rgba(255, 208, 96, 0.76),
+    0 0 4rem rgba(212, 175, 55, 0.2);
+}
+
+.syzygy-relation-instrument__label {
+  color: rgba(244, 240, 232, 0.58);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.syzygy-relation-instrument__label--anima {
+  left: 19%;
+  top: 24%;
+  color: rgba(184, 200, 232, 0.78);
+}
+
+.syzygy-relation-instrument__label--animus {
+  right: 18%;
+  top: 24%;
+  color: rgba(255, 208, 96, 0.78);
+}
+
+.syzygy-relation-instrument__label--orbit {
+  left: 13%;
+  bottom: 18%;
+  color: rgba(229, 214, 255, 0.66);
+}
+
+.syzygy-relation-instrument__label--conjunction {
+  right: 11%;
+  bottom: 18%;
+  color: rgba(255, 224, 240, 0.72);
+}
+
+.syzygy-relation-instrument[data-active-panel="pair"] .syzygy-relation-instrument__axis {
+  opacity: 0.95;
+  transform: translateY(-50%) scaleX(1.04);
+}
+
+.syzygy-relation-instrument[data-active-panel="pair"] .syzygy-relation-instrument__pole {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.syzygy-relation-instrument[data-active-panel="orbit"] .syzygy-relation-instrument__orbit--outer {
+  border-color: rgba(229, 214, 255, 0.32);
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-18deg) scale(1.08);
+}
+
+.syzygy-relation-instrument[data-active-panel="orbit"] .syzygy-relation-instrument__orbit--inner {
+  border-color: rgba(83, 216, 232, 0.24);
+  opacity: 0.9;
+  transform: translate(-50%, -50%) rotate(19deg) scale(1.04);
+}
+
+.syzygy-relation-instrument[data-active-panel="orbit"] .syzygy-relation-instrument__field {
+  opacity: 0.86;
+}
+
+.syzygy-relation-instrument[data-active-panel="orbit"] .syzygy-relation-instrument__projection--outward {
+  border-top-color: rgba(83, 216, 232, 0.74);
+  border-right-color: rgba(83, 216, 232, 0.38);
+  opacity: 0.94;
+  transform: rotate(-19deg) translateX(0.34rem);
+}
+
+.syzygy-relation-instrument[data-active-panel="orbit"] .syzygy-relation-instrument__projection--return {
+  border-bottom-color: rgba(212, 175, 55, 0.66);
+  border-left-color: rgba(212, 175, 55, 0.34);
+  opacity: 0.88;
+  transform: rotate(-19deg) translateX(-0.28rem);
+}
+
+.syzygy-relation-instrument[data-active-panel="union"] .syzygy-relation-instrument__pole--anima {
+  transform: translate(28%, -50%) scale(1.04);
+}
+
+.syzygy-relation-instrument[data-active-panel="union"] .syzygy-relation-instrument__pole--animus {
+  transform: translate(-128%, -50%) scale(1.04);
+}
+
+.syzygy-relation-instrument[data-active-panel="union"] .syzygy-relation-instrument__mandorla {
+  opacity: 0.92;
+  transform: translate(-50%, -50%) scale(1);
+  box-shadow:
+    inset 0 0 2.2rem rgba(255, 224, 240, 0.14),
+    0 0 2.8rem rgba(255, 224, 240, 0.16);
+}
+
+.syzygy-relation-instrument[data-active-panel="union"] .syzygy-relation-instrument__conjunction-core {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.55);
+  box-shadow:
+    0 0 2.1rem rgba(255, 224, 240, 0.86),
+    0 0 4rem rgba(212, 175, 55, 0.24);
+}
+
+@keyframes syzygy-orbit-breathe {
+  0%,
+  100% {
+    opacity: 0.54;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(0.98);
+  }
+
+  50% {
+    opacity: 0.84;
+    transform: translate(-50%, -50%) rotate(-11deg) scale(1.03);
+  }
+}
+
+.chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
+  left: auto;
+  right: clamp(1rem, 4vw, 3.5rem);
+  top: clamp(8.75rem, 22vh, 14rem);
+  width: min(28rem, calc(50vw - 2rem));
+  transform: none;
+  text-align: left;
+}
+
+.chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback h2 {
+  font-size: clamp(1.65rem, 3.2vw, 2.6rem);
+  line-height: 0.96;
+}
+
+.chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 .chapter-experience[data-chapter-id="ch2"] .chapter-stage__reference-node[data-panel-id="mirror"] .chapter-stage__reference-mark::before {
   top: 0.92rem;
   width: 2.1rem;
@@ -4571,6 +4904,13 @@ h3 {
 	  .shadow-projection-instrument__ego,
 	  .shadow-projection-instrument__mirror,
 	  .shadow-projection-instrument__shadow,
+	  .syzygy-relation-instrument__axis,
+	  .syzygy-relation-instrument__orbit,
+	  .syzygy-relation-instrument__field,
+	  .syzygy-relation-instrument__projection,
+	  .syzygy-relation-instrument__mandorla,
+	  .syzygy-relation-instrument__conjunction-core,
+	  .syzygy-relation-instrument__pole,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -4578,6 +4918,10 @@ h3 {
 	  }
 
   .atlas-constellation__core-glow {
+    animation: none;
+  }
+
+  .syzygy-relation-instrument__orbit--outer {
     animation: none;
   }
 	}
@@ -5128,6 +5472,73 @@ h3 {
     white-space: nowrap;
   }
 
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro {
+    width: min(24rem, calc(100% - 2rem));
+    margin-inline: auto;
+    padding-bottom: clamp(2rem, 5.8vh, 3.4rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro h1 {
+    max-width: 100%;
+    font-size: clamp(2.9rem, 15vw, 4rem);
+    line-height: 0.92;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro p:not(.eyebrow) {
+    max-width: 26ch;
+    font-size: 0.98rem;
+    line-height: 1.56;
+  }
+
+  .syzygy-relation-instrument {
+    min-height: 8.45rem;
+  }
+
+  .syzygy-relation-instrument__label {
+    font-size: 0.54rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+    bottom: 0.9rem;
+    width: auto;
+    padding: 0.72rem 0.86rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
   .ego-depth-instrument {
     min-height: 8.5rem;
   }
@@ -5188,6 +5599,30 @@ h3 {
     min-width: 0;
     justify-content: center;
     text-align: center;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro {
+    justify-content: flex-start;
+    padding-top: 10.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro h1 {
+    font-size: clamp(2.6rem, 13.6vw, 3.45rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro p:not(.eyebrow) {
+    margin-top: 0.72rem;
+    font-size: 0.94rem;
+    line-height: 1.48;
+  }
+
+  .syzygy-relation-instrument {
+    min-height: 7.85rem;
+    margin-top: 0.75rem;
   }
 
   .home-hero {
