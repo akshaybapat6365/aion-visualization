@@ -4,6 +4,8 @@
 
 This plan turns the installed Codex skill library into a disciplined execution system for the Aion Visualization redesign. The goal is not to use skills performatively. The goal is to use a large, relevant set of design, frontend, visualization, research, testing, performance, and review skills so the project becomes a visual-first learning atlas for Jung's *Aion*.
 
+For daily routing, use the compact companion guide: [Aion Skill Routing Playbook](./AION_SKILL_ROUTING_PLAYBOOK.md). This document remains the deeper roadmap and inventory.
+
 The plan preserves the user's stated taste direction:
 
 - Keep the best parts of the previous design language, especially the Chapter 1 Ego typography, dark field, symbolic motion, and cinematic atmosphere.
@@ -35,6 +37,8 @@ For each work batch:
 5. Record what skill stack was used and what changed.
 
 This keeps the work intense and skill-rich without turning the project into chaos.
+
+The short version: pick a default stack of product/context, taste direction, story/visualization, Browser evidence, accessibility/testing, and shipping. Add specialist skills only when their trigger is real.
 
 ## Core Skill Stack
 
