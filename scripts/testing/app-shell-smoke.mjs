@@ -497,6 +497,16 @@ async function smokeReducedMotion(browser, failures) {
   const chapterFivePauseControlCount = await page.locator('.scene-host__pause').count();
   const chapterFiveCanvasCount = await page.locator('.scene-host canvas').count();
   const chapterFiveFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterFiveInstrumentCount = await page.locator('.christ-symbol-instrument').count();
+  const chapterFiveInstrumentMotion = await page.locator('.christ-symbol-instrument__field, .christ-symbol-instrument__ring, .christ-symbol-instrument__axis, .christ-symbol-instrument__connector, .christ-symbol-instrument__point, .christ-symbol-instrument__root').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterFiveAnimatedParts = chapterFiveInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterFiveTransitioningParts = chapterFiveInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
 
   if (!chapterFiveFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 5 scene');
   if (chapterFiveReducedMotionAttribute !== 'true') failures.push('Chapter 5 did not record reduced-motion state');
@@ -504,6 +514,9 @@ async function smokeReducedMotion(browser, failures) {
   if (chapterFivePanelIds.join(',') !== 'cross,fourth,tree') failures.push(`reduced-motion Chapter 5 reference nodes out of order: ${chapterFivePanelIds.join(',')}`);
   if (chapterFivePauseControlCount !== 0) failures.push(`reduced-motion Chapter 5 rendered pause controls: ${chapterFivePauseControlCount}`);
   if (chapterFiveCanvasCount !== 0) failures.push(`reduced-motion Chapter 5 rendered canvas: ${chapterFiveCanvasCount}`);
+  if (chapterFiveInstrumentCount !== 1) failures.push(`reduced-motion Chapter 5 Christ symbol instrument count mismatch: ${chapterFiveInstrumentCount}`);
+  if (chapterFiveAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 5 Christ symbol instrument still animates: ${JSON.stringify(chapterFiveAnimatedParts)}`);
+  if (chapterFiveTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 5 Christ symbol instrument still transitions: ${JSON.stringify(chapterFiveTransitioningParts)}`);
   if (!chapterFiveFallbackText?.includes('luminous cross') || !chapterFiveFallbackText?.includes('excluded fourth')) {
     failures.push('reduced-motion chapter fallback lost Chapter 5 Christ symbol teaching summary');
   }
@@ -813,6 +826,23 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFivePanelGemPoints = await page.locator('.chapter-panel[data-panel-id="fourth"] .chapter-panel__quaternity-point').count();
   const chapterFivePanelBands = await page.locator('.chapter-panel[data-panel-id="fourth"] .chapter-panel__mandala-band').count();
   const chapterFiveTreeRoots = await page.locator('.chapter-panel[data-panel-id="tree"] .chapter-panel__root-line').count();
+  const chapterFiveInstrument = page.locator('.christ-symbol-instrument');
+  const chapterFiveInstrumentCount = await chapterFiveInstrument.count();
+  const chapterFiveInstrumentRole = await chapterFiveInstrument.getAttribute('role');
+  const chapterFiveInstrumentLabel = await chapterFiveInstrument.getAttribute('aria-label');
+  const chapterFiveInstrumentPanel = await chapterFiveInstrument.getAttribute('data-active-panel');
+  const chapterFiveInstrumentFieldCount = await page.locator('.christ-symbol-instrument__field').count();
+  const chapterFiveInstrumentRingCount = await page.locator('.christ-symbol-instrument__ring').count();
+  const chapterFiveInstrumentAxisCount = await page.locator('.christ-symbol-instrument__axis').count();
+  const chapterFiveInstrumentConnectorCount = await page.locator('.christ-symbol-instrument__connector').count();
+  const chapterFiveInstrumentPointCount = await page.locator('.christ-symbol-instrument__point').count();
+  const chapterFiveInstrumentRootCount = await page.locator('.christ-symbol-instrument__root').count();
+  const chapterFiveInstrumentLabelCount = await page.locator('.christ-symbol-instrument__label').count();
+  const chapterFiveInstrumentMarksVisible = await page.locator('.christ-symbol-instrument__field, .christ-symbol-instrument__ring, .christ-symbol-instrument__axis, .christ-symbol-instrument__connector, .christ-symbol-instrument__point, .christ-symbol-instrument__root').evaluateAll((nodes) => nodes.length >= 17 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
   const chapterFiveReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="fourth"] .chapter-stage__reference-quadrant').evaluateAll((nodes) => nodes.every((node) => {
     const styles = window.getComputedStyle(node);
     const box = node.getBoundingClientRect();
@@ -830,32 +860,83 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterFivePanelGemPoints !== 4) failures.push(`chapter 5 panel gem point count mismatch: ${chapterFivePanelGemPoints}`);
   if (chapterFivePanelBands !== 3) failures.push(`chapter 5 panel ring band count mismatch: ${chapterFivePanelBands}`);
   if (chapterFiveTreeRoots !== 3) failures.push(`chapter 5 tree root line count mismatch: ${chapterFiveTreeRoots}`);
+  if (chapterFiveInstrumentCount !== 1) failures.push(`chapter 5 Christ symbol instrument count mismatch: ${chapterFiveInstrumentCount}`);
+  if (chapterFiveInstrumentFieldCount !== 2) failures.push(`chapter 5 Christ symbol instrument field count mismatch: ${chapterFiveInstrumentFieldCount}`);
+  if (chapterFiveInstrumentRingCount !== 2) failures.push(`chapter 5 Christ symbol instrument ring count mismatch: ${chapterFiveInstrumentRingCount}`);
+  if (chapterFiveInstrumentAxisCount !== 2) failures.push(`chapter 5 Christ symbol instrument axis count mismatch: ${chapterFiveInstrumentAxisCount}`);
+  if (chapterFiveInstrumentConnectorCount !== 4) failures.push(`chapter 5 Christ symbol instrument connector count mismatch: ${chapterFiveInstrumentConnectorCount}`);
+  if (chapterFiveInstrumentPointCount !== 4) failures.push(`chapter 5 Christ symbol instrument point count mismatch: ${chapterFiveInstrumentPointCount}`);
+  if (chapterFiveInstrumentRootCount !== 3) failures.push(`chapter 5 Christ symbol instrument root count mismatch: ${chapterFiveInstrumentRootCount}`);
+  if (chapterFiveInstrumentLabelCount !== 3) failures.push(`chapter 5 Christ symbol instrument label count mismatch: ${chapterFiveInstrumentLabelCount}`);
+  if (chapterFiveInstrumentRole !== 'img') failures.push(`chapter 5 Christ symbol instrument role mismatch: ${chapterFiveInstrumentRole}`);
+  if (!chapterFiveInstrumentLabel?.includes('Christ symbol') || !chapterFiveInstrumentLabel?.includes('Self') || !chapterFiveInstrumentLabel?.includes('excluded fourth') || !chapterFiveInstrumentLabel?.includes('one-sided') || !chapterFiveInstrumentLabel?.includes('Current emphasis: Cross')) {
+    failures.push(`chapter 5 Christ symbol instrument label missing teaching text: ${chapterFiveInstrumentLabel}`);
+  }
+  if (chapterFiveInstrumentPanel !== 'cross') failures.push(`chapter 5 Christ symbol instrument did not start on cross panel: ${chapterFiveInstrumentPanel}`);
+  if (!chapterFiveInstrumentMarksVisible) failures.push('chapter 5 Christ symbol instrument marks are not visibly rendered');
   if (!chapterFiveReferenceGlyphsVisible) failures.push('chapter 5 reference fourth glyphs are not visibly rendered');
   if (!chapterFivePanelGlyphsVisible) failures.push('chapter 5 panel fourth/tree glyphs are not visibly rendered');
 
   const fourth = page.locator('.chapter-stage__reference-node[data-panel-id="fourth"]');
-  await activateSceneButton(fourth);
+  await fourth.waitFor({ state: 'visible', timeout: 30_000 });
+  await fourth.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await fourth.focus();
+  await page.keyboard.press('Enter');
   await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const nodes = Array.from(document.querySelectorAll('.christ-symbol-instrument__connector--broken, .christ-symbol-instrument__point--fourth'));
+    return nodes.length === 2 && nodes.every((node) => Number(window.getComputedStyle(node).opacity) >= 0.95);
+  }, null, { timeout: 3_000 }).catch(() => {});
 
   const fourthPressed = await fourth.getAttribute('aria-pressed');
   const fourthPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="fourth"]').count();
   const chapterFiveFourthDescription = await page.locator('#scene-host-description-ch5').textContent();
+  const chapterFiveInstrumentFourthPanel = await chapterFiveInstrument.getAttribute('data-active-panel');
+  const chapterFiveInstrumentFourthLabel = await chapterFiveInstrument.getAttribute('aria-label');
+  const chapterFiveFourthVisualState = await page.locator('.christ-symbol-instrument__connector--broken, .christ-symbol-instrument__point--fourth').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return Number(styles.opacity);
+  }));
   if (fourthPressed !== 'true') failures.push(`chapter 5 fourth reference did not become active: ${fourthPressed}`);
   if (fourthPanelActive !== 1) failures.push(`chapter 5 fourth panel did not become active: ${fourthPanelActive}`);
+  if (chapterFiveInstrumentFourthPanel !== 'fourth') failures.push(`chapter 5 Christ symbol instrument did not follow fourth panel: ${chapterFiveInstrumentFourthPanel}`);
+  if (!chapterFiveInstrumentFourthLabel?.includes('Current emphasis: Fourth') || !chapterFiveInstrumentFourthLabel?.includes('The fourth is missing')) {
+    failures.push(`chapter 5 Christ symbol instrument label did not follow fourth panel: ${chapterFiveInstrumentFourthLabel}`);
+  }
+  if (chapterFiveFourthVisualState.length !== 2 || chapterFiveFourthVisualState.some((opacity) => opacity < 0.95)) {
+    failures.push(`chapter 5 Christ symbol instrument did not visually emphasize the fourth: ${chapterFiveFourthVisualState.join(',')}`);
+  }
   if (!chapterFiveFourthDescription?.includes('Fourth: The fourth is missing')) {
     failures.push(`chapter 5 scene description did not follow fourth panel: ${chapterFiveFourthDescription}`);
   }
 
   const tree = page.locator('.chapter-stage__reference-node[data-panel-id="tree"]');
-  await activateSceneButton(tree);
+  await tree.waitFor({ state: 'visible', timeout: 30_000 });
+  await tree.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await tree.focus();
+  await page.keyboard.press('Space');
   await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const nodes = Array.from(document.querySelectorAll('.christ-symbol-instrument__root'));
+    return nodes.length === 3 && nodes.every((node) => Number(window.getComputedStyle(node).opacity) >= 0.9);
+  }, null, { timeout: 3_000 }).catch(() => {});
 
   const treePressed = await tree.getAttribute('aria-pressed');
   const treePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="tree"]').count();
   const chapterFiveTreeDescription = await page.locator('#scene-host-description-ch5').textContent();
   const chapterFiveScrollY = await page.evaluate(() => window.scrollY);
+  const chapterFiveInstrumentTreePanel = await chapterFiveInstrument.getAttribute('data-active-panel');
+  const chapterFiveInstrumentTreeLabel = await chapterFiveInstrument.getAttribute('aria-label');
+  const chapterFiveTreeVisualState = await page.locator('.christ-symbol-instrument__root').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   if (treePressed !== 'true') failures.push(`chapter 5 tree reference did not become active: ${treePressed}`);
   if (treePanelActive !== 1) failures.push(`chapter 5 tree panel did not become active: ${treePanelActive}`);
+  if (chapterFiveInstrumentTreePanel !== 'tree') failures.push(`chapter 5 Christ symbol instrument did not follow tree panel: ${chapterFiveInstrumentTreePanel}`);
+  if (!chapterFiveInstrumentTreeLabel?.includes('Current emphasis: Root') || !chapterFiveInstrumentTreeLabel?.includes('The roots go downward')) {
+    failures.push(`chapter 5 Christ symbol instrument label did not follow tree panel: ${chapterFiveInstrumentTreeLabel}`);
+  }
+  if (chapterFiveTreeVisualState.length !== 3 || chapterFiveTreeVisualState.some((opacity) => opacity < 0.9)) {
+    failures.push(`chapter 5 Christ symbol instrument did not visually emphasize roots: ${chapterFiveTreeVisualState.join(',')}`);
+  }
   if (!chapterFiveTreeDescription?.includes('Root: The roots go downward')) failures.push(`chapter 5 scene description did not follow tree panel: ${chapterFiveTreeDescription}`);
   if (chapterFiveScrollY > 10) failures.push(`chapter 5 scene control unexpectedly scrolled page: ${chapterFiveScrollY}`);
 
@@ -1091,6 +1172,7 @@ async function smokeMobile(page, failures) {
     const chapterFivePanelIds = await chapterFiveReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
     const chapterFiveScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const chapterFiveReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterFiveInstrumentBox = await page.locator('.christ-symbol-instrument').boundingBox();
     if (!chapterFiveNavBox || !chapterFiveHeadingBox) {
       failures.push(`mobile chapter 5 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -1105,6 +1187,10 @@ async function smokeMobile(page, failures) {
     if (chapterFiveScrollWidth > viewport.width + 2) failures.push(`mobile chapter 5 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterFiveScrollWidth}`);
     if (chapterFiveReferenceMapBox && chapterFiveReferenceMapBox.width > viewport.width + 2) {
       failures.push(`mobile chapter 5 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFiveReferenceMapBox.width)}`);
+    }
+    if (!chapterFiveInstrumentBox) failures.push(`mobile chapter 5 Christ symbol instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterFiveInstrumentBox && chapterFiveInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 5 Christ symbol instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFiveInstrumentBox.width)}`);
     }
   }
 }

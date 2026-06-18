@@ -2391,6 +2391,42 @@ h3 {
   margin-top: 2.15rem;
 }
 
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro {
+  width: min(37rem, calc(100% - 2rem));
+  justify-content: flex-end;
+  margin-left: clamp(1rem, 4.8vw, 4rem);
+  padding-bottom: clamp(2.15rem, 5.4vh, 4rem);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro h1 {
+  max-width: 8.8ch;
+  font-size: clamp(3.1rem, 6.25vw, 5.7rem);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 35ch;
+  font-size: clamp(0.98rem, 1.24vw, 1.08rem);
+  line-height: 1.62;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__thesis-map {
+  max-width: 28rem;
+  margin-top: 1rem;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__reference-map {
+  width: min(25rem, 100%);
+  margin-top: 0.68rem;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__reference-node {
+  min-height: 3.75rem;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .chapter-stage__reference-label {
+  margin-top: 2.05rem;
+}
+
 .chapter-experience[data-chapter-id="ch8"] .chapter-stage__intro {
   width: min(35rem, calc(100% - 2rem));
   justify-content: flex-end;
@@ -3606,6 +3642,311 @@ h3 {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.08);
   }
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument {
+  position: relative;
+  width: min(29rem, 100%);
+  min-height: clamp(5.55rem, 8.2vh, 5.95rem);
+  overflow: hidden;
+  margin-top: 0.85rem;
+  border: 1px solid rgba(244, 240, 232, 0.105);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 47%, rgba(244, 240, 232, 0.11), transparent 1.8rem),
+    radial-gradient(circle at 73% 70%, rgba(204, 109, 134, 0.16), transparent 4.4rem),
+    radial-gradient(circle at 31% 28%, rgba(212, 175, 55, 0.14), transparent 4.2rem),
+    linear-gradient(90deg, rgba(5, 5, 13, 0.72), rgba(9, 8, 17, 0.48) 52%, rgba(30, 7, 11, 0.42));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument::before,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument::before {
+  inset: 0.66rem;
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument::after {
+  left: 50%;
+  top: 15%;
+  bottom: 13%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.34), rgba(204, 109, 134, 0.22), transparent);
+  box-shadow:
+    0 0 1.5rem rgba(244, 240, 232, 0.18),
+    0 0 2.5rem rgba(212, 175, 55, 0.1);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__field,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__axis,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__field {
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.58;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__field--light {
+  left: 0;
+  background: linear-gradient(90deg, rgba(244, 240, 232, 0.08), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__field--shadow {
+  right: 0;
+  background: linear-gradient(270deg, rgba(76, 15, 22, 0.2), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring {
+  left: 50%;
+  top: 50%;
+  width: 10.8rem;
+  height: 4.85rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    filter 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring--quaternity {
+  border: 1.5px solid rgba(244, 240, 232, 0.34);
+  opacity: 0.86;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring--trinity {
+  background: conic-gradient(from -125deg, rgba(255, 227, 156, 0.78) 0 270deg, rgba(104, 29, 40, 0.18) 270deg 360deg);
+  mask-image: radial-gradient(ellipse at 50% 50%, transparent 0 62%, #000 64% 68%, transparent 70%);
+  opacity: 0.82;
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__axis {
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.62), transparent);
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__axis--vertical {
+  width: 1px;
+  height: 78%;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.74), rgba(255, 227, 156, 0.42), rgba(120, 34, 42, 0.32), transparent);
+  box-shadow: 0 0 1.4rem rgba(244, 240, 232, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__axis--horizontal {
+  width: 66%;
+  height: 1px;
+  box-shadow: 0 0 1.3rem rgba(244, 240, 232, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector {
+  left: 50%;
+  top: 50%;
+  width: 27%;
+  height: 2px;
+  transform-origin: left center;
+  opacity: 0.56;
+  transition:
+    background 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector--accepted {
+  background: linear-gradient(90deg, rgba(244, 240, 232, 0.66), rgba(255, 227, 156, 0.48), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector--one {
+  transform: rotate(-154deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector--two {
+  transform: rotate(-26deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector--three {
+  transform: rotate(154deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector--broken {
+  width: 28%;
+  background: repeating-linear-gradient(90deg, rgba(232, 150, 172, 0.82) 0 0.26rem, transparent 0.26rem 0.56rem);
+  opacity: 0.74;
+  transform: rotate(27deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point {
+  width: 0.68rem;
+  height: 0.68rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--one {
+  left: 27%;
+  top: 28%;
+  background: var(--gold-soft);
+  box-shadow: 0 0 1.7rem rgba(212, 175, 55, 0.44);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--two {
+  left: 73%;
+  top: 28%;
+  background: var(--cyan);
+  box-shadow: 0 0 1.6rem rgba(83, 216, 232, 0.38);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--three {
+  left: 27%;
+  top: 72%;
+  background: var(--rose);
+  box-shadow: 0 0 1.45rem rgba(204, 109, 134, 0.3);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--fourth {
+  left: 73%;
+  top: 72%;
+  border: 1.5px solid rgba(232, 150, 172, 0.82);
+  background: #26090d;
+  box-shadow:
+    0 0 0 0.42rem rgba(232, 150, 172, 0.08),
+    0 0 1.65rem rgba(232, 150, 172, 0.36);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root {
+  left: 50%;
+  top: 56%;
+  width: 2px;
+  height: 32%;
+  background: linear-gradient(180deg, rgba(244, 240, 232, 0.48), rgba(232, 150, 172, 0.72), transparent);
+  opacity: 0.52;
+  transform-origin: top center;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root--left {
+  transform: rotate(28deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root--center {
+  height: 38%;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root--right {
+  transform: rotate(-28deg);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--cross {
+  left: 8%;
+  top: 17%;
+  color: rgba(244, 240, 232, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--fourth {
+  right: 7%;
+  bottom: 14%;
+  color: rgba(245, 177, 194, 0.96);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--root {
+  left: 9%;
+  bottom: 14%;
+  color: rgba(255, 227, 156, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="cross"] .christ-symbol-instrument__axis {
+  opacity: 0.96;
+  box-shadow: 0 0 1.8rem rgba(244, 240, 232, 0.28);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="cross"] .christ-symbol-instrument__point--fourth,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="cross"] .christ-symbol-instrument__connector--broken,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="cross"] .christ-symbol-instrument__root {
+  opacity: 0.24;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="fourth"] .christ-symbol-instrument__field--shadow {
+  opacity: 0.86;
+  transform: scaleX(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="fourth"] .christ-symbol-instrument__ring--trinity {
+  filter: drop-shadow(0 0 0.65rem rgba(204, 109, 134, 0.18));
+  opacity: 0.92;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="fourth"] .christ-symbol-instrument__connector--broken,
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="fourth"] .christ-symbol-instrument__point--fourth {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.22);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="fourth"] .christ-symbol-instrument__connector--broken {
+  transform: rotate(27deg) scaleX(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="tree"] .christ-symbol-instrument__axis--vertical {
+  opacity: 0.95;
+  transform: translate(-50%, -50%) scaleY(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="tree"] .christ-symbol-instrument__root {
+  opacity: 0.95;
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="tree"] .christ-symbol-instrument__root--left {
+  transform: rotate(34deg) scaleY(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="tree"] .christ-symbol-instrument__root--center {
+  transform: scaleY(1.14);
+}
+
+.chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument[data-active-panel="tree"] .christ-symbol-instrument__root--right {
+  transform: rotate(-34deg) scaleY(1.12);
 }
 
 .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
@@ -5180,6 +5521,12 @@ h3 {
 	  .self-mandala-instrument__axis,
 	  .self-mandala-instrument__point,
 	  .self-mandala-instrument__center,
+	  .christ-symbol-instrument__field,
+	  .christ-symbol-instrument__ring,
+	  .christ-symbol-instrument__axis,
+	  .christ-symbol-instrument__connector,
+	  .christ-symbol-instrument__point,
+	  .christ-symbol-instrument__root,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -5202,6 +5549,15 @@ h3 {
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
+    transition: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__field,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__axis,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__connector,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__root {
     transition: none;
   }
 	}
@@ -5815,6 +6171,30 @@ h3 {
     left: 19%;
   }
 
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument {
+    min-height: 7.05rem;
+    margin-top: 0.76rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__ring {
+    width: 9.7rem;
+    height: 4.4rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label {
+    font-size: 0.54rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--one,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--three {
+    left: 24%;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--two,
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__point--fourth {
+    left: 76%;
+  }
+
   .chapter-experience[data-chapter-id="ch3"] .scene-host__pause {
     justify-content: center;
     width: 2.35rem;
@@ -5996,6 +6376,86 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label--mandala {
     left: 7%;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro {
+    justify-content: flex-start;
+    padding-top: 10.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro h1 {
+    max-width: 8.5ch;
+    font-size: clamp(2.35rem, 12.8vw, 3.1rem);
+    line-height: 0.92;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .chapter-stage__intro p:not(.eyebrow) {
+    margin-top: 0.72rem;
+    max-width: 28ch;
+    font-size: 0.92rem;
+    line-height: 1.48;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument {
+    min-height: 6.35rem;
+    margin-top: 0.7rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--cross {
+    left: 7%;
+    top: 13%;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--fourth {
+    right: 6%;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"] .christ-symbol-instrument__label--root {
+    left: 7%;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 20.45rem;
+    width: auto;
+    padding: 0.56rem 0.7rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch5"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 
   .home-hero {
