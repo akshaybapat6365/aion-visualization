@@ -4254,6 +4254,13 @@ h3 {
     line-height: 1.55;
   }
 
+  .page-header--visual h1,
+  .chapters-hero__copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.85rem, 13.5vw, 3.45rem);
+    line-height: 0.94;
+  }
+
   .atlas-hero__metrics {
     margin-top: 0.9rem;
   }

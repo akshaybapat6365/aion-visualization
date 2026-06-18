@@ -37,12 +37,14 @@ Anchor skill-routed work to the active React/Vite app, not older static-site doc
 | App contract tests | `tests/app/aion-app-contract.test.ts` |
 | Browser smoke | `scripts/testing/app-shell-smoke.mjs` |
 | Accessibility smoke | `scripts/testing/app-accessibility-smoke.mjs` |
+| Visual QA control tower | `scripts/testing/visual-control-tower.mjs` |
 
 Shared ownership warnings:
 
 - `src/app/styles.css` has high blast radius. Keep one active owner per batch.
 - `src/app/visualization/chapterScenes.ts` is a registry choke point. Avoid parallel edits unless one person owns integration.
 - Old phase docs may mention static HTML, pure monochrome, or noncanonical chapter counts. Treat those as historical unless current source files and package scripts confirm them.
+- Old visual-test summaries and Backstop/static dashboards target retired surfaces unless explicitly regenerated against the React/Vite route set. Use the Control Tower script for current route-score evidence.
 
 ## Specialist Triggers
 
@@ -70,6 +72,7 @@ Required Browser evidence:
 
 - Open the changed local route or live route.
 - Capture or inspect at desktop and mobile widths.
+- For visual batches, run `npm run test:visual:control-tower` and use `test-results/control-tower/route-scores.md` as the generated screenshot and route-score index.
 - Check visible global nav, route context, primary interaction, and text overflow.
 - Check console errors and unexpected 404s when practical.
 - For chapter scenes, verify canvas presence and nonblank visual output through smoke tests.
@@ -176,7 +179,10 @@ npm run test:e2e:app
 npm run test:a11y:app
 npm run build:pages
 npm run test:pages:artifact
+npm run test:visual:control-tower
 ```
+
+`npm run test:visual:control-tower` is report-first in the early redesign phase. It fails on technical blockers such as route load failure, console/page errors, failed requests, HTTP 4xx/5xx responses, missing shell landmarks, horizontal overflow, and blank expected chapter canvases. It writes generated evidence under `test-results/control-tower/`; do not commit those screenshots unless a future batch intentionally creates visual baselines.
 
 Live-site check after merge:
 
