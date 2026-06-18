@@ -139,6 +139,26 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               </button>
             ))}
           </div>
+          {chapter.id === 'ch1' && (
+            <div
+              className="ego-depth-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label="Ego depth model: the conscious ego shines at the surface, somatic and psychic roots descend, and the Self holds the wider field below."
+            >
+              <span className="ego-depth-instrument__axis" aria-hidden="true" />
+              <span className="ego-depth-instrument__surface" aria-hidden="true" />
+              <span className="ego-depth-instrument__ego" aria-hidden="true" />
+              <span className="ego-depth-instrument__root ego-depth-instrument__root--somatic" aria-hidden="true" />
+              <span className="ego-depth-instrument__root ego-depth-instrument__root--psychic" aria-hidden="true" />
+              <span className="ego-depth-instrument__wake ego-depth-instrument__wake--one" aria-hidden="true" />
+              <span className="ego-depth-instrument__wake ego-depth-instrument__wake--two" aria-hidden="true" />
+              <span className="ego-depth-instrument__self" aria-hidden="true" />
+              <span className="ego-depth-instrument__label ego-depth-instrument__label--ego" aria-hidden="true">ego</span>
+              <span className="ego-depth-instrument__label ego-depth-instrument__label--roots" aria-hidden="true">roots</span>
+              <span className="ego-depth-instrument__label ego-depth-instrument__label--self" aria-hidden="true">Self</span>
+            </div>
+          )}
           {activePanel && (
             <p className="sr-only" role="status" aria-live="polite">
               Active scene state: {activePanel.title}. {activePanel.insight}

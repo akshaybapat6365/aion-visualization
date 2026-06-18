@@ -2287,6 +2287,26 @@ h3 {
   text-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.76);
 }
 
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 63% 38%, rgba(244, 240, 232, 0.045), transparent 18rem),
+    radial-gradient(circle at 72% 70%, rgba(83, 216, 232, 0.07), transparent 25rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.9), rgba(3, 3, 7, 0.34) 41%, rgba(3, 3, 7, 0.58) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro {
+  width: min(36rem, calc(100% - 2rem));
+  margin-left: clamp(1rem, 4.8vw, 4.25rem);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro h1 {
+  max-width: 8ch;
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 38ch;
+}
+
 .chapter-experience[data-chapter-id="ch12"] .chapter-stage__intro {
   justify-content: flex-start;
   padding-top: clamp(7rem, 14vh, 8.8rem);
@@ -2549,6 +2569,205 @@ h3 {
   top: 0.8rem;
   height: 2.1rem;
   background: linear-gradient(180deg, rgba(244, 240, 232, 0.22), rgba(212, 175, 55, 0.44), transparent);
+}
+
+.ego-depth-instrument {
+  position: relative;
+  width: min(30rem, 100%);
+  min-height: clamp(9.2rem, 22vh, 12rem);
+  overflow: hidden;
+  margin-top: 0.95rem;
+  border: 1px solid rgba(244, 240, 232, 0.105);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 23%, rgba(244, 240, 232, 0.14), transparent 3.4rem),
+    radial-gradient(circle at 38% 72%, rgba(204, 109, 134, 0.1), transparent 5.8rem),
+    radial-gradient(circle at 62% 72%, rgba(83, 216, 232, 0.12), transparent 5.8rem),
+    linear-gradient(180deg, rgba(3, 3, 7, 0.68), rgba(3, 3, 7, 0.34));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.ego-depth-instrument::before,
+.ego-depth-instrument::after {
+  content: '';
+  position: absolute;
+  inset: 0.72rem;
+  border-radius: calc(var(--radius) - 2px);
+  pointer-events: none;
+}
+
+.ego-depth-instrument::before {
+  border: 1px solid rgba(212, 175, 55, 0.09);
+}
+
+.ego-depth-instrument::after {
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.07), transparent),
+    repeating-linear-gradient(180deg, transparent 0 2.35rem, rgba(244, 240, 232, 0.05) 2.38rem, transparent 2.42rem);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+.ego-depth-instrument__axis,
+.ego-depth-instrument__surface,
+.ego-depth-instrument__ego,
+.ego-depth-instrument__root,
+.ego-depth-instrument__wake,
+.ego-depth-instrument__self,
+.ego-depth-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.ego-depth-instrument__axis {
+  left: 50%;
+  top: 22%;
+  width: 1px;
+  height: 62%;
+  background: linear-gradient(180deg, rgba(244, 240, 232, 0.46), rgba(212, 175, 55, 0.25), transparent);
+  transform: translateX(-50%);
+}
+
+.ego-depth-instrument__surface {
+  left: 12%;
+  right: 12%;
+  top: 27%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.46), transparent);
+  box-shadow: 0 0 1.5rem rgba(244, 240, 232, 0.18);
+}
+
+.ego-depth-instrument__ego {
+  left: 50%;
+  top: 27%;
+  width: 0.78rem;
+  height: 0.78rem;
+  border-radius: 50%;
+  background: #f4f0e8;
+  box-shadow:
+    0 0 1.5rem rgba(244, 240, 232, 0.86),
+    0 0 4rem rgba(83, 216, 232, 0.18);
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.ego-depth-instrument__root {
+  left: 50%;
+  top: 31%;
+  width: 1px;
+  height: 43%;
+  opacity: 0.62;
+  transform-origin: top;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.ego-depth-instrument__root--somatic {
+  background: linear-gradient(180deg, rgba(244, 240, 232, 0.16), rgba(204, 109, 134, 0.62), transparent);
+  transform: rotate(22deg);
+}
+
+.ego-depth-instrument__root--psychic {
+  background: linear-gradient(180deg, rgba(244, 240, 232, 0.16), rgba(83, 216, 232, 0.62), transparent);
+  transform: rotate(-22deg);
+}
+
+.ego-depth-instrument__wake {
+  left: 50%;
+  top: 76%;
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 50%;
+  opacity: 0.68;
+  transform: translate(-50%, -50%);
+}
+
+.ego-depth-instrument__wake--one {
+  width: 38%;
+  aspect-ratio: 1 / 0.34;
+}
+
+.ego-depth-instrument__wake--two {
+  width: 58%;
+  aspect-ratio: 1 / 0.36;
+  border-color: rgba(83, 216, 232, 0.12);
+}
+
+.ego-depth-instrument__self {
+  left: 50%;
+  top: 76%;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9a0, rgba(212, 175, 55, 0.38) 48%, transparent 76%);
+  box-shadow:
+    0 0 2.2rem rgba(212, 175, 55, 0.66),
+    0 -4.8rem 1.6rem rgba(244, 240, 232, 0.18);
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.ego-depth-instrument__label {
+  color: rgba(244, 240, 232, 0.58);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ego-depth-instrument__label--ego {
+  left: 57%;
+  top: 20%;
+}
+
+.ego-depth-instrument__label--roots {
+  left: 14%;
+  bottom: 18%;
+  color: rgba(83, 216, 232, 0.72);
+}
+
+.ego-depth-instrument__label--self {
+  right: 13%;
+  bottom: 18%;
+  color: rgba(255, 227, 156, 0.78);
+}
+
+.ego-depth-instrument[data-active-panel="ego-light"] .ego-depth-instrument__ego {
+  transform: translate(-50%, -50%) scale(1.28);
+  box-shadow:
+    0 0 2rem rgba(244, 240, 232, 0.98),
+    0 0 5rem rgba(83, 216, 232, 0.22);
+}
+
+.ego-depth-instrument[data-active-panel="roots"] .ego-depth-instrument__root {
+  opacity: 1;
+}
+
+.ego-depth-instrument[data-active-panel="roots"] .ego-depth-instrument__root--somatic {
+  transform: rotate(31deg) scaleY(1.08);
+}
+
+.ego-depth-instrument[data-active-panel="roots"] .ego-depth-instrument__root--psychic {
+  transform: rotate(-31deg) scaleY(1.08);
+}
+
+.ego-depth-instrument[data-active-panel="self-depth"] .ego-depth-instrument__self {
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+.ego-depth-instrument[data-active-panel="self-depth"] .ego-depth-instrument__wake--one {
+  border-color: rgba(212, 175, 55, 0.34);
+}
+
+.ego-depth-instrument[data-active-panel="self-depth"] .ego-depth-instrument__wake--two {
+  border-color: rgba(83, 216, 232, 0.22);
 }
 
 .chapter-experience[data-chapter-id="ch2"] .chapter-stage__reference-node[data-panel-id="mirror"] .chapter-stage__reference-mark::before {
@@ -3468,11 +3687,55 @@ h3 {
   box-shadow: 0 0 1.25rem rgba(83, 216, 232, 0.62);
 }
 
+.chapter-experience[data-chapter-id="ch1"] .chapter-panels {
+  width: min(1260px, calc(100% - 2rem));
+  gap: 10vh;
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel {
+  width: min(68rem, 100%);
+  grid-template-columns: minmax(18rem, 1.14fr) minmax(15rem, 0.74fr);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel__symbol {
+  min-height: clamp(20rem, 44vh, 29rem);
+  background:
+    radial-gradient(circle at 50% 28%, rgba(244, 240, 232, 0.12), transparent 4rem),
+    radial-gradient(circle at 36% 69%, rgba(204, 109, 134, 0.08), transparent 9rem),
+    radial-gradient(circle at 64% 69%, rgba(83, 216, 232, 0.09), transparent 9rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel__symbol::before {
+  inset: 9% 14%;
+  border-color: rgba(244, 240, 232, 0.105);
+  box-shadow:
+    inset 0 0 4rem rgba(83, 216, 232, 0.055),
+    inset 0 -5rem 7rem rgba(212, 175, 55, 0.045);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel__copy {
+  align-self: center;
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel__copy p:not(.eyebrow) {
+  max-width: 33ch;
+}
+
 .chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="ego-light"] .chapter-panel__symbol {
   background:
     radial-gradient(circle at 50% 34%, rgba(244, 240, 232, 0.18), transparent 3.4rem),
     radial-gradient(circle at 50% 58%, rgba(83, 216, 232, 0.08), transparent 8rem),
     linear-gradient(180deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.012));
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="ego-light"] .chapter-panel__symbol::before {
+  inset: 13% 21% 19%;
+  border-radius: 50%;
+  border-color: rgba(244, 240, 232, 0.18);
+  box-shadow:
+    inset 0 -4rem 5rem rgba(83, 216, 232, 0.05),
+    0 0 3.6rem rgba(244, 240, 232, 0.055);
 }
 
 .chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="ego-light"] .chapter-panel__symbol::after {
@@ -3485,11 +3748,46 @@ h3 {
     0 0 5.5rem rgba(83, 216, 232, 0.18);
 }
 
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="ego-light"] .chapter-panel__axis--horizontal {
+  top: 32%;
+  width: 68%;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.34), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="ego-light"] .chapter-panel__depth--one {
+  top: 32%;
+  height: 44%;
+  opacity: 0.44;
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="roots"] .chapter-panel__symbol {
+  background:
+    radial-gradient(circle at 37% 64%, rgba(204, 109, 134, 0.16), transparent 6rem),
+    radial-gradient(circle at 63% 64%, rgba(83, 216, 232, 0.17), transparent 6.4rem),
+    radial-gradient(circle at 50% 32%, rgba(244, 240, 232, 0.1), transparent 3.8rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.048), rgba(255, 255, 255, 0.012));
+}
+
 .chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="roots"] .chapter-panel__depth--one {
   height: 52%;
   background:
     linear-gradient(120deg, transparent 45%, rgba(204, 109, 134, 0.46) 46%, rgba(204, 109, 134, 0.46) 49%, transparent 50%),
     linear-gradient(240deg, transparent 45%, rgba(83, 216, 232, 0.48) 46%, rgba(83, 216, 232, 0.48) 49%, transparent 50%);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="roots"] .chapter-panel__spark--one {
+  left: 37%;
+  top: 66%;
+  background: var(--rose);
+  box-shadow: 0 0 1.7rem rgba(204, 109, 134, 0.62);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="roots"] .chapter-panel__spark--two {
+  left: 63%;
+  right: auto;
+  top: 66%;
+  background: var(--cyan);
+  box-shadow: 0 0 1.7rem rgba(83, 216, 232, 0.68);
 }
 
 .chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="roots"] .chapter-panel__depth--two {
@@ -3498,6 +3796,26 @@ h3 {
   box-shadow:
     inset -2rem 0 3rem rgba(204, 109, 134, 0.06),
     inset 2rem 0 3rem rgba(83, 216, 232, 0.06);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="self-depth"] .chapter-panel__symbol {
+  background:
+    radial-gradient(circle at 50% 73%, rgba(212, 175, 55, 0.19), transparent 5.2rem),
+    radial-gradient(circle at 50% 42%, rgba(244, 240, 232, 0.08), transparent 5rem),
+    radial-gradient(circle at 50% 70%, rgba(83, 216, 232, 0.08), transparent 11rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.044), rgba(255, 255, 255, 0.012));
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="self-depth"] .chapter-panel__ring--outer {
+  top: 66%;
+  width: 78%;
+  border-color: rgba(212, 175, 55, 0.17);
+}
+
+.chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="self-depth"] .chapter-panel__ring--inner {
+  top: 66%;
+  width: 46%;
+  border-color: rgba(83, 216, 232, 0.16);
 }
 
 .chapter-experience[data-chapter-id="ch1"] .chapter-panel[data-panel-id="self-depth"] .chapter-panel__symbol::after {
@@ -3982,10 +4300,13 @@ h3 {
   .atlas-symbol-strip button,
   .atlas-constellation__chapter,
 	  .chapter-card,
-		  .home-narrative__legend-item a,
+	  .home-narrative__legend-item a,
 		  .chapter-panel,
 	  .chapter-stage__reference-node,
 	  .chapter-stage__thesis-node,
+	  .ego-depth-instrument__ego,
+	  .ego-depth-instrument__root,
+	  .ego-depth-instrument__self,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -4479,6 +4800,41 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro h1 {
     font-size: 3.05rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro {
+    width: min(24rem, calc(100% - 2rem));
+    margin-inline: auto;
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro h1 {
+    max-width: 100%;
+    font-size: clamp(3.1rem, 16vw, 4.4rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-stage__intro p:not(.eyebrow) {
+    max-width: 28ch;
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-sigil {
+    margin-top: 2.1rem;
+  }
+
+  .ego-depth-instrument {
+    min-height: 8.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-panel,
+  .chapter-experience[data-chapter-id="ch1"] .chapter-panel:nth-child(even) {
+    grid-template-columns: 1fr;
+    width: min(38rem, 100%);
+    margin-inline: auto;
+  }
+
+  .chapter-experience[data-chapter-id="ch1"] .chapter-panel__symbol {
+    min-height: clamp(18rem, 76vw, 24rem);
   }
 
   .chapter-panel,
