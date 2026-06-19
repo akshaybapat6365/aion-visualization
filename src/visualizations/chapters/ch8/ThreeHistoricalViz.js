@@ -575,6 +575,7 @@ export default class ThreeHistoricalViz extends BaseViz {
         ov.setAttribute('aria-hidden', 'true');
 
         /* ── CSS: proper font declarations matching ch1–ch7 pattern ── */
+        document.getElementById('ch8-anim-style')?.remove();
         const style = document.createElement('style');
         style.id = 'ch8-anim-style';
         style.textContent = `
@@ -758,11 +759,11 @@ export default class ThreeHistoricalViz extends BaseViz {
             `<div class="ch8-hdr-sub ${accent}">${sub}</div>`,
             '', 'ch8-hdr'
         );
-        this._hdr1 = mkHeader('I', 'THE CELESTIAL VISION', 'Revelation 12 — The Woman and the Dragon', 'ch8-gold');
-        this._hdr2 = mkHeader('II', 'THE HOOK OF CONSCIOUSNESS', 'The Cross catches Leviathan from the deep', 'ch8-silver');
-        this._hdr3 = mkHeader('III', 'THE HEALING FISH', 'The Book of Tobit — Sight restored from darkness', 'ch8-emerald');
-        this._hdr4 = mkHeader('IV', 'THE GREAT TRANSITION', 'From the Age of Aries to the Age of Pisces', 'ch8-crimson');
-        this._hdr5 = mkHeader('V', 'THE PRIMORDIAL DEEP', 'The fish as Self — totality of the unconscious', 'ch8-deep');
+        this._hdr1 = mkHeader('I', 'HISTORICAL STRATA', 'Older image-forms gather around the fish', 'ch8-gold');
+        this._hdr2 = mkHeader('II', 'CARRIER IMAGE', 'The motif becomes a readable vessel', 'ch8-silver');
+        this._hdr3 = mkHeader('III', 'HEALING MOTIF', 'Transformation is held below the surface', 'ch8-emerald');
+        this._hdr4 = mkHeader('IV', 'AEONIC DRIFT', 'The symbol crosses historical thresholds', 'ch8-crimson');
+        this._hdr5 = mkHeader('V', 'DEPTH AFTERLIFE', 'Older meanings persist below later interpretation', 'ch8-deep');
 
         /* ═══ PRIMARY QUOTES ═══ */
         const mkQuote = (main, sub, inlineCSS, accent) => mkEl(
@@ -770,33 +771,33 @@ export default class ThreeHistoricalViz extends BaseViz {
             `<div class="ch8-quote-sub">${sub}</div>`,
             inlineCSS, 'ch8-quote', accent
         );
-        this._ann1 = mkQuote('A woman clothed with the sun',
-            'The divine feminine crowned with the zodiac — the moon beneath her feet',
+        this._ann1 = mkQuote('Symbols gather sediment',
+            'Historical image-forms do not vanish; they layer into the motif',
             'top:14%;left:50%;transform:translateX(-50%) translateY(20px);', 'ch8-gold');
-        this._ann2 = mkQuote('The Cross as Hook, Christ as Bait',
-            'Patristic allegory — the crucifixion snares the primordial unconscious',
+        this._ann2 = mkQuote('The fish becomes a carrier',
+            'An image can hold transformation without becoming a fixed definition',
             'top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);', 'ch8-silver');
-        this._ann3 = mkQuote('The fish that heals blindness',
-            'Tobias extracts the healing organs — libido drawn from the unconscious into consciousness',
+        this._ann3 = mkQuote('The old image keeps changing',
+            'The same motif can carry healing, danger, salvation, and shadow',
             'top:42%;left:50%;transform:translate(-50%,0) translateY(20px);', 'ch8-emerald');
-        this._ann4 = mkQuote('From the Ram to the Fish',
-            'The astrological age shift mirrors the psychological transformation of an era',
+        this._ann4 = mkQuote('A sign crosses time',
+            'Collective images drift as the historical field changes around them',
             'top:48%;left:50%;transform:translate(-50%,-50%) translateY(20px);', 'ch8-gradient-text');
-        this._ann5 = mkQuote('In the depths, the Self',
-            'The fish as totality — Christ and Leviathan unified in the collective unconscious',
+        this._ann5 = mkQuote('The afterlife of the symbol',
+            'Later meanings keep older depths alive rather than replacing them',
             'bottom:16%;left:50%;transform:translateX(-50%) translateY(20px);', 'ch8-deep');
 
         /* ═══ ELEMENT LABELS ═══ */
         const mkLabel = (text, inlineCSS, accent) => mkEl(text, inlineCSS, 'ch8-label', accent);
 
-        this._lbl_crown = mkLabel('Crown of Twelve Stars', 'top:22%;left:50%;transform:translateX(-50%);', 'ch8-gold');
-        this._lbl_dragon = mkLabel('The Seven-Headed Dragon', 'bottom:30%;left:50%;transform:translateX(-50%);', 'ch8-gold');
-        this._lbl_cross = mkLabel('The Cross', 'top:20%;right:28%;', 'ch8-silver');
-        this._lbl_leviathan = mkLabel('Leviathan', 'bottom:24%;right:28%;', 'ch8-silver');
-        this._lbl_tobit = mkLabel('Tobit\'s Fish', 'top:36%;left:26%;', 'ch8-emerald');
+        this._lbl_crown = mkLabel('Older Image', 'top:22%;left:50%;transform:translateX(-50%);', 'ch8-gold');
+        this._lbl_dragon = mkLabel('Counter-Image', 'bottom:30%;left:50%;transform:translateX(-50%);', 'ch8-gold');
+        this._lbl_cross = mkLabel('Carrier Sign', 'top:20%;right:28%;', 'ch8-silver');
+        this._lbl_leviathan = mkLabel('Depth Image', 'bottom:24%;right:28%;', 'ch8-silver');
+        this._lbl_tobit = mkLabel('Healing Motif', 'top:36%;left:26%;', 'ch8-emerald');
         this._lbl_aries = mkLabel('♈ Aries', 'top:30%;left:28%;', 'ch8-crimson');
         this._lbl_pisces = mkLabel('♓ Pisces', 'top:56%;right:28%;', 'ch8-azure');
-        this._lbl_self = mkLabel('The Self', 'bottom:26%;left:50%;transform:translateX(-50%);', 'ch8-deep');
+        this._lbl_self = mkLabel('Symbolic Depth', 'bottom:26%;left:50%;transform:translateX(-50%);', 'ch8-deep');
 
         /* ═══ PROGRESS DOTS ═══ */
         const pc = document.createElement('div');
@@ -1120,10 +1121,16 @@ export default class ThreeHistoricalViz extends BaseViz {
         if (this._onWheel) removeEventListener('wheel', this._onWheel);
         if (this._overlay) this._overlay.remove();
         if (this._progressContainer) this._progressContainer.remove();
+        if (this._ch8Style) this._ch8Style.remove();
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
         this.scene?.traverse(o => {
             o.geometry?.dispose();
-            if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+            if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+                ['map', 'alphaMap', 'aoMap', 'bumpMap', 'displacementMap', 'emissiveMap', 'envMap', 'lightMap', 'metalnessMap', 'normalMap', 'roughnessMap'].forEach((key) => {
+                    m[key]?.dispose?.();
+                });
+                m.dispose();
+            });
         });
         this.composer = null; this.scene = null; this.camera = null; this.renderer = null;
         super.dispose();

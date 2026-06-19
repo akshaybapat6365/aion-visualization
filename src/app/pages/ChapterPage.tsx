@@ -19,6 +19,7 @@ const mandalaBands = ['outer', 'middle', 'inner'] as const;
 const rootLines = ['left', 'center', 'right'] as const;
 const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
 const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
+const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -63,6 +64,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const prophecyFieldInstrumentLabel = `Prophecy field model: historical pressure gathers around a time axis, private fear projects into a shared symbolic image-field, and the threshold mirror shows the future looking backward into older archetypal forms. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -264,6 +266,36 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="prophecy-field-instrument__label prophecy-field-instrument__label--pressure" aria-hidden="true">pressure</span>
               <span className="prophecy-field-instrument__label prophecy-field-instrument__label--collective" aria-hidden="true">shared image</span>
               <span className="prophecy-field-instrument__label prophecy-field-instrument__label--threshold" aria-hidden="true">threshold</span>
+            </div>
+          )}
+          {chapter.id === 'ch8' && (
+            <div
+              className="historical-strata-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={historicalStrataInstrumentLabel}
+            >
+              <span className="historical-strata-instrument__field historical-strata-instrument__field--archive" aria-hidden="true" />
+              <span className="historical-strata-instrument__field historical-strata-instrument__field--afterlife" aria-hidden="true" />
+              <span className="historical-strata-instrument__axis" aria-hidden="true" />
+              {historicalStrataLayers.map((layer, index) => (
+                <span
+                  key={layer}
+                  className={`historical-strata-instrument__layer historical-strata-instrument__layer--${index + 1}`}
+                  aria-hidden="true"
+                />
+              ))}
+              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--one" aria-hidden="true" />
+              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--two" aria-hidden="true" />
+              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--three" aria-hidden="true" />
+              <span className="historical-strata-instrument__thread historical-strata-instrument__thread--descent" aria-hidden="true" />
+              <span className="historical-strata-instrument__thread historical-strata-instrument__thread--return" aria-hidden="true" />
+              <span className="historical-strata-instrument__fish" aria-hidden="true" />
+              <span className="historical-strata-instrument__carrier" aria-hidden="true" />
+              <span className="historical-strata-instrument__depth" aria-hidden="true" />
+              <span className="historical-strata-instrument__label historical-strata-instrument__label--strata" aria-hidden="true">strata</span>
+              <span className="historical-strata-instrument__label historical-strata-instrument__label--carrier" aria-hidden="true">carrier</span>
+              <span className="historical-strata-instrument__label historical-strata-instrument__label--afterlife" aria-hidden="true">afterlife</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
