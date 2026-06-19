@@ -20,6 +20,7 @@ const rootLines = ['left', 'center', 'right'] as const;
 const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
 const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
 const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
+const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -66,6 +67,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const prophecyFieldInstrumentLabel = `Prophecy field model: historical pressure gathers around a time axis, private fear projects into a shared symbolic image-field, and the threshold mirror shows the future looking backward into older archetypal forms. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -319,6 +321,36 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--paradox" aria-hidden="true">double edge</span>
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--return" aria-hidden="true">return</span>
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--shadow" aria-hidden="true">counter-pole</span>
+            </div>
+          )}
+          {chapter.id === 'ch10' && (
+            <div
+              className="alchemical-vessel-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={alchemicalVesselInstrumentLabel}
+            >
+              <span className="alchemical-vessel-instrument__field" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__heat" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__vessel" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__bath" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__fish" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__magnet" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__lapis" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__thread alchemical-vessel-instrument__thread--descent" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__thread alchemical-vessel-instrument__thread--ascent" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__particle alchemical-vessel-instrument__particle--one" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__particle alchemical-vessel-instrument__particle--two" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__particle alchemical-vessel-instrument__particle--three" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__particle alchemical-vessel-instrument__particle--four" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__stages" aria-hidden="true">
+                {alchemicalOpusStages.map((stage) => (
+                  <span key={stage} className={`alchemical-vessel-instrument__stage alchemical-vessel-instrument__stage--${stage}`} />
+                ))}
+              </span>
+              <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--fish" aria-hidden="true">fish enters</span>
+              <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--prima" aria-hidden="true">prima materia</span>
+              <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--opus" aria-hidden="true">opus stages</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
