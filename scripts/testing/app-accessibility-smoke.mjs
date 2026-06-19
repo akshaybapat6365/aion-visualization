@@ -223,6 +223,44 @@ async function checkAtlasDynamicAccessibility(page, failures) {
   if (!emptyFieldVisible) failures.push('/atlas: empty constellation field is missing an accessible name');
 }
 
+async function checkSymbolsDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/symbols`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+
+  const fishField = page.getByRole('img', { name: /Fish symbol field/ });
+  const initialFieldVisible = await fishField.isVisible();
+  const initialFieldLabel = initialFieldVisible ? await fishField.getAttribute('aria-label') : null;
+  const initialDetail = await page.locator('#symbol-selected-detail h2').textContent();
+
+  if (!initialFieldVisible) failures.push('/symbols: active symbol field is missing an accessible image role');
+  if (!initialFieldLabel?.includes('Piscean fish pair') || !initialFieldLabel?.includes('Chapter 6')) failures.push(`/symbols: initial field label mismatch: ${initialFieldLabel}`);
+  if (!initialDetail?.includes('Fish')) failures.push(`/symbols: initial detail mismatch: ${initialDetail}`);
+
+  const sophia = page.getByRole('button', { name: /Select Sophia:/ });
+  await sophia.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const sophiaPressed = await sophia.getAttribute('aria-pressed');
+  const sophiaFieldLabel = await page.getByRole('img', { name: /Sophia symbol field/ }).getAttribute('aria-label');
+  const sophiaDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  if (sophiaPressed !== 'true') failures.push(`/symbols: Sophia orbit button did not become pressed: ${sophiaPressed}`);
+  if (!sophiaFieldLabel?.includes('Sophia / wisdom figure') || !sophiaFieldLabel?.includes('The Syzygy')) failures.push(`/symbols: Sophia field label mismatch: ${sophiaFieldLabel}`);
+  if (!sophiaDetail?.includes('Sophia')) failures.push(`/symbols: Sophia detail mismatch: ${sophiaDetail}`);
+
+  const lapis = page.getByRole('button', { name: /Focus Lapis in the symbol field/ });
+  await lapis.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const lapisPressed = await lapis.getAttribute('aria-pressed');
+  const lapisFieldLabel = await page.getByRole('img', { name: /Lapis symbol field/ }).getAttribute('aria-label');
+  const lapisDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  if (lapisPressed !== 'true') failures.push(`/symbols: Lapis panel button did not become pressed: ${lapisPressed}`);
+  if (!lapisFieldLabel?.includes('Lapis philosophorum') || !lapisFieldLabel?.toLowerCase().includes('individuation')) failures.push(`/symbols: Lapis field label mismatch: ${lapisFieldLabel}`);
+  if (!lapisDetail?.includes('Lapis')) failures.push(`/symbols: Lapis detail mismatch: ${lapisDetail}`);
+}
+
 async function checkChapterSixDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/journey/chapter/ch6`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -588,6 +626,7 @@ async function runAccessibilitySmoke() {
       await checkRoute(desktop, route, failures);
     }
     await checkAtlasDynamicAccessibility(desktop, failures);
+    await checkSymbolsDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
     await checkChapterEightDynamicAccessibility(desktop, failures);
@@ -600,7 +639,7 @@ async function runAccessibilitySmoke() {
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/timeline', '/symbols', '/about', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();

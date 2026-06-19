@@ -339,6 +339,63 @@ async function smokeAtlasVisualSearch(page, failures) {
   if (!emptyImageVisible) failures.push('atlas empty field did not expose empty accessible name');
 }
 
+async function smokeSymbolsVisualField(page, failures) {
+  await gotoAppRoute(page, '/symbols');
+
+  const orbitButtons = page.locator('.symbol-orbit__node');
+  const symbolPanels = page.locator('.symbol-panel');
+  const symbolField = page.getByRole('img', { name: /Fish symbol field/ });
+  const initialDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  const initialFieldLabel = await symbolField.getAttribute('aria-label');
+  const initialActiveOrbitCount = await page.locator('.symbol-orbit__node[aria-pressed="true"]').count();
+  const initialActivePanelCount = await page.locator('.symbol-panel__activate[aria-pressed="true"]').count();
+  const initialConceptCount = await page.locator('.symbol-field__concept').count();
+  const initialChapterCount = await page.locator('.symbol-field__chapter').count();
+  const initialChapterLinkCount = await page.locator('.symbol-detail__chapter-links a').count();
+  const scrollYBeforeSelect = await page.evaluate(() => window.scrollY);
+
+  if (await orbitButtons.count() !== 9) failures.push(`symbols orbit button count mismatch: ${await orbitButtons.count()}`);
+  if (await symbolPanels.count() !== 9) failures.push(`symbols panel count mismatch: ${await symbolPanels.count()}`);
+  if (!await symbolField.isVisible()) failures.push('symbols active field is not visible');
+  if (!initialDetail?.includes('Fish')) failures.push(`symbols initial detail mismatch: ${initialDetail}`);
+  if (!initialFieldLabel?.includes('Piscean fish pair') || !initialFieldLabel?.includes('Chapter 6')) failures.push(`symbols initial field label mismatch: ${initialFieldLabel}`);
+  if (initialActiveOrbitCount !== 1) failures.push(`symbols active orbit count mismatch: ${initialActiveOrbitCount}`);
+  if (initialActivePanelCount !== 1) failures.push(`symbols active panel count mismatch: ${initialActivePanelCount}`);
+  if (initialConceptCount < 4) failures.push(`symbols concept node count too low: ${initialConceptCount}`);
+  if (initialChapterCount < 2) failures.push(`symbols chapter node count too low: ${initialChapterCount}`);
+  if (initialChapterLinkCount < 2) failures.push(`symbols chapter link count too low: ${initialChapterLinkCount}`);
+
+  const sophia = page.getByRole('button', { name: /Select Sophia:/ });
+  await sophia.click();
+  await page.waitForTimeout(100);
+
+  const sophiaPressed = await sophia.getAttribute('aria-pressed');
+  const sophiaDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  const sophiaField = page.getByRole('img', { name: /Sophia symbol field/ });
+  const sophiaFieldLabel = await sophiaField.getAttribute('aria-label');
+  const scrollYAfterSelect = await page.evaluate(() => window.scrollY);
+  const sophiaChapterLinkVisible = await page.getByRole('link', { name: /03 · The Syzygy/ }).isVisible();
+
+  if (sophiaPressed !== 'true') failures.push(`symbols Sophia orbit did not become active: ${sophiaPressed}`);
+  if (!sophiaDetail?.includes('Sophia')) failures.push(`symbols detail did not follow Sophia selection: ${sophiaDetail}`);
+  if (!sophiaFieldLabel?.includes('Sophia / wisdom figure') || !sophiaFieldLabel?.includes('Syzygy')) failures.push(`symbols Sophia field label mismatch: ${sophiaFieldLabel}`);
+  if (!sophiaChapterLinkVisible) failures.push('symbols Sophia did not expose Chapter 3 link');
+  if (scrollYAfterSelect > scrollYBeforeSelect + 10) failures.push(`symbols orbit selection unexpectedly scrolled page: ${scrollYAfterSelect}`);
+
+  const lapisPanelButton = page.getByRole('button', { name: /Focus Lapis in the symbol field/ });
+  await lapisPanelButton.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const lapisPanelPressed = await lapisPanelButton.getAttribute('aria-pressed');
+  const lapisDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  const lapisFieldLabel = await page.getByRole('img', { name: /Lapis symbol field/ }).getAttribute('aria-label');
+
+  if (lapisPanelPressed !== 'true') failures.push(`symbols Lapis panel did not become active: ${lapisPanelPressed}`);
+  if (!lapisDetail?.includes('Lapis')) failures.push(`symbols detail did not follow Lapis panel selection: ${lapisDetail}`);
+  if (!lapisFieldLabel?.includes('Lapis philosophorum') || !lapisFieldLabel?.toLowerCase().includes('individuation')) failures.push(`symbols Lapis field label mismatch: ${lapisFieldLabel}`);
+}
+
 async function smokeChapterRoutes(page, failures) {
   const browser = page.context().browser();
 
@@ -2509,7 +2566,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/timeline', '/symbols', '/about', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -3127,6 +3184,7 @@ async function runSmoke() {
     await smokeCanonicalRoutes(page, failures);
     await smokeHomeVisualDetail(page, failures);
     await smokeAtlasVisualSearch(page, failures);
+    await smokeSymbolsVisualField(page, failures);
     await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
     await smokeLegacyRedirect(page, failures);
