@@ -262,6 +262,45 @@ async function checkChapterSixDynamicAccessibility(page, failures) {
   if (!thresholdDescription?.includes('Threshold: The age turns slowly')) failures.push(`/journey/chapter/ch6: threshold scene description mismatch: ${thresholdDescription}`);
 }
 
+async function checkChapterSevenDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch7`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Prophecy field model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = await instrument.getAttribute('aria-label');
+  const initialDescription = await page.locator('#scene-host-description-ch7').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch7: prophecy field instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Prophecy')) failures.push(`/journey/chapter/ch7: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Prophecy: Meaning under pressure')) failures.push(`/journey/chapter/ch7: initial scene description mismatch: ${initialDescription}`);
+
+  const collective = page.getByRole('button', { name: /02\s+Collective/ });
+  await collective.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const collectivePressed = await collective.getAttribute('aria-pressed');
+  const collectiveLabel = await instrument.getAttribute('aria-label');
+  const collectiveDescription = await page.locator('#scene-host-description-ch7').textContent();
+  if (collectivePressed !== 'true') failures.push(`/journey/chapter/ch7: collective button did not become pressed: ${collectivePressed}`);
+  if (!collectiveLabel?.includes('Current emphasis: Collective') || !collectiveLabel?.includes('Private fear becomes shared image')) failures.push(`/journey/chapter/ch7: collective instrument label mismatch: ${collectiveLabel}`);
+  if (!collectiveDescription?.includes('Collective: Private fear becomes shared image')) failures.push(`/journey/chapter/ch7: collective scene description mismatch: ${collectiveDescription}`);
+
+  const threshold = page.getByRole('button', { name: /03\s+Threshold/ });
+  await threshold.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const thresholdPressed = await threshold.getAttribute('aria-pressed');
+  const thresholdLabel = await instrument.getAttribute('aria-label');
+  const thresholdDescription = await page.locator('#scene-host-description-ch7').textContent();
+  if (thresholdPressed !== 'true') failures.push(`/journey/chapter/ch7: threshold button did not become pressed: ${thresholdPressed}`);
+  if (!thresholdLabel?.includes('Current emphasis: Threshold') || !thresholdLabel?.includes('The future looks backward')) failures.push(`/journey/chapter/ch7: threshold instrument label mismatch: ${thresholdLabel}`);
+  if (!thresholdDescription?.includes('Threshold: The future looks backward')) failures.push(`/journey/chapter/ch7: threshold scene description mismatch: ${thresholdDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -277,10 +316,11 @@ async function runAccessibilitySmoke() {
     }
     await checkAtlasDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
+    await checkChapterSevenDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();

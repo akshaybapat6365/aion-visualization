@@ -2469,6 +2469,52 @@ h3 {
   margin-top: 2.05rem;
 }
 
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 59% 52%, rgba(255, 140, 0, 0.08), transparent 15rem),
+    radial-gradient(circle at 78% 44%, rgba(113, 75, 164, 0.1), transparent 18rem),
+    linear-gradient(90deg, rgba(5, 5, 9, 0.9) 0%, rgba(5, 5, 9, 0.52) 44%, rgba(5, 5, 9, 0.18) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro {
+  width: min(38rem, calc(100% - 2rem));
+  justify-content: flex-end;
+  margin-left: clamp(1rem, 4.6vw, 4.2rem);
+  padding-bottom: clamp(2rem, 5vh, 3.65rem);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro h1 {
+  max-width: 11ch;
+  font-size: clamp(2.85rem, 5.7vw, 5.1rem);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro p:not(.eyebrow) {
+  max-width: 35ch;
+  font-size: clamp(0.98rem, 1.22vw, 1.07rem);
+  line-height: 1.62;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__thesis-map {
+  max-width: 30rem;
+  margin-top: 1rem;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-map {
+  width: min(26rem, 100%);
+  margin-top: 0.68rem;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node {
+  min-height: 3.75rem;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(255, 140, 0, 0.1), transparent 2.25rem),
+    linear-gradient(180deg, rgba(10, 6, 17, 0.58), rgba(3, 3, 8, 0.34));
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-label {
+  margin-top: 2.05rem;
+}
+
 .chapter-experience[data-chapter-id="ch8"] .chapter-stage__intro {
   width: min(35rem, calc(100% - 2rem));
   justify-content: flex-end;
@@ -4369,6 +4415,348 @@ h3 {
   opacity: 0.78;
 }
 
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument {
+  position: relative;
+  width: min(30.5rem, 100%);
+  min-height: clamp(6.45rem, 9.9vh, 7.45rem);
+  overflow: hidden;
+  margin-top: 0.85rem;
+  border: 1px solid rgba(244, 240, 232, 0.105);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 33% 48%, rgba(255, 140, 0, 0.18), transparent 4.8rem),
+    radial-gradient(circle at 58% 42%, rgba(113, 75, 164, 0.18), transparent 4.9rem),
+    radial-gradient(circle at 82% 47%, rgba(83, 216, 232, 0.12), transparent 4.7rem),
+    linear-gradient(90deg, rgba(9, 5, 12, 0.86), rgba(12, 7, 20, 0.56) 52%, rgba(4, 14, 19, 0.48));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::before,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::before {
+  inset: 0.64rem;
+  border: 1px solid rgba(255, 140, 0, 0.09);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::after {
+  left: 52%;
+  top: 50%;
+  width: 9.3rem;
+  height: 5.5rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 1.3rem rgba(113, 75, 164, 0.13),
+    0 0 2rem rgba(255, 140, 0, 0.08);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__field,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__axis,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__pressure,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__date,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__threshold,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__mirror,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__field {
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.56;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__field--past {
+  left: 0;
+  background:
+    radial-gradient(circle at 45% 52%, rgba(255, 140, 0, 0.16), transparent 4.1rem),
+    linear-gradient(90deg, rgba(255, 140, 0, 0.08), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__field--future {
+  right: 0;
+  background:
+    radial-gradient(circle at 62% 50%, rgba(83, 216, 232, 0.14), transparent 4.3rem),
+    linear-gradient(270deg, rgba(83, 216, 232, 0.07), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__axis {
+  left: 8%;
+  right: 8%;
+  top: 58%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 140, 0, 0.08), rgba(244, 240, 232, 0.5), rgba(83, 216, 232, 0.11));
+  opacity: 0.72;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick {
+  top: 63%;
+  display: grid;
+  min-width: 2.35rem;
+  place-items: center;
+  color: rgba(244, 240, 232, 0.56);
+  font-family: var(--font-ui);
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  opacity: 0.68;
+  transform: translateX(-50%);
+  transition:
+    color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 1.16rem;
+  width: 1px;
+  height: 0.58rem;
+  background: rgba(244, 240, 232, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick--1 {
+  left: 16%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick--2 {
+  left: 42%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick--3 {
+  left: 61%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick--4 {
+  left: 84%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__pressure {
+  left: 28%;
+  top: 47%;
+  width: 5.8rem;
+  height: 2.4rem;
+  border: 1px solid rgba(255, 140, 0, 0.28);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.22), rgba(255, 140, 0, 0.02) 68%, transparent 70%);
+  box-shadow: 0 0 1.4rem rgba(255, 140, 0, 0.14);
+  opacity: 0.82;
+  transform: translate(-50%, -50%) rotate(-7deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__date {
+  left: 42%;
+  top: 58%;
+  width: 0.68rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--gold-soft);
+  box-shadow:
+    0 0 0 0.38rem rgba(255, 140, 0, 0.1),
+    0 0 1.45rem rgba(255, 140, 0, 0.34);
+  opacity: 0.9;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image {
+  width: 0.72rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(181, 130, 255, 0.72);
+  border: 1px solid rgba(244, 240, 232, 0.18);
+  box-shadow: 0 0 1rem rgba(113, 75, 164, 0.24);
+  opacity: 0.72;
+  transition:
+    background 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image--one {
+  left: 54%;
+  top: 35%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image--two {
+  left: 63%;
+  top: 47%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image--three {
+  left: 56%;
+  top: 67%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc {
+  left: 47%;
+  top: 50%;
+  width: 7.8rem;
+  height: 3.8rem;
+  border-radius: 50%;
+  opacity: 0.48;
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc--projection {
+  border-top: 1px solid rgba(181, 130, 255, 0.34);
+  border-left: 1px solid rgba(181, 130, 255, 0.22);
+  transform: translate(-50%, -50%) rotate(-14deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc--return {
+  border-bottom: 1px solid rgba(83, 216, 232, 0.28);
+  border-right: 1px solid rgba(83, 216, 232, 0.2);
+  transform: translate(-50%, -50%) rotate(14deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__threshold {
+  right: 17%;
+  top: 17%;
+  bottom: 16%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(83, 216, 232, 0.62), rgba(255, 140, 0, 0.24), transparent);
+  box-shadow: 0 0 1.5rem rgba(83, 216, 232, 0.2);
+  opacity: 0.58;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__mirror {
+  right: 7%;
+  top: 50%;
+  width: 3.25rem;
+  height: 2.2rem;
+  border: 1px solid rgba(83, 216, 232, 0.24);
+  border-radius: 50%;
+  background:
+    linear-gradient(128deg, transparent 48%, rgba(83, 216, 232, 0.26) 49%, transparent 51%),
+    radial-gradient(circle at 42% 48%, rgba(83, 216, 232, 0.14), transparent 70%);
+  opacity: 0.74;
+  transform: translateY(-50%) rotate(-12deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--pressure {
+  left: 7%;
+  top: 15%;
+  color: rgba(255, 198, 120, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--collective {
+  left: 49%;
+  top: 14%;
+  color: rgba(214, 188, 255, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--threshold {
+  right: 5%;
+  top: 15%;
+  color: rgba(143, 231, 237, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="prophecy"] .prophecy-field-instrument__pressure,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="prophecy"] .prophecy-field-instrument__date {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.13) rotate(-7deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="prophecy"] .prophecy-field-instrument__date {
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="prophecy"] .prophecy-field-instrument__tick--2 {
+  color: var(--gold-soft);
+  opacity: 1;
+  transform: translateX(-50%) translateY(-0.08rem) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__image {
+  background: rgba(214, 188, 255, 0.88);
+  box-shadow: 0 0 1.35rem rgba(181, 130, 255, 0.36);
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__arc {
+  border-color: rgba(214, 188, 255, 0.46);
+  opacity: 0.92;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__pressure,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__date {
+  opacity: 0.62;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__field--future {
+  opacity: 0.9;
+  transform: scaleX(1.05);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__threshold,
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__mirror {
+  opacity: 1;
+  transform: translateY(-50%) rotate(-12deg) scale(1.1);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__threshold {
+  transform: scaleY(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__tick--4 {
+  color: var(--ink-cyan);
+  opacity: 1;
+  transform: translateX(-50%) translateY(-0.08rem) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument[data-active-panel="threshold"] .prophecy-field-instrument__image {
+  opacity: 0.66;
+}
+
 .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
   left: auto;
   right: clamp(1rem, 4vw, 3.5rem);
@@ -4776,6 +5164,72 @@ h3 {
   height: 2.5rem;
   background: linear-gradient(180deg, transparent, rgba(143, 231, 237, 0.68), rgba(255, 227, 156, 0.24), transparent);
   box-shadow: 0 0 1rem rgba(83, 216, 232, 0.24);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="prophecy"] .chapter-stage__reference-mark::before {
+  left: 50%;
+  top: 1.9rem;
+  width: 2.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 140, 0, 0.18), rgba(244, 240, 232, 0.62), rgba(113, 75, 164, 0.2));
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="prophecy"] .chapter-stage__reference-mark::after {
+  left: 50%;
+  top: 1.72rem;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.9);
+  box-shadow:
+    0 0 0 0.36rem rgba(255, 140, 0, 0.12),
+    0 0 1.2rem rgba(255, 140, 0, 0.34);
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="collective"] .chapter-stage__reference-mark::before {
+  left: 50%;
+  top: 0.82rem;
+  width: 2.7rem;
+  height: 2.4rem;
+  border-top: 1px solid rgba(181, 130, 255, 0.42);
+  border-left: 1px solid rgba(181, 130, 255, 0.24);
+  border-radius: 50%;
+  transform: translateX(-50%) rotate(-14deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="collective"] .chapter-stage__reference-mark::after {
+  left: 50%;
+  top: 1.86rem;
+  width: 2.2rem;
+  height: 0.7rem;
+  background:
+    radial-gradient(circle at 18% 50%, rgba(214, 188, 255, 0.9) 0 0.16rem, transparent 0.18rem),
+    radial-gradient(circle at 50% 32%, rgba(214, 188, 255, 0.86) 0 0.16rem, transparent 0.18rem),
+    radial-gradient(circle at 82% 58%, rgba(214, 188, 255, 0.76) 0 0.16rem, transparent 0.18rem);
+  filter: drop-shadow(0 0 0.65rem rgba(181, 130, 255, 0.24));
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="threshold"] .chapter-stage__reference-mark::before {
+  left: 43%;
+  top: 0.76rem;
+  width: 2rem;
+  height: 2.55rem;
+  border-right: 1px solid rgba(83, 216, 232, 0.52);
+  border-radius: 50%;
+  background: radial-gradient(circle at 65% 50%, rgba(83, 216, 232, 0.16), transparent 70%);
+  transform: translateX(-50%) rotate(-12deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="threshold"] .chapter-stage__reference-mark::after {
+  left: 62%;
+  top: 0.74rem;
+  width: 1px;
+  height: 2.55rem;
+  background: linear-gradient(180deg, transparent, rgba(143, 231, 237, 0.72), rgba(255, 140, 0, 0.28), transparent);
+  box-shadow: 0 0 1rem rgba(83, 216, 232, 0.22);
 }
 
 .scene-host__status,
@@ -6023,6 +6477,15 @@ h3 {
 	  .aeon-fish-instrument__fish,
 	  .aeon-fish-instrument__hand,
 	  .aeon-fish-instrument__threshold,
+	  .prophecy-field-instrument__field,
+	  .prophecy-field-instrument__axis,
+	  .prophecy-field-instrument__tick,
+	  .prophecy-field-instrument__pressure,
+	  .prophecy-field-instrument__date,
+	  .prophecy-field-instrument__image,
+	  .prophecy-field-instrument__arc,
+	  .prophecy-field-instrument__threshold,
+	  .prophecy-field-instrument__mirror,
 	  .chapters-orbit__node,
 	  .home-chapter-orbit__item a,
 	  .scene-host__pause {
@@ -6064,6 +6527,18 @@ h3 {
   .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__fish,
   .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__hand,
   .chapter-experience[data-chapter-id="ch6"] .aeon-fish-instrument__threshold {
+    transition: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__field,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__axis,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__pressure,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__date,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__threshold,
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__mirror {
     transition: none;
   }
 	}
@@ -6608,6 +7083,56 @@ h3 {
     transform: translateY(-50%);
   }
 
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__scrim {
+    background:
+      linear-gradient(180deg, rgba(3, 3, 7, 0.94), rgba(3, 3, 7, 0.78) 54%, rgba(3, 3, 7, 0.88)),
+      radial-gradient(circle at 50% 44%, rgba(255, 140, 0, 0.18), rgba(3, 3, 7, 0.78) 62%),
+      radial-gradient(circle at 78% 40%, rgba(113, 75, 164, 0.18), transparent 42%);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="prophecy"] .chapter-stage__reference-mark::before {
+    left: 1.35rem;
+    top: 50%;
+    width: 2rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="prophecy"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="collective"] .chapter-stage__reference-mark::before {
+    left: 1.35rem;
+    top: 50%;
+    width: 2.05rem;
+    height: 1.85rem;
+    transform: translate(-50%, -50%) rotate(-14deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="collective"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    width: 1.8rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="threshold"] .chapter-stage__reference-mark::before {
+    left: 1.2rem;
+    top: 50%;
+    width: 1.58rem;
+    height: 2.08rem;
+    transform: translate(-50%, -50%) rotate(-12deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__reference-node[data-panel-id="threshold"] .chapter-stage__reference-mark::after {
+    left: 2.18rem;
+    top: 50%;
+    height: 2rem;
+    transform: translateY(-50%);
+  }
+
   .chapter-experience[data-chapter-id="ch12"] .chapter-stage__intro {
     padding-top: 2rem;
   }
@@ -7110,6 +7635,130 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback h2,
   .chapter-experience[data-chapter-id="ch6"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro {
+    justify-content: flex-start;
+    padding-top: 10.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro h1 {
+    max-width: 8.6ch;
+    font-size: clamp(2.14rem, 11.6vw, 2.9rem);
+    line-height: 0.92;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro p:not(.eyebrow) {
+    margin-top: 0.72rem;
+    max-width: 29ch;
+    font-size: 0.92rem;
+    line-height: 1.48;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument {
+    min-height: 6.65rem;
+    margin-top: 0.7rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::before {
+    inset: 0.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument::after {
+    width: 6.5rem;
+    height: 4rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__pressure {
+    left: 27%;
+    width: 4.65rem;
+    height: 2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__tick {
+    min-width: 1.85rem;
+    font-size: 0.47rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__image {
+    width: 0.62rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__arc {
+    width: 5.65rem;
+    height: 3rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__threshold {
+    right: 16%;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__mirror {
+    right: 5%;
+    width: 2.55rem;
+    height: 1.8rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label {
+    font-size: 0.51rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--pressure {
+    left: 6%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--collective {
+    left: 44%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"] .prophecy-field-instrument__label--threshold {
+    right: 4%;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 20.95rem;
+    width: auto;
+    padding: 0.56rem 0.7rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch7"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
     position: absolute;
     width: 1px;
     height: 1px;
