@@ -325,6 +325,32 @@ describe('Aion framework data contract', () => {
       'opposites',
     ]);
   });
+
+  test('keeps Chapter 14 final synthesis panels tied to Self, quaternity, and individuation', () => {
+    expect(CHAPTER_SCENES.ch14.panels.map((panel) => panel.id)).toEqual([
+      'gather',
+      'axis',
+      'aeon',
+    ]);
+    expect(CHAPTER_SCENES.ch14.panels.map((panel) => panel.kicker)).toEqual([
+      'Synthesis',
+      'Axis',
+      'Path',
+    ]);
+    expect(CHAPTER_SCENES.ch14.motionGrammar).toBe('integration');
+    expect(CHAPTER_SCENES.ch14.visualTheme).toContain('Final Self mandala');
+    expect(CHAPTER_SCENES.ch14.visualTheme).toContain('individuation path');
+    expect(CHAPTER_SCENES.ch14.sceneModule).toBe('../visualizations/chapters/ch14/ThreeAeonFinalViz.js');
+    expect(CHAPTER_SCENES.ch14.fallbackSummary).toContain('final synthesis mandala');
+    expect(CHAPTER_SCENES.ch14.fallbackSummary).toContain('fourfold ordering field');
+    expect(CHAPTER_SCENES.ch14.fallbackSummary).toContain('individuation');
+
+    expect(getConceptsForChapter('ch14').map((concept) => concept.id)).toEqual([
+      'self',
+      'quaternity',
+      'individuation',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

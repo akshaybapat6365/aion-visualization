@@ -7478,6 +7478,506 @@ h3 {
   box-shadow: 0 0 1.2rem rgba(204, 109, 134, 0.24);
 }
 
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 54% 40%, rgba(255, 227, 156, 0.1), transparent 20rem),
+    radial-gradient(circle at 66% 58%, rgba(83, 216, 232, 0.1), transparent 22rem),
+    radial-gradient(circle at 48% 72%, rgba(91, 214, 143, 0.08), transparent 20rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.92), rgba(3, 3, 7, 0.22) 47%, rgba(3, 3, 7, 0.64) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro h1 {
+  max-width: 10.2ch;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 227, 156, 0.11), transparent 2.5rem),
+    radial-gradient(circle at 72% 72%, rgba(91, 214, 143, 0.08), transparent 2.8rem),
+    linear-gradient(145deg, rgba(244, 240, 232, 0.05), rgba(3, 3, 7, 0.28) 52%, rgba(5, 20, 24, 0.22));
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::before {
+  top: 0.76rem;
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 1px solid rgba(255, 227, 156, 0.23);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.9) 0 0.16rem, transparent 0.19rem),
+    radial-gradient(circle at 50% 13%, rgba(244, 240, 232, 0.84) 0 0.12rem, transparent 0.15rem),
+    radial-gradient(circle at 87% 50%, rgba(204, 109, 134, 0.8) 0 0.12rem, transparent 0.15rem),
+    radial-gradient(circle at 50% 87%, rgba(91, 214, 143, 0.82) 0 0.12rem, transparent 0.15rem),
+    radial-gradient(circle at 13% 50%, rgba(83, 216, 232, 0.8) 0 0.12rem, transparent 0.15rem);
+  box-shadow: 0 0 1.5rem rgba(212, 175, 55, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::after {
+  top: 1.98rem;
+  width: 2.38rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(83, 216, 232, 0.4), rgba(255, 227, 156, 0.52), rgba(204, 109, 134, 0.35));
+  transform: translateX(-50%) rotate(-18deg);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::before {
+  top: 0.74rem;
+  width: 1px;
+  height: 3.1rem;
+  background: linear-gradient(180deg, rgba(255, 227, 156, 0.68), rgba(244, 240, 232, 0.26), rgba(83, 216, 232, 0.46));
+  box-shadow: 0 0 1.1rem rgba(83, 216, 232, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::after {
+  top: 2.12rem;
+  width: 2.6rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.42), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::before {
+  top: 0.88rem;
+  width: 2.72rem;
+  height: 2.42rem;
+  border: 1px solid rgba(83, 216, 232, 0.28);
+  border-left-color: rgba(255, 227, 156, 0.52);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 1.1rem rgba(83, 216, 232, 0.08),
+    0 0 1.2rem rgba(83, 216, 232, 0.14);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::after {
+  top: 1.98rem;
+  width: 2.7rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 227, 156, 0.3), rgba(91, 214, 143, 0.58), rgba(83, 216, 232, 0.34));
+  transform: translateX(-50%) rotate(14deg);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument {
+  position: relative;
+  width: min(31rem, 100%);
+  min-height: clamp(8.3rem, 12.4vh, 9.6rem);
+  overflow: hidden;
+  margin-top: 0.82rem;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 227, 156, 0.16), transparent 4.8rem),
+    radial-gradient(circle at 28% 58%, rgba(83, 216, 232, 0.1), transparent 5rem),
+    radial-gradient(circle at 74% 58%, rgba(91, 214, 143, 0.12), transparent 4.8rem),
+    linear-gradient(108deg, rgba(5, 7, 12, 0.9), rgba(8, 11, 16, 0.74) 52%, rgba(3, 18, 20, 0.68));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.25);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::before,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::before {
+  inset: 0.58rem;
+  border: 1px solid rgba(255, 227, 156, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::after {
+  left: 50%;
+  top: 56%;
+  width: 78%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.16), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__ego,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__self,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__path,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field {
+  top: 18%;
+  width: 35%;
+  height: 64%;
+  border-radius: 50%;
+  opacity: 0.34;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field--memory {
+  left: 7%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.13), transparent 72%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field--future {
+  right: 7%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(91, 214, 143, 0.14), transparent 72%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis {
+  left: 50%;
+  top: 55%;
+  opacity: 0.34;
+  transition: opacity 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--vertical {
+  width: 1px;
+  height: 5.9rem;
+  background: linear-gradient(180deg, rgba(255, 227, 156, 0.42), rgba(244, 240, 232, 0.16), rgba(83, 216, 232, 0.34));
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--horizontal {
+  width: 12.1rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.28), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit {
+  left: 50%;
+  top: 55%;
+  border: 1px solid rgba(83, 216, 232, 0.18);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--outer {
+  width: 16.6rem;
+  height: 5.5rem;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--inner {
+  width: 10.2rem;
+  height: 3.5rem;
+  border-color: rgba(255, 227, 156, 0.18);
+  transform: translate(-50%, -50%) rotate(18deg);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring {
+  left: 26%;
+  top: 55%;
+  width: 7.5rem;
+  aspect-ratio: 1;
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif {
+  width: 0.54rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.58;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--ego {
+  left: 50%;
+  top: 5%;
+  background: rgba(244, 240, 232, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--shadow {
+  left: 86%;
+  top: 28%;
+  background: rgba(196, 166, 246, 0.86);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--syzygy {
+  left: 86%;
+  top: 72%;
+  background: rgba(204, 109, 134, 0.86);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--fish {
+  left: 50%;
+  top: 95%;
+  width: 0.72rem;
+  height: 0.32rem;
+  background: rgba(83, 216, 232, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--alchemy {
+  left: 14%;
+  top: 72%;
+  background: rgba(255, 173, 112, 0.88);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--gnosis {
+  left: 14%;
+  top: 28%;
+  background: rgba(91, 214, 143, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity {
+  left: 52%;
+  top: 55%;
+  width: 6.5rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 240, 232, 0.18);
+  border-radius: 50%;
+  opacity: 0.75;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity::before,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.32), transparent);
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity::before {
+  width: 90%;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity::after {
+  width: 1px;
+  height: 90%;
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point {
+  width: 0.58rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point--north {
+  left: 50%;
+  top: 1%;
+  background: rgba(255, 227, 156, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point--east {
+  left: 99%;
+  top: 50%;
+  background: rgba(83, 216, 232, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point--south {
+  left: 50%;
+  top: 99%;
+  background: rgba(91, 214, 143, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point--west {
+  left: 1%;
+  top: 50%;
+  background: rgba(204, 109, 134, 0.88);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__ego {
+  left: 52%;
+  top: 31%;
+  width: 0.58rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(244, 240, 232, 0.96);
+  box-shadow:
+    0 0 0 0.44rem rgba(244, 240, 232, 0.06),
+    0 0 1.3rem rgba(244, 240, 232, 0.2);
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__self {
+  left: 52%;
+  top: 55%;
+  width: 0.86rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.95);
+  box-shadow:
+    0 0 0 0.72rem rgba(212, 175, 55, 0.08),
+    0 0 1.65rem rgba(212, 175, 55, 0.32);
+  opacity: 0.86;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__path {
+  right: 12%;
+  top: 55%;
+  width: 6.8rem;
+  height: 4rem;
+  border-top: 1px solid rgba(91, 214, 143, 0.28);
+  border-right: 1px solid rgba(83, 216, 232, 0.2);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: translateY(-50%) rotate(12deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark {
+  width: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.62;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark--past {
+  left: 14%;
+  top: 70%;
+  background: rgba(255, 173, 112, 0.82);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark--threshold {
+  left: 54%;
+  top: 24%;
+  background: rgba(91, 214, 143, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark--future {
+  left: 88%;
+  top: 52%;
+  background: rgba(83, 216, 232, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--gather {
+  left: 6%;
+  top: 13%;
+  color: rgba(143, 231, 237, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--axis {
+  left: 40%;
+  top: 13%;
+  color: rgba(255, 227, 156, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--aeon {
+  right: 7%;
+  top: 13%;
+  color: rgba(91, 214, 143, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__field--memory,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif-ring,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__orbit {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif-ring {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif {
+  box-shadow: 0 0 1rem rgba(212, 175, 55, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__axis,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__quaternity,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__point,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__ego,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__self {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__quaternity {
+  border-color: rgba(255, 227, 156, 0.34);
+  box-shadow:
+    inset 0 0 1.1rem rgba(83, 216, 232, 0.08),
+    0 0 1.75rem rgba(212, 175, 55, 0.2);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__ego {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__self {
+  transform: translate(-50%, -50%) scale(1.16);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__field--future,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__path,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__mark,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__orbit,
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__self {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__path {
+  border-color: rgba(91, 214, 143, 0.42);
+  transform: translateY(-50%) rotate(12deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__mark {
+  box-shadow: 0 0 1.1rem rgba(91, 214, 143, 0.24);
+}
+
 @keyframes alchemical-tree-wheel {
   from {
     transform: translateY(-50%) rotate(0deg);
@@ -9343,6 +9843,17 @@ h3 {
 			  .gnostic-constellation-instrument__center,
 			  .gnostic-constellation-instrument__rupture,
 			  .gnostic-constellation-instrument__shard,
+			  .final-synthesis-instrument__field,
+			  .final-synthesis-instrument__axis,
+			  .final-synthesis-instrument__orbit,
+			  .final-synthesis-instrument__motif-ring,
+			  .final-synthesis-instrument__motif,
+			  .final-synthesis-instrument__quaternity,
+			  .final-synthesis-instrument__point,
+			  .final-synthesis-instrument__ego,
+			  .final-synthesis-instrument__self,
+			  .final-synthesis-instrument__path,
+			  .final-synthesis-instrument__mark,
 			  .chapters-orbit__node,
 			  .home-chapter-orbit__item a,
 			  .scene-host__pause {
@@ -9473,6 +9984,21 @@ h3 {
 		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__center,
 		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__rupture,
 		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard {
+		    animation: none;
+		    transition: none;
+		  }
+
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__ego,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__self,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__path,
+		  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark {
 		    animation: none;
 		    transition: none;
 		  }
@@ -9990,6 +10516,212 @@ h3 {
   .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::after {
     width: 2.1rem;
     transform: translate(-50%, -50%) rotate(-14deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__scrim {
+    background:
+      linear-gradient(180deg, rgba(3, 3, 7, 0.93), rgba(3, 3, 7, 0.6) 48%, rgba(3, 3, 7, 0.86)),
+      linear-gradient(90deg, rgba(3, 3, 7, 0.95), rgba(3, 3, 7, 0.54) 68%, rgba(3, 3, 7, 0.4));
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro h1 {
+    max-width: 8.7ch;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument {
+    min-height: 6.75rem;
+    margin-top: 0.64rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::before {
+    inset: 0.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field {
+    top: 22%;
+    width: 28%;
+    height: 54%;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--horizontal {
+    width: 7.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--vertical {
+    height: 4.25rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--outer {
+    width: 10.25rem;
+    height: 3.55rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--inner {
+    width: 6.8rem;
+    height: 2.35rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring {
+    left: 24%;
+    width: 5.3rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif {
+    width: 0.42rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--fish {
+    width: 0.6rem;
+    height: 0.28rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity {
+    left: 53%;
+    width: 4.45rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point,
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__ego {
+    width: 0.46rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__self {
+    left: 53%;
+    width: 0.64rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__path {
+    right: 7%;
+    width: 4.4rem;
+    height: 3.05rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark {
+    width: 0.42rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label {
+    font-size: 0.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--gather {
+    left: 5%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--axis {
+    left: 39%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label--aeon {
+    right: 5%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::after,
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::after,
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::before {
+    width: 1.92rem;
+    height: 1.92rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark::after {
+    width: 1.9rem;
+    transform: translate(-50%, -50%) rotate(-18deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::before {
+    width: 1px;
+    height: 2.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark::after {
+    width: 2.1rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::before {
+    width: 2rem;
+    height: 1.78rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark::after {
+    width: 2.05rem;
+    transform: translate(-50%, -50%) rotate(14deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 41rem;
+    width: auto;
+    padding: 0.38rem 0.64rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .final-synthesis-instrument {
+    min-height: 4.85rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .chapter-stage__reference-map {
+    margin-top: 1.18rem;
+    transform: translateY(8.5rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback h2 {
+    margin: 0.08rem 0 0;
+    font-size: 0.8rem;
+    line-height: 0.96;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    display: -webkit-box;
+    margin-top: 0.18rem;
+    font-size: 0.63rem;
+    line-height: 1.22;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback {
@@ -10852,6 +11584,39 @@ h3 {
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro {
+    justify-content: flex-start;
+    width: min(22.5rem, calc(100% - 2rem));
+    padding-top: 10.2rem;
+    padding-bottom: 1.4rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-sigil {
+    display: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro h1 {
+    max-width: 11.5ch;
+    font-size: clamp(2.42rem, 12vw, 3.05rem);
+    line-height: 0.9;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro p:not(.eyebrow) {
+    display: -webkit-box;
+    max-width: 28ch;
+    margin-top: 0.6rem;
+    overflow: hidden;
+    font-size: 0.9rem;
+    line-height: 1.42;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument {
+    min-height: 5.8rem;
+    margin-top: 0.54rem;
   }
 
   .chapter-experience[data-chapter-id="ch7"] .chapter-stage__intro {

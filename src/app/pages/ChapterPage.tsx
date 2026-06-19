@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 
+import Chapter14FinalSynthesisInstrument from '../components/Chapter14FinalSynthesisInstrument';
 import ChapterSigil from '../components/ChapterSigil';
 import SceneHost from '../components/SceneHost';
 import {
@@ -455,6 +456,9 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="gnostic-constellation-instrument__label gnostic-constellation-instrument__label--fourfold" aria-hidden="true">fourfold pattern</span>
               <span className="gnostic-constellation-instrument__label gnostic-constellation-instrument__label--paradox" aria-hidden="true">rupture</span>
             </div>
+          )}
+          {chapter.id === 'ch14' && (
+            <Chapter14FinalSynthesisInstrument activePanel={activePanel} activePanelId={activePanelId} />
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
             {experience.panels.map((panel, index) => (

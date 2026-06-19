@@ -956,6 +956,92 @@ async function smokeReducedMotion(browser, failures) {
       failures.push(`reduced-motion Chapter 13 fallback overlaps the reference map at 320x568: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterThirteenNarrowReferenceMapBox.y)}`);
     }
   }
+
+  await page.setViewportSize(mobileViewport);
+  await gotoAppRoute(page, '/journey/chapter/ch14');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterFourteenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterFourteenReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterFourteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterFourteenReferenceCount = await chapterFourteenReferenceNodes.count();
+  const chapterFourteenPanelIds = await chapterFourteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterFourteenPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterFourteenCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterFourteenFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterFourteenFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterFourteenFallbackHeadingBox = await page.locator('.scene-host__fallback h2').boundingBox();
+  const chapterFourteenFallbackBodyBox = await page.locator('.scene-host__fallback p:not(.eyebrow)').boundingBox();
+  const chapterFourteenInstrumentCount = await page.locator('.final-synthesis-instrument').count();
+  const chapterFourteenInstrumentBox = await page.locator('.final-synthesis-instrument').boundingBox();
+  const chapterFourteenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterFourteenInstrumentMotion = await page.locator('.final-synthesis-instrument__field, .final-synthesis-instrument__axis, .final-synthesis-instrument__orbit, .final-synthesis-instrument__motif-ring, .final-synthesis-instrument__motif, .final-synthesis-instrument__quaternity, .final-synthesis-instrument__point, .final-synthesis-instrument__ego, .final-synthesis-instrument__self, .final-synthesis-instrument__path, .final-synthesis-instrument__mark').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterFourteenAnimatedParts = chapterFourteenInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterFourteenTransitioningParts = chapterFourteenInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterFourteenFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 14 scene');
+  if (chapterFourteenReducedMotionAttribute !== 'true') failures.push('Chapter 14 did not record reduced-motion state');
+  if (chapterFourteenReferenceCount !== 3) failures.push(`reduced-motion Chapter 14 reference node count mismatch: ${chapterFourteenReferenceCount}`);
+  if (chapterFourteenPanelIds.join(',') !== 'gather,axis,aeon') failures.push(`reduced-motion Chapter 14 reference nodes out of order: ${chapterFourteenPanelIds.join(',')}`);
+  if (chapterFourteenPauseControlCount !== 0) failures.push(`reduced-motion Chapter 14 rendered pause controls: ${chapterFourteenPauseControlCount}`);
+  if (chapterFourteenCanvasCount !== 0) failures.push(`reduced-motion Chapter 14 rendered canvas: ${chapterFourteenCanvasCount}`);
+  if (chapterFourteenInstrumentCount !== 1) failures.push(`reduced-motion Chapter 14 final synthesis instrument count mismatch: ${chapterFourteenInstrumentCount}`);
+  if (chapterFourteenAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 14 final synthesis instrument still animates: ${JSON.stringify(chapterFourteenAnimatedParts)}`);
+  if (chapterFourteenTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 14 final synthesis instrument still transitions: ${JSON.stringify(chapterFourteenTransitioningParts)}`);
+  if (!chapterFourteenFallbackText?.includes('final synthesis mandala') || !chapterFourteenFallbackText?.includes('fourfold ordering field') || !chapterFourteenFallbackText?.includes('individuation')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 14 final synthesis teaching summary');
+  }
+  if (!chapterFourteenFallbackHeadingBox || chapterFourteenFallbackHeadingBox.width < 20 || chapterFourteenFallbackHeadingBox.height < 8) {
+    failures.push(`reduced-motion Chapter 14 fallback heading is not visibly rendered: ${chapterFourteenFallbackHeadingBox ? `${Math.round(chapterFourteenFallbackHeadingBox.width)}x${Math.round(chapterFourteenFallbackHeadingBox.height)}` : 'missing'}`);
+  }
+  if (!chapterFourteenFallbackBodyBox || chapterFourteenFallbackBodyBox.width < 40 || chapterFourteenFallbackBodyBox.height < 8) {
+    failures.push(`reduced-motion Chapter 14 fallback body is not visibly rendered: ${chapterFourteenFallbackBodyBox ? `${Math.round(chapterFourteenFallbackBodyBox.width)}x${Math.round(chapterFourteenFallbackBodyBox.height)}` : 'missing'}`);
+  }
+  if (chapterFourteenFallbackBox && chapterFourteenInstrumentBox) {
+    const instrumentBottom = chapterFourteenInstrumentBox.y + chapterFourteenInstrumentBox.height;
+    if (chapterFourteenFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 14 fallback overlaps the final synthesis instrument on mobile: fallback top ${Math.round(chapterFourteenFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterFourteenFallbackBox && chapterFourteenReferenceMapBox) {
+    const fallbackBottom = chapterFourteenFallbackBox.y + chapterFourteenFallbackBox.height;
+    if (fallbackBottom > chapterFourteenReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 14 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterFourteenReferenceMapBox.y)}`);
+    }
+  }
+
+  await page.setViewportSize(narrowMobileViewport);
+  await gotoAppRoute(page, '/journey/chapter/ch14');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterFourteenNarrowFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterFourteenNarrowCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterFourteenNarrowFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterFourteenNarrowInstrumentBox = await page.locator('.final-synthesis-instrument').boundingBox();
+  const chapterFourteenNarrowReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterFourteenNarrowScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  if (!chapterFourteenNarrowFallbackVisible) failures.push('reduced-motion Chapter 14 fallback is not visible at 320x568');
+  if (chapterFourteenNarrowCanvasCount !== 0) failures.push(`reduced-motion Chapter 14 rendered canvas at 320x568: ${chapterFourteenNarrowCanvasCount}`);
+  if (chapterFourteenNarrowScrollWidth > narrowMobileViewport.width + 2) {
+    failures.push(`reduced-motion Chapter 14 horizontal overflow at 320x568: ${chapterFourteenNarrowScrollWidth}`);
+  }
+  if (chapterFourteenNarrowFallbackBox && chapterFourteenNarrowInstrumentBox) {
+    const instrumentBottom = chapterFourteenNarrowInstrumentBox.y + chapterFourteenNarrowInstrumentBox.height;
+    if (chapterFourteenNarrowFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 14 fallback overlaps the final synthesis instrument at 320x568: fallback top ${Math.round(chapterFourteenNarrowFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterFourteenNarrowFallbackBox && chapterFourteenNarrowReferenceMapBox) {
+    const fallbackBottom = chapterFourteenNarrowFallbackBox.y + chapterFourteenNarrowFallbackBox.height;
+    if (fallbackBottom > chapterFourteenNarrowReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 14 fallback overlaps the reference map at 320x568: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterFourteenNarrowReferenceMapBox.y)}`);
+    }
+  }
+
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -2306,14 +2392,119 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   await gotoAppRoute(page, '/journey/chapter/ch14');
-  const aeon = page.getByRole('button', { name: /03\s+Aeon/ });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterFourteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterFourteenReferenceCount = await chapterFourteenReferenceNodes.count();
+  const chapterFourteenPanelIds = await chapterFourteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterFourteenInstrument = page.locator('.final-synthesis-instrument');
+  const chapterFourteenInstrumentCount = await chapterFourteenInstrument.count();
+  const chapterFourteenInstrumentRole = chapterFourteenInstrumentCount > 0 ? await chapterFourteenInstrument.getAttribute('role') : null;
+  const chapterFourteenInstrumentLabel = chapterFourteenInstrumentCount > 0 ? await chapterFourteenInstrument.getAttribute('aria-label') : null;
+  const chapterFourteenInstrumentPanel = chapterFourteenInstrumentCount > 0 ? await chapterFourteenInstrument.getAttribute('data-active-panel') : null;
+  const chapterFourteenMotifCount = await page.locator('.final-synthesis-instrument__motif').count();
+  const chapterFourteenPointCount = await page.locator('.final-synthesis-instrument__point').count();
+  const chapterFourteenMarkCount = await page.locator('.final-synthesis-instrument__mark').count();
+  const chapterFourteenInstrumentLabelCount = await page.locator('.final-synthesis-instrument__label').count();
+  const chapterFourteenInitialDescription = await page.locator('#scene-host-description-ch14').textContent();
+  const chapterFourteenInstrumentMarksVisible = await page.locator('.final-synthesis-instrument__field, .final-synthesis-instrument__axis, .final-synthesis-instrument__orbit, .final-synthesis-instrument__motif-ring, .final-synthesis-instrument__motif, .final-synthesis-instrument__quaternity, .final-synthesis-instrument__point, .final-synthesis-instrument__ego, .final-synthesis-instrument__self, .final-synthesis-instrument__path, .final-synthesis-instrument__mark').evaluateAll((nodes) => nodes.length >= 23 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterFourteenReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="gather"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="axis"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="aeon"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.length === 3 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    const before = window.getComputedStyle(node, '::before');
+    const after = window.getComputedStyle(node, '::after');
+    return styles.display !== 'none'
+      && Number(styles.opacity) > 0
+      && box.width > 0
+      && box.height > 0
+      && before.content !== 'none'
+      && after.content !== 'none'
+      && Number.parseFloat(before.width) > 0
+      && Number.parseFloat(before.height) > 0
+      && Number.parseFloat(after.width) > 0
+      && Number.parseFloat(after.height) > 0;
+  }));
+
+  if (chapterFourteenReferenceCount !== 3) failures.push(`chapter 14 reference node count mismatch: ${chapterFourteenReferenceCount}`);
+  if (chapterFourteenPanelIds.join(',') !== 'gather,axis,aeon') failures.push(`chapter 14 reference nodes out of order: ${chapterFourteenPanelIds.join(',')}`);
+  if (chapterFourteenInstrumentCount !== 1) failures.push(`chapter 14 final synthesis instrument count mismatch: ${chapterFourteenInstrumentCount}`);
+  if (chapterFourteenInstrumentRole !== 'img') failures.push(`chapter 14 final synthesis instrument role mismatch: ${chapterFourteenInstrumentRole}`);
+  if (!chapterFourteenInstrumentLabel?.includes('Final synthesis mandala') || !chapterFourteenInstrumentLabel?.includes('fourfold Self field') || !chapterFourteenInstrumentLabel?.includes('Current emphasis: Synthesis')) {
+    failures.push(`chapter 14 final synthesis instrument label missing teaching text: ${chapterFourteenInstrumentLabel}`);
+  }
+  if (chapterFourteenInstrumentPanel !== 'gather') failures.push(`chapter 14 final synthesis instrument did not start on synthesis panel: ${chapterFourteenInstrumentPanel}`);
+  if (chapterFourteenMotifCount !== 6) failures.push(`chapter 14 final synthesis motif count mismatch: ${chapterFourteenMotifCount}`);
+  if (chapterFourteenPointCount !== 4) failures.push(`chapter 14 final synthesis quaternity point count mismatch: ${chapterFourteenPointCount}`);
+  if (chapterFourteenMarkCount !== 3) failures.push(`chapter 14 final synthesis path mark count mismatch: ${chapterFourteenMarkCount}`);
+  if (chapterFourteenInstrumentLabelCount !== 3) failures.push(`chapter 14 final synthesis label count mismatch: ${chapterFourteenInstrumentLabelCount}`);
+  if (!chapterFourteenInitialDescription?.includes('Synthesis: The book gathers into one field')) failures.push(`chapter 14 initial scene description mismatch: ${chapterFourteenInitialDescription}`);
+  if (!chapterFourteenInstrumentMarksVisible) failures.push('chapter 14 final synthesis instrument marks are not visibly rendered');
+  if (!chapterFourteenReferenceGlyphsVisible) failures.push('chapter 14 reference glyphs are not visibly rendered');
+
+  const axis = page.getByRole('button', { name: /02\s+Axis/ });
+  await activateSceneButton(axis);
+  await page.waitForTimeout(250);
+
+  const axisPressed = await axis.getAttribute('aria-pressed');
+  const axisPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="axis"]').count();
+  const axisDescription = await page.locator('#scene-host-description-ch14').textContent();
+  const axisInstrumentPanel = await chapterFourteenInstrument.getAttribute('data-active-panel');
+  const axisInstrumentLabel = await chapterFourteenInstrument.getAttribute('aria-label');
+  const axisVisualPartsVisible = await page.locator('.final-synthesis-instrument__axis, .final-synthesis-instrument__quaternity, .final-synthesis-instrument__point, .final-synthesis-instrument__ego, .final-synthesis-instrument__self').evaluateAll((nodes) => nodes.length === 9 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  if (axisPressed !== 'true') failures.push(`chapter 14 axis scene control did not become active: ${axisPressed}`);
+  if (axisPanelActive !== 1) failures.push(`chapter 14 axis panel did not become active: ${axisPanelActive}`);
+  if (axisInstrumentPanel !== 'axis') failures.push(`chapter 14 final synthesis instrument did not follow axis panel: ${axisInstrumentPanel}`);
+  if (!axisInstrumentLabel?.includes('Current emphasis: Axis') || !axisInstrumentLabel?.includes('The goal is right relation')) {
+    failures.push(`chapter 14 final synthesis instrument label did not follow axis panel: ${axisInstrumentLabel}`);
+  }
+  if (!axisVisualPartsVisible) failures.push('chapter 14 final synthesis axis visual parts are not visibly rendered');
+  if (!axisDescription?.includes('Axis: Ego and Self stay in relation')) failures.push(`chapter 14 scene description did not follow axis panel: ${axisDescription}`);
+
+  const aeon = page.getByRole('button', { name: /03\s+Path/ });
   await activateSceneButton(aeon);
   await page.waitForTimeout(250);
 
   const aeonPressed = await aeon.getAttribute('aria-pressed');
+  const aeonPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="aeon"]').count();
+  const aeonDescription = await page.locator('#scene-host-description-ch14').textContent();
+  const aeonInstrumentPanel = await chapterFourteenInstrument.getAttribute('data-active-panel');
+  const aeonInstrumentLabel = await chapterFourteenInstrument.getAttribute('aria-label');
+  const aeonVisualPartsVisible = await page.locator('.final-synthesis-instrument__field--future, .final-synthesis-instrument__path, .final-synthesis-instrument__mark, .final-synthesis-instrument__orbit, .final-synthesis-instrument__self').evaluateAll((nodes) => nodes.length === 8 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
   const chapterFourteenScrollY = await page.evaluate(() => window.scrollY);
   if (aeonPressed !== 'true') failures.push(`chapter 14 scene control did not become active: ${aeonPressed}`);
+  if (aeonPanelActive !== 1) failures.push(`chapter 14 aeon panel did not become active: ${aeonPanelActive}`);
+  if (aeonInstrumentPanel !== 'aeon') failures.push(`chapter 14 final synthesis instrument did not follow path panel: ${aeonInstrumentPanel}`);
+  if (!aeonInstrumentLabel?.includes('Current emphasis: Path') || !aeonInstrumentLabel?.includes('Aion ends with motion')) {
+    failures.push(`chapter 14 final synthesis instrument label did not follow path panel: ${aeonInstrumentLabel}`);
+  }
+  if (!aeonVisualPartsVisible) failures.push('chapter 14 final synthesis individuation visual parts are not visibly rendered');
+  if (!aeonDescription?.includes('Path: Individuation keeps moving')) failures.push(`chapter 14 scene description did not follow path panel: ${aeonDescription}`);
   if (chapterFourteenScrollY > 10) failures.push(`chapter 14 scene control unexpectedly scrolled page: ${chapterFourteenScrollY}`);
+
+  const chapterFourteenCanvas = page.locator('.scene-host canvas').first();
+  const chapterFourteenCanvasCount = await chapterFourteenCanvas.count();
+  const chapterFourteenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  if (chapterFourteenCanvasCount !== 1) {
+    failures.push(`chapter 14 expected one ready canvas but found ${chapterFourteenCanvasCount}; fallback visible: ${chapterFourteenFallbackVisible}`);
+  } else {
+    const chapterFourteenCanvasBox = await chapterFourteenCanvas.boundingBox();
+    const chapterFourteenPixelSample = await waitForCanvasPixels(chapterFourteenCanvas);
+    if (!chapterFourteenCanvasBox || chapterFourteenCanvasBox.width < 300 || chapterFourteenCanvasBox.height < 300) {
+      failures.push(`chapter 14 canvas geometry too small: ${chapterFourteenCanvasBox ? `${Math.round(chapterFourteenCanvasBox.width)}x${Math.round(chapterFourteenCanvasBox.height)}` : 'missing'}`);
+    }
+    recordCanvasPixelFailure(failures, 'chapter 14', chapterFourteenPixelSample);
+  }
 }
 
 async function smokeMobile(page, failures) {
@@ -2845,6 +3036,77 @@ async function smokeMobile(page, failures) {
       }
       const chapterThirteenPixelSample = await waitForCanvasPixels(chapterThirteenCanvas);
       recordCanvasPixelFailure(failures, `mobile chapter 13 at ${viewport.width}x${viewport.height}`, chapterThirteenPixelSample);
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch14');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterFourteenNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterFourteenHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterFourteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterFourteenReferenceCount = await chapterFourteenReferenceNodes.count();
+    const chapterFourteenPanelIds = await chapterFourteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterFourteenScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterFourteenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterFourteenInstrumentBox = await page.locator('.final-synthesis-instrument').boundingBox();
+    const chapterFourteenReferenceGlyphLayout = await chapterFourteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => {
+      const label = node.querySelector('.chapter-stage__reference-label');
+      const mark = node.querySelector('.chapter-stage__reference-mark');
+      if (!label || !mark) return { panelId: node.getAttribute('data-panel-id'), ok: false };
+      const before = window.getComputedStyle(mark, '::before');
+      const after = window.getComputedStyle(mark, '::after');
+      const labelBox = label.getBoundingClientRect();
+      const nodeBox = node.getBoundingClientRect();
+      const beforeLeft = Number.parseFloat(before.left);
+      const beforeWidth = Number.parseFloat(before.width);
+      const afterLeft = Number.parseFloat(after.left);
+      const afterWidth = Number.parseFloat(after.width);
+      const beforeRight = beforeLeft + (before.transform === 'none' ? beforeWidth : beforeWidth / 2);
+      const afterRight = afterLeft + (after.transform === 'none' ? afterWidth : afterWidth / 2);
+      const labelLeft = labelBox.left - nodeBox.left;
+      return {
+        panelId: node.getAttribute('data-panel-id'),
+        ok: [beforeLeft, beforeWidth, afterLeft, afterWidth].every(Number.isFinite)
+          && beforeWidth > 0
+          && afterWidth > 0
+          && beforeRight < labelLeft - 4
+          && afterRight < labelLeft - 4,
+      };
+    }));
+    if (!chapterFourteenNavBox || !chapterFourteenHeadingBox) {
+      failures.push(`mobile chapter 14 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterFourteenNavBottom = chapterFourteenNavBox.y + chapterFourteenNavBox.height;
+    if (chapterFourteenNavBottom > chapterFourteenHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 14 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterFourteenNavBottom)}, heading top ${Math.round(chapterFourteenHeadingBox.y)}`);
+    }
+    if (chapterFourteenReferenceCount !== 3) failures.push(`mobile chapter 14 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterFourteenReferenceCount}`);
+    if (chapterFourteenPanelIds.join(',') !== 'gather,axis,aeon') failures.push(`mobile chapter 14 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterFourteenPanelIds.join(',')}`);
+    if (chapterFourteenScrollWidth > viewport.width + 2) failures.push(`mobile chapter 14 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterFourteenScrollWidth}`);
+    if (chapterFourteenReferenceMapBox && chapterFourteenReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 14 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFourteenReferenceMapBox.width)}`);
+    }
+    for (const glyph of chapterFourteenReferenceGlyphLayout) {
+      if (!glyph.ok) failures.push(`mobile chapter 14 reference glyph overlaps label rail at ${viewport.width}x${viewport.height}: ${glyph.panelId}`);
+    }
+    if (!chapterFourteenInstrumentBox) failures.push(`mobile chapter 14 final synthesis instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterFourteenInstrumentBox && chapterFourteenInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 14 final synthesis instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFourteenInstrumentBox.width)}`);
+    }
+
+    const chapterFourteenCanvas = page.locator('.scene-host canvas').first();
+    const chapterFourteenCanvasCount = await chapterFourteenCanvas.count();
+    if (chapterFourteenCanvasCount !== 1) {
+      failures.push(`mobile chapter 14 expected one ready canvas at ${viewport.width}x${viewport.height} but found ${chapterFourteenCanvasCount}`);
+    } else {
+      const chapterFourteenCanvasBox = await chapterFourteenCanvas.boundingBox();
+      const minCanvasWidth = viewport.width <= 320 ? 260 : 300;
+      if (!chapterFourteenCanvasBox || chapterFourteenCanvasBox.width < minCanvasWidth || chapterFourteenCanvasBox.height < 260) {
+        failures.push(`mobile chapter 14 canvas geometry too small at ${viewport.width}x${viewport.height}: ${chapterFourteenCanvasBox ? `${Math.round(chapterFourteenCanvasBox.width)}x${Math.round(chapterFourteenCanvasBox.height)}` : 'missing'}`);
+      }
+      const chapterFourteenPixelSample = await waitForCanvasPixels(chapterFourteenCanvas);
+      recordCanvasPixelFailure(failures, `mobile chapter 14 at ${viewport.width}x${viewport.height}`, chapterFourteenPixelSample);
     }
   }
 }
