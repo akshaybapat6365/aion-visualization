@@ -184,6 +184,19 @@ async function countCanvasPixels(canvas) {
   }));
 }
 
+async function waitForCanvasPixels(canvas, { minVisiblePixels = 8, timeoutMs = 6_000, intervalMs = 250 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  let result = { timedOut: true, visiblePixels: 0 };
+
+  while (Date.now() < deadline) {
+    result = await countCanvasPixels(canvas);
+    if (!result.timedOut && result.visiblePixels > minVisiblePixels) return result;
+    await delay(intervalMs);
+  }
+
+  return result;
+}
+
 function recordCanvasPixelFailure(failures, label, result) {
   if (result.timedOut) {
     failures.push(`${label} canvas pixel sampling timed out`);
@@ -1378,7 +1391,10 @@ async function smokeChapterSceneControls(page, failures) {
   if (!afterlifeInstrumentLabel?.includes('Current emphasis: Afterlife') || !afterlifeInstrumentLabel?.includes('The unconscious preserves symbolic depth')) {
     failures.push(`chapter 8 historical strata instrument label did not follow afterlife panel: ${afterlifeInstrumentLabel}`);
   }
-  if (afterlifeVisualState.length !== 4 || afterlifeVisualState.some((opacity) => opacity < 0.45)) {
+  const [afterlifeDepthOpacity, afterlifeThreadOpacity, afterlifeLayerFourOpacity, afterlifeLayerFiveOpacity] = afterlifeVisualState;
+  const afterlifeDepthVisible = afterlifeDepthOpacity >= 0.45 && afterlifeThreadOpacity >= 0.45;
+  const afterlifeLayersVisible = afterlifeLayerFourOpacity >= 0.3 && afterlifeLayerFiveOpacity >= 0.3;
+  if (afterlifeVisualState.length !== 4 || !afterlifeDepthVisible || !afterlifeLayersVisible) {
     failures.push(`chapter 8 historical strata instrument did not visually emphasize afterlife/depth: ${afterlifeVisualState.join(',')}`);
   }
   if (!afterlifeDescription?.includes('Afterlife: Old images keep speaking')) failures.push(`chapter 8 scene description did not follow afterlife panel: ${afterlifeDescription}`);
@@ -1386,7 +1402,7 @@ async function smokeChapterSceneControls(page, failures) {
 
   const chapterEightCanvas = page.locator('.scene-host canvas').first();
   const chapterEightCanvasBox = await chapterEightCanvas.boundingBox();
-  const chapterEightPixelSample = await countCanvasPixels(chapterEightCanvas);
+  const chapterEightPixelSample = await waitForCanvasPixels(chapterEightCanvas);
   const chapterEightStyleCount = await page.locator('style#ch8-anim-style').count();
   if (!chapterEightCanvasBox || chapterEightCanvasBox.width < 300 || chapterEightCanvasBox.height < 300) {
     failures.push(`chapter 8 canvas geometry too small: ${chapterEightCanvasBox ? `${Math.round(chapterEightCanvasBox.width)}x${Math.round(chapterEightCanvasBox.height)}` : 'missing'}`);
@@ -1727,7 +1743,7 @@ async function smokeMobile(page, failures) {
       const chapterEightCanvas = page.locator('.scene-host canvas').first();
       const chapterEightCanvasCount = await chapterEightCanvas.count();
       if (chapterEightCanvasCount > 0) {
-        const chapterEightPixelSample = await countCanvasPixels(chapterEightCanvas);
+        const chapterEightPixelSample = await waitForCanvasPixels(chapterEightCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 8 at ${viewport.width}x${viewport.height}`, chapterEightPixelSample);
       }
     }
