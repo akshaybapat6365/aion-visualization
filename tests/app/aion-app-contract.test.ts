@@ -299,6 +299,32 @@ describe('Aion framework data contract', () => {
       'alchemy',
     ]);
   });
+
+  test('keeps Chapter 13 Gnostic panels tied to symbolic wholeness and paradox', () => {
+    expect(CHAPTER_SCENES.ch13.panels.map((panel) => panel.id)).toEqual([
+      'gnosis',
+      'quaternio',
+      'paradox',
+    ]);
+    expect(CHAPTER_SCENES.ch13.panels.map((panel) => panel.kicker)).toEqual([
+      'Gnosis',
+      'Fourfold',
+      'Paradox',
+    ]);
+    expect(CHAPTER_SCENES.ch13.motionGrammar).toBe('cyclical-return');
+    expect(CHAPTER_SCENES.ch13.visualTheme).toContain('Gnostic pleroma');
+    expect(CHAPTER_SCENES.ch13.visualTheme).toContain('fourfold Self pattern');
+    expect(CHAPTER_SCENES.ch13.sceneModule).toBe('../visualizations/chapters/ch13/ThreeQuaternioViz.js');
+    expect(CHAPTER_SCENES.ch13.fallbackSummary).toContain('Gnostic constellation');
+    expect(CHAPTER_SCENES.ch13.fallbackSummary).toContain('fourfold pattern');
+    expect(CHAPTER_SCENES.ch13.fallbackSummary).toContain('rupture line');
+
+    expect(getConceptsForChapter('ch13').map((concept) => concept.id)).toEqual([
+      'gnosticism',
+      'self',
+      'opposites',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

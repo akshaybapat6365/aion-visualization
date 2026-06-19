@@ -24,6 +24,9 @@ const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as co
 const alchemicalTreeStages = ['black', 'white', 'gold', 'red'] as const;
 const amplificationLensRings = ['outer', 'middle', 'inner'] as const;
 const amplificationRootThreads = ['faith', 'source', 'alchemy'] as const;
+const gnosticEmanationLayers = ['source', 'nous', 'sophia', 'matter'] as const;
+const gnosticQuaternioPoints = ['north', 'east', 'south', 'west'] as const;
+const gnosticParadoxShards = ['fall', 'spark', 'return'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -73,6 +76,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, the opus wheel repeats transformation, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const amplificationLensInstrumentLabel = `Amplification lens model: a disciplined symbolic lens holds religious image, alchemical image, and psychic projection in relation; shared roots keep the traditions connected, and the bridge turns inherited images toward inner experience. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const gnosticConstellationInstrumentLabel = `Gnostic constellation model: emanation rings move from fullness into differentiated images, a symbolic fourfold pattern makes the Self readable, and a rupture field keeps wisdom and fall in tension. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -416,6 +420,40 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="amplification-lens-instrument__label amplification-lens-instrument__label--lens" aria-hidden="true">symbolic lens</span>
               <span className="amplification-lens-instrument__label amplification-lens-instrument__label--roots" aria-hidden="true">shared roots</span>
               <span className="amplification-lens-instrument__label amplification-lens-instrument__label--bridge" aria-hidden="true">inner bridge</span>
+            </div>
+          )}
+          {chapter.id === 'ch13' && (
+            <div
+              className="gnostic-constellation-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={gnosticConstellationInstrumentLabel}
+            >
+              <span className="gnostic-constellation-instrument__field gnostic-constellation-instrument__field--fullness" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__field gnostic-constellation-instrument__field--rupture" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__axis gnostic-constellation-instrument__axis--vertical" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__axis gnostic-constellation-instrument__axis--horizontal" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__emanation" aria-hidden="true">
+                {gnosticEmanationLayers.map((layer) => (
+                  <span key={layer} className={`gnostic-constellation-instrument__layer gnostic-constellation-instrument__layer--${layer}`} />
+                ))}
+              </span>
+              <span className="gnostic-constellation-instrument__source" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__descent" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__sophia" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__quaternio" aria-hidden="true">
+                {gnosticQuaternioPoints.map((point) => (
+                  <span key={point} className={`gnostic-constellation-instrument__point gnostic-constellation-instrument__point--${point}`} />
+                ))}
+              </span>
+              <span className="gnostic-constellation-instrument__center" aria-hidden="true" />
+              <span className="gnostic-constellation-instrument__rupture" aria-hidden="true" />
+              {gnosticParadoxShards.map((shard) => (
+                <span key={shard} className={`gnostic-constellation-instrument__shard gnostic-constellation-instrument__shard--${shard}`} aria-hidden="true" />
+              ))}
+              <span className="gnostic-constellation-instrument__label gnostic-constellation-instrument__label--emanation" aria-hidden="true">emanation</span>
+              <span className="gnostic-constellation-instrument__label gnostic-constellation-instrument__label--fourfold" aria-hidden="true">fourfold pattern</span>
+              <span className="gnostic-constellation-instrument__label gnostic-constellation-instrument__label--paradox" aria-hidden="true">rupture</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">

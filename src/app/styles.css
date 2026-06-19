@@ -6978,6 +6978,506 @@ h3 {
   transform: translate(-50%, -50%) scaleX(1.08);
 }
 
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__scrim {
+  background:
+    radial-gradient(circle at 57% 45%, rgba(255, 227, 156, 0.09), transparent 18rem),
+    radial-gradient(circle at 69% 54%, rgba(83, 216, 232, 0.09), transparent 20rem),
+    radial-gradient(circle at 39% 60%, rgba(204, 109, 134, 0.08), transparent 18rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.9), rgba(3, 3, 7, 0.28) 44%, rgba(3, 3, 7, 0.72) 100%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__intro h1 {
+  max-width: 8.8ch;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255, 227, 156, 0.1), transparent 2.5rem),
+    radial-gradient(circle at 68% 72%, rgba(83, 216, 232, 0.08), transparent 2.7rem),
+    linear-gradient(145deg, rgba(244, 240, 232, 0.05), rgba(3, 3, 7, 0.26) 52%, rgba(28, 12, 18, 0.24));
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::before {
+  top: 0.76rem;
+  width: 2.72rem;
+  height: 2.72rem;
+  border: 1px solid rgba(255, 227, 156, 0.27);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.9) 0 0.18rem, transparent 0.21rem),
+    radial-gradient(circle, transparent 0 0.72rem, rgba(83, 216, 232, 0.18) 0.76rem, transparent 0.8rem),
+    radial-gradient(circle, transparent 0 1.13rem, rgba(255, 227, 156, 0.2) 1.17rem, transparent 1.23rem);
+  box-shadow: 0 0 1.5rem rgba(212, 175, 55, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::after {
+  top: 2.36rem;
+  width: 1px;
+  height: 1.12rem;
+  background: linear-gradient(180deg, rgba(255, 227, 156, 0.54), rgba(83, 216, 232, 0.2), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark::before {
+  top: 1.34rem;
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.9);
+  box-shadow:
+    0 -1.06rem 0 -0.08rem rgba(83, 216, 232, 0.88),
+    1.06rem 0 0 -0.08rem rgba(204, 109, 134, 0.86),
+    0 1.06rem 0 -0.08rem rgba(132, 201, 155, 0.86),
+    -1.06rem 0 0 -0.08rem rgba(255, 173, 112, 0.88),
+    0 0 1.3rem rgba(212, 175, 55, 0.26);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark::after {
+  top: 0.9rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(244, 240, 232, 0.22);
+  border-radius: 30%;
+  background:
+    linear-gradient(90deg, transparent 48%, rgba(244, 240, 232, 0.34) 49%, rgba(244, 240, 232, 0.34) 51%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, rgba(244, 240, 232, 0.34) 49%, rgba(244, 240, 232, 0.34) 51%, transparent 52%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::before {
+  top: 0.8rem;
+  width: 2.55rem;
+  height: 2.45rem;
+  border-radius: 50%;
+  background:
+    linear-gradient(132deg, transparent 46%, rgba(204, 109, 134, 0.72) 48%, transparent 52%),
+    radial-gradient(circle at 28% 40%, rgba(255, 227, 156, 0.86) 0 0.2rem, transparent 0.23rem),
+    radial-gradient(circle at 72% 62%, rgba(83, 216, 232, 0.76) 0 0.18rem, transparent 0.21rem);
+  box-shadow: 0 0 1.5rem rgba(204, 109, 134, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::after {
+  top: 1.74rem;
+  width: 2.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 227, 156, 0.28), rgba(204, 109, 134, 0.7), rgba(83, 216, 232, 0.28));
+  transform: translateX(-50%) rotate(-14deg);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument {
+  position: relative;
+  width: min(31rem, 100%);
+  min-height: clamp(8rem, 12vh, 9.3rem);
+  overflow: hidden;
+  margin-top: 0.82rem;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 227, 156, 0.16), transparent 4.7rem),
+    radial-gradient(circle at 28% 52%, rgba(83, 216, 232, 0.11), transparent 4.9rem),
+    radial-gradient(circle at 74% 64%, rgba(204, 109, 134, 0.12), transparent 4.6rem),
+    linear-gradient(110deg, rgba(5, 7, 12, 0.88), rgba(10, 12, 18, 0.74) 52%, rgba(22, 7, 12, 0.68));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.24);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument::before,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument::before {
+  inset: 0.58rem;
+  border: 1px solid rgba(255, 227, 156, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument::after {
+  left: 50%;
+  top: 56%;
+  width: 78%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.16), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__emanation,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__source,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__descent,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__sophia,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__center,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__rupture,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field {
+  top: 18%;
+  width: 35%;
+  height: 62%;
+  border-radius: 50%;
+  opacity: 0.36;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field--fullness {
+  left: 9%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.13), transparent 72%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field--rupture {
+  right: 8%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(204, 109, 134, 0.15), transparent 72%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis {
+  left: 50%;
+  top: 54%;
+  opacity: 0.28;
+  transition: opacity 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis--vertical {
+  width: 1px;
+  height: 5.2rem;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.32), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis--horizontal {
+  width: 10.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.25), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__emanation {
+  left: 26%;
+  top: 53%;
+  width: 7.8rem;
+  aspect-ratio: 1;
+  opacity: 0.76;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer {
+  left: 50%;
+  top: 50%;
+  border: 1px solid rgba(255, 227, 156, 0.2);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer--source {
+  width: 92%;
+  height: 92%;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer--nous {
+  width: 69%;
+  height: 69%;
+  border-color: rgba(83, 216, 232, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer--sophia {
+  width: 46%;
+  height: 46%;
+  border-color: rgba(255, 173, 112, 0.25);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer--matter {
+  width: 24%;
+  height: 24%;
+  border-color: rgba(204, 109, 134, 0.24);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__source {
+  left: 26%;
+  top: 22%;
+  width: 0.64rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.94);
+  box-shadow:
+    0 0 0 0.44rem rgba(212, 175, 55, 0.08),
+    0 0 1.45rem rgba(212, 175, 55, 0.34);
+  opacity: 0.82;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__descent {
+  left: 31%;
+  top: 50%;
+  width: 6.4rem;
+  height: 3.8rem;
+  border-left: 1px solid rgba(255, 227, 156, 0.26);
+  border-bottom: 1px solid rgba(83, 216, 232, 0.18);
+  border-radius: 0 0 0 72%;
+  opacity: 0.36;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__sophia {
+  left: 40%;
+  top: 67%;
+  width: 0.92rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 173, 112, 0.44);
+  background:
+    linear-gradient(45deg, transparent 46%, rgba(244, 240, 232, 0.52) 49%, transparent 53%),
+    radial-gradient(circle at 50% 50%, rgba(255, 173, 112, 0.86), rgba(204, 109, 134, 0.18));
+  box-shadow: 0 0 1.2rem rgba(255, 173, 112, 0.22);
+  opacity: 0.62;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio {
+  left: 53%;
+  top: 54%;
+  width: 6.2rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 240, 232, 0.18);
+  border-radius: 32%;
+  opacity: 0.72;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio::before,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.3), transparent);
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio::before {
+  width: 88%;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio::after {
+  width: 1px;
+  height: 88%;
+  transform: translate(-50%, -50%);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point {
+  width: 0.58rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point--north {
+  left: 50%;
+  top: 3%;
+  background: rgba(83, 216, 232, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point--east {
+  left: 97%;
+  top: 50%;
+  background: rgba(204, 109, 134, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point--south {
+  left: 50%;
+  top: 97%;
+  background: rgba(132, 201, 155, 0.9);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point--west {
+  left: 3%;
+  top: 50%;
+  background: rgba(255, 173, 112, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__center {
+  left: 53%;
+  top: 54%;
+  width: 0.78rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.94);
+  box-shadow:
+    0 0 0 0.55rem rgba(212, 175, 55, 0.08),
+    0 0 1.45rem rgba(212, 175, 55, 0.3);
+  opacity: 0.78;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__rupture {
+  right: 13%;
+  top: 54%;
+  width: 6.2rem;
+  height: 4.1rem;
+  background:
+    linear-gradient(128deg, transparent 45%, rgba(204, 109, 134, 0.56) 48%, transparent 52%),
+    linear-gradient(38deg, transparent 48%, rgba(83, 216, 232, 0.2) 49%, transparent 52%);
+  opacity: 0.36;
+  transform: translateY(-50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard {
+  width: 0.58rem;
+  aspect-ratio: 1;
+  opacity: 0.46;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--fall {
+  right: 24%;
+  top: 31%;
+  background: rgba(204, 109, 134, 0.86);
+  transform: rotate(18deg);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--spark {
+  right: 15%;
+  top: 51%;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.92);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--return {
+  right: 27%;
+  bottom: 18%;
+  background: rgba(83, 216, 232, 0.82);
+  transform: rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--emanation {
+  left: 7%;
+  top: 13%;
+  color: rgba(143, 231, 237, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--fourfold {
+  left: 42%;
+  top: 13%;
+  color: rgba(255, 227, 156, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--paradox {
+  right: 7%;
+  top: 13%;
+  color: rgba(204, 109, 134, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__emanation,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__layer,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__source,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__descent,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__sophia,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__field--fullness {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__source {
+  box-shadow:
+    0 0 0 0.6rem rgba(212, 175, 55, 0.1),
+    0 0 1.9rem rgba(212, 175, 55, 0.42);
+  transform: translate(-50%, -50%) scale(1.14);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="gnosis"] .gnostic-constellation-instrument__descent {
+  transform: translate(-50%, -50%) rotate(-14deg) scale(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__quaternio,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__point,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__center,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__axis {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__quaternio {
+  border-color: rgba(255, 227, 156, 0.36);
+  box-shadow:
+    inset 0 0 1.1rem rgba(83, 216, 232, 0.08),
+    0 0 1.75rem rgba(212, 175, 55, 0.2);
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="quaternio"] .gnostic-constellation-instrument__center {
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__field--rupture,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__rupture,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__shard,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__sophia,
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__center {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__rupture {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument[data-active-panel="paradox"] .gnostic-constellation-instrument__shard {
+  box-shadow: 0 0 1.2rem rgba(204, 109, 134, 0.24);
+}
+
 @keyframes alchemical-tree-wheel {
   from {
     transform: translateY(-50%) rotate(0deg);
@@ -8831,6 +9331,18 @@ h3 {
 			  .amplification-lens-instrument__bridge,
 			  .amplification-lens-instrument__lens,
 			  .amplification-lens-instrument__ring,
+			  .gnostic-constellation-instrument__field,
+			  .gnostic-constellation-instrument__axis,
+			  .gnostic-constellation-instrument__emanation,
+			  .gnostic-constellation-instrument__layer,
+			  .gnostic-constellation-instrument__source,
+			  .gnostic-constellation-instrument__descent,
+			  .gnostic-constellation-instrument__sophia,
+			  .gnostic-constellation-instrument__quaternio,
+			  .gnostic-constellation-instrument__point,
+			  .gnostic-constellation-instrument__center,
+			  .gnostic-constellation-instrument__rupture,
+			  .gnostic-constellation-instrument__shard,
 			  .chapters-orbit__node,
 			  .home-chapter-orbit__item a,
 			  .scene-host__pause {
@@ -8945,6 +9457,22 @@ h3 {
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__bridge,
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__lens,
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__ring {
+		    animation: none;
+		    transition: none;
+		  }
+
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__emanation,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__layer,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__source,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__descent,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__sophia,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__point,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__center,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__rupture,
+		  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard {
 		    animation: none;
 		    transition: none;
 		  }
@@ -9304,6 +9832,213 @@ h3 {
     background:
       linear-gradient(180deg, rgba(3, 3, 7, 0.92), rgba(3, 3, 7, 0.78) 54%, rgba(3, 3, 7, 0.86)),
       radial-gradient(circle at 50% 44%, rgba(3, 3, 7, 0.28), rgba(3, 3, 7, 0.78) 62%);
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__scrim {
+    background:
+      linear-gradient(180deg, rgba(3, 3, 7, 0.92), rgba(3, 3, 7, 0.62) 48%, rgba(3, 3, 7, 0.86)),
+      linear-gradient(90deg, rgba(3, 3, 7, 0.94), rgba(3, 3, 7, 0.58) 68%, rgba(3, 3, 7, 0.44));
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__intro h1 {
+    max-width: 8.25ch;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .scene-host__pause {
+    justify-content: center;
+    width: 2.35rem;
+    min-width: 2.35rem;
+    padding-inline: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .scene-host__pause span:not(.scene-host__pause-icon) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument {
+    min-height: 6.75rem;
+    margin-top: 0.64rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument::before {
+    inset: 0.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__field {
+    top: 22%;
+    width: 28%;
+    height: 54%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__emanation {
+    left: 24%;
+    width: 5.35rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__source {
+    left: 24%;
+    top: 23%;
+    width: 0.54rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__descent {
+    left: 29%;
+    width: 4.45rem;
+    height: 3.1rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__sophia {
+    left: 39%;
+    width: 0.76rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__quaternio {
+    left: 53%;
+    width: 4.45rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__center {
+    left: 53%;
+    width: 0.62rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis--horizontal {
+    width: 7.4rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__axis--vertical {
+    height: 4.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__rupture {
+    right: 8%;
+    width: 4.2rem;
+    height: 3.2rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard {
+    width: 0.46rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--fall {
+    right: 21%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--spark {
+    right: 11%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__shard--return {
+    right: 23%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label {
+    font-size: 0.5rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--emanation {
+    left: 5%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--fourfold {
+    left: 39%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .gnostic-constellation-instrument__label--paradox {
+    right: 5%;
+    top: 12%;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::after,
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark::after,
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::before,
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::after {
+    left: 1.35rem;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::before {
+    width: 1.92rem;
+    height: 1.92rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark::after {
+    width: 1px;
+    height: 1.25rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark::after {
+    width: 1.88rem;
+    height: 1.88rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::before {
+    width: 2rem;
+    height: 1.82rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark::after {
+    width: 2.1rem;
+    transform: translate(-50%, -50%) rotate(-14deg);
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback {
+    left: 1rem;
+    right: 1rem;
+    top: 48.9rem;
+    width: auto;
+    padding: 0.38rem 0.64rem;
+    text-align: left;
+    transform: none;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .gnostic-constellation-instrument {
+    min-height: 4.85rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .chapter-stage__reference-map {
+    margin-top: 1.18rem;
+    transform: translateY(8.5rem);
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback h2,
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback h2 {
+    margin: 0.08rem 0 0;
+    font-size: 0.8rem;
+    line-height: 0.96;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+    display: -webkit-box;
+    margin-top: 0.18rem;
+    font-size: 0.63rem;
+    line-height: 1.22;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .chapter-experience[data-chapter-id="ch4"][data-reduced-motion="true"] .scene-host__fallback {

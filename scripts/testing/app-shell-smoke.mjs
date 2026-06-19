@@ -871,6 +871,91 @@ async function smokeReducedMotion(browser, failures) {
       failures.push(`reduced-motion Chapter 12 fallback overlaps the reference map at 320x568: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterTwelveNarrowReferenceMapBox.y)}`);
     }
   }
+
+  await page.setViewportSize(mobileViewport);
+  await gotoAppRoute(page, '/journey/chapter/ch13');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterThirteenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterThirteenReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterThirteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterThirteenReferenceCount = await chapterThirteenReferenceNodes.count();
+  const chapterThirteenPanelIds = await chapterThirteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterThirteenPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterThirteenCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterThirteenFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterThirteenFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterThirteenFallbackHeadingBox = await page.locator('.scene-host__fallback h2').boundingBox();
+  const chapterThirteenFallbackBodyBox = await page.locator('.scene-host__fallback p:not(.eyebrow)').boundingBox();
+  const chapterThirteenInstrumentCount = await page.locator('.gnostic-constellation-instrument').count();
+  const chapterThirteenInstrumentBox = await page.locator('.gnostic-constellation-instrument').boundingBox();
+  const chapterThirteenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterThirteenInstrumentMotion = await page.locator('.gnostic-constellation-instrument__field, .gnostic-constellation-instrument__axis, .gnostic-constellation-instrument__emanation, .gnostic-constellation-instrument__layer, .gnostic-constellation-instrument__source, .gnostic-constellation-instrument__descent, .gnostic-constellation-instrument__sophia, .gnostic-constellation-instrument__quaternio, .gnostic-constellation-instrument__point, .gnostic-constellation-instrument__center, .gnostic-constellation-instrument__rupture, .gnostic-constellation-instrument__shard').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterThirteenAnimatedParts = chapterThirteenInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterThirteenTransitioningParts = chapterThirteenInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterThirteenFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 13 scene');
+  if (chapterThirteenReducedMotionAttribute !== 'true') failures.push('Chapter 13 did not record reduced-motion state');
+  if (chapterThirteenReferenceCount !== 3) failures.push(`reduced-motion Chapter 13 reference node count mismatch: ${chapterThirteenReferenceCount}`);
+  if (chapterThirteenPanelIds.join(',') !== 'gnosis,quaternio,paradox') failures.push(`reduced-motion Chapter 13 reference nodes out of order: ${chapterThirteenPanelIds.join(',')}`);
+  if (chapterThirteenPauseControlCount !== 0) failures.push(`reduced-motion Chapter 13 rendered pause controls: ${chapterThirteenPauseControlCount}`);
+  if (chapterThirteenCanvasCount !== 0) failures.push(`reduced-motion Chapter 13 rendered canvas: ${chapterThirteenCanvasCount}`);
+  if (chapterThirteenInstrumentCount !== 1) failures.push(`reduced-motion Chapter 13 Gnostic constellation instrument count mismatch: ${chapterThirteenInstrumentCount}`);
+  if (chapterThirteenAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 13 Gnostic constellation instrument still animates: ${JSON.stringify(chapterThirteenAnimatedParts)}`);
+  if (chapterThirteenTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 13 Gnostic constellation instrument still transitions: ${JSON.stringify(chapterThirteenTransitioningParts)}`);
+  if (!chapterThirteenFallbackText?.includes('Gnostic constellation') || !chapterThirteenFallbackText?.includes('fourfold pattern') || !chapterThirteenFallbackText?.includes('rupture line')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 13 Gnostic constellation teaching summary');
+  }
+  if (!chapterThirteenFallbackHeadingBox || chapterThirteenFallbackHeadingBox.width < 20 || chapterThirteenFallbackHeadingBox.height < 8) {
+    failures.push(`reduced-motion Chapter 13 fallback heading is not visibly rendered: ${chapterThirteenFallbackHeadingBox ? `${Math.round(chapterThirteenFallbackHeadingBox.width)}x${Math.round(chapterThirteenFallbackHeadingBox.height)}` : 'missing'}`);
+  }
+  if (!chapterThirteenFallbackBodyBox || chapterThirteenFallbackBodyBox.width < 40 || chapterThirteenFallbackBodyBox.height < 8) {
+    failures.push(`reduced-motion Chapter 13 fallback body is not visibly rendered: ${chapterThirteenFallbackBodyBox ? `${Math.round(chapterThirteenFallbackBodyBox.width)}x${Math.round(chapterThirteenFallbackBodyBox.height)}` : 'missing'}`);
+  }
+  if (chapterThirteenFallbackBox && chapterThirteenInstrumentBox) {
+    const instrumentBottom = chapterThirteenInstrumentBox.y + chapterThirteenInstrumentBox.height;
+    if (chapterThirteenFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 13 fallback overlaps the Gnostic constellation instrument on mobile: fallback top ${Math.round(chapterThirteenFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterThirteenFallbackBox && chapterThirteenReferenceMapBox) {
+    const fallbackBottom = chapterThirteenFallbackBox.y + chapterThirteenFallbackBox.height;
+    if (fallbackBottom > chapterThirteenReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 13 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterThirteenReferenceMapBox.y)}`);
+    }
+  }
+
+  await page.setViewportSize(narrowMobileViewport);
+  await gotoAppRoute(page, '/journey/chapter/ch13');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterThirteenNarrowFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterThirteenNarrowCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterThirteenNarrowFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterThirteenNarrowInstrumentBox = await page.locator('.gnostic-constellation-instrument').boundingBox();
+  const chapterThirteenNarrowReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterThirteenNarrowScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  if (!chapterThirteenNarrowFallbackVisible) failures.push('reduced-motion Chapter 13 fallback is not visible at 320x568');
+  if (chapterThirteenNarrowCanvasCount !== 0) failures.push(`reduced-motion Chapter 13 rendered canvas at 320x568: ${chapterThirteenNarrowCanvasCount}`);
+  if (chapterThirteenNarrowScrollWidth > narrowMobileViewport.width + 2) {
+    failures.push(`reduced-motion Chapter 13 horizontal overflow at 320x568: ${chapterThirteenNarrowScrollWidth}`);
+  }
+  if (chapterThirteenNarrowFallbackBox && chapterThirteenNarrowInstrumentBox) {
+    const instrumentBottom = chapterThirteenNarrowInstrumentBox.y + chapterThirteenNarrowInstrumentBox.height;
+    if (chapterThirteenNarrowFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 13 fallback overlaps the Gnostic constellation instrument at 320x568: fallback top ${Math.round(chapterThirteenNarrowFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterThirteenNarrowFallbackBox && chapterThirteenNarrowReferenceMapBox) {
+    const fallbackBottom = chapterThirteenNarrowFallbackBox.y + chapterThirteenNarrowFallbackBox.height;
+    if (fallbackBottom > chapterThirteenNarrowReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 13 fallback overlaps the reference map at 320x568: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterThirteenNarrowReferenceMapBox.y)}`);
+    }
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -2104,14 +2189,121 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   await gotoAppRoute(page, '/journey/chapter/ch13');
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterThirteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterThirteenReferenceCount = await chapterThirteenReferenceNodes.count();
+  const chapterThirteenPanelIds = await chapterThirteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterThirteenInstrument = page.locator('.gnostic-constellation-instrument');
+  const chapterThirteenInstrumentCount = await chapterThirteenInstrument.count();
+  const chapterThirteenInstrumentRole = chapterThirteenInstrumentCount > 0 ? await chapterThirteenInstrument.getAttribute('role') : null;
+  const chapterThirteenInstrumentLabel = chapterThirteenInstrumentCount > 0 ? await chapterThirteenInstrument.getAttribute('aria-label') : null;
+  const chapterThirteenInstrumentPanel = chapterThirteenInstrumentCount > 0 ? await chapterThirteenInstrument.getAttribute('data-active-panel') : null;
+  const chapterThirteenLayerCount = await page.locator('.gnostic-constellation-instrument__layer').count();
+  const chapterThirteenPointCount = await page.locator('.gnostic-constellation-instrument__point').count();
+  const chapterThirteenShardCount = await page.locator('.gnostic-constellation-instrument__shard').count();
+  const chapterThirteenInstrumentLabelCount = await page.locator('.gnostic-constellation-instrument__label').count();
+  const chapterThirteenInitialDescription = await page.locator('#scene-host-description-ch13').textContent();
+  const chapterThirteenInstrumentMarksVisible = await page.locator('.gnostic-constellation-instrument__field, .gnostic-constellation-instrument__axis, .gnostic-constellation-instrument__emanation, .gnostic-constellation-instrument__layer, .gnostic-constellation-instrument__source, .gnostic-constellation-instrument__descent, .gnostic-constellation-instrument__sophia, .gnostic-constellation-instrument__quaternio, .gnostic-constellation-instrument__point, .gnostic-constellation-instrument__center, .gnostic-constellation-instrument__rupture, .gnostic-constellation-instrument__shard').evaluateAll((nodes) => nodes.length >= 22 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterThirteenReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="gnosis"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="quaternio"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="paradox"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.length === 3 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    const before = window.getComputedStyle(node, '::before');
+    const after = window.getComputedStyle(node, '::after');
+    return styles.display !== 'none'
+      && Number(styles.opacity) > 0
+      && box.width > 0
+      && box.height > 0
+      && before.content !== 'none'
+      && after.content !== 'none'
+      && Number.parseFloat(before.width) > 0
+      && Number.parseFloat(before.height) > 0
+      && Number.parseFloat(after.width) > 0
+      && Number.parseFloat(after.height) > 0;
+  }));
+
+  if (chapterThirteenReferenceCount !== 3) failures.push(`chapter 13 reference node count mismatch: ${chapterThirteenReferenceCount}`);
+  if (chapterThirteenPanelIds.join(',') !== 'gnosis,quaternio,paradox') failures.push(`chapter 13 reference nodes out of order: ${chapterThirteenPanelIds.join(',')}`);
+  if (chapterThirteenInstrumentCount !== 1) failures.push(`chapter 13 Gnostic constellation instrument count mismatch: ${chapterThirteenInstrumentCount}`);
+  if (chapterThirteenLayerCount !== 4) failures.push(`chapter 13 Gnostic constellation layer count mismatch: ${chapterThirteenLayerCount}`);
+  if (chapterThirteenPointCount !== 4) failures.push(`chapter 13 Gnostic constellation point count mismatch: ${chapterThirteenPointCount}`);
+  if (chapterThirteenShardCount !== 3) failures.push(`chapter 13 Gnostic constellation shard count mismatch: ${chapterThirteenShardCount}`);
+  if (chapterThirteenInstrumentLabelCount !== 3) failures.push(`chapter 13 Gnostic constellation label count mismatch: ${chapterThirteenInstrumentLabelCount}`);
+  if (chapterThirteenInstrumentRole !== 'img') failures.push(`chapter 13 Gnostic constellation instrument role mismatch: ${chapterThirteenInstrumentRole}`);
+  if (!chapterThirteenInstrumentLabel?.includes('Gnostic constellation model') || !chapterThirteenInstrumentLabel?.includes('symbolic') || !chapterThirteenInstrumentLabel?.includes('Current emphasis: Gnosis')) {
+    failures.push(`chapter 13 Gnostic constellation instrument label missing teaching text: ${chapterThirteenInstrumentLabel}`);
+  }
+  if (chapterThirteenInstrumentPanel !== 'gnosis') failures.push(`chapter 13 Gnostic constellation instrument did not start on Gnosis panel: ${chapterThirteenInstrumentPanel}`);
+  if (!chapterThirteenInitialDescription?.includes('Gnosis: Knowledge descends as image')) failures.push(`chapter 13 initial scene description mismatch: ${chapterThirteenInitialDescription}`);
+  if (!chapterThirteenInstrumentMarksVisible) failures.push('chapter 13 Gnostic constellation instrument marks are not visibly rendered');
+  if (!chapterThirteenReferenceGlyphsVisible) failures.push('chapter 13 reference glyphs are not visibly rendered');
+
+  const quaternio = page.getByRole('button', { name: /02\s+Fourfold/ });
+  await quaternio.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
+
+  const quaternioPressed = await quaternio.getAttribute('aria-pressed');
+  const quaternioPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="quaternio"]').count();
+  const quaternioDescription = await page.locator('#scene-host-description-ch13').textContent();
+  const quaternioInstrumentPanel = await chapterThirteenInstrument.getAttribute('data-active-panel');
+  const quaternioInstrumentLabel = await chapterThirteenInstrument.getAttribute('aria-label');
+  const quaternioVisualPartsVisible = await page.locator('.gnostic-constellation-instrument__quaternio, .gnostic-constellation-instrument__point, .gnostic-constellation-instrument__center, .gnostic-constellation-instrument__axis').evaluateAll((nodes) => nodes.length === 8 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  if (quaternioPressed !== 'true') failures.push(`chapter 13 fourfold reference did not become active: ${quaternioPressed}`);
+  if (quaternioPanelActive !== 1) failures.push(`chapter 13 fourfold panel did not become active: ${quaternioPanelActive}`);
+  if (quaternioInstrumentPanel !== 'quaternio') failures.push(`chapter 13 Gnostic constellation instrument did not follow fourfold panel: ${quaternioInstrumentPanel}`);
+  if (!quaternioInstrumentLabel?.includes('Current emphasis: Fourfold') || !quaternioInstrumentLabel?.includes('Wholeness has a structural signature')) {
+    failures.push(`chapter 13 Gnostic constellation instrument label did not follow fourfold panel: ${quaternioInstrumentLabel}`);
+  }
+  if (!quaternioVisualPartsVisible) failures.push('chapter 13 Gnostic constellation fourfold visual parts are not visibly rendered');
+  if (!quaternioDescription?.includes('Fourfold: The Self appears as four')) failures.push(`chapter 13 scene description did not follow fourfold panel: ${quaternioDescription}`);
+
   const paradox = page.getByRole('button', { name: /03\s+Paradox/ });
-  await activateSceneButton(paradox);
-  await page.waitForTimeout(250);
+  await paradox.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(700);
 
   const paradoxPressed = await paradox.getAttribute('aria-pressed');
+  const paradoxPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="paradox"]').count();
+  const paradoxDescription = await page.locator('#scene-host-description-ch13').textContent();
+  const paradoxInstrumentPanel = await chapterThirteenInstrument.getAttribute('data-active-panel');
+  const paradoxInstrumentLabel = await chapterThirteenInstrument.getAttribute('aria-label');
+  const paradoxVisualPartsVisible = await page.locator('.gnostic-constellation-instrument__field--rupture, .gnostic-constellation-instrument__rupture, .gnostic-constellation-instrument__shard, .gnostic-constellation-instrument__sophia, .gnostic-constellation-instrument__center').evaluateAll((nodes) => nodes.length === 7 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
   const chapterThirteenScrollY = await page.evaluate(() => window.scrollY);
   if (paradoxPressed !== 'true') failures.push(`chapter 13 scene control did not become active: ${paradoxPressed}`);
+  if (paradoxPanelActive !== 1) failures.push(`chapter 13 paradox panel did not become active: ${paradoxPanelActive}`);
+  if (paradoxInstrumentPanel !== 'paradox') failures.push(`chapter 13 Gnostic constellation instrument did not follow paradox panel: ${paradoxInstrumentPanel}`);
+  if (!paradoxInstrumentLabel?.includes('Current emphasis: Paradox') || !paradoxInstrumentLabel?.includes('The Self is approached through contradiction')) {
+    failures.push(`chapter 13 Gnostic constellation instrument label did not follow paradox panel: ${paradoxInstrumentLabel}`);
+  }
+  if (!paradoxVisualPartsVisible) failures.push('chapter 13 Gnostic constellation paradox visual parts are not visibly rendered');
+  if (!paradoxDescription?.includes('Paradox: Wisdom includes rupture')) failures.push(`chapter 13 scene description did not follow paradox panel: ${paradoxDescription}`);
   if (chapterThirteenScrollY > 10) failures.push(`chapter 13 scene control unexpectedly scrolled page: ${chapterThirteenScrollY}`);
+
+  const chapterThirteenCanvas = page.locator('.scene-host canvas').first();
+  const chapterThirteenCanvasCount = await chapterThirteenCanvas.count();
+  const chapterThirteenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  if (chapterThirteenCanvasCount !== 1) {
+    failures.push(`chapter 13 expected one ready canvas but found ${chapterThirteenCanvasCount}; fallback visible: ${chapterThirteenFallbackVisible}`);
+  } else {
+    const chapterThirteenCanvasBox = await chapterThirteenCanvas.boundingBox();
+    const chapterThirteenPixelSample = await waitForCanvasPixels(chapterThirteenCanvas);
+    if (!chapterThirteenCanvasBox || chapterThirteenCanvasBox.width < 300 || chapterThirteenCanvasBox.height < 300) {
+      failures.push(`chapter 13 canvas geometry too small: ${chapterThirteenCanvasBox ? `${Math.round(chapterThirteenCanvasBox.width)}x${Math.round(chapterThirteenCanvasBox.height)}` : 'missing'}`);
+    }
+    recordCanvasPixelFailure(failures, 'chapter 13', chapterThirteenPixelSample);
+  }
 
   await gotoAppRoute(page, '/journey/chapter/ch14');
   const aeon = page.getByRole('button', { name: /03\s+Aeon/ });
@@ -2126,7 +2318,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -2582,6 +2774,77 @@ async function smokeMobile(page, failures) {
         const chapterTwelvePixelSample = await waitForCanvasPixels(chapterTwelveCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 12 at ${viewport.width}x${viewport.height}`, chapterTwelvePixelSample);
       }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch13');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterThirteenNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterThirteenHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterThirteenReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterThirteenReferenceCount = await chapterThirteenReferenceNodes.count();
+    const chapterThirteenPanelIds = await chapterThirteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterThirteenScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterThirteenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterThirteenInstrumentBox = await page.locator('.gnostic-constellation-instrument').boundingBox();
+    const chapterThirteenReferenceGlyphLayout = await chapterThirteenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => {
+      const label = node.querySelector('.chapter-stage__reference-label');
+      const mark = node.querySelector('.chapter-stage__reference-mark');
+      if (!label || !mark) return { panelId: node.getAttribute('data-panel-id'), ok: false };
+      const before = window.getComputedStyle(mark, '::before');
+      const after = window.getComputedStyle(mark, '::after');
+      const labelBox = label.getBoundingClientRect();
+      const nodeBox = node.getBoundingClientRect();
+      const beforeLeft = Number.parseFloat(before.left);
+      const beforeWidth = Number.parseFloat(before.width);
+      const afterLeft = Number.parseFloat(after.left);
+      const afterWidth = Number.parseFloat(after.width);
+      const beforeRight = beforeLeft + (before.transform === 'none' ? beforeWidth : beforeWidth / 2);
+      const afterRight = afterLeft + (after.transform === 'none' ? afterWidth : afterWidth / 2);
+      const labelLeft = labelBox.left - nodeBox.left;
+      return {
+        panelId: node.getAttribute('data-panel-id'),
+        ok: [beforeLeft, beforeWidth, afterLeft, afterWidth].every(Number.isFinite)
+          && beforeWidth > 0
+          && afterWidth > 0
+          && beforeRight < labelLeft - 4
+          && afterRight < labelLeft - 4,
+      };
+    }));
+    if (!chapterThirteenNavBox || !chapterThirteenHeadingBox) {
+      failures.push(`mobile chapter 13 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterThirteenNavBottom = chapterThirteenNavBox.y + chapterThirteenNavBox.height;
+    if (chapterThirteenNavBottom > chapterThirteenHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 13 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterThirteenNavBottom)}, heading top ${Math.round(chapterThirteenHeadingBox.y)}`);
+    }
+    if (chapterThirteenReferenceCount !== 3) failures.push(`mobile chapter 13 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterThirteenReferenceCount}`);
+    if (chapterThirteenPanelIds.join(',') !== 'gnosis,quaternio,paradox') failures.push(`mobile chapter 13 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterThirteenPanelIds.join(',')}`);
+    if (chapterThirteenScrollWidth > viewport.width + 2) failures.push(`mobile chapter 13 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterThirteenScrollWidth}`);
+    if (chapterThirteenReferenceMapBox && chapterThirteenReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 13 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterThirteenReferenceMapBox.width)}`);
+    }
+    for (const glyph of chapterThirteenReferenceGlyphLayout) {
+      if (!glyph.ok) failures.push(`mobile chapter 13 reference glyph overlaps label rail at ${viewport.width}x${viewport.height}: ${glyph.panelId}`);
+    }
+    if (!chapterThirteenInstrumentBox) failures.push(`mobile chapter 13 Gnostic constellation instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterThirteenInstrumentBox && chapterThirteenInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 13 Gnostic constellation instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterThirteenInstrumentBox.width)}`);
+    }
+
+    const chapterThirteenCanvas = page.locator('.scene-host canvas').first();
+    const chapterThirteenCanvasCount = await chapterThirteenCanvas.count();
+    if (chapterThirteenCanvasCount !== 1) {
+      failures.push(`mobile chapter 13 expected one ready canvas at ${viewport.width}x${viewport.height} but found ${chapterThirteenCanvasCount}`);
+    } else {
+      const chapterThirteenCanvasBox = await chapterThirteenCanvas.boundingBox();
+      const minCanvasWidth = viewport.width <= 320 ? 260 : 300;
+      if (!chapterThirteenCanvasBox || chapterThirteenCanvasBox.width < minCanvasWidth || chapterThirteenCanvasBox.height < 260) {
+        failures.push(`mobile chapter 13 canvas geometry too small at ${viewport.width}x${viewport.height}: ${chapterThirteenCanvasBox ? `${Math.round(chapterThirteenCanvasBox.width)}x${Math.round(chapterThirteenCanvasBox.height)}` : 'missing'}`);
+      }
+      const chapterThirteenPixelSample = await waitForCanvasPixels(chapterThirteenCanvas);
+      recordCanvasPixelFailure(failures, `mobile chapter 13 at ${viewport.width}x${viewport.height}`, chapterThirteenPixelSample);
     }
   }
 }

@@ -496,6 +496,45 @@ async function checkChapterTwelveDynamicAccessibility(page, failures) {
   if (!bridgeDescription?.includes('Bridge: Projection turns inward')) failures.push(`/journey/chapter/ch12: bridge scene description mismatch: ${bridgeDescription}`);
 }
 
+async function checkChapterThirteenDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch13`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Gnostic constellation model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = instrumentVisible ? await instrument.getAttribute('aria-label') : null;
+  const initialDescription = await page.locator('#scene-host-description-ch13').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch13: Gnostic constellation instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Gnosis') || !initialInstrumentLabel?.includes('fullness into differentiated images')) failures.push(`/journey/chapter/ch13: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Gnosis: Knowledge descends as image')) failures.push(`/journey/chapter/ch13: initial scene description mismatch: ${initialDescription}`);
+
+  const fourfold = page.getByRole('button', { name: /02\s+Fourfold/ });
+  await fourfold.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const fourfoldPressed = await fourfold.getAttribute('aria-pressed');
+  const fourfoldLabel = await instrument.getAttribute('aria-label');
+  const fourfoldDescription = await page.locator('#scene-host-description-ch13').textContent();
+  if (fourfoldPressed !== 'true') failures.push(`/journey/chapter/ch13: fourfold button did not become pressed: ${fourfoldPressed}`);
+  if (!fourfoldLabel?.includes('Current emphasis: Fourfold') || !fourfoldLabel?.includes('Wholeness has a structural signature')) failures.push(`/journey/chapter/ch13: fourfold instrument label mismatch: ${fourfoldLabel}`);
+  if (!fourfoldDescription?.includes('Fourfold: The Self appears as four')) failures.push(`/journey/chapter/ch13: fourfold scene description mismatch: ${fourfoldDescription}`);
+
+  const paradox = page.getByRole('button', { name: /03\s+Paradox/ });
+  await paradox.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const paradoxPressed = await paradox.getAttribute('aria-pressed');
+  const paradoxLabel = await instrument.getAttribute('aria-label');
+  const paradoxDescription = await page.locator('#scene-host-description-ch13').textContent();
+  if (paradoxPressed !== 'true') failures.push(`/journey/chapter/ch13: paradox button did not become pressed: ${paradoxPressed}`);
+  if (!paradoxLabel?.includes('Current emphasis: Paradox') || !paradoxLabel?.includes('The Self is approached through contradiction')) failures.push(`/journey/chapter/ch13: paradox instrument label mismatch: ${paradoxLabel}`);
+  if (!paradoxDescription?.includes('Paradox: Wisdom includes rupture')) failures.push(`/journey/chapter/ch13: paradox scene description mismatch: ${paradoxDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -517,10 +556,11 @@ async function runAccessibilitySmoke() {
     await checkChapterTenDynamicAccessibility(desktop, failures);
     await checkChapterElevenDynamicAccessibility(desktop, failures);
     await checkChapterTwelveDynamicAccessibility(desktop, failures);
+    await checkChapterThirteenDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch13', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();
