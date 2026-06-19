@@ -146,15 +146,15 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
   },
   ch12: {
     chapterId: 'ch12',
-    visualTheme: 'Christian and alchemical root system',
+    visualTheme: 'Amplification lens and Christian-alchemical root bridge',
     sceneModule: '../visualizations/chapters/ch12/ThreeUnusViz.js',
     motionGrammar: 'integration',
-    fallbackSummary: 'A branching root system connects Christian and alchemical symbols as parallel languages of psychic transformation.',
-    checkpoints: ['Identify the two traditions.', 'Notice the shared roots.', 'Avoid literal reduction.'],
+    fallbackSummary: 'An amplification lens holds Christian image, alchemical image, projection, shared roots, and the fish bridge as a disciplined method for psychological symbolic reading.',
+    checkpoints: ['Use the symbolic lens without literal reduction.', 'Notice the shared roots between Christian and alchemical images.', 'Trace how projection becomes inward psychological experience.'],
     panels: [
-      { id: 'background', kicker: 'Method', title: 'Read symbolically', body: 'The chapter asks for a psychological reading that does not flatten religion or history.', insight: 'Interpretation needs restraint.' },
-      { id: 'roots', kicker: 'Genealogy', title: 'Different languages share roots', body: 'Christian and alchemical images often carry similar psychic structures.', insight: 'Symbols migrate between systems.' },
-      { id: 'bridge', kicker: 'Bridge', title: 'The old image becomes inward', body: 'The same motifs turn from doctrine toward psychological experience.', insight: 'Aion reads tradition as inner drama.' },
+      { id: 'background', kicker: 'Method', title: 'Read through the lens', body: 'The chapter asks for a psychological reading that does not flatten religion or history.', insight: 'Interpretation needs restraint.' },
+      { id: 'roots', kicker: 'Genealogy', title: 'Two languages share roots', body: 'Christian and alchemical images can carry related psychic structures without becoming identical.', insight: 'Symbols migrate between systems.' },
+      { id: 'bridge', kicker: 'Bridge', title: 'Projection turns inward', body: 'Inherited motifs turn from doctrine and matter toward psychological experience.', insight: 'Aion reads tradition as inner drama.' },
     ],
   },
   ch13: {
