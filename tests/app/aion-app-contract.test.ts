@@ -247,6 +247,32 @@ describe('Aion framework data contract', () => {
       'fish-symbol',
     ]);
   });
+
+  test('keeps Chapter 11 alchemical interpretation panels tied to Mercurius and lapis', () => {
+    expect(CHAPTER_SCENES.ch11.panels.map((panel) => panel.id)).toEqual([
+      'mercurius',
+      'opus-wheel',
+      'lapis',
+    ]);
+    expect(CHAPTER_SCENES.ch11.panels.map((panel) => panel.kicker)).toEqual([
+      'Mediator',
+      'Opus',
+      'Stone',
+    ]);
+    expect(CHAPTER_SCENES.ch11.motionGrammar).toBe('transformation');
+    expect(CHAPTER_SCENES.ch11.visualTheme).toContain('Mercurius');
+    expect(CHAPTER_SCENES.ch11.visualTheme).toContain('opus wheel');
+    expect(CHAPTER_SCENES.ch11.sceneModule).toBe('../visualizations/chapters/ch11/ThreeTreeViz.js');
+    expect(CHAPTER_SCENES.ch11.fallbackSummary).toContain('alchemical tree');
+    expect(CHAPTER_SCENES.ch11.fallbackSummary).toContain('Mercurius');
+    expect(CHAPTER_SCENES.ch11.fallbackSummary).toContain('opus cycle');
+
+    expect(getConceptsForChapter('ch11').map((concept) => concept.id)).toEqual([
+      'mercurius',
+      'coniunctio',
+      'lapis-philosophorum',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {
