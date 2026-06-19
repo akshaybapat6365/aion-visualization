@@ -222,6 +222,31 @@ describe('Aion framework data contract', () => {
       'antichrist',
     ]);
   });
+
+  test('keeps Chapter 10 alchemical fish panels tied to vessel and prima materia', () => {
+    expect(CHAPTER_SCENES.ch10.panels.map((panel) => panel.id)).toEqual([
+      'vessel',
+      'prima',
+      'opus',
+    ]);
+    expect(CHAPTER_SCENES.ch10.panels.map((panel) => panel.kicker)).toEqual([
+      'Alchemy',
+      'Prima Materia',
+      'Opus',
+    ]);
+    expect(CHAPTER_SCENES.ch10.motionGrammar).toBe('transformation');
+    expect(CHAPTER_SCENES.ch10.visualTheme).toContain('Alchemical fish vessel');
+    expect(CHAPTER_SCENES.ch10.sceneModule).toBe('../visualizations/chapters/ch10/ThreeAlchemyViz.js');
+    expect(CHAPTER_SCENES.ch10.fallbackSummary).toContain('alchemical vessel');
+    expect(CHAPTER_SCENES.ch10.fallbackSummary).toContain('fish motif');
+    expect(CHAPTER_SCENES.ch10.fallbackSummary).toContain('reddening');
+
+    expect(getConceptsForChapter('ch10').map((concept) => concept.id)).toEqual([
+      'alchemy',
+      'prima-materia',
+      'fish-symbol',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {
