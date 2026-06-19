@@ -148,6 +148,29 @@ describe('Aion framework data contract', () => {
       'opposites',
     ]);
   });
+
+  test('keeps Chapter 7 prophecy panels tied to collective projection', () => {
+    expect(CHAPTER_SCENES.ch7.panels.map((panel) => panel.id)).toEqual([
+      'prophecy',
+      'collective',
+      'threshold',
+    ]);
+    expect(CHAPTER_SCENES.ch7.panels.map((panel) => panel.kicker)).toEqual([
+      'Prophecy',
+      'Collective',
+      'Threshold',
+    ]);
+    expect(CHAPTER_SCENES.ch7.motionGrammar).toBe('transformation');
+    expect(CHAPTER_SCENES.ch7.visualTheme).toContain('Prophecy field');
+    expect(CHAPTER_SCENES.ch7.fallbackSummary).toContain('collective anxiety');
+    expect(CHAPTER_SCENES.ch7.fallbackSummary).toContain('symbolic dates');
+
+    expect(getConceptsForChapter('ch7').map((concept) => concept.id)).toEqual([
+      'prophecy',
+      'collective-unconscious',
+      'projection',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

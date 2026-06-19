@@ -18,6 +18,7 @@ const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
 const mandalaBands = ['outer', 'middle', 'inner'] as const;
 const rootLines = ['left', 'center', 'right'] as const;
 const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
+const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -61,6 +62,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
   const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const prophecyFieldInstrumentLabel = `Prophecy field model: historical pressure gathers around a time axis, private fear projects into a shared symbolic image-field, and the threshold mirror shows the future looking backward into older archetypal forms. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -229,6 +231,39 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="aeon-fish-instrument__label aeon-fish-instrument__label--fish" aria-hidden="true">two fish</span>
               <span className="aeon-fish-instrument__label aeon-fish-instrument__label--wheel" aria-hidden="true">aeon wheel</span>
               <span className="aeon-fish-instrument__label aeon-fish-instrument__label--threshold" aria-hidden="true">threshold</span>
+            </div>
+          )}
+          {chapter.id === 'ch7' && (
+            <div
+              className="prophecy-field-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={prophecyFieldInstrumentLabel}
+            >
+              <span className="prophecy-field-instrument__field prophecy-field-instrument__field--past" aria-hidden="true" />
+              <span className="prophecy-field-instrument__field prophecy-field-instrument__field--future" aria-hidden="true" />
+              <span className="prophecy-field-instrument__axis" aria-hidden="true" />
+              {prophecyTicks.map((tick, index) => (
+                <span
+                  key={tick}
+                  className={`prophecy-field-instrument__tick prophecy-field-instrument__tick--${index + 1}`}
+                  aria-hidden="true"
+                >
+                  {tick}
+                </span>
+              ))}
+              <span className="prophecy-field-instrument__pressure" aria-hidden="true" />
+              <span className="prophecy-field-instrument__date" aria-hidden="true" />
+              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--one" aria-hidden="true" />
+              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--two" aria-hidden="true" />
+              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--three" aria-hidden="true" />
+              <span className="prophecy-field-instrument__arc prophecy-field-instrument__arc--projection" aria-hidden="true" />
+              <span className="prophecy-field-instrument__arc prophecy-field-instrument__arc--return" aria-hidden="true" />
+              <span className="prophecy-field-instrument__threshold" aria-hidden="true" />
+              <span className="prophecy-field-instrument__mirror" aria-hidden="true" />
+              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--pressure" aria-hidden="true">pressure</span>
+              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--collective" aria-hidden="true">shared image</span>
+              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--threshold" aria-hidden="true">threshold</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">

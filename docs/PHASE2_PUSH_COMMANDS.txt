@@ -1,5 +1,5 @@
 PHASE 2 - GIT PUSH COMMANDS
-===========================
+---------------------------
 
 Please run these commands in your terminal to push all Phase 2 updates:
 
@@ -88,7 +88,7 @@ and major bugs identified in the detailed bug report."
    git push origin main
 
 FILES THAT SHOULD BE INCLUDED IN THIS COMMIT:
-============================================
+--------------------------------------------
 New files:
 - webgl-utils.js
 - accessibility-utils.js  
@@ -116,7 +116,7 @@ From Phase 1 (if not already pushed):
 - chapter2-v2.html through chapter4-v2.html (navigation fixes)
 
 VERIFICATION AFTER PUSH:
-=======================
+-----------------------
 After pushing, check these URLs:
 - https://akshaybapat6365.github.io/aion-visualization/
 - https://akshaybapat6365.github.io/aion-visualization/timeline-v2.html

@@ -554,6 +554,40 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterSixFallbackText?.includes('Opposing fish') || !chapterSixFallbackText?.includes('zodiacal time')) {
     failures.push('reduced-motion chapter fallback lost Chapter 6 fish/aeon teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch7');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterSevenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterSevenReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterSevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterSevenReferenceCount = await chapterSevenReferenceNodes.count();
+  const chapterSevenPanelIds = await chapterSevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterSevenPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterSevenCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterSevenFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterSevenInstrumentCount = await page.locator('.prophecy-field-instrument').count();
+  const chapterSevenInstrumentMotion = await page.locator('.prophecy-field-instrument__field, .prophecy-field-instrument__axis, .prophecy-field-instrument__tick, .prophecy-field-instrument__pressure, .prophecy-field-instrument__date, .prophecy-field-instrument__image, .prophecy-field-instrument__arc, .prophecy-field-instrument__threshold, .prophecy-field-instrument__mirror').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterSevenAnimatedParts = chapterSevenInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterSevenTransitioningParts = chapterSevenInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterSevenFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 7 scene');
+  if (chapterSevenReducedMotionAttribute !== 'true') failures.push('Chapter 7 did not record reduced-motion state');
+  if (chapterSevenReferenceCount !== 3) failures.push(`reduced-motion Chapter 7 reference node count mismatch: ${chapterSevenReferenceCount}`);
+  if (chapterSevenPanelIds.join(',') !== 'prophecy,collective,threshold') failures.push(`reduced-motion Chapter 7 reference nodes out of order: ${chapterSevenPanelIds.join(',')}`);
+  if (chapterSevenPauseControlCount !== 0) failures.push(`reduced-motion Chapter 7 rendered pause controls: ${chapterSevenPauseControlCount}`);
+  if (chapterSevenCanvasCount !== 0) failures.push(`reduced-motion Chapter 7 rendered canvas: ${chapterSevenCanvasCount}`);
+  if (chapterSevenInstrumentCount !== 1) failures.push(`reduced-motion Chapter 7 prophecy field instrument count mismatch: ${chapterSevenInstrumentCount}`);
+  if (chapterSevenAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 7 prophecy field instrument still animates: ${JSON.stringify(chapterSevenAnimatedParts)}`);
+  if (chapterSevenTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 7 prophecy field instrument still transitions: ${JSON.stringify(chapterSevenTransitioningParts)}`);
+  if (!chapterSevenFallbackText?.includes('collective anxiety') || !chapterSevenFallbackText?.includes('symbolic dates')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 7 prophecy teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -1105,14 +1139,118 @@ async function smokeChapterSceneControls(page, failures) {
   recordCanvasPixelFailure(failures, 'chapter 6', chapterSixPixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch7');
-  const chapterSevenThreshold = page.getByRole('button', { name: /03\s+Threshold/ });
-  await activateSceneButton(chapterSevenThreshold);
-  await page.waitForTimeout(250);
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterSevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterSevenReferenceCount = await chapterSevenReferenceNodes.count();
+  const chapterSevenPanelIds = await chapterSevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterSevenInstrument = page.locator('.prophecy-field-instrument');
+  const chapterSevenInstrumentCount = await chapterSevenInstrument.count();
+  const chapterSevenInstrumentRole = await chapterSevenInstrument.getAttribute('role');
+  const chapterSevenInstrumentLabel = await chapterSevenInstrument.getAttribute('aria-label');
+  const chapterSevenInstrumentPanel = await chapterSevenInstrument.getAttribute('data-active-panel');
+  const chapterSevenInstrumentFieldCount = await page.locator('.prophecy-field-instrument__field').count();
+  const chapterSevenInstrumentTickCount = await page.locator('.prophecy-field-instrument__tick').count();
+  const chapterSevenInstrumentImageCount = await page.locator('.prophecy-field-instrument__image').count();
+  const chapterSevenInstrumentArcCount = await page.locator('.prophecy-field-instrument__arc').count();
+  const chapterSevenInstrumentPressureCount = await page.locator('.prophecy-field-instrument__pressure').count();
+  const chapterSevenInstrumentDateCount = await page.locator('.prophecy-field-instrument__date').count();
+  const chapterSevenInstrumentThresholdCount = await page.locator('.prophecy-field-instrument__threshold').count();
+  const chapterSevenInstrumentMirrorCount = await page.locator('.prophecy-field-instrument__mirror').count();
+  const chapterSevenInstrumentLabelCount = await page.locator('.prophecy-field-instrument__label').count();
+  const chapterSevenInstrumentMarksVisible = await page.locator('.prophecy-field-instrument__field, .prophecy-field-instrument__axis, .prophecy-field-instrument__tick, .prophecy-field-instrument__pressure, .prophecy-field-instrument__date, .prophecy-field-instrument__image, .prophecy-field-instrument__arc, .prophecy-field-instrument__threshold, .prophecy-field-instrument__mirror').evaluateAll((nodes) => nodes.length >= 16 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterSevenReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="prophecy"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="collective"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="threshold"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
 
-  const chapterSevenPressed = await chapterSevenThreshold.getAttribute('aria-pressed');
+  if (chapterSevenReferenceCount !== 3) failures.push(`chapter 7 reference node count mismatch: ${chapterSevenReferenceCount}`);
+  if (chapterSevenPanelIds.join(',') !== 'prophecy,collective,threshold') failures.push(`chapter 7 reference nodes out of order: ${chapterSevenPanelIds.join(',')}`);
+  if (chapterSevenInstrumentCount !== 1) failures.push(`chapter 7 prophecy field instrument count mismatch: ${chapterSevenInstrumentCount}`);
+  if (chapterSevenInstrumentFieldCount !== 2) failures.push(`chapter 7 prophecy field instrument field count mismatch: ${chapterSevenInstrumentFieldCount}`);
+  if (chapterSevenInstrumentTickCount !== 4) failures.push(`chapter 7 prophecy field instrument tick count mismatch: ${chapterSevenInstrumentTickCount}`);
+  if (chapterSevenInstrumentImageCount !== 3) failures.push(`chapter 7 prophecy field instrument image count mismatch: ${chapterSevenInstrumentImageCount}`);
+  if (chapterSevenInstrumentArcCount !== 2) failures.push(`chapter 7 prophecy field instrument arc count mismatch: ${chapterSevenInstrumentArcCount}`);
+  if (chapterSevenInstrumentPressureCount !== 1) failures.push(`chapter 7 prophecy field instrument pressure count mismatch: ${chapterSevenInstrumentPressureCount}`);
+  if (chapterSevenInstrumentDateCount !== 1) failures.push(`chapter 7 prophecy field instrument date count mismatch: ${chapterSevenInstrumentDateCount}`);
+  if (chapterSevenInstrumentThresholdCount !== 1) failures.push(`chapter 7 prophecy field instrument threshold count mismatch: ${chapterSevenInstrumentThresholdCount}`);
+  if (chapterSevenInstrumentMirrorCount !== 1) failures.push(`chapter 7 prophecy field instrument mirror count mismatch: ${chapterSevenInstrumentMirrorCount}`);
+  if (chapterSevenInstrumentLabelCount !== 3) failures.push(`chapter 7 prophecy field instrument label count mismatch: ${chapterSevenInstrumentLabelCount}`);
+  if (chapterSevenInstrumentRole !== 'img') failures.push(`chapter 7 prophecy field instrument role mismatch: ${chapterSevenInstrumentRole}`);
+  if (!chapterSevenInstrumentLabel?.includes('Prophecy field') || !chapterSevenInstrumentLabel?.includes('historical pressure') || !chapterSevenInstrumentLabel?.includes('Current emphasis: Prophecy')) {
+    failures.push(`chapter 7 prophecy field instrument label missing teaching text: ${chapterSevenInstrumentLabel}`);
+  }
+  if (chapterSevenInstrumentPanel !== 'prophecy') failures.push(`chapter 7 prophecy field instrument did not start on prophecy panel: ${chapterSevenInstrumentPanel}`);
+  if (!chapterSevenInstrumentMarksVisible) failures.push('chapter 7 prophecy field instrument marks are not visibly rendered');
+  if (!chapterSevenReferenceGlyphsVisible) failures.push('chapter 7 reference glyphs are not visibly rendered');
+
+  const chapterSevenCollective = page.locator('.chapter-stage__reference-node[data-panel-id="collective"]');
+  await chapterSevenCollective.waitFor({ state: 'visible', timeout: 30_000 });
+  await chapterSevenCollective.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const nodes = Array.from(document.querySelectorAll('.prophecy-field-instrument__image, .prophecy-field-instrument__arc'));
+    return nodes.length === 5 && nodes.every((node) => Number(window.getComputedStyle(node).opacity) >= 0.85);
+  }, null, { timeout: 3_000 }).catch(() => {});
+
+  const chapterSevenCollectivePressed = await chapterSevenCollective.getAttribute('aria-pressed');
+  const chapterSevenCollectivePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="collective"]').count();
+  const chapterSevenCollectiveDescription = await page.locator('#scene-host-description-ch7').textContent();
+  const chapterSevenInstrumentCollectivePanel = await chapterSevenInstrument.getAttribute('data-active-panel');
+  const chapterSevenInstrumentCollectiveLabel = await chapterSevenInstrument.getAttribute('aria-label');
+  const chapterSevenCollectiveVisualState = await page.locator('.prophecy-field-instrument__image, .prophecy-field-instrument__arc').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (chapterSevenCollectivePressed !== 'true') failures.push(`chapter 7 collective reference did not become active: ${chapterSevenCollectivePressed}`);
+  if (chapterSevenCollectivePanelActive !== 1) failures.push(`chapter 7 collective panel did not become active: ${chapterSevenCollectivePanelActive}`);
+  if (chapterSevenInstrumentCollectivePanel !== 'collective') failures.push(`chapter 7 prophecy field instrument did not follow collective panel: ${chapterSevenInstrumentCollectivePanel}`);
+  if (!chapterSevenInstrumentCollectiveLabel?.includes('Current emphasis: Collective') || !chapterSevenInstrumentCollectiveLabel?.includes('Private fear becomes shared image')) {
+    failures.push(`chapter 7 prophecy field instrument label did not follow collective panel: ${chapterSevenInstrumentCollectiveLabel}`);
+  }
+  if (chapterSevenCollectiveVisualState.length !== 5 || chapterSevenCollectiveVisualState.some((opacity) => opacity < 0.85)) {
+    failures.push(`chapter 7 prophecy field instrument did not visually emphasize collective image: ${chapterSevenCollectiveVisualState.join(',')}`);
+  }
+  if (!chapterSevenCollectiveDescription?.includes('Collective: Private fear becomes shared image')) failures.push(`chapter 7 scene description did not follow collective panel: ${chapterSevenCollectiveDescription}`);
+
+  const chapterSevenThreshold = page.locator('.chapter-stage__reference-node[data-panel-id="threshold"]');
+  await chapterSevenThreshold.waitFor({ state: 'visible', timeout: 30_000 });
+  await chapterSevenThreshold.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(250);
+  await page.waitForFunction(() => {
+    const nodes = Array.from(document.querySelectorAll('.prophecy-field-instrument__threshold, .prophecy-field-instrument__mirror, .prophecy-field-instrument__tick--4'));
+    return nodes.length === 3 && nodes.every((node) => Number(window.getComputedStyle(node).opacity) >= 0.95);
+  }, null, { timeout: 3_000 }).catch(() => {});
+
+  const chapterSevenThresholdPressed = await chapterSevenThreshold.getAttribute('aria-pressed');
+  const chapterSevenThresholdPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="threshold"]').count();
+  const chapterSevenThresholdDescription = await page.locator('#scene-host-description-ch7').textContent();
   const chapterSevenScrollY = await page.evaluate(() => window.scrollY);
-  if (chapterSevenPressed !== 'true') failures.push(`chapter 7 scene control did not become active: ${chapterSevenPressed}`);
+  const chapterSevenInstrumentThresholdPanel = await chapterSevenInstrument.getAttribute('data-active-panel');
+  const chapterSevenInstrumentThresholdLabel = await chapterSevenInstrument.getAttribute('aria-label');
+  const chapterSevenThresholdVisualState = await page.locator('.prophecy-field-instrument__threshold, .prophecy-field-instrument__mirror, .prophecy-field-instrument__tick--4').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (chapterSevenThresholdPressed !== 'true') failures.push(`chapter 7 threshold reference did not become active: ${chapterSevenThresholdPressed}`);
+  if (chapterSevenThresholdPanelActive !== 1) failures.push(`chapter 7 threshold panel did not become active: ${chapterSevenThresholdPanelActive}`);
+  if (chapterSevenInstrumentThresholdPanel !== 'threshold') failures.push(`chapter 7 prophecy field instrument did not follow threshold panel: ${chapterSevenInstrumentThresholdPanel}`);
+  if (!chapterSevenInstrumentThresholdLabel?.includes('Current emphasis: Threshold') || !chapterSevenInstrumentThresholdLabel?.includes('The future looks backward')) {
+    failures.push(`chapter 7 prophecy field instrument label did not follow threshold panel: ${chapterSevenInstrumentThresholdLabel}`);
+  }
+  if (chapterSevenThresholdVisualState.length !== 3 || chapterSevenThresholdVisualState.some((opacity) => opacity < 0.95)) {
+    failures.push(`chapter 7 prophecy field instrument did not visually emphasize threshold: ${chapterSevenThresholdVisualState.join(',')}`);
+  }
+  if (!chapterSevenThresholdDescription?.includes('Threshold: The future looks backward')) failures.push(`chapter 7 scene description did not follow threshold panel: ${chapterSevenThresholdDescription}`);
   if (chapterSevenScrollY > 10) failures.push(`chapter 7 scene control unexpectedly scrolled page: ${chapterSevenScrollY}`);
+
+  const chapterSevenCanvas = page.locator('.scene-host canvas').first();
+  const chapterSevenCanvasBox = await chapterSevenCanvas.boundingBox();
+  const chapterSevenPixelSample = await countCanvasPixels(chapterSevenCanvas);
+  if (!chapterSevenCanvasBox || chapterSevenCanvasBox.width < 300 || chapterSevenCanvasBox.height < 300) {
+    failures.push(`chapter 7 canvas geometry too small: ${chapterSevenCanvasBox ? `${Math.round(chapterSevenCanvasBox.width)}x${Math.round(chapterSevenCanvasBox.height)}` : 'missing'}`);
+  }
+  recordCanvasPixelFailure(failures, 'chapter 7', chapterSevenPixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch8');
   const afterlife = page.getByRole('button', { name: /03\s+Afterlife/ });
@@ -1187,7 +1325,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -1377,6 +1515,47 @@ async function smokeMobile(page, failures) {
       if (chapterSixCanvasCount > 0) {
         const chapterSixPixelSample = await countCanvasPixels(chapterSixCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 6 at ${viewport.width}x${viewport.height}`, chapterSixPixelSample);
+      }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch7');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterSevenNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterSevenHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterSevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterSevenReferenceCount = await chapterSevenReferenceNodes.count();
+    const chapterSevenPanelIds = await chapterSevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterSevenOverlayHidden = await page.locator('.ch7-event-tooltip, .ch7-scene-dot').evaluateAll((nodes) => nodes.every((node) => window.getComputedStyle(node).display === 'none'));
+    const chapterSevenScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterSevenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterSevenInstrumentBox = await page.locator('.prophecy-field-instrument').boundingBox();
+    if (!chapterSevenNavBox || !chapterSevenHeadingBox) {
+      failures.push(`mobile chapter 7 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterSevenNavBottom = chapterSevenNavBox.y + chapterSevenNavBox.height;
+    if (chapterSevenNavBottom > chapterSevenHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 7 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterSevenNavBottom)}, heading top ${Math.round(chapterSevenHeadingBox.y)}`);
+    }
+    if (chapterSevenReferenceCount !== 3) failures.push(`mobile chapter 7 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterSevenReferenceCount}`);
+    if (chapterSevenPanelIds.join(',') !== 'prophecy,collective,threshold') failures.push(`mobile chapter 7 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterSevenPanelIds.join(',')}`);
+    if (!chapterSevenOverlayHidden) failures.push(`mobile chapter 7 event overlay remains visible at ${viewport.width}x${viewport.height}`);
+    if (chapterSevenScrollWidth > viewport.width + 2) failures.push(`mobile chapter 7 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterSevenScrollWidth}`);
+    if (chapterSevenReferenceMapBox && chapterSevenReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 7 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterSevenReferenceMapBox.width)}`);
+    }
+    if (!chapterSevenInstrumentBox) failures.push(`mobile chapter 7 prophecy field instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterSevenInstrumentBox && chapterSevenInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 7 prophecy field instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterSevenInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterSevenCanvas = page.locator('.scene-host canvas').first();
+      const chapterSevenCanvasCount = await chapterSevenCanvas.count();
+      if (chapterSevenCanvasCount > 0) {
+        const chapterSevenPixelSample = await countCanvasPixels(chapterSevenCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 7 at ${viewport.width}x${viewport.height}`, chapterSevenPixelSample);
       }
     }
   }

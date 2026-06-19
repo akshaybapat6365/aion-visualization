@@ -1,5 +1,5 @@
 INSTRUCTIONS TO PUSH PHASE 1 UPDATES TO GITHUB
-==============================================
+----------------------------------------------
 
 Please run these commands in your terminal:
 

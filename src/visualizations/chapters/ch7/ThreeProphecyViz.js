@@ -8,9 +8,9 @@
  *  Scene 2 (scroll 0.15–0.45): The Aeon Spiral — vertical helix
  *  Scene 3 (scroll 0.45–1.00): The Pisces Timeline — 0–2000 AD detail
  *
- * Jung: Nostradamus "mined the collective unconscious," perceiving an
- * imminent enantiodromia of the Christian aeon. His prophecies reveal
- * the psyche's capacity to prefigure major archetypal transformations.
+ * Interpretive frame: prophecy is treated here as symbolic pressure.
+ * Collective anxiety and projection make historical time feel charged,
+ * so older archetypal images reappear as visions of the future.
  *
  * Palette: warm amber/gold with violet shadows — prophetic firelight.
  */
@@ -61,15 +61,15 @@ const ZODIAC = [
 const TIMELINE_EVENTS = [
     { year: -7, label: 'Star of Bethlehem', symbol: '☆', color: 0xf0d060, desc: 'Jupiter–Saturn conjunction in Pisces — the celestial sign inaugurating the new aeon', archetype: 'Self' },
     { year: 30, label: 'Crucifixion', symbol: '✝', color: 0xf0e8d0, desc: 'The Self projected onto a single figure — the supreme symbol of wholeness sacrificed', archetype: 'Self' },
-    { year: 100, label: 'Revelation of St. John', symbol: '🔥', color: 0xcc4444, desc: 'The Apocalypse archetype — Christianity’s own shadow erupts in prophetic fire', archetype: 'Shadow' },
-    { year: 325, label: 'Council of Nicæa', symbol: '⬡', color: 0xf0d060, desc: 'Christ declared God — evil officially excluded from the divine, deepening the split', archetype: 'Self' },
+    { year: 100, label: 'Revelation of St. John', symbol: '🔥', color: 0xcc4444, desc: 'Apocalyptic imagery gives collective fear a fiery symbolic form', archetype: 'Shadow' },
+    { year: 325, label: 'Council of Nicæa', symbol: '⬡', color: 0xf0d060, desc: 'Doctrine gathers the Christ image into a bright center while shadow pressure remains outside it', archetype: 'Self' },
     { year: 1000, label: 'Enantiodromia', symbol: '◆', color: 0xcc3366, desc: 'The aeon’s midpoint — everything begins turning into its opposite. The shadow stirs.', archetype: 'Shadow' },
     { year: 1179, label: 'Joachim of Fiore', symbol: '△', color: 0x9966cc, desc: 'Prophecy of the Third Age — beyond Father and Son, the Holy Spirit as integration', archetype: 'Unconscious' },
     { year: 1484, label: 'Malleus Maleficarum', symbol: '▼', color: 0x882233, desc: 'Shadow projected onto "witches" — collective psychosis manifests as persecution', archetype: 'Shadow' },
-    { year: 1555, label: 'Nostradamus\' Centuries', symbol: '✦', color: 0xff8c00, desc: 'Mining the collective unconscious — prophetic sensitivity to archetypal currents', archetype: 'Unconscious' },
-    { year: 1789, label: 'French Revolution', symbol: '⚡', color: 0xcc4444, desc: '"An infernal power shall rise against the Church" — Nostradamus fulfilled', archetype: 'Shadow' },
+    { year: 1555, label: 'Nostradamus\' Centuries', symbol: '✦', color: 0xff8c00, desc: 'Prophetic image-making as sensitivity to collective tension', archetype: 'Unconscious' },
+    { year: 1789, label: 'French Revolution', symbol: '⚡', color: 0xcc4444, desc: 'Later readers could fold revolutionary violence into prophetic imagery; the point is projection under historical pressure', archetype: 'Shadow' },
     { year: 1914, label: 'World War I', symbol: '◼', color: 0x553333, desc: 'Eruption of the collective shadow — the European psyche fragments into mass violence', archetype: 'Shadow' },
-    { year: 1945, label: 'Atomic Bomb', symbol: '☢', color: 0xeeeeee, desc: 'Ultimate enantiodromia — the light of reason becomes the fire of annihilation', archetype: 'Shadow' },
+    { year: 1945, label: 'Atomic Bomb', symbol: '☢', color: 0xeeeeee, desc: 'Reason and annihilation become fused in a modern image of reversal', archetype: 'Shadow' },
     { year: 2000, label: 'Aquarian Threshold', symbol: '♒', color: 0x44bbcc, desc: 'A new aeon approaches — will the psyche integrate its opposites, or split further?', archetype: 'Future' },
 ];
 
@@ -1061,8 +1061,8 @@ export default class ThreeProphecyViz extends BaseViz {
                         font-size:clamp(0.65rem,0.9vw,0.75rem);color:rgba(200,190,170,0.4);
                         line-height:1.6;
                     ">
-                        <span style="color:rgba(240,232,208,0.5)">First Fish</span> (0–1000 AD) — Christ<br>
-                        <span style="color:rgba(204,51,102,0.5)">Second Fish</span> (1000–2000 AD) — Antichrist<br>
+                        <span style="color:rgba(240,232,208,0.5)">First Fish</span> (0–1000 AD) — bright ideal<br>
+                        <span style="color:rgba(204,51,102,0.5)">Second Fish</span> (1000–2000 AD) — shadow pressure<br>
                         <span style="font-style:italic;margin-top:6px;display:inline-block">
                         They swim in opposite directions,<br>
                         mirroring the psyche's split.</span>
@@ -1082,7 +1082,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 <div class="ch7-era-label">AGE OF<br>FAITH</div>
                 <div class="ch7-era-label" style="color:rgba(204,51,102,0.35)">ENANTIODROMIA<br>↕</div>
                 <div class="ch7-era-label">AGE OF<br>REASON</div>
-                <div class="ch7-era-label" style="text-align:right;color:rgba(68,187,204,0.3)">ANTICHRIST<br>ERA</div>
+                <div class="ch7-era-label" style="text-align:right;color:rgba(68,187,204,0.3)">MODERN<br>SHADOW</div>
             </div>
         `);
 
@@ -1156,7 +1156,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 font-size:clamp(0.55rem,0.75vw,0.65rem);letter-spacing:0.2em;
                 color:rgba(200,160,64,0.2);text-transform:uppercase;
                 opacity:0;transition:opacity 1.5s ease;
-            ">CHRIST → ENANTIODROMIA → ANTICHRIST · THE TWO FISH SWIM IN OPPOSITE DIRECTIONS</div>
+            ">BRIGHT IDEAL -> REVERSAL -> SHADOW PRESSURE · THE TWO FISH SWIM IN OPPOSITE DIRECTIONS</div>
         `);
 
         /* Enantiodromia gradient bar (Scene 3) */
@@ -1555,7 +1555,10 @@ export default class ThreeProphecyViz extends BaseViz {
         this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {
             o.geometry?.dispose();
-            if (o.material) [].concat(o.material).forEach(m => m.dispose());
+            if (o.material) [].concat(o.material).forEach((m) => {
+                m.map?.dispose();
+                m.dispose();
+            });
         });
         this.composer = null;
         this.scene = null;
