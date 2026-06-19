@@ -535,6 +535,45 @@ async function checkChapterThirteenDynamicAccessibility(page, failures) {
   if (!paradoxDescription?.includes('Paradox: Wisdom includes rupture')) failures.push(`/journey/chapter/ch13: paradox scene description mismatch: ${paradoxDescription}`);
 }
 
+async function checkChapterFourteenDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch14`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Final synthesis mandala/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = instrumentVisible ? await instrument.getAttribute('aria-label') : null;
+  const initialDescription = await page.locator('#scene-host-description-ch14').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch14: final synthesis instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Synthesis') || !initialInstrumentLabel?.includes('earlier motifs gather')) failures.push(`/journey/chapter/ch14: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Synthesis: The book gathers into one field')) failures.push(`/journey/chapter/ch14: initial scene description mismatch: ${initialDescription}`);
+
+  const axis = page.getByRole('button', { name: /02\s+Axis/ });
+  await axis.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const axisPressed = await axis.getAttribute('aria-pressed');
+  const axisLabel = await instrument.getAttribute('aria-label');
+  const axisDescription = await page.locator('#scene-host-description-ch14').textContent();
+  if (axisPressed !== 'true') failures.push(`/journey/chapter/ch14: axis button did not become pressed: ${axisPressed}`);
+  if (!axisLabel?.includes('Current emphasis: Axis') || !axisLabel?.includes('The goal is right relation')) failures.push(`/journey/chapter/ch14: axis instrument label mismatch: ${axisLabel}`);
+  if (!axisDescription?.includes('Axis: Ego and Self stay in relation')) failures.push(`/journey/chapter/ch14: axis scene description mismatch: ${axisDescription}`);
+
+  const individuation = page.getByRole('button', { name: /03\s+Path/ });
+  await individuation.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const individuationPressed = await individuation.getAttribute('aria-pressed');
+  const individuationLabel = await instrument.getAttribute('aria-label');
+  const individuationDescription = await page.locator('#scene-host-description-ch14').textContent();
+  if (individuationPressed !== 'true') failures.push(`/journey/chapter/ch14: individuation button did not become pressed: ${individuationPressed}`);
+  if (!individuationLabel?.includes('Current emphasis: Path') || !individuationLabel?.includes('Aion ends with motion')) failures.push(`/journey/chapter/ch14: path instrument label mismatch: ${individuationLabel}`);
+  if (!individuationDescription?.includes('Path: Individuation keeps moving')) failures.push(`/journey/chapter/ch14: path scene description mismatch: ${individuationDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -557,6 +596,7 @@ async function runAccessibilitySmoke() {
     await checkChapterElevenDynamicAccessibility(desktop, failures);
     await checkChapterTwelveDynamicAccessibility(desktop, failures);
     await checkChapterThirteenDynamicAccessibility(desktop, failures);
+    await checkChapterFourteenDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });

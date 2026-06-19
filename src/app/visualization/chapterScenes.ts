@@ -172,15 +172,15 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
   },
   ch14: {
     chapterId: 'ch14',
-    visualTheme: 'Final aeon mandala synthesis',
+    visualTheme: 'Final Self mandala, quaternity, and individuation path',
     sceneModule: '../visualizations/chapters/ch14/ThreeAeonFinalViz.js',
     motionGrammar: 'integration',
-    fallbackSummary: 'A final mandala gathers ego, shadow, syzygy, fish, alchemy, and Gnosis into a living image of the Self.',
-    checkpoints: ['Gather the earlier motifs.', 'Trace the ego/Self axis.', 'Name the final dynamic.'],
+    fallbackSummary: 'A final synthesis mandala gathers earlier motifs around the Self, shows a fourfold ordering field, and keeps individuation visible as a living path.',
+    checkpoints: ['Gather the earlier motifs around the Self.', 'Trace the ego/Self axis.', 'Name the final individuation dynamic.'],
     panels: [
-      { id: 'gather', kicker: 'Synthesis', title: 'The book folds into one image', body: 'Earlier motifs return as parts of a larger psychic architecture.', insight: 'Completion is a constellation, not a slogan.' },
-      { id: 'axis', kicker: 'Axis', title: 'Ego and Self are held together', body: 'The final structure preserves relation between conscious standpoint and totality.', insight: 'The goal is right relation.' },
-      { id: 'aeon', kicker: 'Aeon', title: 'The image keeps moving', body: 'The Self is dynamic, cyclical, and historical.', insight: 'Aion ends with motion, not closure.' },
+      { id: 'gather', kicker: 'Synthesis', title: 'The book gathers into one field', body: 'Earlier motifs return as parts of a larger Self image.', insight: 'Completion is a constellation, not a slogan.' },
+      { id: 'axis', kicker: 'Axis', title: 'Ego and Self stay in relation', body: 'The final structure preserves the conscious standpoint inside a wider totality.', insight: 'The goal is right relation.' },
+      { id: 'aeon', kicker: 'Path', title: 'Individuation keeps moving', body: 'Wholeness remains dynamic, cyclical, and historical.', insight: 'Aion ends with motion, not closure.' },
     ],
   },
 };
