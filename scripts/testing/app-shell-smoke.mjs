@@ -588,6 +588,42 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterSevenFallbackText?.includes('collective anxiety') || !chapterSevenFallbackText?.includes('symbolic dates')) {
     failures.push('reduced-motion chapter fallback lost Chapter 7 prophecy teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch8');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterEightFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterEightReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterEightReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterEightReferenceCount = await chapterEightReferenceNodes.count();
+  const chapterEightPanelIds = await chapterEightReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterEightPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterEightCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterEightAnnotationCount = await page.locator('.ch8-annotations').count();
+  const chapterEightFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterEightInstrumentCount = await page.locator('.historical-strata-instrument').count();
+  const chapterEightInstrumentMotion = await page.locator('.historical-strata-instrument__field, .historical-strata-instrument__axis, .historical-strata-instrument__layer, .historical-strata-instrument__sediment, .historical-strata-instrument__thread, .historical-strata-instrument__fish, .historical-strata-instrument__carrier, .historical-strata-instrument__depth').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterEightAnimatedParts = chapterEightInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterEightTransitioningParts = chapterEightInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterEightFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 8 scene');
+  if (chapterEightReducedMotionAttribute !== 'true') failures.push('Chapter 8 did not record reduced-motion state');
+  if (chapterEightReferenceCount !== 3) failures.push(`reduced-motion Chapter 8 reference node count mismatch: ${chapterEightReferenceCount}`);
+  if (chapterEightPanelIds.join(',') !== 'strata,christian,modern') failures.push(`reduced-motion Chapter 8 reference nodes out of order: ${chapterEightPanelIds.join(',')}`);
+  if (chapterEightPauseControlCount !== 0) failures.push(`reduced-motion Chapter 8 rendered pause controls: ${chapterEightPauseControlCount}`);
+  if (chapterEightCanvasCount !== 0) failures.push(`reduced-motion Chapter 8 rendered canvas: ${chapterEightCanvasCount}`);
+  if (chapterEightAnnotationCount !== 0) failures.push(`reduced-motion Chapter 8 rendered annotation overlay: ${chapterEightAnnotationCount}`);
+  if (chapterEightInstrumentCount !== 1) failures.push(`reduced-motion Chapter 8 historical strata instrument count mismatch: ${chapterEightInstrumentCount}`);
+  if (chapterEightAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 8 historical strata instrument still animates: ${JSON.stringify(chapterEightAnimatedParts)}`);
+  if (chapterEightTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 8 historical strata instrument still transitions: ${JSON.stringify(chapterEightTransitioningParts)}`);
+  if (!chapterEightFallbackText?.includes('Layered historical strata') || !chapterEightFallbackText?.includes('fish motif')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 8 historical strata teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -1253,14 +1289,110 @@ async function smokeChapterSceneControls(page, failures) {
   recordCanvasPixelFailure(failures, 'chapter 7', chapterSevenPixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch8');
-  const afterlife = page.getByRole('button', { name: /03\s+Afterlife/ });
-  await activateSceneButton(afterlife);
+  await page.locator('.scene-host__mount[data-state="ready"]').waitFor({ state: 'visible', timeout: 10_000 });
+  const chapterEightReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterEightReferenceCount = await chapterEightReferenceNodes.count();
+  const chapterEightPanelIds = await chapterEightReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterEightInstrument = page.locator('.historical-strata-instrument');
+  const chapterEightInstrumentCount = await chapterEightInstrument.count();
+  const chapterEightInstrumentRole = await chapterEightInstrument.getAttribute('role');
+  const chapterEightInstrumentLabel = await chapterEightInstrument.getAttribute('aria-label');
+  const chapterEightInstrumentPanel = await chapterEightInstrument.getAttribute('data-active-panel');
+  const chapterEightInstrumentFieldCount = await page.locator('.historical-strata-instrument__field').count();
+  const chapterEightInstrumentLayerCount = await page.locator('.historical-strata-instrument__layer').count();
+  const chapterEightInstrumentSedimentCount = await page.locator('.historical-strata-instrument__sediment').count();
+  const chapterEightInstrumentThreadCount = await page.locator('.historical-strata-instrument__thread').count();
+  const chapterEightInstrumentFishCount = await page.locator('.historical-strata-instrument__fish').count();
+  const chapterEightInstrumentCarrierCount = await page.locator('.historical-strata-instrument__carrier').count();
+  const chapterEightInstrumentDepthCount = await page.locator('.historical-strata-instrument__depth').count();
+  const chapterEightInstrumentLabelCount = await page.locator('.historical-strata-instrument__label').count();
+  const chapterEightInstrumentMarksVisible = await page.locator('.historical-strata-instrument__field, .historical-strata-instrument__axis, .historical-strata-instrument__layer, .historical-strata-instrument__sediment, .historical-strata-instrument__thread, .historical-strata-instrument__fish, .historical-strata-instrument__carrier, .historical-strata-instrument__depth').evaluateAll((nodes) => nodes.length >= 16 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterEightReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="strata"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="christian"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="modern"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+
+  if (chapterEightReferenceCount !== 3) failures.push(`chapter 8 reference node count mismatch: ${chapterEightReferenceCount}`);
+  if (chapterEightPanelIds.join(',') !== 'strata,christian,modern') failures.push(`chapter 8 reference nodes out of order: ${chapterEightPanelIds.join(',')}`);
+  if (chapterEightInstrumentCount !== 1) failures.push(`chapter 8 historical strata instrument count mismatch: ${chapterEightInstrumentCount}`);
+  if (chapterEightInstrumentFieldCount !== 2) failures.push(`chapter 8 historical strata instrument field count mismatch: ${chapterEightInstrumentFieldCount}`);
+  if (chapterEightInstrumentLayerCount !== 5) failures.push(`chapter 8 historical strata instrument layer count mismatch: ${chapterEightInstrumentLayerCount}`);
+  if (chapterEightInstrumentSedimentCount !== 3) failures.push(`chapter 8 historical strata instrument sediment count mismatch: ${chapterEightInstrumentSedimentCount}`);
+  if (chapterEightInstrumentThreadCount !== 2) failures.push(`chapter 8 historical strata instrument thread count mismatch: ${chapterEightInstrumentThreadCount}`);
+  if (chapterEightInstrumentFishCount !== 1) failures.push(`chapter 8 historical strata instrument fish count mismatch: ${chapterEightInstrumentFishCount}`);
+  if (chapterEightInstrumentCarrierCount !== 1) failures.push(`chapter 8 historical strata instrument carrier count mismatch: ${chapterEightInstrumentCarrierCount}`);
+  if (chapterEightInstrumentDepthCount !== 1) failures.push(`chapter 8 historical strata instrument depth count mismatch: ${chapterEightInstrumentDepthCount}`);
+  if (chapterEightInstrumentLabelCount !== 3) failures.push(`chapter 8 historical strata instrument label count mismatch: ${chapterEightInstrumentLabelCount}`);
+  if (chapterEightInstrumentRole !== 'img') failures.push(`chapter 8 historical strata instrument role mismatch: ${chapterEightInstrumentRole}`);
+  if (!chapterEightInstrumentLabel?.includes('Historical strata model') || !chapterEightInstrumentLabel?.includes('fish motif') || !chapterEightInstrumentLabel?.includes('Current emphasis: History')) {
+    failures.push(`chapter 8 historical strata instrument label missing teaching text: ${chapterEightInstrumentLabel}`);
+  }
+  if (chapterEightInstrumentPanel !== 'strata') failures.push(`chapter 8 historical strata instrument did not start on strata panel: ${chapterEightInstrumentPanel}`);
+  if (!chapterEightInstrumentMarksVisible) failures.push('chapter 8 historical strata instrument marks are not visibly rendered');
+  if (!chapterEightReferenceGlyphsVisible) failures.push('chapter 8 reference glyphs are not visibly rendered');
+
+  const earlyImage = page.locator('.chapter-stage__reference-node[data-panel-id="christian"]');
+  await earlyImage.waitFor({ state: 'visible', timeout: 30_000 });
+  await earlyImage.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(250);
+
+  const earlyImagePressed = await earlyImage.getAttribute('aria-pressed');
+  const earlyImagePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="christian"]').count();
+  const earlyImageDescription = await page.locator('#scene-host-description-ch8').textContent();
+  const earlyImageInstrumentPanel = await chapterEightInstrument.getAttribute('data-active-panel');
+  const earlyImageInstrumentLabel = await chapterEightInstrument.getAttribute('aria-label');
+  const earlyImageVisualState = await page.locator('.historical-strata-instrument__carrier, .historical-strata-instrument__thread--descent, .historical-strata-instrument__fish').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (earlyImagePressed !== 'true') failures.push(`chapter 8 early image reference did not become active: ${earlyImagePressed}`);
+  if (earlyImagePanelActive !== 1) failures.push(`chapter 8 early image panel did not become active: ${earlyImagePanelActive}`);
+  if (earlyImageInstrumentPanel !== 'christian') failures.push(`chapter 8 historical strata instrument did not follow early image panel: ${earlyImageInstrumentPanel}`);
+  if (!earlyImageInstrumentLabel?.includes('Current emphasis: Early Image') || !earlyImageInstrumentLabel?.includes('A small sign can hold a total world')) {
+    failures.push(`chapter 8 historical strata instrument label did not follow early image panel: ${earlyImageInstrumentLabel}`);
+  }
+  if (earlyImageVisualState.length !== 3 || earlyImageVisualState.some((opacity) => opacity < 0.45)) {
+    failures.push(`chapter 8 historical strata instrument did not visually emphasize carrier image: ${earlyImageVisualState.join(',')}`);
+  }
+  if (!earlyImageDescription?.includes('Early Image: The fish becomes a carrier')) failures.push(`chapter 8 scene description did not follow early image panel: ${earlyImageDescription}`);
+
+  const afterlife = page.locator('.chapter-stage__reference-node[data-panel-id="modern"]');
+  await afterlife.waitFor({ state: 'visible', timeout: 30_000 });
+  await afterlife.focus();
+  await page.keyboard.press('Space');
   await page.waitForTimeout(250);
 
   const afterlifePressed = await afterlife.getAttribute('aria-pressed');
+  const afterlifePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="modern"]').count();
+  const afterlifeDescription = await page.locator('#scene-host-description-ch8').textContent();
+  const afterlifeInstrumentPanel = await chapterEightInstrument.getAttribute('data-active-panel');
+  const afterlifeInstrumentLabel = await chapterEightInstrument.getAttribute('aria-label');
+  const afterlifeVisualState = await page.locator('.historical-strata-instrument__depth, .historical-strata-instrument__thread--return, .historical-strata-instrument__layer--4, .historical-strata-instrument__layer--5').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterEightScrollY = await page.evaluate(() => window.scrollY);
-  if (afterlifePressed !== 'true') failures.push(`chapter 8 scene control did not become active: ${afterlifePressed}`);
+  if (afterlifePressed !== 'true') failures.push(`chapter 8 afterlife reference did not become active: ${afterlifePressed}`);
+  if (afterlifePanelActive !== 1) failures.push(`chapter 8 afterlife panel did not become active: ${afterlifePanelActive}`);
+  if (afterlifeInstrumentPanel !== 'modern') failures.push(`chapter 8 historical strata instrument did not follow afterlife panel: ${afterlifeInstrumentPanel}`);
+  if (!afterlifeInstrumentLabel?.includes('Current emphasis: Afterlife') || !afterlifeInstrumentLabel?.includes('The unconscious preserves symbolic depth')) {
+    failures.push(`chapter 8 historical strata instrument label did not follow afterlife panel: ${afterlifeInstrumentLabel}`);
+  }
+  if (afterlifeVisualState.length !== 4 || afterlifeVisualState.some((opacity) => opacity < 0.45)) {
+    failures.push(`chapter 8 historical strata instrument did not visually emphasize afterlife/depth: ${afterlifeVisualState.join(',')}`);
+  }
+  if (!afterlifeDescription?.includes('Afterlife: Old images keep speaking')) failures.push(`chapter 8 scene description did not follow afterlife panel: ${afterlifeDescription}`);
   if (chapterEightScrollY > 10) failures.push(`chapter 8 scene control unexpectedly scrolled page: ${chapterEightScrollY}`);
+
+  const chapterEightCanvas = page.locator('.scene-host canvas').first();
+  const chapterEightCanvasBox = await chapterEightCanvas.boundingBox();
+  const chapterEightPixelSample = await countCanvasPixels(chapterEightCanvas);
+  const chapterEightStyleCount = await page.locator('style#ch8-anim-style').count();
+  if (!chapterEightCanvasBox || chapterEightCanvasBox.width < 300 || chapterEightCanvasBox.height < 300) {
+    failures.push(`chapter 8 canvas geometry too small: ${chapterEightCanvasBox ? `${Math.round(chapterEightCanvasBox.width)}x${Math.round(chapterEightCanvasBox.height)}` : 'missing'}`);
+  }
+  recordCanvasPixelFailure(failures, 'chapter 8', chapterEightPixelSample);
+  if (chapterEightStyleCount !== 1) failures.push(`chapter 8 injected style count mismatch: ${chapterEightStyleCount}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch9');
   const shadowFish = page.getByRole('button', { name: /03\s+Shadow/ });
@@ -1325,7 +1457,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -1556,6 +1688,47 @@ async function smokeMobile(page, failures) {
       if (chapterSevenCanvasCount > 0) {
         const chapterSevenPixelSample = await countCanvasPixels(chapterSevenCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 7 at ${viewport.width}x${viewport.height}`, chapterSevenPixelSample);
+      }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch8');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterEightNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterEightHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterEightReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterEightReferenceCount = await chapterEightReferenceNodes.count();
+    const chapterEightPanelIds = await chapterEightReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterEightOverlayHidden = await page.locator('.ch8-label, .ch8-progress').evaluateAll((nodes) => nodes.every((node) => window.getComputedStyle(node).display === 'none'));
+    const chapterEightScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterEightReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterEightInstrumentBox = await page.locator('.historical-strata-instrument').boundingBox();
+    if (!chapterEightNavBox || !chapterEightHeadingBox) {
+      failures.push(`mobile chapter 8 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterEightNavBottom = chapterEightNavBox.y + chapterEightNavBox.height;
+    if (chapterEightNavBottom > chapterEightHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 8 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterEightNavBottom)}, heading top ${Math.round(chapterEightHeadingBox.y)}`);
+    }
+    if (chapterEightReferenceCount !== 3) failures.push(`mobile chapter 8 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterEightReferenceCount}`);
+    if (chapterEightPanelIds.join(',') !== 'strata,christian,modern') failures.push(`mobile chapter 8 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterEightPanelIds.join(',')}`);
+    if (!chapterEightOverlayHidden) failures.push(`mobile chapter 8 annotation overlay remains visible at ${viewport.width}x${viewport.height}`);
+    if (chapterEightScrollWidth > viewport.width + 2) failures.push(`mobile chapter 8 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterEightScrollWidth}`);
+    if (chapterEightReferenceMapBox && chapterEightReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 8 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterEightReferenceMapBox.width)}`);
+    }
+    if (!chapterEightInstrumentBox) failures.push(`mobile chapter 8 historical strata instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterEightInstrumentBox && chapterEightInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 8 historical strata instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterEightInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterEightCanvas = page.locator('.scene-host canvas').first();
+      const chapterEightCanvasCount = await chapterEightCanvas.count();
+      if (chapterEightCanvasCount > 0) {
+        const chapterEightPixelSample = await countCanvasPixels(chapterEightCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 8 at ${viewport.width}x${viewport.height}`, chapterEightPixelSample);
       }
     }
   }

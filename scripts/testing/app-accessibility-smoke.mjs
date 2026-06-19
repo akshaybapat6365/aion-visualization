@@ -301,6 +301,45 @@ async function checkChapterSevenDynamicAccessibility(page, failures) {
   if (!thresholdDescription?.includes('Threshold: The future looks backward')) failures.push(`/journey/chapter/ch7: threshold scene description mismatch: ${thresholdDescription}`);
 }
 
+async function checkChapterEightDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch8`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Historical strata model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = await instrument.getAttribute('aria-label');
+  const initialDescription = await page.locator('#scene-host-description-ch8').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch8: historical strata instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: History') || !initialInstrumentLabel?.includes('fish motif')) failures.push(`/journey/chapter/ch8: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('History: Symbols gather sediment')) failures.push(`/journey/chapter/ch8: initial scene description mismatch: ${initialDescription}`);
+
+  const earlyImage = page.getByRole('button', { name: /02\s+Early Image/ });
+  await earlyImage.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const earlyImagePressed = await earlyImage.getAttribute('aria-pressed');
+  const earlyImageLabel = await instrument.getAttribute('aria-label');
+  const earlyImageDescription = await page.locator('#scene-host-description-ch8').textContent();
+  if (earlyImagePressed !== 'true') failures.push(`/journey/chapter/ch8: early image button did not become pressed: ${earlyImagePressed}`);
+  if (!earlyImageLabel?.includes('Current emphasis: Early Image') || !earlyImageLabel?.includes('A small sign can hold a total world')) failures.push(`/journey/chapter/ch8: early image instrument label mismatch: ${earlyImageLabel}`);
+  if (!earlyImageDescription?.includes('Early Image: The fish becomes a carrier')) failures.push(`/journey/chapter/ch8: early image scene description mismatch: ${earlyImageDescription}`);
+
+  const afterlife = page.getByRole('button', { name: /03\s+Afterlife/ });
+  await afterlife.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const afterlifePressed = await afterlife.getAttribute('aria-pressed');
+  const afterlifeLabel = await instrument.getAttribute('aria-label');
+  const afterlifeDescription = await page.locator('#scene-host-description-ch8').textContent();
+  if (afterlifePressed !== 'true') failures.push(`/journey/chapter/ch8: afterlife button did not become pressed: ${afterlifePressed}`);
+  if (!afterlifeLabel?.includes('Current emphasis: Afterlife') || !afterlifeLabel?.includes('The unconscious preserves symbolic depth')) failures.push(`/journey/chapter/ch8: afterlife instrument label mismatch: ${afterlifeLabel}`);
+  if (!afterlifeDescription?.includes('Afterlife: Old images keep speaking')) failures.push(`/journey/chapter/ch8: afterlife scene description mismatch: ${afterlifeDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -317,10 +356,11 @@ async function runAccessibilitySmoke() {
     await checkAtlasDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
+    await checkChapterEightDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();

@@ -171,6 +171,31 @@ describe('Aion framework data contract', () => {
       'projection',
     ]);
   });
+
+  test('keeps Chapter 8 fish history panels tied to historical strata', () => {
+    expect(CHAPTER_SCENES.ch8.panels.map((panel) => panel.id)).toEqual([
+      'strata',
+      'christian',
+      'modern',
+    ]);
+    expect(CHAPTER_SCENES.ch8.panels.map((panel) => panel.kicker)).toEqual([
+      'History',
+      'Early Image',
+      'Afterlife',
+    ]);
+    expect(CHAPTER_SCENES.ch8.motionGrammar).toBe('transformation');
+    expect(CHAPTER_SCENES.ch8.visualTheme).toContain('Fish symbol historical strata');
+    expect(CHAPTER_SCENES.ch8.sceneModule).toBe('../visualizations/chapters/ch8/ThreeHistoricalViz.js');
+    expect(CHAPTER_SCENES.ch8.fallbackSummary).toContain('Layered historical strata');
+    expect(CHAPTER_SCENES.ch8.fallbackSummary).toContain('fish motif');
+    expect(CHAPTER_SCENES.ch8.fallbackSummary).toContain('fixed definition');
+
+    expect(getConceptsForChapter('ch8').map((concept) => concept.id)).toEqual([
+      'fish-symbol',
+      'archetype',
+      'collective-unconscious',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {
