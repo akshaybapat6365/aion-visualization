@@ -159,15 +159,15 @@ export const CHAPTER_SCENES: Record<ChapterId, ChapterExperience> = {
   },
   ch13: {
     chapterId: 'ch13',
-    visualTheme: 'Gnostic emanation and quaternio',
+    visualTheme: 'Gnostic pleroma, fourfold Self pattern, and paradox rupture',
     sceneModule: '../visualizations/chapters/ch13/ThreeQuaternioViz.js',
     motionGrammar: 'cyclical-return',
-    fallbackSummary: 'Nested quaternary layers and emanation spheres show Gnostic images approaching the Self through paradox.',
-    checkpoints: ['See the emanation layers.', 'Find the fourfold pattern.', 'Relate Gnostic motifs to Self.'],
+    fallbackSummary: 'A still Gnostic constellation places emanation layers, Sophia, a fourfold pattern, and a rupture line around the Self so fullness, fall, and symbolic wholeness remain visible together.',
+    checkpoints: ['Trace emanation from fullness into image.', 'Find the fourfold pattern around the Self.', 'Hold Sophia, rupture, and return as one paradox field.'],
     panels: [
-      { id: 'gnosis', kicker: 'Gnosis', title: 'Knowledge becomes an image', body: 'Gnostic motifs give psychic totality a cosmic grammar.', insight: 'Cosmology can image interior order.' },
-      { id: 'quaternio', kicker: 'Fourfold', title: 'The Self repeats as four', body: 'Fourfold structures recur as attempts to picture completeness.', insight: 'Wholeness has a structural signature.' },
-      { id: 'paradox', kicker: 'Paradox', title: 'Wisdom includes rupture', body: 'Gnostic symbols often hold fullness and fall together.', insight: 'The Self is approached through contradiction.' },
+      { id: 'gnosis', kicker: 'Gnosis', title: 'Knowledge descends as image', body: 'Gnostic motifs turn invisible fullness into a layered symbolic cosmos.', insight: 'Cosmology can image interior order.' },
+      { id: 'quaternio', kicker: 'Fourfold', title: 'The Self appears as four', body: 'A fourfold structure gives psychic completeness a readable form without turning the image into a doctrine.', insight: 'Wholeness has a structural signature.' },
+      { id: 'paradox', kicker: 'Paradox', title: 'Wisdom includes rupture', body: 'Gnostic symbols hold fullness, fall, spark, and return inside one charged field.', insight: 'The Self is approached through contradiction.' },
     ],
   },
   ch14: {
