@@ -637,6 +637,40 @@ async function smokeReducedMotion(browser, failures) {
   if (!chapterEightFallbackText?.includes('Layered historical strata') || !chapterEightFallbackText?.includes('fish motif')) {
     failures.push('reduced-motion chapter fallback lost Chapter 8 historical strata teaching summary');
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch9');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterNineFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterNineReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterNineReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterNineReferenceCount = await chapterNineReferenceNodes.count();
+  const chapterNinePanelIds = await chapterNineReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterNinePauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterNineCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterNineFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterNineInstrumentCount = await page.locator('.ambivalent-fish-instrument').count();
+  const chapterNineInstrumentMotion = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterNineAnimatedParts = chapterNineInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterNineTransitioningParts = chapterNineInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterNineFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 9 scene');
+  if (chapterNineReducedMotionAttribute !== 'true') failures.push('Chapter 9 did not record reduced-motion state');
+  if (chapterNineReferenceCount !== 3) failures.push(`reduced-motion Chapter 9 reference node count mismatch: ${chapterNineReferenceCount}`);
+  if (chapterNinePanelIds.join(',') !== 'ambivalence,ouroboros,shadow-fish') failures.push(`reduced-motion Chapter 9 reference nodes out of order: ${chapterNinePanelIds.join(',')}`);
+  if (chapterNinePauseControlCount !== 0) failures.push(`reduced-motion Chapter 9 rendered pause controls: ${chapterNinePauseControlCount}`);
+  if (chapterNineCanvasCount !== 0) failures.push(`reduced-motion Chapter 9 rendered canvas: ${chapterNineCanvasCount}`);
+  if (chapterNineInstrumentCount !== 1) failures.push(`reduced-motion Chapter 9 ambivalent fish instrument count mismatch: ${chapterNineInstrumentCount}`);
+  if (chapterNineAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 9 ambivalent fish instrument still animates: ${JSON.stringify(chapterNineAnimatedParts)}`);
+  if (chapterNineTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 9 ambivalent fish instrument still transitions: ${JSON.stringify(chapterNineTransitioningParts)}`);
+  if (!chapterNineFallbackText?.includes('fish-serpent') || !chapterNineFallbackText?.includes('salvation and shadow')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 9 ambivalent fish teaching summary');
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -1414,14 +1448,107 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterEightStyleCount !== 1) failures.push(`chapter 8 injected style count mismatch: ${chapterEightStyleCount}`);
 
   await gotoAppRoute(page, '/journey/chapter/ch9');
-  const shadowFish = page.getByRole('button', { name: /03\s+Shadow/ });
-  await activateSceneButton(shadowFish);
-  await page.waitForTimeout(250);
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterNineReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterNineReferenceCount = await chapterNineReferenceNodes.count();
+  const chapterNinePanelIds = await chapterNineReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterNineInstrument = page.locator('.ambivalent-fish-instrument');
+  const chapterNineInstrumentCount = await chapterNineInstrument.count();
+  const chapterNineInstrumentRole = await chapterNineInstrument.getAttribute('role');
+  const chapterNineInstrumentLabel = await chapterNineInstrument.getAttribute('aria-label');
+  const chapterNineInstrumentPanel = await chapterNineInstrument.getAttribute('data-active-panel');
+  const chapterNineInstrumentFieldCount = await page.locator('.ambivalent-fish-instrument__field').count();
+  const chapterNineInstrumentMirrorCount = await page.locator('.ambivalent-fish-instrument__mirror').count();
+  const chapterNineInstrumentRingCount = await page.locator('.ambivalent-fish-instrument__ring').count();
+  const chapterNineInstrumentFishCount = await page.locator('.ambivalent-fish-instrument__fish').count();
+  const chapterNineInstrumentJunctionCount = await page.locator('.ambivalent-fish-instrument__junction').count();
+  const chapterNineInstrumentShadowCoreCount = await page.locator('.ambivalent-fish-instrument__shadow-core').count();
+  const chapterNineInstrumentLabelCount = await page.locator('.ambivalent-fish-instrument__label').count();
+  const chapterNineInitialDescription = await page.locator('#scene-host-description-ch9').textContent();
+  const chapterNineInstrumentMarksVisible = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core').evaluateAll((nodes) => nodes.length >= 10 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterNineReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="ambivalence"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="ouroboros"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="shadow-fish"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+
+  if (chapterNineReferenceCount !== 3) failures.push(`chapter 9 reference node count mismatch: ${chapterNineReferenceCount}`);
+  if (chapterNinePanelIds.join(',') !== 'ambivalence,ouroboros,shadow-fish') failures.push(`chapter 9 reference nodes out of order: ${chapterNinePanelIds.join(',')}`);
+  if (chapterNineInstrumentCount !== 1) failures.push(`chapter 9 ambivalent fish instrument count mismatch: ${chapterNineInstrumentCount}`);
+  if (chapterNineInstrumentFieldCount !== 2) failures.push(`chapter 9 ambivalent fish instrument field count mismatch: ${chapterNineInstrumentFieldCount}`);
+  if (chapterNineInstrumentMirrorCount !== 1) failures.push(`chapter 9 ambivalent fish instrument mirror count mismatch: ${chapterNineInstrumentMirrorCount}`);
+  if (chapterNineInstrumentRingCount !== 2) failures.push(`chapter 9 ambivalent fish instrument ring count mismatch: ${chapterNineInstrumentRingCount}`);
+  if (chapterNineInstrumentFishCount !== 2) failures.push(`chapter 9 ambivalent fish instrument fish count mismatch: ${chapterNineInstrumentFishCount}`);
+  if (chapterNineInstrumentJunctionCount !== 1) failures.push(`chapter 9 ambivalent fish instrument junction count mismatch: ${chapterNineInstrumentJunctionCount}`);
+  if (chapterNineInstrumentShadowCoreCount !== 1) failures.push(`chapter 9 ambivalent fish instrument shadow core count mismatch: ${chapterNineInstrumentShadowCoreCount}`);
+  if (chapterNineInstrumentLabelCount !== 3) failures.push(`chapter 9 ambivalent fish instrument label count mismatch: ${chapterNineInstrumentLabelCount}`);
+  if (chapterNineInstrumentRole !== 'img') failures.push(`chapter 9 ambivalent fish instrument role mismatch: ${chapterNineInstrumentRole}`);
+  if (!chapterNineInstrumentLabel?.includes('Ambivalent fish model') || !chapterNineInstrumentLabel?.includes('blessing and threat') || !chapterNineInstrumentLabel?.includes('Current emphasis: Paradox')) {
+    failures.push(`chapter 9 ambivalent fish instrument label missing teaching text: ${chapterNineInstrumentLabel}`);
+  }
+  if (chapterNineInstrumentPanel !== 'ambivalence') failures.push(`chapter 9 ambivalent fish instrument did not start on ambivalence panel: ${chapterNineInstrumentPanel}`);
+  if (!chapterNineInitialDescription?.includes('Paradox: The fish has a double edge')) failures.push(`chapter 9 initial scene description mismatch: ${chapterNineInitialDescription}`);
+  if (!chapterNineInstrumentMarksVisible) failures.push('chapter 9 ambivalent fish instrument marks are not visibly rendered');
+  if (!chapterNineReferenceGlyphsVisible) failures.push('chapter 9 reference glyphs are not visibly rendered');
+
+  const ouroboros = page.locator('.chapter-stage__reference-node[data-panel-id="ouroboros"]');
+  await ouroboros.waitFor({ state: 'visible', timeout: 30_000 });
+  await ouroboros.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
+
+  const ouroborosPressed = await ouroboros.getAttribute('aria-pressed');
+  const ouroborosPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="ouroboros"]').count();
+  const ouroborosDescription = await page.locator('#scene-host-description-ch9').textContent();
+  const ouroborosInstrumentPanel = await chapterNineInstrument.getAttribute('data-active-panel');
+  const ouroborosInstrumentLabel = await chapterNineInstrument.getAttribute('aria-label');
+  const ouroborosVisualState = await page.locator('.ambivalent-fish-instrument__ring--outer, .ambivalent-fish-instrument__ring--inner, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__junction').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (ouroborosPressed !== 'true') failures.push(`chapter 9 ouroboros reference did not become active: ${ouroborosPressed}`);
+  if (ouroborosPanelActive !== 1) failures.push(`chapter 9 ouroboros panel did not become active: ${ouroborosPanelActive}`);
+  if (ouroborosInstrumentPanel !== 'ouroboros') failures.push(`chapter 9 ambivalent fish instrument did not follow ouroboros panel: ${ouroborosInstrumentPanel}`);
+  if (!ouroborosInstrumentLabel?.includes('Current emphasis: Return') || !ouroborosInstrumentLabel?.includes('The psyche circles what it cannot solve linearly')) {
+    failures.push(`chapter 9 ambivalent fish instrument label did not follow ouroboros panel: ${ouroborosInstrumentLabel}`);
+  }
+  if (ouroborosVisualState.length !== 4 || !ouroborosVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 9 ambivalent fish instrument did not visually emphasize return: ${ouroborosVisualState.join(',')}`);
+  }
+  if (!ouroborosDescription?.includes('Return: The image eats its tail')) failures.push(`chapter 9 scene description did not follow ouroboros panel: ${ouroborosDescription}`);
+
+  const shadowFish = page.locator('.chapter-stage__reference-node[data-panel-id="shadow-fish"]');
+  await shadowFish.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
 
   const shadowFishPressed = await shadowFish.getAttribute('aria-pressed');
+  const shadowFishPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="shadow-fish"]').count();
+  const shadowFishDescription = await page.locator('#scene-host-description-ch9').textContent();
+  const shadowFishInstrumentPanel = await chapterNineInstrument.getAttribute('data-active-panel');
+  const shadowFishInstrumentLabel = await chapterNineInstrument.getAttribute('aria-label');
+  const shadowFishVisualState = await page.locator('.ambivalent-fish-instrument__field--shadow, .ambivalent-fish-instrument__shadow-core, .ambivalent-fish-instrument__fish--shadow, .ambivalent-fish-instrument__mirror').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterNineScrollY = await page.evaluate(() => window.scrollY);
   if (shadowFishPressed !== 'true') failures.push(`chapter 9 scene control did not become active: ${shadowFishPressed}`);
+  if (shadowFishPanelActive !== 1) failures.push(`chapter 9 shadow fish panel did not become active: ${shadowFishPanelActive}`);
+  if (shadowFishInstrumentPanel !== 'shadow-fish') failures.push(`chapter 9 ambivalent fish instrument did not follow shadow fish panel: ${shadowFishInstrumentPanel}`);
+  if (!shadowFishInstrumentLabel?.includes('Current emphasis: Shadow') || !shadowFishInstrumentLabel?.includes('A total image includes its antagonist')) {
+    failures.push(`chapter 9 ambivalent fish instrument label did not follow shadow fish panel: ${shadowFishInstrumentLabel}`);
+  }
+  if (shadowFishVisualState.length !== 4 || !shadowFishVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 9 ambivalent fish instrument did not visually emphasize shadow fish: ${shadowFishVisualState.join(',')}`);
+  }
+  if (!shadowFishDescription?.includes('Shadow: Light casts its fish-shadow')) failures.push(`chapter 9 scene description did not follow shadow fish panel: ${shadowFishDescription}`);
   if (chapterNineScrollY > 10) failures.push(`chapter 9 scene control unexpectedly scrolled page: ${chapterNineScrollY}`);
+
+  const chapterNineCanvas = page.locator('.scene-host canvas').first();
+  const chapterNineCanvasBox = await chapterNineCanvas.boundingBox();
+  const chapterNinePixelSample = await waitForCanvasPixels(chapterNineCanvas);
+  if (!chapterNineCanvasBox || chapterNineCanvasBox.width < 300 || chapterNineCanvasBox.height < 300) {
+    failures.push(`chapter 9 canvas geometry too small: ${chapterNineCanvasBox ? `${Math.round(chapterNineCanvasBox.width)}x${Math.round(chapterNineCanvasBox.height)}` : 'missing'}`);
+  }
+  recordCanvasPixelFailure(failures, 'chapter 9', chapterNinePixelSample);
 
   await gotoAppRoute(page, '/journey/chapter/ch10');
   const opus = page.getByRole('button', { name: /03\s+Opus/ });
@@ -1476,7 +1603,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -1748,6 +1875,45 @@ async function smokeMobile(page, failures) {
       if (chapterEightCanvasCount > 0) {
         const chapterEightPixelSample = await waitForCanvasPixels(chapterEightCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 8 at ${viewport.width}x${viewport.height}`, chapterEightPixelSample);
+      }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch9');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterNineNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterNineHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterNineReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterNineReferenceCount = await chapterNineReferenceNodes.count();
+    const chapterNinePanelIds = await chapterNineReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterNineScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterNineReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterNineInstrumentBox = await page.locator('.ambivalent-fish-instrument').boundingBox();
+    if (!chapterNineNavBox || !chapterNineHeadingBox) {
+      failures.push(`mobile chapter 9 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterNineNavBottom = chapterNineNavBox.y + chapterNineNavBox.height;
+    if (chapterNineNavBottom > chapterNineHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 9 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterNineNavBottom)}, heading top ${Math.round(chapterNineHeadingBox.y)}`);
+    }
+    if (chapterNineReferenceCount !== 3) failures.push(`mobile chapter 9 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterNineReferenceCount}`);
+    if (chapterNinePanelIds.join(',') !== 'ambivalence,ouroboros,shadow-fish') failures.push(`mobile chapter 9 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterNinePanelIds.join(',')}`);
+    if (chapterNineScrollWidth > viewport.width + 2) failures.push(`mobile chapter 9 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterNineScrollWidth}`);
+    if (chapterNineReferenceMapBox && chapterNineReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 9 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterNineReferenceMapBox.width)}`);
+    }
+    if (!chapterNineInstrumentBox) failures.push(`mobile chapter 9 ambivalent fish instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterNineInstrumentBox && chapterNineInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 9 ambivalent fish instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterNineInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterNineCanvas = page.locator('.scene-host canvas').first();
+      const chapterNineCanvasCount = await chapterNineCanvas.count();
+      if (chapterNineCanvasCount > 0) {
+        const chapterNinePixelSample = await waitForCanvasPixels(chapterNineCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 9 at ${viewport.width}x${viewport.height}`, chapterNinePixelSample);
       }
     }
   }

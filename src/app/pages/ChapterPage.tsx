@@ -65,6 +65,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const prophecyFieldInstrumentLabel = `Prophecy field model: historical pressure gathers around a time axis, private fear projects into a shared symbolic image-field, and the threshold mirror shows the future looking backward into older archetypal forms. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -296,6 +297,28 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="historical-strata-instrument__label historical-strata-instrument__label--strata" aria-hidden="true">strata</span>
               <span className="historical-strata-instrument__label historical-strata-instrument__label--carrier" aria-hidden="true">carrier</span>
               <span className="historical-strata-instrument__label historical-strata-instrument__label--afterlife" aria-hidden="true">afterlife</span>
+            </div>
+          )}
+          {chapter.id === 'ch9' && (
+            <div
+              className="ambivalent-fish-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={ambivalentFishInstrumentLabel}
+            >
+              <span className="ambivalent-fish-instrument__field ambivalent-fish-instrument__field--light" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__field ambivalent-fish-instrument__field--shadow" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__mirror" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__ring ambivalent-fish-instrument__ring--outer" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__ring ambivalent-fish-instrument__ring--inner" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__thread" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__fish ambivalent-fish-instrument__fish--light" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__fish ambivalent-fish-instrument__fish--shadow" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__junction" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__shadow-core" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--paradox" aria-hidden="true">double edge</span>
+              <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--return" aria-hidden="true">return</span>
+              <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--shadow" aria-hidden="true">counter-pole</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">
