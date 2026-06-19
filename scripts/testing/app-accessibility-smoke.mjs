@@ -418,6 +418,45 @@ async function checkChapterTenDynamicAccessibility(page, failures) {
   if (!opusDescription?.includes('Opus: Matter teaches psyche')) failures.push(`/journey/chapter/ch10: opus scene description mismatch: ${opusDescription}`);
 }
 
+async function checkChapterElevenDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch11`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Philosophical tree model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = await instrument.getAttribute('aria-label');
+  const initialDescription = await page.locator('#scene-host-description-ch11').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch11: philosophical tree instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Mediator') || !initialInstrumentLabel?.includes('Mercurius holds the middle')) failures.push(`/journey/chapter/ch11: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Mediator: The slippery middle')) failures.push(`/journey/chapter/ch11: initial scene description mismatch: ${initialDescription}`);
+
+  const opus = page.getByRole('button', { name: /02\s+Opus/ });
+  await opus.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const opusPressed = await opus.getAttribute('aria-pressed');
+  const opusLabel = await instrument.getAttribute('aria-label');
+  const opusDescription = await page.locator('#scene-host-description-ch11').textContent();
+  if (opusPressed !== 'true') failures.push(`/journey/chapter/ch11: opus button did not become pressed: ${opusPressed}`);
+  if (!opusLabel?.includes('Current emphasis: Opus') || !opusLabel?.includes('Change returns to deepen itself')) failures.push(`/journey/chapter/ch11: opus instrument label mismatch: ${opusLabel}`);
+  if (!opusDescription?.includes('Opus: Transformation repeats')) failures.push(`/journey/chapter/ch11: opus scene description mismatch: ${opusDescription}`);
+
+  const stone = page.getByRole('button', { name: /03\s+Stone/ });
+  await stone.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const stonePressed = await stone.getAttribute('aria-pressed');
+  const stoneLabel = await instrument.getAttribute('aria-label');
+  const stoneDescription = await page.locator('#scene-host-description-ch11').textContent();
+  if (stonePressed !== 'true') failures.push(`/journey/chapter/ch11: stone button did not become pressed: ${stonePressed}`);
+  if (!stoneLabel?.includes('Current emphasis: Stone') || !stoneLabel?.includes('Completion keeps the opposites alive')) failures.push(`/journey/chapter/ch11: stone instrument label mismatch: ${stoneLabel}`);
+  if (!stoneDescription?.includes('Stone: The goal is a formed paradox')) failures.push(`/journey/chapter/ch11: stone scene description mismatch: ${stoneDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -437,10 +476,11 @@ async function runAccessibilitySmoke() {
     await checkChapterEightDynamicAccessibility(desktop, failures);
     await checkChapterNineDynamicAccessibility(desktop, failures);
     await checkChapterTenDynamicAccessibility(desktop, failures);
+    await checkChapterElevenDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();

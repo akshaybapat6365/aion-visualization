@@ -21,6 +21,7 @@ const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP
 const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
 const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
 const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as const;
+const alchemicalTreeStages = ['black', 'white', 'gold', 'red'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -68,6 +69,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, the opus wheel repeats transformation, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -351,6 +353,36 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--fish" aria-hidden="true">fish enters</span>
               <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--prima" aria-hidden="true">prima materia</span>
               <span className="alchemical-vessel-instrument__label alchemical-vessel-instrument__label--opus" aria-hidden="true">opus stages</span>
+            </div>
+          )}
+          {chapter.id === 'ch11' && (
+            <div
+              className="alchemical-tree-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={alchemicalTreeInstrumentLabel}
+            >
+              <span className="alchemical-tree-instrument__field alchemical-tree-instrument__field--above" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__field alchemical-tree-instrument__field--below" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--one" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--two" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--three" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__trunk" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__branch alchemical-tree-instrument__branch--left" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__branch alchemical-tree-instrument__branch--right" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__thread alchemical-tree-instrument__thread--ascent" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__thread alchemical-tree-instrument__thread--descent" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__mercurius" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__wheel" aria-hidden="true">
+                {alchemicalTreeStages.map((stage) => (
+                  <span key={stage} className={`alchemical-tree-instrument__stage alchemical-tree-instrument__stage--${stage}`} />
+                ))}
+              </span>
+              <span className="alchemical-tree-instrument__stone" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__reflection" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--mercurius" aria-hidden="true">Mercurius</span>
+              <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--opus" aria-hidden="true">opus wheel</span>
+              <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--lapis" aria-hidden="true">lapis</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">

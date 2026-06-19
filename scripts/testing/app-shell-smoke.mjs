@@ -729,6 +729,63 @@ async function smokeReducedMotion(browser, failures) {
       failures.push(`reduced-motion Chapter 10 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterTenReferenceMapBox.y)}`);
     }
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch11');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterElevenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterElevenReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterElevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterElevenReferenceCount = await chapterElevenReferenceNodes.count();
+  const chapterElevenPanelIds = await chapterElevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterElevenPauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterElevenCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterElevenFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterElevenFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterElevenFallbackHeadingBox = await page.locator('.scene-host__fallback h2').boundingBox();
+  const chapterElevenFallbackBodyBox = await page.locator('.scene-host__fallback p:not(.eyebrow)').boundingBox();
+  const chapterElevenInstrumentCount = await page.locator('.alchemical-tree-instrument').count();
+  const chapterElevenInstrumentBox = await page.locator('.alchemical-tree-instrument').boundingBox();
+  const chapterElevenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterElevenInstrumentMotion = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterElevenAnimatedParts = chapterElevenInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterElevenTransitioningParts = chapterElevenInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterElevenFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 11 scene');
+  if (chapterElevenReducedMotionAttribute !== 'true') failures.push('Chapter 11 did not record reduced-motion state');
+  if (chapterElevenReferenceCount !== 3) failures.push(`reduced-motion Chapter 11 reference node count mismatch: ${chapterElevenReferenceCount}`);
+  if (chapterElevenPanelIds.join(',') !== 'mercurius,opus-wheel,lapis') failures.push(`reduced-motion Chapter 11 reference nodes out of order: ${chapterElevenPanelIds.join(',')}`);
+  if (chapterElevenPauseControlCount !== 0) failures.push(`reduced-motion Chapter 11 rendered pause controls: ${chapterElevenPauseControlCount}`);
+  if (chapterElevenCanvasCount !== 0) failures.push(`reduced-motion Chapter 11 rendered canvas: ${chapterElevenCanvasCount}`);
+  if (chapterElevenInstrumentCount !== 1) failures.push(`reduced-motion Chapter 11 alchemical tree instrument count mismatch: ${chapterElevenInstrumentCount}`);
+  if (chapterElevenAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 11 alchemical tree instrument still animates: ${JSON.stringify(chapterElevenAnimatedParts)}`);
+  if (chapterElevenTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 11 alchemical tree instrument still transitions: ${JSON.stringify(chapterElevenTransitioningParts)}`);
+  if (!chapterElevenFallbackText?.includes('Mercurius') || !chapterElevenFallbackText?.includes('opus cycle')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 11 alchemical interpretation teaching summary');
+  }
+  if (!chapterElevenFallbackHeadingBox || chapterElevenFallbackHeadingBox.width < 20 || chapterElevenFallbackHeadingBox.height < 8) {
+    failures.push(`reduced-motion Chapter 11 fallback heading is not visibly rendered: ${chapterElevenFallbackHeadingBox ? `${Math.round(chapterElevenFallbackHeadingBox.width)}x${Math.round(chapterElevenFallbackHeadingBox.height)}` : 'missing'}`);
+  }
+  if (!chapterElevenFallbackBodyBox || chapterElevenFallbackBodyBox.width < 40 || chapterElevenFallbackBodyBox.height < 8) {
+    failures.push(`reduced-motion Chapter 11 fallback body is not visibly rendered: ${chapterElevenFallbackBodyBox ? `${Math.round(chapterElevenFallbackBodyBox.width)}x${Math.round(chapterElevenFallbackBodyBox.height)}` : 'missing'}`);
+  }
+  if (chapterElevenFallbackBox && chapterElevenInstrumentBox) {
+    const instrumentBottom = chapterElevenInstrumentBox.y + chapterElevenInstrumentBox.height;
+    if (chapterElevenFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 11 fallback overlaps the alchemical tree instrument on mobile: fallback top ${Math.round(chapterElevenFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterElevenFallbackBox && chapterElevenReferenceMapBox) {
+    const fallbackBottom = chapterElevenFallbackBox.y + chapterElevenFallbackBox.height;
+    if (fallbackBottom > chapterElevenReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 11 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterElevenReferenceMapBox.y)}`);
+    }
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -1721,14 +1778,118 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   await gotoAppRoute(page, '/journey/chapter/ch11');
-  const stone = page.getByRole('button', { name: /03\s+Stone/ });
-  await activateSceneButton(stone);
-  await page.waitForTimeout(250);
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterElevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterElevenReferenceCount = await chapterElevenReferenceNodes.count();
+  const chapterElevenPanelIds = await chapterElevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterElevenInstrument = page.locator('.alchemical-tree-instrument');
+  const chapterElevenInstrumentCount = await chapterElevenInstrument.count();
+  const chapterElevenInstrumentRole = await chapterElevenInstrument.getAttribute('role');
+  const chapterElevenInstrumentLabel = await chapterElevenInstrument.getAttribute('aria-label');
+  const chapterElevenInstrumentPanel = await chapterElevenInstrument.getAttribute('data-active-panel');
+  const chapterElevenInstrumentStageCount = await page.locator('.alchemical-tree-instrument__stage').count();
+  const chapterElevenInstrumentRootCount = await page.locator('.alchemical-tree-instrument__root').count();
+  const chapterElevenInstrumentBranchCount = await page.locator('.alchemical-tree-instrument__branch').count();
+  const chapterElevenInstrumentLabelCount = await page.locator('.alchemical-tree-instrument__label').count();
+  const chapterElevenInitialDescription = await page.locator('#scene-host-description-ch11').textContent();
+  const chapterElevenInstrumentMarksVisible = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.length >= 18 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterElevenReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="mercurius"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="opus-wheel"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="lapis"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.length === 3 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    const before = window.getComputedStyle(node, '::before');
+    const after = window.getComputedStyle(node, '::after');
+    return styles.display !== 'none'
+      && Number(styles.opacity) > 0
+      && box.width > 0
+      && box.height > 0
+      && before.content !== 'none'
+      && after.content !== 'none'
+      && Number.parseFloat(before.width) > 0
+      && Number.parseFloat(before.height) > 0
+      && Number.parseFloat(after.width) > 0
+      && Number.parseFloat(after.height) > 0;
+  }));
+
+  if (chapterElevenReferenceCount !== 3) failures.push(`chapter 11 reference node count mismatch: ${chapterElevenReferenceCount}`);
+  if (chapterElevenPanelIds.join(',') !== 'mercurius,opus-wheel,lapis') failures.push(`chapter 11 reference nodes out of order: ${chapterElevenPanelIds.join(',')}`);
+  if (chapterElevenInstrumentCount !== 1) failures.push(`chapter 11 alchemical tree instrument count mismatch: ${chapterElevenInstrumentCount}`);
+  if (chapterElevenInstrumentStageCount !== 4) failures.push(`chapter 11 alchemical tree stage count mismatch: ${chapterElevenInstrumentStageCount}`);
+  if (chapterElevenInstrumentRootCount !== 3) failures.push(`chapter 11 alchemical tree root count mismatch: ${chapterElevenInstrumentRootCount}`);
+  if (chapterElevenInstrumentBranchCount !== 2) failures.push(`chapter 11 alchemical tree branch count mismatch: ${chapterElevenInstrumentBranchCount}`);
+  if (chapterElevenInstrumentLabelCount !== 3) failures.push(`chapter 11 alchemical tree label count mismatch: ${chapterElevenInstrumentLabelCount}`);
+  if (chapterElevenInstrumentRole !== 'img') failures.push(`chapter 11 alchemical tree instrument role mismatch: ${chapterElevenInstrumentRole}`);
+  if (!chapterElevenInstrumentLabel?.includes('Philosophical tree model') || !chapterElevenInstrumentLabel?.includes('Mercurius holds the middle') || !chapterElevenInstrumentLabel?.includes('Current emphasis: Mediator')) {
+    failures.push(`chapter 11 alchemical tree instrument label missing teaching text: ${chapterElevenInstrumentLabel}`);
+  }
+  if (chapterElevenInstrumentPanel !== 'mercurius') failures.push(`chapter 11 alchemical tree instrument did not start on Mercurius panel: ${chapterElevenInstrumentPanel}`);
+  if (!chapterElevenInitialDescription?.includes('Mediator: The slippery middle')) failures.push(`chapter 11 initial scene description mismatch: ${chapterElevenInitialDescription}`);
+  if (!chapterElevenInstrumentMarksVisible) failures.push('chapter 11 alchemical tree instrument marks are not visibly rendered');
+  if (!chapterElevenReferenceGlyphsVisible) failures.push('chapter 11 reference glyphs are not visibly rendered');
+
+  const opusWheel = page.locator('.chapter-stage__reference-node[data-panel-id="opus-wheel"]');
+  await opusWheel.waitFor({ state: 'visible', timeout: 30_000 });
+  await opusWheel.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
+
+  const opusWheelPressed = await opusWheel.getAttribute('aria-pressed');
+  const opusWheelPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="opus-wheel"]').count();
+  const opusWheelDescription = await page.locator('#scene-host-description-ch11').textContent();
+  const opusWheelInstrumentPanel = await chapterElevenInstrument.getAttribute('data-active-panel');
+  const opusWheelInstrumentLabel = await chapterElevenInstrument.getAttribute('aria-label');
+  const opusWheelVisualState = await page.locator('.alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__thread').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (opusWheelPressed !== 'true') failures.push(`chapter 11 opus wheel reference did not become active: ${opusWheelPressed}`);
+  if (opusWheelPanelActive !== 1) failures.push(`chapter 11 opus wheel panel did not become active: ${opusWheelPanelActive}`);
+  if (opusWheelInstrumentPanel !== 'opus-wheel') failures.push(`chapter 11 alchemical tree instrument did not follow opus wheel panel: ${opusWheelInstrumentPanel}`);
+  if (!opusWheelInstrumentLabel?.includes('Current emphasis: Opus') || !opusWheelInstrumentLabel?.includes('Change returns to deepen itself')) {
+    failures.push(`chapter 11 alchemical tree instrument label did not follow opus panel: ${opusWheelInstrumentLabel}`);
+  }
+  if (opusWheelVisualState.length !== 7 || !opusWheelVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 11 alchemical tree instrument did not visually emphasize opus wheel: ${opusWheelVisualState.join(',')}`);
+  }
+  if (!opusWheelDescription?.includes('Opus: Transformation repeats')) failures.push(`chapter 11 scene description did not follow opus panel: ${opusWheelDescription}`);
+
+  const stone = page.locator('.chapter-stage__reference-node[data-panel-id="lapis"]');
+  await stone.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
 
   const stonePressed = await stone.getAttribute('aria-pressed');
+  const stonePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="lapis"]').count();
+  const stoneDescription = await page.locator('#scene-host-description-ch11').textContent();
+  const stoneInstrumentPanel = await chapterElevenInstrument.getAttribute('data-active-panel');
+  const stoneInstrumentLabel = await chapterElevenInstrument.getAttribute('aria-label');
+  const stoneVisualState = await page.locator('.alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection, .alchemical-tree-instrument__field').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterElevenScrollY = await page.evaluate(() => window.scrollY);
   if (stonePressed !== 'true') failures.push(`chapter 11 scene control did not become active: ${stonePressed}`);
+  if (stonePanelActive !== 1) failures.push(`chapter 11 stone panel did not become active: ${stonePanelActive}`);
+  if (stoneInstrumentPanel !== 'lapis') failures.push(`chapter 11 alchemical tree instrument did not follow stone panel: ${stoneInstrumentPanel}`);
+  if (!stoneInstrumentLabel?.includes('Current emphasis: Stone') || !stoneInstrumentLabel?.includes('Completion keeps the opposites alive')) {
+    failures.push(`chapter 11 alchemical tree instrument label did not follow stone panel: ${stoneInstrumentLabel}`);
+  }
+  if (stoneVisualState.length !== 4 || !stoneVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 11 alchemical tree instrument did not visually emphasize lapis: ${stoneVisualState.join(',')}`);
+  }
+  if (!stoneDescription?.includes('Stone: The goal is a formed paradox')) failures.push(`chapter 11 scene description did not follow stone panel: ${stoneDescription}`);
   if (chapterElevenScrollY > 10) failures.push(`chapter 11 scene control unexpectedly scrolled page: ${chapterElevenScrollY}`);
+
+  const chapterElevenCanvas = page.locator('.scene-host canvas').first();
+  const chapterElevenCanvasCount = await chapterElevenCanvas.count();
+  const chapterElevenFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  if (chapterElevenCanvasCount !== 1) {
+    failures.push(`chapter 11 expected one ready canvas but found ${chapterElevenCanvasCount}; fallback visible: ${chapterElevenFallbackVisible}`);
+  } else {
+    const chapterElevenCanvasBox = await chapterElevenCanvas.boundingBox();
+    const chapterElevenPixelSample = await waitForCanvasPixels(chapterElevenCanvas);
+    if (!chapterElevenCanvasBox || chapterElevenCanvasBox.width < 300 || chapterElevenCanvasBox.height < 300) {
+      failures.push(`chapter 11 canvas geometry too small: ${chapterElevenCanvasBox ? `${Math.round(chapterElevenCanvasBox.width)}x${Math.round(chapterElevenCanvasBox.height)}` : 'missing'}`);
+    }
+    recordCanvasPixelFailure(failures, 'chapter 11', chapterElevenPixelSample);
+  }
 
   await gotoAppRoute(page, '/journey/chapter/ch12');
   const bridge = page.getByRole('button', { name: /03\s+Bridge/ });
@@ -1763,7 +1924,7 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
@@ -2113,6 +2274,45 @@ async function smokeMobile(page, failures) {
       if (chapterTenCanvasCount > 0) {
         const chapterTenPixelSample = await waitForCanvasPixels(chapterTenCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 10 at ${viewport.width}x${viewport.height}`, chapterTenPixelSample);
+      }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch11');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterElevenNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterElevenHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterElevenReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterElevenReferenceCount = await chapterElevenReferenceNodes.count();
+    const chapterElevenPanelIds = await chapterElevenReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterElevenScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterElevenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterElevenInstrumentBox = await page.locator('.alchemical-tree-instrument').boundingBox();
+    if (!chapterElevenNavBox || !chapterElevenHeadingBox) {
+      failures.push(`mobile chapter 11 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterElevenNavBottom = chapterElevenNavBox.y + chapterElevenNavBox.height;
+    if (chapterElevenNavBottom > chapterElevenHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 11 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterElevenNavBottom)}, heading top ${Math.round(chapterElevenHeadingBox.y)}`);
+    }
+    if (chapterElevenReferenceCount !== 3) failures.push(`mobile chapter 11 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterElevenReferenceCount}`);
+    if (chapterElevenPanelIds.join(',') !== 'mercurius,opus-wheel,lapis') failures.push(`mobile chapter 11 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterElevenPanelIds.join(',')}`);
+    if (chapterElevenScrollWidth > viewport.width + 2) failures.push(`mobile chapter 11 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterElevenScrollWidth}`);
+    if (chapterElevenReferenceMapBox && chapterElevenReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 11 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterElevenReferenceMapBox.width)}`);
+    }
+    if (!chapterElevenInstrumentBox) failures.push(`mobile chapter 11 alchemical tree instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterElevenInstrumentBox && chapterElevenInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 11 alchemical tree instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterElevenInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterElevenCanvas = page.locator('.scene-host canvas').first();
+      const chapterElevenCanvasCount = await chapterElevenCanvas.count();
+      if (chapterElevenCanvasCount > 0) {
+        const chapterElevenPixelSample = await waitForCanvasPixels(chapterElevenCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 11 at ${viewport.width}x${viewport.height}`, chapterElevenPixelSample);
       }
     }
   }
