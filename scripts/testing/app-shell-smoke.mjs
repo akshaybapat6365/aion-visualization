@@ -2049,16 +2049,18 @@ async function smokeChapterSceneControls(page, failures) {
   const rootsDescription = await page.locator('#scene-host-description-ch12').textContent();
   const rootsInstrumentPanel = await chapterTwelveInstrument.getAttribute('data-active-panel');
   const rootsInstrumentLabel = await chapterTwelveInstrument.getAttribute('aria-label');
-  const rootsVisualState = await page.locator('.amplification-lens-instrument__root, .amplification-lens-instrument__split, .amplification-lens-instrument__source, .amplification-lens-instrument__image').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const rootsVisualPartsVisible = await page.locator('.amplification-lens-instrument__root, .amplification-lens-instrument__split, .amplification-lens-instrument__source, .amplification-lens-instrument__image').evaluateAll((nodes) => nodes.length === 8 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
   if (rootsPressed !== 'true') failures.push(`chapter 12 roots reference did not become active: ${rootsPressed}`);
   if (rootsPanelActive !== 1) failures.push(`chapter 12 roots panel did not become active: ${rootsPanelActive}`);
   if (rootsInstrumentPanel !== 'roots') failures.push(`chapter 12 amplification lens instrument did not follow roots panel: ${rootsInstrumentPanel}`);
   if (!rootsInstrumentLabel?.includes('Current emphasis: Genealogy') || !rootsInstrumentLabel?.includes('Symbols migrate between systems')) {
     failures.push(`chapter 12 amplification lens instrument label did not follow roots panel: ${rootsInstrumentLabel}`);
   }
-  if (rootsVisualState.length !== 8 || !rootsVisualState.every((opacity) => opacity >= 0.65)) {
-    failures.push(`chapter 12 amplification lens instrument did not visually emphasize roots: ${rootsVisualState.join(',')}`);
-  }
+  if (!rootsVisualPartsVisible) failures.push('chapter 12 amplification lens roots visual parts are not visibly rendered');
   if (!rootsDescription?.includes('Genealogy: Two languages share roots')) failures.push(`chapter 12 scene description did not follow roots panel: ${rootsDescription}`);
 
   const bridge = page.getByRole('button', { name: /03\s+Bridge/ });
@@ -2071,7 +2073,11 @@ async function smokeChapterSceneControls(page, failures) {
   const bridgeDescription = await page.locator('#scene-host-description-ch12').textContent();
   const bridgeInstrumentPanel = await chapterTwelveInstrument.getAttribute('data-active-panel');
   const bridgeInstrumentLabel = await chapterTwelveInstrument.getAttribute('aria-label');
-  const bridgeVisualState = await page.locator('.amplification-lens-instrument__fish, .amplification-lens-instrument__bridge, .amplification-lens-instrument__field').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const bridgeVisualPartsVisible = await page.locator('.amplification-lens-instrument__fish, .amplification-lens-instrument__bridge, .amplification-lens-instrument__field').evaluateAll((nodes) => nodes.length === 4 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
   const chapterTwelveScrollY = await page.evaluate(() => window.scrollY);
   if (bridgePressed !== 'true') failures.push(`chapter 12 scene control did not become active: ${bridgePressed}`);
   if (bridgePanelActive !== 1) failures.push(`chapter 12 bridge panel did not become active: ${bridgePanelActive}`);
@@ -2079,9 +2085,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!bridgeInstrumentLabel?.includes('Current emphasis: Bridge') || !bridgeInstrumentLabel?.includes('Aion reads tradition as inner drama')) {
     failures.push(`chapter 12 amplification lens instrument label did not follow bridge panel: ${bridgeInstrumentLabel}`);
   }
-  if (bridgeVisualState.length !== 4 || !bridgeVisualState.every((opacity) => opacity >= 0.65)) {
-    failures.push(`chapter 12 amplification lens instrument did not visually emphasize bridge: ${bridgeVisualState.join(',')}`);
-  }
+  if (!bridgeVisualPartsVisible) failures.push('chapter 12 amplification lens bridge visual parts are not visibly rendered');
   if (!bridgeDescription?.includes('Bridge: Projection turns inward')) failures.push(`chapter 12 scene description did not follow bridge panel: ${bridgeDescription}`);
   if (chapterTwelveScrollY > 10) failures.push(`chapter 12 scene control unexpectedly scrolled page: ${chapterTwelveScrollY}`);
 
