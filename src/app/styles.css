@@ -5115,6 +5115,439 @@ h3 {
   box-shadow: 0 0 1.2rem rgba(83, 216, 232, 0.13);
 }
 
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__intro h1 {
+  max-width: 13.5ch;
+  font-size: clamp(3.6rem, 6vw, 5.2rem);
+  line-height: 0.92;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__thesis-map {
+  max-width: 30rem;
+  margin-top: 0.94rem;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-map {
+  width: min(26rem, 100%);
+  margin-top: 0.68rem;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node {
+  min-height: 3.85rem;
+  background:
+    radial-gradient(circle at 42% 34%, rgba(255, 227, 156, 0.11), transparent 2.35rem),
+    radial-gradient(circle at 62% 58%, rgba(83, 216, 232, 0.1), transparent 2.4rem),
+    linear-gradient(180deg, rgba(10, 8, 12, 0.62), rgba(3, 3, 7, 0.34));
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-label {
+  margin-top: 2.05rem;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__scrim {
+  background:
+    linear-gradient(180deg, rgba(3, 3, 7, 0.76), rgba(3, 3, 7, 0.4) 48%, rgba(3, 3, 7, 0.82)),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.95), rgba(3, 3, 7, 0.52) 60%, rgba(3, 3, 7, 0.3)),
+    radial-gradient(circle at 31% 47%, rgba(212, 175, 55, 0.14), transparent 32%),
+    radial-gradient(circle at 66% 52%, rgba(83, 216, 232, 0.13), transparent 36%);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="ambivalence"] .chapter-stage__reference-mark::before {
+  top: 0.96rem;
+  width: 2.15rem;
+  height: 1.08rem;
+  border: 1px solid rgba(255, 227, 156, 0.3);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 50%, rgba(255, 227, 156, 0.8) 0 0.14rem, transparent 0.16rem),
+    linear-gradient(90deg, rgba(255, 227, 156, 0.12), transparent 52%, rgba(83, 216, 232, 0.12));
+  box-shadow: 0 0 1.2rem rgba(212, 175, 55, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="ambivalence"] .chapter-stage__reference-mark::after {
+  top: 0.62rem;
+  height: 2.2rem;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.42), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="ouroboros"] .chapter-stage__reference-mark::before {
+  top: 0.82rem;
+  width: 2.35rem;
+  height: 1.55rem;
+  border: 1px solid rgba(255, 227, 156, 0.28);
+  border-left-color: rgba(83, 216, 232, 0.34);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.08), transparent 70%);
+  box-shadow: 0 0 1.25rem rgba(83, 216, 232, 0.16);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="ouroboros"] .chapter-stage__reference-mark::after {
+  top: 1.28rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.82);
+  box-shadow: 0 0 1rem rgba(212, 175, 55, 0.32);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="shadow-fish"] .chapter-stage__reference-mark::before {
+  top: 0.96rem;
+  width: 2.1rem;
+  height: 1.05rem;
+  border: 1px solid rgba(83, 216, 232, 0.3);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 66% 50%, rgba(143, 231, 237, 0.66) 0 0.13rem, transparent 0.15rem),
+    radial-gradient(ellipse at 52% 50%, rgba(83, 216, 232, 0.12), rgba(181, 130, 255, 0.08) 58%, transparent 70%);
+  box-shadow: 0 0 1.18rem rgba(83, 216, 232, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .chapter-stage__reference-node[data-panel-id="shadow-fish"] .chapter-stage__reference-mark::after {
+  top: 0.78rem;
+  height: 2.12rem;
+  background: linear-gradient(180deg, transparent, rgba(83, 216, 232, 0.38), transparent);
+  transform: translateX(-50%) rotate(-18deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument {
+  position: relative;
+  width: min(31rem, 100%);
+  min-height: clamp(6.75rem, 10.6vh, 8.05rem);
+  overflow: hidden;
+  margin-top: 0.82rem;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 30% 45%, rgba(212, 175, 55, 0.18), transparent 4.6rem),
+    radial-gradient(circle at 68% 52%, rgba(83, 216, 232, 0.14), transparent 4.8rem),
+    linear-gradient(90deg, rgba(17, 13, 8, 0.8), rgba(9, 9, 13, 0.66) 50%, rgba(3, 13, 18, 0.66));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::before,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::before {
+  inset: 0.58rem;
+  border: 1px solid rgba(255, 227, 156, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::after {
+  left: 50%;
+  top: 50%;
+  width: 0.08rem;
+  height: 5.25rem;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.28), transparent);
+  box-shadow: 0 0 1.35rem rgba(244, 240, 232, 0.12);
+  transform: translate(-50%, -50%) rotate(4deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__junction,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field {
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.56;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--light {
+  left: 0;
+  background:
+    radial-gradient(circle at 42% 48%, rgba(255, 227, 156, 0.18), transparent 4rem),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.09), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--shadow {
+  right: 0;
+  background:
+    radial-gradient(circle at 58% 52%, rgba(83, 216, 232, 0.14), transparent 4.2rem),
+    linear-gradient(270deg, rgba(83, 216, 232, 0.08), rgba(181, 130, 255, 0.04), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror {
+  left: 50%;
+  top: 50%;
+  width: 3.1rem;
+  height: 5rem;
+  border: 1px solid rgba(244, 240, 232, 0.16);
+  border-radius: 50%;
+  background:
+    linear-gradient(92deg, transparent 46%, rgba(244, 240, 232, 0.16) 49%, transparent 52%),
+    radial-gradient(ellipse at 50% 50%, rgba(244, 240, 232, 0.08), transparent 72%);
+  box-shadow:
+    inset 0 0 1.1rem rgba(244, 240, 232, 0.08),
+    0 0 1.55rem rgba(83, 216, 232, 0.12);
+  opacity: 0.7;
+  transform: translate(-50%, -50%) rotate(4deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring {
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  opacity: 0.42;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--outer {
+  width: 9.7rem;
+  height: 4.85rem;
+  border: 1px solid rgba(255, 227, 156, 0.24);
+  border-left-color: rgba(83, 216, 232, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--inner {
+  width: 6.7rem;
+  height: 3.12rem;
+  border: 1px solid rgba(83, 216, 232, 0.22);
+  border-right-color: rgba(255, 227, 156, 0.26);
+  opacity: 0.34;
+  transform: translate(-50%, -50%) rotate(16deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread {
+  left: 50%;
+  top: 50%;
+  width: 8.25rem;
+  height: 3.6rem;
+  border-top: 1px solid rgba(255, 227, 156, 0.22);
+  border-bottom: 1px solid rgba(83, 216, 232, 0.24);
+  border-radius: 50%;
+  opacity: 0.46;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish {
+  top: 50%;
+  width: 3.95rem;
+  height: 1.22rem;
+  border-radius: 50%;
+  opacity: 0.84;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring),
+    filter 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.08rem;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--light {
+  left: 25%;
+  border-top: 1px solid rgba(255, 227, 156, 0.58);
+  border-bottom: 1px solid rgba(244, 240, 232, 0.28);
+  background:
+    radial-gradient(circle at 32% 50%, rgba(255, 227, 156, 0.72) 0 0.16rem, transparent 0.18rem),
+    radial-gradient(ellipse at 52% 50%, rgba(212, 175, 55, 0.2), transparent 68%);
+  box-shadow: 0 0 1.4rem rgba(212, 175, 55, 0.22);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--light::after {
+  right: -0.38rem;
+  border-top: 1px solid rgba(255, 227, 156, 0.46);
+  border-right: 1px solid rgba(255, 227, 156, 0.32);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--shadow {
+  right: 24%;
+  border-top: 1px solid rgba(83, 216, 232, 0.44);
+  border-bottom: 1px solid rgba(181, 130, 255, 0.32);
+  background:
+    radial-gradient(circle at 68% 50%, rgba(143, 231, 237, 0.52) 0 0.14rem, transparent 0.16rem),
+    radial-gradient(ellipse at 48% 50%, rgba(83, 216, 232, 0.13), rgba(181, 130, 255, 0.06) 58%, transparent 70%);
+  box-shadow: 0 0 1.35rem rgba(83, 216, 232, 0.18);
+  filter: saturate(0.9);
+  transform: translate(50%, -50%) rotate(172deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--shadow::after {
+  left: -0.38rem;
+  border-left: 1px solid rgba(83, 216, 232, 0.34);
+  border-bottom: 1px solid rgba(181, 130, 255, 0.28);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__junction {
+  left: 50%;
+  top: 50%;
+  width: 0.72rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 240, 232, 0.22);
+  border-radius: 50%;
+  background: rgba(244, 240, 232, 0.16);
+  box-shadow:
+    0 0 0 0.42rem rgba(244, 240, 232, 0.05),
+    0 0 1.35rem rgba(255, 227, 156, 0.12);
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core {
+  right: 10%;
+  top: 50%;
+  width: 3.35rem;
+  height: 2.25rem;
+  border: 1px solid rgba(181, 130, 255, 0.22);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(181, 130, 255, 0.16), transparent 68%),
+    linear-gradient(130deg, transparent 47%, rgba(83, 216, 232, 0.2) 49%, transparent 52%);
+  box-shadow: inset 0 0 1.1rem rgba(83, 216, 232, 0.08);
+  opacity: 0.54;
+  transform: translateY(-50%) rotate(-12deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--paradox {
+  left: 7%;
+  top: 14%;
+  color: rgba(255, 227, 156, 0.93);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--return {
+  left: 47%;
+  top: 14%;
+  color: rgba(244, 240, 232, 0.86);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--shadow {
+  right: 5%;
+  top: 14%;
+  color: rgba(143, 231, 237, 0.94);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ambivalence"] .ambivalent-fish-instrument__field {
+  opacity: 0.76;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ambivalence"] .ambivalent-fish-instrument__mirror,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ambivalence"] .ambivalent-fish-instrument__thread {
+  opacity: 0.88;
+  transform: translate(-50%, -50%) rotate(4deg) scale(1.05);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ambivalence"] .ambivalent-fish-instrument__thread {
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ambivalence"] .ambivalent-fish-instrument__fish {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__ring,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__thread,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__junction {
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__ring--outer {
+  border-color: rgba(255, 227, 156, 0.42);
+  border-left-color: rgba(83, 216, 232, 0.5);
+  transform: translate(-50%, -50%) rotate(-24deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__ring--inner {
+  border-color: rgba(83, 216, 232, 0.4);
+  border-right-color: rgba(255, 227, 156, 0.44);
+  transform: translate(-50%, -50%) rotate(26deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__thread {
+  transform: translate(-50%, -50%) rotate(7deg) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__fish--light {
+  transform: translate(-24%, -50%) rotate(-4deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="ouroboros"] .ambivalent-fish-instrument__fish--shadow {
+  transform: translate(24%, -50%) rotate(176deg);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__field--shadow,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__shadow-core,
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__fish--shadow {
+  opacity: 1;
+  box-shadow: 0 0 1.65rem rgba(83, 216, 232, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__shadow-core {
+  transform: translateY(-50%) rotate(-12deg) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__fish--shadow {
+  filter: saturate(1.2);
+  transform: translate(50%, -50%) rotate(172deg) scale(1.13);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__fish--light {
+  opacity: 0.52;
+  transform: translate(-50%, -50%) rotate(-8deg) scale(0.94);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument[data-active-panel="shadow-fish"] .ambivalent-fish-instrument__mirror {
+  opacity: 0.9;
+  box-shadow:
+    inset 0 0 1.1rem rgba(244, 240, 232, 0.09),
+    0 0 1.65rem rgba(83, 216, 232, 0.18);
+}
+
 .chapter-experience[data-chapter-id="ch3"][data-reduced-motion="true"] .scene-host__fallback {
   left: auto;
   right: clamp(1rem, 4vw, 3.5rem);
@@ -6917,15 +7350,22 @@ h3 {
 	  .historical-strata-instrument__axis,
 	  .historical-strata-instrument__layer,
 	  .historical-strata-instrument__sediment,
-	  .historical-strata-instrument__thread,
-	  .historical-strata-instrument__fish,
-	  .historical-strata-instrument__carrier,
-	  .historical-strata-instrument__depth,
-	  .chapters-orbit__node,
-	  .home-chapter-orbit__item a,
-	  .scene-host__pause {
-	    transition: none;
-	  }
+		  .historical-strata-instrument__thread,
+		  .historical-strata-instrument__fish,
+		  .historical-strata-instrument__carrier,
+		  .historical-strata-instrument__depth,
+		  .ambivalent-fish-instrument__field,
+		  .ambivalent-fish-instrument__mirror,
+		  .ambivalent-fish-instrument__ring,
+		  .ambivalent-fish-instrument__thread,
+		  .ambivalent-fish-instrument__fish,
+		  .ambivalent-fish-instrument__junction,
+		  .ambivalent-fish-instrument__shadow-core,
+		  .chapters-orbit__node,
+		  .home-chapter-orbit__item a,
+		  .scene-host__pause {
+		    transition: none;
+		  }
 
   .atlas-constellation__core-glow {
     animation: none;
@@ -6984,10 +7424,20 @@ h3 {
   .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread,
   .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish,
   .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__carrier,
-  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth {
-    transition: none;
-  }
-	}
+	  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth {
+	    transition: none;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__junction,
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core {
+	    transition: none;
+	  }
+		}
 
 @media (max-width: 1120px) {
   .atlas-hero {
@@ -8378,19 +8828,151 @@ h3 {
     margin: 0;
   }
 
-  .chapter-experience[data-chapter-id="ch8"][data-reduced-motion="true"] .scene-host__fallback h2,
-  .chapter-experience[data-chapter-id="ch8"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
+	  .chapter-experience[data-chapter-id="ch8"][data-reduced-motion="true"] .scene-host__fallback h2,
+	  .chapter-experience[data-chapter-id="ch8"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+	    position: absolute;
+	    width: 1px;
+	    height: 1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
+	    clip: rect(0, 0, 0, 0);
+	    white-space: nowrap;
+	  }
 
-  .home-hero {
-    padding-top: 12.4rem;
-  }
+	  .chapter-experience[data-chapter-id="ch9"] .chapter-stage__intro {
+	    justify-content: flex-start;
+	    padding-top: 10.25rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .chapter-sigil {
+	    display: none;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .chapter-stage__intro h1 {
+	    max-width: 9.2ch;
+	    font-size: clamp(2.05rem, 10.7vw, 2.82rem);
+	    line-height: 0.92;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .chapter-stage__intro p:not(.eyebrow) {
+	    margin-top: 0.7rem;
+	    max-width: 28.5ch;
+	    font-size: 0.9rem;
+	    line-height: 1.47;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .scene-host__pause {
+	    justify-content: center;
+	    width: 2.35rem;
+	    min-width: 2.35rem;
+	    padding-inline: 0;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .scene-host__pause span:not(.scene-host__pause-icon) {
+	    position: absolute;
+	    width: 1px;
+	    height: 1px;
+	    overflow: hidden;
+	    clip: rect(0, 0, 0, 0);
+	    white-space: nowrap;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument {
+	    min-height: 6.65rem;
+	    margin-top: 0.68rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::before {
+	    inset: 0.5rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::after {
+	    height: 4.55rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror {
+	    width: 2.55rem;
+	    height: 4.3rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--outer {
+	    width: 7.15rem;
+	    height: 4rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--inner {
+	    width: 5.05rem;
+	    height: 2.72rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread {
+	    width: 6.1rem;
+	    height: 3rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish {
+	    width: 3.05rem;
+	    height: 1rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--light {
+	    left: 25%;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--shadow {
+	    right: 23%;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core {
+	    right: 5%;
+	    width: 2.44rem;
+	    height: 1.68rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label {
+	    font-size: 0.51rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--paradox {
+	    left: 6%;
+	    top: 12%;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--return {
+	    left: 44%;
+	    top: 12%;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--shadow {
+	    right: 4%;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"][data-reduced-motion="true"] .scene-host__fallback {
+	    left: 1rem;
+	    right: 1rem;
+	    top: 21.05rem;
+	    width: auto;
+	    padding: 0.56rem 0.7rem;
+	    text-align: left;
+	    transform: none;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
+	    margin: 0;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"][data-reduced-motion="true"] .scene-host__fallback h2,
+	  .chapter-experience[data-chapter-id="ch9"][data-reduced-motion="true"] .scene-host__fallback p:not(.eyebrow) {
+	    position: absolute;
+	    width: 1px;
+	    height: 1px;
+	    overflow: hidden;
+	    clip: rect(0, 0, 0, 0);
+	    white-space: nowrap;
+	  }
+
+	  .home-hero {
+	    padding-top: 12.4rem;
+	  }
 
   .hero-actions .button {
     width: 100%;

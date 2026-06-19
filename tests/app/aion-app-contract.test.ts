@@ -196,6 +196,32 @@ describe('Aion framework data contract', () => {
       'collective-unconscious',
     ]);
   });
+
+  test('keeps Chapter 9 ambivalent fish panels tied to paradox and opposition', () => {
+    expect(CHAPTER_SCENES.ch9.panels.map((panel) => panel.id)).toEqual([
+      'ambivalence',
+      'ouroboros',
+      'shadow-fish',
+    ]);
+    expect(CHAPTER_SCENES.ch9.panels.map((panel) => panel.kicker)).toEqual([
+      'Paradox',
+      'Return',
+      'Shadow',
+    ]);
+    expect(CHAPTER_SCENES.ch9.motionGrammar).toBe('opposition');
+    expect(CHAPTER_SCENES.ch9.visualTheme).toContain('Ambivalent fish');
+    expect(CHAPTER_SCENES.ch9.visualTheme).toContain('ouroboros');
+    expect(CHAPTER_SCENES.ch9.sceneModule).toBe('../visualizations/chapters/ch9/ThreeOuroborosViz.js');
+    expect(CHAPTER_SCENES.ch9.fallbackSummary).toContain('fish-serpent');
+    expect(CHAPTER_SCENES.ch9.fallbackSummary).toContain('salvation and shadow');
+    expect(CHAPTER_SCENES.ch9.fallbackSummary).toContain('ambivalent totality');
+
+    expect(getConceptsForChapter('ch9').map((concept) => concept.id)).toEqual([
+      'fish-symbol',
+      'opposites',
+      'antichrist',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

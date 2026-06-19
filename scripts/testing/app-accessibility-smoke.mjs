@@ -340,6 +340,45 @@ async function checkChapterEightDynamicAccessibility(page, failures) {
   if (!afterlifeDescription?.includes('Afterlife: Old images keep speaking')) failures.push(`/journey/chapter/ch8: afterlife scene description mismatch: ${afterlifeDescription}`);
 }
 
+async function checkChapterNineDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch9`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrument = page.getByRole('img', { name: /Ambivalent fish model/ });
+  const instrumentVisible = await instrument.isVisible();
+  const initialInstrumentLabel = await instrument.getAttribute('aria-label');
+  const initialDescription = await page.locator('#scene-host-description-ch9').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch9: ambivalent fish instrument is missing an accessible image role');
+  if (!initialInstrumentLabel?.includes('Current emphasis: Paradox') || !initialInstrumentLabel?.includes('blessing and threat')) failures.push(`/journey/chapter/ch9: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialDescription?.includes('Paradox: The fish has a double edge')) failures.push(`/journey/chapter/ch9: initial scene description mismatch: ${initialDescription}`);
+
+  const ouroboros = page.getByRole('button', { name: /02\s+Return/ });
+  await ouroboros.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const ouroborosPressed = await ouroboros.getAttribute('aria-pressed');
+  const ouroborosLabel = await instrument.getAttribute('aria-label');
+  const ouroborosDescription = await page.locator('#scene-host-description-ch9').textContent();
+  if (ouroborosPressed !== 'true') failures.push(`/journey/chapter/ch9: return button did not become pressed: ${ouroborosPressed}`);
+  if (!ouroborosLabel?.includes('Current emphasis: Return') || !ouroborosLabel?.includes('The psyche circles what it cannot solve linearly')) failures.push(`/journey/chapter/ch9: return instrument label mismatch: ${ouroborosLabel}`);
+  if (!ouroborosDescription?.includes('Return: The image eats its tail')) failures.push(`/journey/chapter/ch9: return scene description mismatch: ${ouroborosDescription}`);
+
+  const shadow = page.getByRole('button', { name: /03\s+Shadow/ });
+  await shadow.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const shadowPressed = await shadow.getAttribute('aria-pressed');
+  const shadowLabel = await instrument.getAttribute('aria-label');
+  const shadowDescription = await page.locator('#scene-host-description-ch9').textContent();
+  if (shadowPressed !== 'true') failures.push(`/journey/chapter/ch9: shadow button did not become pressed: ${shadowPressed}`);
+  if (!shadowLabel?.includes('Current emphasis: Shadow') || !shadowLabel?.includes('A total image includes its antagonist')) failures.push(`/journey/chapter/ch9: shadow instrument label mismatch: ${shadowLabel}`);
+  if (!shadowDescription?.includes('Shadow: Light casts its fish-shadow')) failures.push(`/journey/chapter/ch9: shadow scene description mismatch: ${shadowDescription}`);
+}
+
 async function runAccessibilitySmoke() {
   const server = startPreviewServer();
   const failures = [];
@@ -357,10 +396,11 @@ async function runAccessibilitySmoke() {
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
     await checkChapterEightDynamicAccessibility(desktop, failures);
+    await checkChapterNineDynamicAccessibility(desktop, failures);
     await desktop.close();
 
     const mobile = await browser.newPage({ viewport: mobileViewport });
-    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch14']) {
+    for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch14']) {
       await checkRoute(mobile, `mobile ${route}`.replace('mobile ', ''), failures);
     }
     await mobile.close();
