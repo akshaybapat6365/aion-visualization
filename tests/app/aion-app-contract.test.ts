@@ -273,6 +273,32 @@ describe('Aion framework data contract', () => {
       'lapis-philosophorum',
     ]);
   });
+
+  test('keeps Chapter 12 amplification lens panels tied to symbolic interpretation', () => {
+    expect(CHAPTER_SCENES.ch12.panels.map((panel) => panel.id)).toEqual([
+      'background',
+      'roots',
+      'bridge',
+    ]);
+    expect(CHAPTER_SCENES.ch12.panels.map((panel) => panel.kicker)).toEqual([
+      'Method',
+      'Genealogy',
+      'Bridge',
+    ]);
+    expect(CHAPTER_SCENES.ch12.motionGrammar).toBe('integration');
+    expect(CHAPTER_SCENES.ch12.visualTheme).toContain('Amplification lens');
+    expect(CHAPTER_SCENES.ch12.visualTheme).toContain('root bridge');
+    expect(CHAPTER_SCENES.ch12.sceneModule).toBe('../visualizations/chapters/ch12/ThreeUnusViz.js');
+    expect(CHAPTER_SCENES.ch12.fallbackSummary).toContain('amplification lens');
+    expect(CHAPTER_SCENES.ch12.fallbackSummary).toContain('shared roots');
+    expect(CHAPTER_SCENES.ch12.fallbackSummary).toContain('fish bridge');
+
+    expect(getConceptsForChapter('ch12').map((concept) => concept.id)).toEqual([
+      'symbolic-interpretation',
+      'projection',
+      'alchemy',
+    ]);
+  });
 });
 
 describe('Aion framework route contract', () => {

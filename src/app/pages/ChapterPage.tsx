@@ -22,6 +22,8 @@ const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
 const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
 const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as const;
 const alchemicalTreeStages = ['black', 'white', 'gold', 'red'] as const;
+const amplificationLensRings = ['outer', 'middle', 'inner'] as const;
+const amplificationRootThreads = ['faith', 'source', 'alchemy'] as const;
 
 function useReducedMotionPreference() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(() => {
@@ -70,6 +72,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, the opus wheel repeats transformation, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const amplificationLensInstrumentLabel = `Amplification lens model: a disciplined symbolic lens holds religious image, alchemical image, and psychic projection in relation; shared roots keep the traditions connected, and the bridge turns inherited images toward inner experience. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
   useEffect(() => {
     setActivePanelId(experience.panels[0]?.id || '');
@@ -383,6 +386,36 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--mercurius" aria-hidden="true">Mercurius</span>
               <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--opus" aria-hidden="true">opus wheel</span>
               <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--lapis" aria-hidden="true">lapis</span>
+            </div>
+          )}
+          {chapter.id === 'ch12' && (
+            <div
+              className="amplification-lens-instrument"
+              data-active-panel={activePanelId}
+              role="img"
+              aria-label={amplificationLensInstrumentLabel}
+            >
+              <span className="amplification-lens-instrument__field amplification-lens-instrument__field--faith" aria-hidden="true" />
+              <span className="amplification-lens-instrument__field amplification-lens-instrument__field--alchemy" aria-hidden="true" />
+              <span className="amplification-lens-instrument__source" aria-hidden="true" />
+              {amplificationRootThreads.map((thread) => (
+                <span key={thread} className={`amplification-lens-instrument__root amplification-lens-instrument__root--${thread}`} aria-hidden="true" />
+              ))}
+              <span className="amplification-lens-instrument__split amplification-lens-instrument__split--faith" aria-hidden="true" />
+              <span className="amplification-lens-instrument__split amplification-lens-instrument__split--alchemy" aria-hidden="true" />
+              <span className="amplification-lens-instrument__image amplification-lens-instrument__image--faith" aria-hidden="true" />
+              <span className="amplification-lens-instrument__image amplification-lens-instrument__image--alchemy" aria-hidden="true" />
+              <span className="amplification-lens-instrument__projection" aria-hidden="true" />
+              <span className="amplification-lens-instrument__fish" aria-hidden="true" />
+              <span className="amplification-lens-instrument__bridge" aria-hidden="true" />
+              <span className="amplification-lens-instrument__lens" aria-hidden="true">
+                {amplificationLensRings.map((ring) => (
+                  <span key={ring} className={`amplification-lens-instrument__ring amplification-lens-instrument__ring--${ring}`} />
+                ))}
+              </span>
+              <span className="amplification-lens-instrument__label amplification-lens-instrument__label--lens" aria-hidden="true">symbolic lens</span>
+              <span className="amplification-lens-instrument__label amplification-lens-instrument__label--roots" aria-hidden="true">shared roots</span>
+              <span className="amplification-lens-instrument__label amplification-lens-instrument__label--bridge" aria-hidden="true">inner bridge</span>
             </div>
           )}
           <div className="chapter-stage__thesis-map" aria-label="Chapter visual sequence">

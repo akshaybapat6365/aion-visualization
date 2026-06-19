@@ -21,6 +21,7 @@ const canonicalRouteLabels = new Map([
 const chapterRoutes = Array.from({ length: 14 }, (_, index) => `/journey/chapter/ch${index + 1}`);
 const desktopViewport = { width: 1440, height: 1000 };
 const mobileViewport = { width: 390, height: 844 };
+const narrowMobileViewport = { width: 320, height: 568 };
 const debugSmoke = process.env.AION_SMOKE_DEBUG === 'true';
 const viteBin = process.platform === 'win32'
   ? resolve(repoRoot, 'node_modules/.bin/vite.cmd')
@@ -786,6 +787,90 @@ async function smokeReducedMotion(browser, failures) {
       failures.push(`reduced-motion Chapter 11 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterElevenReferenceMapBox.y)}`);
     }
   }
+
+  await gotoAppRoute(page, '/journey/chapter/ch12');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterTwelveFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterTwelveReducedMotionAttribute = await page.locator('.chapter-experience').getAttribute('data-reduced-motion');
+  const chapterTwelveReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterTwelveReferenceCount = await chapterTwelveReferenceNodes.count();
+  const chapterTwelvePanelIds = await chapterTwelveReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterTwelvePauseControlCount = await page.locator('.scene-host__pause').count();
+  const chapterTwelveCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterTwelveFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterTwelveFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterTwelveFallbackHeadingBox = await page.locator('.scene-host__fallback h2').boundingBox();
+  const chapterTwelveFallbackBodyBox = await page.locator('.scene-host__fallback p:not(.eyebrow)').boundingBox();
+  const chapterTwelveInstrumentCount = await page.locator('.amplification-lens-instrument').count();
+  const chapterTwelveInstrumentBox = await page.locator('.amplification-lens-instrument').boundingBox();
+  const chapterTwelveReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterTwelveInstrumentMotion = await page.locator('.amplification-lens-instrument__field, .amplification-lens-instrument__source, .amplification-lens-instrument__root, .amplification-lens-instrument__split, .amplification-lens-instrument__image, .amplification-lens-instrument__projection, .amplification-lens-instrument__fish, .amplification-lens-instrument__bridge, .amplification-lens-instrument__lens, .amplification-lens-instrument__ring').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterTwelveAnimatedParts = chapterTwelveInstrumentMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterTwelveTransitioningParts = chapterTwelveInstrumentMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
+
+  if (!chapterTwelveFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 12 scene');
+  if (chapterTwelveReducedMotionAttribute !== 'true') failures.push('Chapter 12 did not record reduced-motion state');
+  if (chapterTwelveReferenceCount !== 3) failures.push(`reduced-motion Chapter 12 reference node count mismatch: ${chapterTwelveReferenceCount}`);
+  if (chapterTwelvePanelIds.join(',') !== 'background,roots,bridge') failures.push(`reduced-motion Chapter 12 reference nodes out of order: ${chapterTwelvePanelIds.join(',')}`);
+  if (chapterTwelvePauseControlCount !== 0) failures.push(`reduced-motion Chapter 12 rendered pause controls: ${chapterTwelvePauseControlCount}`);
+  if (chapterTwelveCanvasCount !== 0) failures.push(`reduced-motion Chapter 12 rendered canvas: ${chapterTwelveCanvasCount}`);
+  if (chapterTwelveInstrumentCount !== 1) failures.push(`reduced-motion Chapter 12 amplification lens instrument count mismatch: ${chapterTwelveInstrumentCount}`);
+  if (chapterTwelveAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 12 amplification lens instrument still animates: ${JSON.stringify(chapterTwelveAnimatedParts)}`);
+  if (chapterTwelveTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 12 amplification lens instrument still transitions: ${JSON.stringify(chapterTwelveTransitioningParts)}`);
+  if (!chapterTwelveFallbackText?.includes('amplification lens') || !chapterTwelveFallbackText?.includes('shared roots')) {
+    failures.push('reduced-motion chapter fallback lost Chapter 12 amplification lens teaching summary');
+  }
+  if (!chapterTwelveFallbackHeadingBox || chapterTwelveFallbackHeadingBox.width < 20 || chapterTwelveFallbackHeadingBox.height < 8) {
+    failures.push(`reduced-motion Chapter 12 fallback heading is not visibly rendered: ${chapterTwelveFallbackHeadingBox ? `${Math.round(chapterTwelveFallbackHeadingBox.width)}x${Math.round(chapterTwelveFallbackHeadingBox.height)}` : 'missing'}`);
+  }
+  if (!chapterTwelveFallbackBodyBox || chapterTwelveFallbackBodyBox.width < 40 || chapterTwelveFallbackBodyBox.height < 8) {
+    failures.push(`reduced-motion Chapter 12 fallback body is not visibly rendered: ${chapterTwelveFallbackBodyBox ? `${Math.round(chapterTwelveFallbackBodyBox.width)}x${Math.round(chapterTwelveFallbackBodyBox.height)}` : 'missing'}`);
+  }
+  if (chapterTwelveFallbackBox && chapterTwelveInstrumentBox) {
+    const instrumentBottom = chapterTwelveInstrumentBox.y + chapterTwelveInstrumentBox.height;
+    if (chapterTwelveFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 12 fallback overlaps the amplification lens instrument on mobile: fallback top ${Math.round(chapterTwelveFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterTwelveFallbackBox && chapterTwelveReferenceMapBox) {
+    const fallbackBottom = chapterTwelveFallbackBox.y + chapterTwelveFallbackBox.height;
+    if (fallbackBottom > chapterTwelveReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 12 fallback overlaps the reference map on mobile: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterTwelveReferenceMapBox.y)}`);
+    }
+  }
+
+  await page.setViewportSize(narrowMobileViewport);
+  await gotoAppRoute(page, '/journey/chapter/ch12');
+  await page.locator('.scene-host__fallback').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterTwelveNarrowFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  const chapterTwelveNarrowCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterTwelveNarrowFallbackBox = await page.locator('.scene-host__fallback').boundingBox();
+  const chapterTwelveNarrowInstrumentBox = await page.locator('.amplification-lens-instrument').boundingBox();
+  const chapterTwelveNarrowReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+  const chapterTwelveNarrowScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  if (!chapterTwelveNarrowFallbackVisible) failures.push('reduced-motion Chapter 12 fallback is not visible at 320x568');
+  if (chapterTwelveNarrowCanvasCount !== 0) failures.push(`reduced-motion Chapter 12 rendered canvas at 320x568: ${chapterTwelveNarrowCanvasCount}`);
+  if (chapterTwelveNarrowScrollWidth > narrowMobileViewport.width + 2) {
+    failures.push(`reduced-motion Chapter 12 horizontal overflow at 320x568: ${chapterTwelveNarrowScrollWidth}`);
+  }
+  if (chapterTwelveNarrowFallbackBox && chapterTwelveNarrowInstrumentBox) {
+    const instrumentBottom = chapterTwelveNarrowInstrumentBox.y + chapterTwelveNarrowInstrumentBox.height;
+    if (chapterTwelveNarrowFallbackBox.y < instrumentBottom + 6) {
+      failures.push(`reduced-motion Chapter 12 fallback overlaps the amplification lens instrument at 320x568: fallback top ${Math.round(chapterTwelveNarrowFallbackBox.y)}, instrument bottom ${Math.round(instrumentBottom)}`);
+    }
+  }
+  if (chapterTwelveNarrowFallbackBox && chapterTwelveNarrowReferenceMapBox) {
+    const fallbackBottom = chapterTwelveNarrowFallbackBox.y + chapterTwelveNarrowFallbackBox.height;
+    if (fallbackBottom > chapterTwelveNarrowReferenceMapBox.y - 6) {
+      failures.push(`reduced-motion Chapter 12 fallback overlaps the reference map at 320x568: fallback bottom ${Math.round(fallbackBottom)}, map top ${Math.round(chapterTwelveNarrowReferenceMapBox.y)}`);
+    }
+  }
   if (threeRequests.length > 0) failures.push(`reduced-motion requested Three asset: ${threeRequests.join(', ')}`);
 
   failures.push(...routeFailures.notFound.map((url) => `reduced-motion 404 response: ${url}`));
@@ -824,9 +909,22 @@ async function smokeChapterJump(page, failures) {
 }
 
 async function activateSceneButton(locator) {
-  await locator.waitFor({ state: 'visible', timeout: 30_000 });
-  await locator.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await scrollSceneControlIntoView(locator);
   await locator.click({ timeout: 30_000 });
+}
+
+async function scrollSceneControlIntoView(locator) {
+  await locator.waitFor({ state: 'visible', timeout: 30_000 });
+  await locator.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const isVisibleInViewport = rect.top >= 0
+      && rect.left >= 0
+      && rect.bottom <= window.innerHeight
+      && rect.right <= window.innerWidth;
+    if (!isVisibleInViewport) {
+      element.scrollIntoView({ block: 'center', inline: 'nearest' });
+    }
+  });
 }
 
 async function smokeChapterSceneControls(page, failures) {
@@ -1144,8 +1242,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterFivePanelGlyphsVisible) failures.push('chapter 5 panel fourth/tree glyphs are not visibly rendered');
 
   const fourth = page.locator('.chapter-stage__reference-node[data-panel-id="fourth"]');
-  await fourth.waitFor({ state: 'visible', timeout: 30_000 });
-  await fourth.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await scrollSceneControlIntoView(fourth);
   await fourth.focus();
   await page.keyboard.press('Enter');
   await page.waitForTimeout(250);
@@ -1177,8 +1274,7 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   const tree = page.locator('.chapter-stage__reference-node[data-panel-id="tree"]');
-  await tree.waitFor({ state: 'visible', timeout: 30_000 });
-  await tree.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await scrollSceneControlIntoView(tree);
   await tree.focus();
   await page.keyboard.press('Space');
   await page.waitForTimeout(250);
@@ -1263,8 +1359,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterSixReferenceGlyphsVisible) failures.push('chapter 6 reference glyphs are not visibly rendered');
 
   const zodiac = page.locator('.chapter-stage__reference-node[data-panel-id="zodiac"]');
-  await zodiac.waitFor({ state: 'visible', timeout: 30_000 });
-  await zodiac.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await scrollSceneControlIntoView(zodiac);
   await zodiac.focus();
   await page.keyboard.press('Enter');
   await page.waitForTimeout(250);
@@ -1295,8 +1390,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!chapterSixZodiacDescription?.includes('Aeon: History gains a wheel')) failures.push(`chapter 6 scene description did not follow zodiac panel: ${chapterSixZodiacDescription}`);
 
   const threshold = page.locator('.chapter-stage__reference-node[data-panel-id="transition"]');
-  await threshold.waitFor({ state: 'visible', timeout: 30_000 });
-  await threshold.scrollIntoViewIfNeeded({ timeout: 10_000 });
+  await scrollSceneControlIntoView(threshold);
   await threshold.focus();
   await page.keyboard.press('Space');
   await page.waitForTimeout(250);
@@ -1892,14 +1986,118 @@ async function smokeChapterSceneControls(page, failures) {
   }
 
   await gotoAppRoute(page, '/journey/chapter/ch12');
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterTwelveReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterTwelveReferenceCount = await chapterTwelveReferenceNodes.count();
+  const chapterTwelvePanelIds = await chapterTwelveReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterTwelveInstrument = page.locator('.amplification-lens-instrument');
+  const chapterTwelveInstrumentCount = await chapterTwelveInstrument.count();
+  const chapterTwelveInstrumentRole = await chapterTwelveInstrument.getAttribute('role');
+  const chapterTwelveInstrumentLabel = await chapterTwelveInstrument.getAttribute('aria-label');
+  const chapterTwelveInstrumentPanel = await chapterTwelveInstrument.getAttribute('data-active-panel');
+  const chapterTwelveInstrumentRingCount = await page.locator('.amplification-lens-instrument__ring').count();
+  const chapterTwelveInstrumentRootCount = await page.locator('.amplification-lens-instrument__root').count();
+  const chapterTwelveInstrumentImageCount = await page.locator('.amplification-lens-instrument__image').count();
+  const chapterTwelveInstrumentLabelCount = await page.locator('.amplification-lens-instrument__label').count();
+  const chapterTwelveInitialDescription = await page.locator('#scene-host-description-ch12').textContent();
+  const chapterTwelveInstrumentMarksVisible = await page.locator('.amplification-lens-instrument__field, .amplification-lens-instrument__source, .amplification-lens-instrument__root, .amplification-lens-instrument__split, .amplification-lens-instrument__image, .amplification-lens-instrument__projection, .amplification-lens-instrument__fish, .amplification-lens-instrument__bridge, .amplification-lens-instrument__lens, .amplification-lens-instrument__ring').evaluateAll((nodes) => nodes.length >= 17 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
+  }));
+  const chapterTwelveReferenceGlyphsVisible = await page.locator('.chapter-stage__reference-node[data-panel-id="background"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="roots"] .chapter-stage__reference-mark, .chapter-stage__reference-node[data-panel-id="bridge"] .chapter-stage__reference-mark').evaluateAll((nodes) => nodes.length === 3 && nodes.every((node) => {
+    const styles = window.getComputedStyle(node);
+    const box = node.getBoundingClientRect();
+    const before = window.getComputedStyle(node, '::before');
+    const after = window.getComputedStyle(node, '::after');
+    return styles.display !== 'none'
+      && Number(styles.opacity) > 0
+      && box.width > 0
+      && box.height > 0
+      && before.content !== 'none'
+      && after.content !== 'none'
+      && Number.parseFloat(before.width) > 0
+      && Number.parseFloat(before.height) > 0
+      && Number.parseFloat(after.width) > 0
+      && Number.parseFloat(after.height) > 0;
+  }));
+
+  if (chapterTwelveReferenceCount !== 3) failures.push(`chapter 12 reference node count mismatch: ${chapterTwelveReferenceCount}`);
+  if (chapterTwelvePanelIds.join(',') !== 'background,roots,bridge') failures.push(`chapter 12 reference nodes out of order: ${chapterTwelvePanelIds.join(',')}`);
+  if (chapterTwelveInstrumentCount !== 1) failures.push(`chapter 12 amplification lens instrument count mismatch: ${chapterTwelveInstrumentCount}`);
+  if (chapterTwelveInstrumentRingCount !== 3) failures.push(`chapter 12 amplification lens ring count mismatch: ${chapterTwelveInstrumentRingCount}`);
+  if (chapterTwelveInstrumentRootCount !== 3) failures.push(`chapter 12 amplification lens root count mismatch: ${chapterTwelveInstrumentRootCount}`);
+  if (chapterTwelveInstrumentImageCount !== 2) failures.push(`chapter 12 amplification lens image count mismatch: ${chapterTwelveInstrumentImageCount}`);
+  if (chapterTwelveInstrumentLabelCount !== 3) failures.push(`chapter 12 amplification lens label count mismatch: ${chapterTwelveInstrumentLabelCount}`);
+  if (chapterTwelveInstrumentRole !== 'img') failures.push(`chapter 12 amplification lens instrument role mismatch: ${chapterTwelveInstrumentRole}`);
+  if (!chapterTwelveInstrumentLabel?.includes('Amplification lens model') || !chapterTwelveInstrumentLabel?.includes('disciplined symbolic lens') || !chapterTwelveInstrumentLabel?.includes('Current emphasis: Method')) {
+    failures.push(`chapter 12 amplification lens instrument label missing teaching text: ${chapterTwelveInstrumentLabel}`);
+  }
+  if (chapterTwelveInstrumentPanel !== 'background') failures.push(`chapter 12 amplification lens instrument did not start on Method panel: ${chapterTwelveInstrumentPanel}`);
+  if (!chapterTwelveInitialDescription?.includes('Method: Read through the lens')) failures.push(`chapter 12 initial scene description mismatch: ${chapterTwelveInitialDescription}`);
+  if (!chapterTwelveInstrumentMarksVisible) failures.push('chapter 12 amplification lens instrument marks are not visibly rendered');
+  if (!chapterTwelveReferenceGlyphsVisible) failures.push('chapter 12 reference glyphs are not visibly rendered');
+
+  const roots = page.locator('.chapter-stage__reference-node[data-panel-id="roots"]');
+  await roots.waitFor({ state: 'visible', timeout: 30_000 });
+  await roots.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(700);
+
+  const rootsPressed = await roots.getAttribute('aria-pressed');
+  const rootsPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="roots"]').count();
+  const rootsDescription = await page.locator('#scene-host-description-ch12').textContent();
+  const rootsInstrumentPanel = await chapterTwelveInstrument.getAttribute('data-active-panel');
+  const rootsInstrumentLabel = await chapterTwelveInstrument.getAttribute('aria-label');
+  const rootsVisualState = await page.locator('.amplification-lens-instrument__root, .amplification-lens-instrument__split, .amplification-lens-instrument__source, .amplification-lens-instrument__image').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  if (rootsPressed !== 'true') failures.push(`chapter 12 roots reference did not become active: ${rootsPressed}`);
+  if (rootsPanelActive !== 1) failures.push(`chapter 12 roots panel did not become active: ${rootsPanelActive}`);
+  if (rootsInstrumentPanel !== 'roots') failures.push(`chapter 12 amplification lens instrument did not follow roots panel: ${rootsInstrumentPanel}`);
+  if (!rootsInstrumentLabel?.includes('Current emphasis: Genealogy') || !rootsInstrumentLabel?.includes('Symbols migrate between systems')) {
+    failures.push(`chapter 12 amplification lens instrument label did not follow roots panel: ${rootsInstrumentLabel}`);
+  }
+  if (rootsVisualState.length !== 8 || !rootsVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 12 amplification lens instrument did not visually emphasize roots: ${rootsVisualState.join(',')}`);
+  }
+  if (!rootsDescription?.includes('Genealogy: Two languages share roots')) failures.push(`chapter 12 scene description did not follow roots panel: ${rootsDescription}`);
+
   const bridge = page.getByRole('button', { name: /03\s+Bridge/ });
-  await activateSceneButton(bridge);
-  await page.waitForTimeout(250);
+  await bridge.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(700);
 
   const bridgePressed = await bridge.getAttribute('aria-pressed');
+  const bridgePanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="bridge"]').count();
+  const bridgeDescription = await page.locator('#scene-host-description-ch12').textContent();
+  const bridgeInstrumentPanel = await chapterTwelveInstrument.getAttribute('data-active-panel');
+  const bridgeInstrumentLabel = await chapterTwelveInstrument.getAttribute('aria-label');
+  const bridgeVisualState = await page.locator('.amplification-lens-instrument__fish, .amplification-lens-instrument__bridge, .amplification-lens-instrument__field').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterTwelveScrollY = await page.evaluate(() => window.scrollY);
   if (bridgePressed !== 'true') failures.push(`chapter 12 scene control did not become active: ${bridgePressed}`);
+  if (bridgePanelActive !== 1) failures.push(`chapter 12 bridge panel did not become active: ${bridgePanelActive}`);
+  if (bridgeInstrumentPanel !== 'bridge') failures.push(`chapter 12 amplification lens instrument did not follow bridge panel: ${bridgeInstrumentPanel}`);
+  if (!bridgeInstrumentLabel?.includes('Current emphasis: Bridge') || !bridgeInstrumentLabel?.includes('Aion reads tradition as inner drama')) {
+    failures.push(`chapter 12 amplification lens instrument label did not follow bridge panel: ${bridgeInstrumentLabel}`);
+  }
+  if (bridgeVisualState.length !== 4 || !bridgeVisualState.every((opacity) => opacity >= 0.65)) {
+    failures.push(`chapter 12 amplification lens instrument did not visually emphasize bridge: ${bridgeVisualState.join(',')}`);
+  }
+  if (!bridgeDescription?.includes('Bridge: Projection turns inward')) failures.push(`chapter 12 scene description did not follow bridge panel: ${bridgeDescription}`);
   if (chapterTwelveScrollY > 10) failures.push(`chapter 12 scene control unexpectedly scrolled page: ${chapterTwelveScrollY}`);
+
+  const chapterTwelveCanvas = page.locator('.scene-host canvas').first();
+  const chapterTwelveCanvasCount = await chapterTwelveCanvas.count();
+  const chapterTwelveFallbackVisible = await page.locator('.scene-host__fallback').isVisible();
+  if (chapterTwelveCanvasCount !== 1) {
+    failures.push(`chapter 12 expected one ready canvas but found ${chapterTwelveCanvasCount}; fallback visible: ${chapterTwelveFallbackVisible}`);
+  } else {
+    const chapterTwelveCanvasBox = await chapterTwelveCanvas.boundingBox();
+    const chapterTwelvePixelSample = await waitForCanvasPixels(chapterTwelveCanvas);
+    if (!chapterTwelveCanvasBox || chapterTwelveCanvasBox.width < 300 || chapterTwelveCanvasBox.height < 300) {
+      failures.push(`chapter 12 canvas geometry too small: ${chapterTwelveCanvasBox ? `${Math.round(chapterTwelveCanvasBox.width)}x${Math.round(chapterTwelveCanvasBox.height)}` : 'missing'}`);
+    }
+    recordCanvasPixelFailure(failures, 'chapter 12', chapterTwelvePixelSample);
+  }
 
   await gotoAppRoute(page, '/journey/chapter/ch13');
   const paradox = page.getByRole('button', { name: /03\s+Paradox/ });
@@ -1924,12 +2122,12 @@ async function smokeChapterSceneControls(page, failures) {
 
 async function smokeMobile(page, failures) {
   await page.setViewportSize(mobileViewport);
-  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch14']) {
+  for (const route of ['/', '/chapters', '/atlas', '/journey/chapter/ch1', '/journey/chapter/ch2', '/journey/chapter/ch3', '/journey/chapter/ch4', '/journey/chapter/ch5', '/journey/chapter/ch6', '/journey/chapter/ch7', '/journey/chapter/ch8', '/journey/chapter/ch9', '/journey/chapter/ch10', '/journey/chapter/ch11', '/journey/chapter/ch12', '/journey/chapter/ch14']) {
     await gotoAppRoute(page, route);
     await assertHealthyShell(page, `mobile ${route}`, failures);
   }
 
-  for (const viewport of [mobileViewport, { width: 320, height: 568 }]) {
+  for (const viewport of [mobileViewport, narrowMobileViewport]) {
     await page.setViewportSize(viewport);
     await gotoAppRoute(page, '/');
 
@@ -2313,6 +2511,72 @@ async function smokeMobile(page, failures) {
       if (chapterElevenCanvasCount > 0) {
         const chapterElevenPixelSample = await waitForCanvasPixels(chapterElevenCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 11 at ${viewport.width}x${viewport.height}`, chapterElevenPixelSample);
+      }
+    }
+
+    await gotoAppRoute(page, '/journey/chapter/ch12');
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+    const chapterTwelveNavBox = await page.locator('.app-nav').boundingBox();
+    const chapterTwelveHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
+    const chapterTwelveReferenceNodes = page.locator('.chapter-stage__reference-node');
+    const chapterTwelveReferenceCount = await chapterTwelveReferenceNodes.count();
+    const chapterTwelvePanelIds = await chapterTwelveReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterTwelveScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterTwelveReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterTwelveInstrumentBox = await page.locator('.amplification-lens-instrument').boundingBox();
+    const chapterTwelveReferenceGlyphLayout = await chapterTwelveReferenceNodes.evaluateAll((nodes) => nodes.map((node) => {
+      const label = node.querySelector('.chapter-stage__reference-label');
+      const mark = node.querySelector('.chapter-stage__reference-mark');
+      if (!label || !mark) return { panelId: node.getAttribute('data-panel-id'), ok: false };
+      const before = window.getComputedStyle(mark, '::before');
+      const after = window.getComputedStyle(mark, '::after');
+      const labelBox = label.getBoundingClientRect();
+      const nodeBox = node.getBoundingClientRect();
+      const beforeLeft = Number.parseFloat(before.left);
+      const beforeWidth = Number.parseFloat(before.width);
+      const afterLeft = Number.parseFloat(after.left);
+      const afterWidth = Number.parseFloat(after.width);
+      const beforeRight = beforeLeft + (before.transform === 'none' ? beforeWidth : beforeWidth / 2);
+      const afterRight = afterLeft + (after.transform === 'none' ? afterWidth : afterWidth / 2);
+      const labelLeft = labelBox.left - nodeBox.left;
+      return {
+        panelId: node.getAttribute('data-panel-id'),
+        ok: [beforeLeft, beforeWidth, afterLeft, afterWidth].every(Number.isFinite)
+          && beforeWidth > 0
+          && afterWidth > 0
+          && beforeRight < labelLeft - 4
+          && afterRight < labelLeft - 4,
+      };
+    }));
+    if (!chapterTwelveNavBox || !chapterTwelveHeadingBox) {
+      failures.push(`mobile chapter 12 geometry missing at ${viewport.width}x${viewport.height}`);
+      continue;
+    }
+
+    const chapterTwelveNavBottom = chapterTwelveNavBox.y + chapterTwelveNavBox.height;
+    if (chapterTwelveNavBottom > chapterTwelveHeadingBox.y - 1) {
+      failures.push(`mobile nav overlaps chapter 12 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterTwelveNavBottom)}, heading top ${Math.round(chapterTwelveHeadingBox.y)}`);
+    }
+    if (chapterTwelveReferenceCount !== 3) failures.push(`mobile chapter 12 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterTwelveReferenceCount}`);
+    if (chapterTwelvePanelIds.join(',') !== 'background,roots,bridge') failures.push(`mobile chapter 12 reference nodes out of order at ${viewport.width}x${viewport.height}: ${chapterTwelvePanelIds.join(',')}`);
+    if (chapterTwelveScrollWidth > viewport.width + 2) failures.push(`mobile chapter 12 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterTwelveScrollWidth}`);
+    if (chapterTwelveReferenceMapBox && chapterTwelveReferenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 12 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterTwelveReferenceMapBox.width)}`);
+    }
+    for (const glyph of chapterTwelveReferenceGlyphLayout) {
+      if (!glyph.ok) failures.push(`mobile chapter 12 reference glyph overlaps label rail at ${viewport.width}x${viewport.height}: ${glyph.panelId}`);
+    }
+    if (!chapterTwelveInstrumentBox) failures.push(`mobile chapter 12 amplification lens instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterTwelveInstrumentBox && chapterTwelveInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 12 amplification lens instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterTwelveInstrumentBox.width)}`);
+    }
+
+    if (viewport.width === mobileViewport.width) {
+      const chapterTwelveCanvas = page.locator('.scene-host canvas').first();
+      const chapterTwelveCanvasCount = await chapterTwelveCanvas.count();
+      if (chapterTwelveCanvasCount > 0) {
+        const chapterTwelvePixelSample = await waitForCanvasPixels(chapterTwelveCanvas);
+        recordCanvasPixelFailure(failures, `mobile chapter 12 at ${viewport.width}x${viewport.height}`, chapterTwelvePixelSample);
       }
     }
   }
