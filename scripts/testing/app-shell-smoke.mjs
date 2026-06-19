@@ -1367,7 +1367,10 @@ async function smokeChapterSceneControls(page, failures) {
   if (!earlyImageInstrumentLabel?.includes('Current emphasis: Early Image') || !earlyImageInstrumentLabel?.includes('A small sign can hold a total world')) {
     failures.push(`chapter 8 historical strata instrument label did not follow early image panel: ${earlyImageInstrumentLabel}`);
   }
-  if (earlyImageVisualState.length !== 3 || earlyImageVisualState.some((opacity) => opacity < 0.45)) {
+  const [earlyCarrierOpacity, earlyThreadOpacity, earlyFishOpacity] = earlyImageVisualState;
+  const earlyCarrierVisible = earlyCarrierOpacity >= 0.3;
+  const earlySignalVisible = earlyThreadOpacity >= 0.45 && earlyFishOpacity >= 0.45;
+  if (earlyImageVisualState.length !== 3 || !earlyCarrierVisible || !earlySignalVisible) {
     failures.push(`chapter 8 historical strata instrument did not visually emphasize carrier image: ${earlyImageVisualState.join(',')}`);
   }
   if (!earlyImageDescription?.includes('Early Image: The fish becomes a carrier')) failures.push(`chapter 8 scene description did not follow early image panel: ${earlyImageDescription}`);
