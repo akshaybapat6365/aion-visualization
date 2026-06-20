@@ -14,6 +14,7 @@ const SERPENT_DARK = new THREE.Color('#123f38');
 const GOLD = new THREE.Color('#f2c95d');
 const SILVER = new THREE.Color('#f4f0e8');
 const SHADOW = new THREE.Color('#6d5a9c');
+const MIRROR = new THREE.Color('#d9fff8');
 
 export default class ThreeOuroborosViz extends BaseViz {
     constructor(c, o = {}) {
@@ -40,13 +41,42 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.scene.fog = new THREE.FogExp2(0x04050d, 0.007);
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 100);
         this.camera.position.set(0, 4.7, 15);
-        this.focusTarget = new THREE.Vector3(0.9, 0, 0);
+        this.focusTarget = new THREE.Vector3(0.25, 0, 0);
 
         this.mouse = new THREE.Vector2(); this.mouseSmooth = new THREE.Vector2();
         this._onMM = e => { this.mouse.x = (e.clientX / innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / innerHeight) * 2 + 1; };
         addEventListener('mousemove', this._onMM);
 
         this._createTeachingField();
+
+        this.mirrorPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.11, 8.2),
+            new THREE.MeshBasicMaterial({
+                color: MIRROR,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide,
+                depthWrite: false,
+            })
+        );
+        this.mirrorPlane.position.set(0, 0, -1.15);
+        this.scene.add(this.mirrorPlane);
+
+        this.mirrorHalo = new THREE.Mesh(
+            new THREE.TorusGeometry(2.2, 0.035, 8, 96),
+            new THREE.MeshBasicMaterial({
+                color: SILVER,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.mirrorHalo.scale.set(0.62, 1.55, 1);
+        this.mirrorHalo.rotation.z = 0.06;
+        this.mirrorHalo.position.set(0, 0, -1.28);
+        this.scene.add(this.mirrorHalo);
 
         // Serpent body: torus geometry (the ouroboros ring)
         this.serpentBody = new THREE.Mesh(new THREE.TorusGeometry(4, 0.35, 16, 100), new THREE.MeshStandardMaterial({
@@ -178,8 +208,8 @@ export default class ThreeOuroborosViz extends BaseViz {
         const serpentLight = new THREE.PointLight(0x53d8e8, 0.72, 16);
         serpentLight.position.set(-2, 3, 5);
         this.scene.add(serpentLight);
-        const goldLight = new THREE.PointLight(0xf2c95d, 0.55, 12);
-        goldLight.position.set(4, 2, 4);
+        const goldLight = new THREE.PointLight(0xf2c95d, 0.46, 12);
+        goldLight.position.set(3.3, 2.2, 4);
         this.scene.add(goldLight);
         const shadowLight = new THREE.PointLight(0x7b6aa8, 0.42, 14);
         shadowLight.position.set(5, -1, 3);
@@ -287,6 +317,16 @@ export default class ThreeOuroborosViz extends BaseViz {
             this.returnOrbit.material.opacity = 0.18 + this.ouroborosFocus * 0.22 + this.ambivalenceFocus * 0.08;
             this.returnOrbit.rotation.z -= 0.0015 * motionScale * (0.7 + this.ouroborosFocus);
         }
+        if (this.mirrorPlane) {
+            this.mirrorPlane.material.opacity = 0.04 + this.ambivalenceFocus * 0.035 + this.ouroborosFocus * 0.02 + this.shadowFocus * 0.04;
+            this.mirrorPlane.rotation.z = 0.04 + Math.sin(t * 0.06 * motionScale) * 0.025;
+            this.mirrorPlane.scale.y = 0.96 + this.shadowFocus * 0.1 + this.ouroborosFocus * 0.05;
+        }
+        if (this.mirrorHalo) {
+            this.mirrorHalo.material.opacity = 0.05 + this.ambivalenceFocus * 0.08 + this.ouroborosFocus * 0.06 + this.shadowFocus * 0.1;
+            this.mirrorHalo.rotation.z = 0.08 + this.ouroborosFocus * 0.22 + Math.sin(t * 0.05 * motionScale) * 0.04;
+            this.mirrorHalo.scale.set(0.62 + this.ambivalenceFocus * 0.05, 1.55 + this.shadowFocus * 0.16, 1);
+        }
 
         // Serpent slow rotation (eating its tail)
         this.serpentBody.rotation.z += 0.003 * motionScale * (0.7 + this.ouroborosFocus * 1.4);
@@ -299,7 +339,7 @@ export default class ThreeOuroborosViz extends BaseViz {
         // Junction follows rotation
         const jA = this.serpentBody.rotation.z;
         this.junction.position.set(Math.cos(jA) * 4, Math.sin(jA) * 4 * Math.cos(this.serpentBody.rotation.x), 0);
-        this.junction.material.opacity = 0.32 + Math.sin(t * 2 * motionScale) * 0.18 + this.ouroborosFocus * 0.28;
+        this.junction.material.opacity = 0.24 + Math.sin(t * 2 * motionScale) * 0.12 + this.ouroborosFocus * 0.24;
 
         // Cyclic flow along body
         const fp = this.flowPts.geometry.attributes.position.array;
@@ -351,7 +391,7 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.oppositionLine.geometry.attributes.position.needsUpdate = true;
         const lineScale = this.width < 700 ? 0 : 1;
         this.oppositionLine.material.opacity = (0.04 + this.ambivalenceFocus * 0.14 + this.shadowFocus * 0.04) * lineScale;
-        this.shadowVeil.material.opacity = this.shadowFocus * 0.22;
+        this.shadowVeil.material.opacity = this.shadowFocus * 0.26;
 
         // Death-rebirth dissolution: periodic opacity pulse
         const drCycle = Math.sin(t * 0.15 * motionScale);
@@ -360,7 +400,7 @@ export default class ThreeOuroborosViz extends BaseViz {
 
         // Camera
         const ca = t * 0.02 * motionScale + this.mouseSmooth.x * 0.2;
-        const camRadius = 15.5 - this.ouroborosFocus * 1.8 + this.shadowFocus * 0.8;
+        const camRadius = 14.8 - this.ouroborosFocus * 1.45 + this.shadowFocus * 0.7;
         this.camera.position.x = Math.sin(ca) * camRadius;
         this.camera.position.y = 5 + this.mouseSmooth.y * 3 - this.shadowFocus * 0.4;
         this.camera.position.z = Math.cos(ca) * camRadius;
