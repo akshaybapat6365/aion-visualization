@@ -1224,7 +1224,7 @@ async function smokeReducedMotion(browser, failures) {
   const chapterElevenInstrumentCount = await page.locator('.alchemical-tree-instrument').count();
   const chapterElevenInstrumentBox = await page.locator('.alchemical-tree-instrument').boundingBox();
   const chapterElevenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
-  const chapterElevenInstrumentMotion = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.map((node) => {
+  const chapterElevenInstrumentMotion = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__halo, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__seed, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__mirror, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.map((node) => {
     const styles = window.getComputedStyle(node);
     return {
       animationName: styles.animationName,
@@ -2700,9 +2700,12 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterElevenInstrumentStageCount = await page.locator('.alchemical-tree-instrument__stage').count();
   const chapterElevenInstrumentRootCount = await page.locator('.alchemical-tree-instrument__root').count();
   const chapterElevenInstrumentBranchCount = await page.locator('.alchemical-tree-instrument__branch').count();
+  const chapterElevenInstrumentHaloCount = await page.locator('.alchemical-tree-instrument__halo').count();
+  const chapterElevenInstrumentSeedCount = await page.locator('.alchemical-tree-instrument__seed').count();
+  const chapterElevenInstrumentMirrorCount = await page.locator('.alchemical-tree-instrument__mirror').count();
   const chapterElevenInstrumentLabelCount = await page.locator('.alchemical-tree-instrument__label').count();
   const chapterElevenInitialDescription = await page.locator('#scene-host-description-ch11').textContent();
-  const chapterElevenInstrumentMarksVisible = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.length >= 18 && nodes.every((node) => {
+  const chapterElevenInstrumentMarksVisible = await page.locator('.alchemical-tree-instrument__field, .alchemical-tree-instrument__halo, .alchemical-tree-instrument__root, .alchemical-tree-instrument__trunk, .alchemical-tree-instrument__branch, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__mercurius, .alchemical-tree-instrument__seed, .alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__stone, .alchemical-tree-instrument__mirror, .alchemical-tree-instrument__reflection').evaluateAll((nodes) => nodes.length >= 22 && nodes.every((node) => {
     const styles = window.getComputedStyle(node);
     const box = node.getBoundingClientRect();
     return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
@@ -2730,6 +2733,9 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterElevenInstrumentStageCount !== 4) failures.push(`chapter 11 alchemical tree stage count mismatch: ${chapterElevenInstrumentStageCount}`);
   if (chapterElevenInstrumentRootCount !== 3) failures.push(`chapter 11 alchemical tree root count mismatch: ${chapterElevenInstrumentRootCount}`);
   if (chapterElevenInstrumentBranchCount !== 2) failures.push(`chapter 11 alchemical tree branch count mismatch: ${chapterElevenInstrumentBranchCount}`);
+  if (chapterElevenInstrumentHaloCount !== 1) failures.push(`chapter 11 alchemical tree halo count mismatch: ${chapterElevenInstrumentHaloCount}`);
+  if (chapterElevenInstrumentSeedCount !== 2) failures.push(`chapter 11 alchemical tree seed count mismatch: ${chapterElevenInstrumentSeedCount}`);
+  if (chapterElevenInstrumentMirrorCount !== 1) failures.push(`chapter 11 alchemical tree mirror count mismatch: ${chapterElevenInstrumentMirrorCount}`);
   if (chapterElevenInstrumentLabelCount !== 3) failures.push(`chapter 11 alchemical tree label count mismatch: ${chapterElevenInstrumentLabelCount}`);
   if (chapterElevenInstrumentRole !== 'img') failures.push(`chapter 11 alchemical tree instrument role mismatch: ${chapterElevenInstrumentRole}`);
   if (!chapterElevenInstrumentLabel?.includes('Philosophical tree model') || !chapterElevenInstrumentLabel?.includes('Mercurius holds the middle') || !chapterElevenInstrumentLabel?.includes('Current emphasis: Mediator')) {
@@ -2751,14 +2757,14 @@ async function smokeChapterSceneControls(page, failures) {
   const opusWheelDescription = await page.locator('#scene-host-description-ch11').textContent();
   const opusWheelInstrumentPanel = await chapterElevenInstrument.getAttribute('data-active-panel');
   const opusWheelInstrumentLabel = await chapterElevenInstrument.getAttribute('aria-label');
-  const opusWheelVisualState = await page.locator('.alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__thread').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const opusWheelVisualState = await page.locator('.alchemical-tree-instrument__wheel, .alchemical-tree-instrument__stage, .alchemical-tree-instrument__thread, .alchemical-tree-instrument__halo').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   if (opusWheelPressed !== 'true') failures.push(`chapter 11 opus wheel reference did not become active: ${opusWheelPressed}`);
   if (opusWheelPanelActive !== 1) failures.push(`chapter 11 opus wheel panel did not become active: ${opusWheelPanelActive}`);
   if (opusWheelInstrumentPanel !== 'opus-wheel') failures.push(`chapter 11 alchemical tree instrument did not follow opus wheel panel: ${opusWheelInstrumentPanel}`);
   if (!opusWheelInstrumentLabel?.includes('Current emphasis: Opus') || !opusWheelInstrumentLabel?.includes('Change returns to deepen itself')) {
     failures.push(`chapter 11 alchemical tree instrument label did not follow opus panel: ${opusWheelInstrumentLabel}`);
   }
-  if (opusWheelVisualState.length !== 7 || !opusWheelVisualState.every((opacity) => opacity >= 0.65)) {
+  if (opusWheelVisualState.length !== 8 || !opusWheelVisualState.every((opacity) => opacity >= 0.65)) {
     failures.push(`chapter 11 alchemical tree instrument did not visually emphasize opus wheel: ${opusWheelVisualState.join(',')}`);
   }
   if (!opusWheelDescription?.includes('Opus: Transformation repeats')) failures.push(`chapter 11 scene description did not follow opus panel: ${opusWheelDescription}`);
@@ -2773,7 +2779,7 @@ async function smokeChapterSceneControls(page, failures) {
   const stoneDescription = await page.locator('#scene-host-description-ch11').textContent();
   const stoneInstrumentPanel = await chapterElevenInstrument.getAttribute('data-active-panel');
   const stoneInstrumentLabel = await chapterElevenInstrument.getAttribute('aria-label');
-  const stoneVisualState = await page.locator('.alchemical-tree-instrument__stone, .alchemical-tree-instrument__reflection, .alchemical-tree-instrument__field').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const stoneVisualState = await page.locator('.alchemical-tree-instrument__stone, .alchemical-tree-instrument__mirror, .alchemical-tree-instrument__reflection, .alchemical-tree-instrument__field, .alchemical-tree-instrument__seed--matter').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterElevenScrollY = await page.evaluate(() => window.scrollY);
   if (stonePressed !== 'true') failures.push(`chapter 11 scene control did not become active: ${stonePressed}`);
   if (stonePanelActive !== 1) failures.push(`chapter 11 stone panel did not become active: ${stonePanelActive}`);
@@ -2781,7 +2787,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!stoneInstrumentLabel?.includes('Current emphasis: Stone') || !stoneInstrumentLabel?.includes('Completion keeps the opposites alive')) {
     failures.push(`chapter 11 alchemical tree instrument label did not follow stone panel: ${stoneInstrumentLabel}`);
   }
-  if (stoneVisualState.length !== 4 || !stoneVisualState.every((opacity) => opacity >= 0.65)) {
+  if (stoneVisualState.length !== 6 || !stoneVisualState.every((opacity) => opacity >= 0.65)) {
     failures.push(`chapter 11 alchemical tree instrument did not visually emphasize lapis: ${stoneVisualState.join(',')}`);
   }
   if (!stoneDescription?.includes('Stone: The goal is a formed paradox')) failures.push(`chapter 11 scene description did not follow stone panel: ${stoneDescription}`);

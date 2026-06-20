@@ -20,19 +20,19 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
-const ROOT_DARK = new THREE.Color('#2a0845');
-const TRUNK_BROWN = new THREE.Color('#5a3a2a');
-const BRANCH_GOLD = new THREE.Color('#c8a820');
-const WATER_BLUE = new THREE.Color('#1a4a8a');
-const WATER_GLOW = new THREE.Color('#4a8aca');
-const LAPIS_GOLD = new THREE.Color('#d4af37');
-const FIGURE_WHITE = new THREE.Color('#d0d0e0');
-const MIRROR_CYAN = new THREE.Color('#22d3ee');
-const COSMOS_PURPLE = new THREE.Color('#3a1a6a');
+const ROOT_DARK = new THREE.Color('#4b1a74');
+const TRUNK_BROWN = new THREE.Color('#9b6a3c');
+const BRANCH_GOLD = new THREE.Color('#f0c85e');
+const WATER_BLUE = new THREE.Color('#235d9a');
+const WATER_GLOW = new THREE.Color('#66e5ff');
+const LAPIS_GOLD = new THREE.Color('#ffd76a');
+const FIGURE_WHITE = new THREE.Color('#f2eee3');
+const MIRROR_CYAN = new THREE.Color('#53d8e8');
+const COSMOS_PURPLE = new THREE.Color('#5f3fa8');
 const VOID = 0x030308;
 
-const WATER_PARTICLES = 200;
-const THOUSAND_NAMES = 50;
+const WATER_PARTICLES = 320;
+const THOUSAND_NAMES = 72;
 const OPUS_STAGES = [
     { color: '#050506', y: 1.35, x: 0, scale: 1.08 },
     { color: '#e8e8f0', y: 0, x: 1.35, scale: 0.86 },
@@ -66,6 +66,7 @@ export default class ThreeTreeViz extends BaseViz {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(VOID);
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.18;
 
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(VOID, 0.01);
@@ -85,13 +86,14 @@ export default class ThreeTreeViz extends BaseViz {
         this._createMirrorSurface();
         this._createFigureReflection();
         this._createLapisMandala();
+        this._createOpusTreeField();
         this._createCosmicSubstance();
         this._createLights();
 
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.2, 0.6, 0.4
+            new THREE.Vector2(this.width, this.height), 1.35, 0.68, 0.34
         );
         this.composer.addPass(this.bloomPass);
     }
@@ -405,6 +407,143 @@ export default class ThreeTreeViz extends BaseViz {
         this.scene.add(this.lapisMandala);
     }
 
+    _createOpusTreeField() {
+        this.opusTreeField = new THREE.Group();
+        this.opusTreeField.position.set(1.35, 0, 0.62);
+        this.opusFieldRings = [];
+        this.opusFieldSeeds = [];
+        this.opusFieldThreads = [];
+
+        this.opusAxis = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.026, 0.026, 7.35, 12),
+            new THREE.MeshBasicMaterial({
+                color: 0xf4f0e8,
+                transparent: true,
+                opacity: 0.28,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.opusTreeField.add(this.opusAxis);
+
+        const makeRing = (radius, y, color, opacity, scaleY = 0.42) => {
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(radius, 0.012, 8, 140),
+                new THREE.MeshBasicMaterial({
+                    color,
+                    transparent: true,
+                    opacity,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            ring.position.y = y;
+            ring.scale.y = scaleY;
+            this.opusTreeField.add(ring);
+            this.opusFieldRings.push(ring);
+            return ring;
+        };
+
+        makeRing(1.75, 2.2, LAPIS_GOLD, 0.18, 0.34);
+        makeRing(2.18, 0, 0xf4f0e8, 0.13, 0.56);
+        makeRing(1.72, -2.25, MIRROR_CYAN, 0.17, 0.36);
+
+        const threadMaterials = [
+            new THREE.MeshBasicMaterial({
+                color: LAPIS_GOLD,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            }),
+            new THREE.MeshBasicMaterial({
+                color: MIRROR_CYAN,
+                transparent: true,
+                opacity: 0.16,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            }),
+        ];
+
+        for (let strand = 0; strand < 6; strand++) {
+            const phase = strand * Math.PI / 3;
+            const points = [];
+            for (let index = 0; index <= 54; index++) {
+                const progress = index / 54;
+                const y = THREE.MathUtils.lerp(3.2, -3.25, progress);
+                const radius = 0.42 + Math.sin(progress * Math.PI) * 1.18;
+                const angle = phase + progress * Math.PI * 2.4;
+                points.push(new THREE.Vector3(
+                    Math.cos(angle) * radius,
+                    y,
+                    Math.sin(angle) * radius * 0.18
+                ));
+            }
+            const tube = new THREE.Mesh(
+                new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 72, 0.01, 6, false),
+                threadMaterials[strand % 2].clone()
+            );
+            this.opusTreeField.add(tube);
+            this.opusFieldThreads.push(tube);
+        }
+
+        this.opusCompass = new THREE.Group();
+        OPUS_STAGES.forEach((stage, index) => {
+            const node = new THREE.Mesh(
+                new THREE.DodecahedronGeometry(0.095 * stage.scale, 0),
+                new THREE.MeshBasicMaterial({
+                    color: stage.color,
+                    transparent: true,
+                    opacity: index === 0 ? 0.34 : 0.5,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            node.position.set(stage.x * 0.82, stage.y * 0.82, 0.06);
+            this.opusCompass.add(node);
+        });
+        this.opusTreeField.add(this.opusCompass);
+
+        const seedGeometry = new THREE.SphereGeometry(0.115, 16, 12);
+        [
+            { y: 3.34, color: LAPIS_GOLD, focus: 'spirit' },
+            { y: -3.34, color: MIRROR_CYAN, focus: 'matter' },
+        ].forEach(({ y, color, focus }) => {
+            const seed = new THREE.Mesh(
+                seedGeometry,
+                new THREE.MeshStandardMaterial({
+                    color,
+                    emissive: color,
+                    emissiveIntensity: 0.55,
+                    transparent: true,
+                    opacity: 0.72,
+                    metalness: 0.28,
+                    roughness: 0.22,
+                })
+            );
+            seed.position.y = y;
+            seed.userData.focus = focus;
+            this.opusTreeField.add(seed);
+            this.opusFieldSeeds.push(seed);
+        });
+
+        this.opusMirrorPool = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.28, 1.42, 0.026, 96),
+            new THREE.MeshBasicMaterial({
+                color: MIRROR_CYAN,
+                transparent: true,
+                opacity: 0.12,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.opusMirrorPool.position.set(-1.35, -3.08, 0.05);
+        this.opusMirrorPool.scale.z = 0.3;
+        this.opusTreeField.add(this.opusMirrorPool);
+
+        this.scene.add(this.opusTreeField);
+    }
+
     _createCosmicSubstance() {
         // Arcane substance particles — both near figure AND in distant cosmos
         const count = 400;
@@ -506,6 +645,42 @@ export default class ThreeTreeViz extends BaseViz {
             node.scale.setScalar(0.85 + this.opusFocus * 0.5 + pulse * 0.14 * this.opusFocus);
             node.material.emissiveIntensity = (index === 0 ? 0.12 : 0.34) + this.opusFocus * (0.4 + pulse * 0.28);
         });
+
+        if (this.opusTreeField) {
+            const fieldFocus = Math.max(this.mercuriusFocus * 0.86, this.opusFocus, this.lapisFocus * 0.94);
+            this.opusTreeField.position.x = THREE.MathUtils.damp(this.opusTreeField.position.x, isMobile ? 2.9 : 1.35, 4, dt);
+            this.opusTreeField.position.y = THREE.MathUtils.damp(this.opusTreeField.position.y, isMobile ? 0.02 : 0, 4, dt);
+            this.opusTreeField.scale.setScalar((isMobile ? 0.68 : 0.92) + fieldFocus * (isMobile ? 0.12 : 0.16));
+            this.opusTreeField.rotation.z = Math.sin(t * 0.06 * motionScale) * 0.035;
+            this._setGroupOpacity(this.opusTreeField, 0.42 + fieldFocus * 0.58);
+        }
+        this.opusFieldRings?.forEach((ring, index) => {
+            ring.rotation.z += dt * (index % 2 === 0 ? 0.034 : -0.026) * motionScale;
+            const pulse = 1 + Math.sin(t * 0.7 * motionScale + index) * 0.025;
+            ring.scale.x = pulse;
+        });
+        this.opusFieldThreads?.forEach((thread, index) => {
+            const material = thread.material;
+            if (!material) return;
+            material.opacity = 0.08 + this.mercuriusFocus * 0.08 + this.opusFocus * 0.16 + Math.sin(t * 0.42 * motionScale + index) * 0.025;
+        });
+        this.opusFieldSeeds?.forEach((seed, index) => {
+            const targetFocus = seed.userData.focus === 'matter' ? this.lapisFocus : Math.max(this.mercuriusFocus, this.opusFocus * 0.6);
+            const pulse = 0.5 + Math.sin(t * 1.1 * motionScale + index * 2.1) * 0.5;
+            seed.scale.setScalar(0.88 + targetFocus * 0.55 + pulse * 0.1 * targetFocus);
+            seed.material.emissiveIntensity = 0.45 + targetFocus * 0.65;
+        });
+        if (this.opusCompass) {
+            this.opusCompass.rotation.z = t * 0.038 * motionScale;
+            this.opusCompass.scale.setScalar(0.7 + this.opusFocus * 0.38);
+        }
+        if (this.opusMirrorPool?.material) {
+            this.opusMirrorPool.material.opacity = 0.06 + this.lapisFocus * 0.22 + this.mercuriusFocus * 0.04;
+            this.opusMirrorPool.scale.x = 1 + this.lapisFocus * 0.2;
+        }
+        if (this.opusAxis?.material) {
+            this.opusAxis.material.opacity = 0.16 + this.mercuriusFocus * 0.2 + this.opusFocus * 0.08;
+        }
 
         // Name particles twinkle
         for (const np of this.nameParticles) {

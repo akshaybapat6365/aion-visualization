@@ -77,7 +77,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
-  const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, the opus wheel repeats transformation, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
+  const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, an inverted root-and-branch tree makes the opus visible, the mirror returns the image to the psyche, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const amplificationLensInstrumentLabel = `Amplification lens model: a disciplined symbolic lens holds religious image, alchemical image, and psychic projection in relation; shared roots keep the traditions connected, and the bridge turns inherited images toward inner experience. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const gnosticConstellationInstrumentLabel = `Gnostic constellation model: emanation rings move from fullness into differentiated images, a symbolic fourfold pattern makes the Self readable, and a rupture field keeps wisdom and fall in tension. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
 
@@ -324,6 +324,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
             >
               <span className="alchemical-tree-instrument__field alchemical-tree-instrument__field--above" aria-hidden="true" />
               <span className="alchemical-tree-instrument__field alchemical-tree-instrument__field--below" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__halo" aria-hidden="true" />
               <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--one" aria-hidden="true" />
               <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--two" aria-hidden="true" />
               <span className="alchemical-tree-instrument__root alchemical-tree-instrument__root--three" aria-hidden="true" />
@@ -333,12 +334,15 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="alchemical-tree-instrument__thread alchemical-tree-instrument__thread--ascent" aria-hidden="true" />
               <span className="alchemical-tree-instrument__thread alchemical-tree-instrument__thread--descent" aria-hidden="true" />
               <span className="alchemical-tree-instrument__mercurius" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__seed alchemical-tree-instrument__seed--spirit" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__seed alchemical-tree-instrument__seed--matter" aria-hidden="true" />
               <span className="alchemical-tree-instrument__wheel" aria-hidden="true">
                 {alchemicalTreeStages.map((stage) => (
                   <span key={stage} className={`alchemical-tree-instrument__stage alchemical-tree-instrument__stage--${stage}`} />
                 ))}
               </span>
               <span className="alchemical-tree-instrument__stone" aria-hidden="true" />
+              <span className="alchemical-tree-instrument__mirror" aria-hidden="true" />
               <span className="alchemical-tree-instrument__reflection" aria-hidden="true" />
               <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--mercurius" aria-hidden="true">Mercurius</span>
               <span className="alchemical-tree-instrument__label alchemical-tree-instrument__label--opus" aria-hidden="true">opus wheel</span>
