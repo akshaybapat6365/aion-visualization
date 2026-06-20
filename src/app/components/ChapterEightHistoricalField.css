@@ -1,0 +1,477 @@
+.chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument {
+  position: relative;
+  width: 100%;
+  min-height: clamp(8.05rem, 13.6vh, 9.45rem);
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgba(255, 227, 156, 0.13);
+  border-radius: calc(var(--radius) - 0.12rem);
+  background:
+    radial-gradient(circle at 18% 45%, rgba(225, 182, 79, 0.32), transparent 5.4rem),
+    radial-gradient(circle at 50% 43%, rgba(130, 226, 165, 0.22), transparent 6rem),
+    radial-gradient(circle at 83% 56%, rgba(83, 216, 232, 0.22), transparent 6rem),
+    repeating-linear-gradient(0deg, rgba(255, 227, 156, 0.07) 0 1px, transparent 1px 0.62rem),
+    linear-gradient(90deg, rgba(9, 7, 7, 0.9), rgba(5, 14, 14, 0.72) 53%, rgba(2, 14, 20, 0.62));
+  box-shadow:
+    var(--shadow-inset),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.24),
+    0 0 2.8rem rgba(83, 216, 232, 0.08);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::before,
+.chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::before {
+  inset: 0.6rem;
+  border: 1px solid rgba(255, 227, 156, 0.1);
+  border-radius: calc(var(--radius) - 0.35rem);
+  background:
+    linear-gradient(90deg, rgba(255, 227, 156, 0.035), transparent 45%, rgba(83, 216, 232, 0.04)),
+    repeating-linear-gradient(0deg, transparent 0 0.82rem, rgba(244, 240, 232, 0.024) 0.86rem 0.88rem);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::after {
+  left: 56%;
+  top: 51%;
+  width: 10.8rem;
+  height: 5.65rem;
+  border: 1px solid rgba(143, 231, 237, 0.26);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 1.55rem rgba(83, 216, 232, 0.16),
+    0 0 2.15rem rgba(225, 182, 79, 0.12);
+  transform: translate(-50%, -50%) rotate(-9deg);
+}
+
+.chapter-eight-history__field > span,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__axis,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__carrier,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label {
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-eight-history__grain {
+  inset: 0;
+  z-index: 1;
+  opacity: 0.42;
+  background:
+    radial-gradient(circle at 18% 32%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 62% 62%, rgba(255, 255, 255, 0.1) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 88% 40%, rgba(255, 255, 255, 0.09) 0 1px, transparent 1.5px);
+  background-size: 3.4rem 3.4rem, 4.6rem 4.6rem, 5.3rem 5.3rem;
+  mix-blend-mode: screen;
+}
+
+.chapter-eight-history__archive-line {
+  left: 13%;
+  right: 12%;
+  z-index: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.22), rgba(83, 216, 232, 0.18), transparent);
+  opacity: 0.74;
+}
+
+.chapter-eight-history__archive-line--one {
+  top: 28%;
+}
+
+.chapter-eight-history__archive-line--two {
+  top: 47%;
+}
+
+.chapter-eight-history__archive-line--three {
+  top: 66%;
+}
+
+.chapter-eight-history__source-orb {
+  top: 19%;
+  z-index: 1;
+  width: 0.42rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.78;
+  box-shadow: 0 0 1.1rem currentColor;
+}
+
+.chapter-eight-history__source-orb--gold {
+  left: 18%;
+  color: var(--ch8-strata);
+  background: currentColor;
+}
+
+.chapter-eight-history__source-orb--green {
+  left: 50%;
+  color: var(--ch8-carrier);
+  background: currentColor;
+}
+
+.chapter-eight-history__source-orb--cyan {
+  right: 14%;
+  color: var(--ch8-afterlife);
+  background: currentColor;
+}
+
+.chapter-eight-history__field-line {
+  left: 17%;
+  top: 53%;
+  z-index: 1;
+  width: 66%;
+  height: 3.8rem;
+  border-bottom: 1px solid rgba(83, 216, 232, 0.18);
+  border-left: 1px solid rgba(225, 182, 79, 0.18);
+  border-radius: 0 0 50% 50%;
+  opacity: 0.7;
+  transform: rotate(7deg);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field {
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  opacity: 0.6;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field--archive {
+  left: 0;
+  background:
+    radial-gradient(circle at 42% 44%, rgba(225, 182, 79, 0.18), transparent 4.5rem),
+    linear-gradient(90deg, rgba(225, 182, 79, 0.09), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field--afterlife {
+  right: 0;
+  background:
+    radial-gradient(circle at 63% 51%, rgba(83, 216, 232, 0.17), transparent 4.8rem),
+    linear-gradient(270deg, rgba(83, 216, 232, 0.09), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__axis {
+  left: 8%;
+  right: 8%;
+  top: 56%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(225, 182, 79, 0.18), rgba(244, 240, 232, 0.58), rgba(83, 216, 232, 0.22));
+  opacity: 0.78;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer {
+  left: 10%;
+  right: 10%;
+  height: 0.52rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.34), rgba(130, 226, 165, 0.29), rgba(83, 216, 232, 0.3), transparent);
+  border-top: 1px solid rgba(244, 240, 232, 0.14);
+  box-shadow: 0 0 1.25rem rgba(83, 216, 232, 0.1);
+  opacity: 0.72;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer--1 {
+  top: 21%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer--2 {
+  top: 31.5%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer--3 {
+  top: 42%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer--4 {
+  top: 52.5%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer--5 {
+  top: 63%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment {
+  width: 0.6rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 227, 156, 0.74);
+  box-shadow: 0 0 0.95rem rgba(225, 182, 79, 0.26);
+  opacity: 0.88;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment--one {
+  left: 21%;
+  top: 35%;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment--two {
+  left: 35%;
+  top: 52%;
+  background: rgba(130, 226, 165, 0.68);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment--three {
+  left: 70%;
+  top: 43%;
+  background: rgba(143, 231, 237, 0.68);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish {
+  left: 49%;
+  top: 48%;
+  width: 5rem;
+  height: 1.52rem;
+  border-top: 1px solid rgba(255, 227, 156, 0.74);
+  border-bottom: 1px solid rgba(143, 231, 237, 0.58);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 31% 50%, rgba(255, 227, 156, 0.7) 0 0.17rem, transparent 0.19rem),
+    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.16), transparent 66%);
+  box-shadow:
+    0 0 1.55rem rgba(83, 216, 232, 0.2),
+    0 0 1.3rem rgba(225, 182, 79, 0.13);
+  opacity: 0.94;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish::after {
+  content: '';
+  position: absolute;
+  right: -0.46rem;
+  top: 50%;
+  width: 0.86rem;
+  height: 0.86rem;
+  border-top: 1px solid rgba(143, 231, 237, 0.4);
+  border-right: 1px solid rgba(255, 227, 156, 0.4);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__carrier {
+  left: 54%;
+  top: 49%;
+  width: 1px;
+  height: 5rem;
+  background: linear-gradient(180deg, transparent, rgba(255, 227, 156, 0.74), rgba(130, 226, 165, 0.3), transparent);
+  box-shadow: 0 0 1.35rem rgba(225, 182, 79, 0.28);
+  opacity: 0.64;
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__carrier::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  width: 2.55rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.6), transparent);
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread {
+  left: 54%;
+  top: 50%;
+  width: 8.5rem;
+  height: 4.05rem;
+  border-radius: 50%;
+  opacity: 0.48;
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread--descent {
+  border-top: 1px solid rgba(255, 227, 156, 0.32);
+  border-left: 1px solid rgba(255, 227, 156, 0.2);
+  transform: translate(-50%, -50%) rotate(-11deg);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread--return {
+  border-bottom: 1px solid rgba(143, 231, 237, 0.35);
+  border-right: 1px solid rgba(130, 226, 165, 0.24);
+  transform: translate(-50%, -50%) rotate(15deg);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth {
+  right: 8%;
+  top: 50%;
+  width: 4rem;
+  height: 2.55rem;
+  border: 1px solid rgba(143, 231, 237, 0.28);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 44% 50%, rgba(83, 216, 232, 0.22), transparent 66%),
+    linear-gradient(130deg, transparent 48%, rgba(83, 216, 232, 0.3) 49%, transparent 51%);
+  box-shadow: inset 0 0 1.35rem rgba(83, 216, 232, 0.13);
+  opacity: 0.7;
+  transform: translateY(-50%) rotate(-9deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label {
+  z-index: 3;
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--strata {
+  left: 7%;
+  top: 13%;
+  color: rgba(255, 227, 156, 0.95);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--carrier {
+  left: 47%;
+  top: 13%;
+  color: rgba(159, 238, 186, 0.95);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--afterlife {
+  right: 5%;
+  top: 13%;
+  color: rgba(143, 231, 237, 0.96);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__layer,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__sediment {
+  opacity: 1;
+  transform: translateY(-0.1rem);
+  box-shadow: 0 0 1.45rem rgba(225, 182, 79, 0.22);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__fish {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__carrier,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__thread--descent {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.11);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__thread--descent {
+  transform: translate(-50%, -50%) rotate(-11deg) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__fish {
+  border-top-color: rgba(255, 227, 156, 0.86);
+  border-bottom-color: rgba(130, 226, 165, 0.7);
+  box-shadow: 0 0 1.85rem rgba(130, 226, 165, 0.25), 0 0 1.25rem rgba(225, 182, 79, 0.12);
+  opacity: 1;
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__layer--2,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__layer--3 {
+  opacity: 1;
+  transform: translateY(-0.08rem) scaleX(1.04);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__field--afterlife {
+  opacity: 0.95;
+  transform: scaleX(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__depth,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__thread--return {
+  opacity: 1;
+  box-shadow: 0 0 1.72rem rgba(83, 216, 232, 0.22);
+  transform: translateY(-50%) rotate(-9deg) scale(1.12);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__thread--return {
+  transform: translate(-50%, -50%) rotate(15deg) scale(1.14);
+}
+
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__layer--4,
+.chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__layer--5 {
+  opacity: 1;
+  transform: translateY(0.06rem) scaleX(1.05);
+  box-shadow: 0 0 1.35rem rgba(83, 216, 232, 0.18);
+}
+
+@media (max-width: 720px) {
+  .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument {
+    min-height: 6.9rem;
+    margin: 0;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::before {
+    inset: 0.48rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::after {
+    width: 6.7rem;
+    height: 3.9rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__layer {
+    left: 11%;
+    right: 12%;
+    height: 0.35rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish {
+    width: 3.35rem;
+    height: 1.05rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__carrier {
+    height: 3.85rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread {
+    width: 5.85rem;
+    height: 3rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth {
+    right: 5%;
+    width: 2.65rem;
+    height: 1.8rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment {
+    width: 0.42rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label {
+    font-size: 0.51rem;
+  }
+}

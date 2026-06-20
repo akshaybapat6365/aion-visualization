@@ -3,7 +3,9 @@ import { Link } from 'react-router';
 
 import AlchemyTransformationInstrument from '../components/AlchemyTransformationInstrument';
 import Chapter14FinalSynthesisInstrument from '../components/Chapter14FinalSynthesisInstrument';
+import ChapterEightHistoricalInstrument from '../components/ChapterEightHistoricalInstrument';
 import ChapterOneReferenceInstrument from '../components/ChapterOneReferenceInstrument';
+import ChapterPanelSymbol from '../components/ChapterPanelSymbol';
 import ChapterSevenProphecyInstrument from '../components/ChapterSevenProphecyInstrument';
 import ChapterSigil from '../components/ChapterSigil';
 import PsycheArcInstrument from '../components/PsycheArcInstrument';
@@ -20,10 +22,7 @@ import type { ChapterRecord } from '../types';
 import { CHAPTER_SCENES } from '../visualization/chapterScenes';
 
 const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
-const mandalaBands = ['outer', 'middle', 'inner'] as const;
-const rootLines = ['left', 'center', 'right'] as const;
 const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
-const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
 const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as const;
 const alchemicalTreeStages = ['black', 'white', 'gold', 'red'] as const;
 const amplificationLensRings = ['outer', 'middle', 'inner'] as const;
@@ -74,7 +73,6 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
   const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
-  const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalTreeInstrumentLabel = `Philosophical tree model: Mercurius holds the middle between matter and spirit, an inverted root-and-branch tree makes the opus visible, the mirror returns the image to the psyche, and the lapis Coniunctio holds a formed union of opposites. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
@@ -195,34 +193,11 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
             <ChapterSevenProphecyInstrument activePanel={activePanel} activePanelId={activePanelId} />
           )}
           {chapter.id === 'ch8' && (
-            <div
-              className="historical-strata-instrument"
-              data-active-panel={activePanelId}
-              role="img"
-              aria-label={historicalStrataInstrumentLabel}
-            >
-              <span className="historical-strata-instrument__field historical-strata-instrument__field--archive" aria-hidden="true" />
-              <span className="historical-strata-instrument__field historical-strata-instrument__field--afterlife" aria-hidden="true" />
-              <span className="historical-strata-instrument__axis" aria-hidden="true" />
-              {historicalStrataLayers.map((layer, index) => (
-                <span
-                  key={layer}
-                  className={`historical-strata-instrument__layer historical-strata-instrument__layer--${index + 1}`}
-                  aria-hidden="true"
-                />
-              ))}
-              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--one" aria-hidden="true" />
-              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--two" aria-hidden="true" />
-              <span className="historical-strata-instrument__sediment historical-strata-instrument__sediment--three" aria-hidden="true" />
-              <span className="historical-strata-instrument__thread historical-strata-instrument__thread--descent" aria-hidden="true" />
-              <span className="historical-strata-instrument__thread historical-strata-instrument__thread--return" aria-hidden="true" />
-              <span className="historical-strata-instrument__fish" aria-hidden="true" />
-              <span className="historical-strata-instrument__carrier" aria-hidden="true" />
-              <span className="historical-strata-instrument__depth" aria-hidden="true" />
-              <span className="historical-strata-instrument__label historical-strata-instrument__label--strata" aria-hidden="true">strata</span>
-              <span className="historical-strata-instrument__label historical-strata-instrument__label--carrier" aria-hidden="true">carrier</span>
-              <span className="historical-strata-instrument__label historical-strata-instrument__label--afterlife" aria-hidden="true">afterlife</span>
-            </div>
+            <ChapterEightHistoricalInstrument
+              activePanel={activePanel}
+              activePanelId={activePanelId}
+              panels={experience.panels}
+            />
           )}
           {chapter.id === 'ch9' && (
             <div
@@ -452,25 +427,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
             role="region"
             aria-labelledby={`${chapter.id}-${panel.id}-title`}
           >
-            <div className="chapter-panel__symbol" aria-hidden="true">
-              <span className="chapter-panel__ring chapter-panel__ring--outer" />
-              <span className="chapter-panel__ring chapter-panel__ring--inner" />
-              <span className="chapter-panel__axis chapter-panel__axis--vertical" />
-              <span className="chapter-panel__axis chapter-panel__axis--horizontal" />
-              <span className="chapter-panel__spark chapter-panel__spark--one" />
-              <span className="chapter-panel__spark chapter-panel__spark--two" />
-              <span className="chapter-panel__depth chapter-panel__depth--one" />
-              <span className="chapter-panel__depth chapter-panel__depth--two" />
-              {quaternityDirections.map((direction) => (
-                <span key={direction} className={`chapter-panel__quaternity-point chapter-panel__quaternity-point--${direction}`} />
-              ))}
-              {mandalaBands.map((band) => (
-                <span key={band} className={`chapter-panel__mandala-band chapter-panel__mandala-band--${band}`} />
-              ))}
-              {rootLines.map((line) => (
-                <span key={line} className={`chapter-panel__root-line chapter-panel__root-line--${line}`} />
-              ))}
-            </div>
+            <ChapterPanelSymbol />
             <div className="chapter-panel__copy">
               <span className="chapter-panel__count">{String(index + 1).padStart(2, '0')}</span>
               <p className="eyebrow">{panel.kicker}</p>

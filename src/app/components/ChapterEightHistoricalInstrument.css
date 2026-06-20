@@ -1,0 +1,236 @@
+.chapter-eight-history {
+  --ch8-strata: #e1b64f;
+  --ch8-carrier: #82e2a5;
+  --ch8-afterlife: #53d8e8;
+  position: relative;
+  width: min(31.5rem, 100%);
+  margin-top: 0.92rem;
+  padding: 0.36rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.14);
+  border-radius: calc(var(--radius) + 0.22rem);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(225, 182, 79, 0.15), transparent 7.4rem),
+    radial-gradient(circle at 57% 7%, rgba(130, 226, 165, 0.12), transparent 8rem),
+    radial-gradient(circle at 94% 13%, rgba(83, 216, 232, 0.13), transparent 7rem),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.056), rgba(244, 240, 232, 0.014));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.075), 0 1.6rem 4.8rem rgba(0, 0, 0, 0.25);
+}
+
+.chapter-eight-history::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.52;
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.065), transparent),
+    repeating-linear-gradient(90deg, transparent 0 2.45rem, rgba(244, 240, 232, 0.035) 2.49rem 2.53rem);
+  mask-image: linear-gradient(180deg, #000, transparent 76%);
+}
+
+.chapter-eight-history__header,
+.chapter-eight-history__plate,
+.chapter-eight-history__legend,
+.chapter-eight-history__readout {
+  position: relative;
+  z-index: 2;
+}
+
+.chapter-eight-history__header {
+  position: absolute;
+  top: 0.62rem;
+  left: 0.72rem;
+  right: 0.72rem;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.05rem 0.7rem;
+  align-items: end;
+  padding: 0;
+  pointer-events: none;
+}
+
+.chapter-eight-history__header span,
+.chapter-eight-history__header em,
+.chapter-eight-history__step span,
+.chapter-eight-history__step em {
+  color: rgba(244, 240, 232, 0.52);
+  font-family: var(--font-ui);
+  font-size: 0.54rem;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.chapter-eight-history__header strong {
+  color: rgba(244, 240, 232, 0.94);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 0.95;
+}
+
+.chapter-eight-history__header em {
+  color: color-mix(in srgb, var(--ch8-strata) 78%, rgba(244, 240, 232, 0.72));
+  text-align: right;
+}
+
+.chapter-eight-history[data-active-panel="christian"] .chapter-eight-history__header em {
+  color: color-mix(in srgb, var(--ch8-carrier) 80%, rgba(244, 240, 232, 0.72));
+}
+
+.chapter-eight-history[data-active-panel="modern"] .chapter-eight-history__header em {
+  color: color-mix(in srgb, var(--ch8-afterlife) 84%, rgba(244, 240, 232, 0.72));
+}
+
+.chapter-eight-history__plate {
+  padding: 0.3rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: calc(var(--radius) - 0.02rem);
+  background:
+    radial-gradient(circle at 24% 36%, rgba(225, 182, 79, 0.12), transparent 6.4rem),
+    radial-gradient(circle at 70% 50%, rgba(83, 216, 232, 0.12), transparent 7rem),
+    linear-gradient(180deg, rgba(4, 8, 10, 0.74), rgba(3, 4, 7, 0.5));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(244, 240, 232, 0.035);
+}
+
+.chapter-eight-history__legend {
+  position: absolute;
+  left: 0.72rem;
+  right: 0.72rem;
+  bottom: 0.72rem;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.chapter-eight-history__step {
+  display: grid;
+  gap: 0.1rem;
+  min-height: 2.36rem;
+  padding: 0.38rem 0.46rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: calc(var(--radius) - 0.28rem);
+  background:
+    radial-gradient(circle at 22% 18%, rgba(225, 182, 79, 0.11), transparent 2.4rem),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.045), rgba(244, 240, 232, 0.015));
+  opacity: 0.64;
+  transition:
+    opacity 0.48s var(--motion-spring),
+    border-color 0.48s var(--motion-spring),
+    transform 0.48s var(--motion-spring),
+    background 0.48s var(--motion-spring);
+}
+
+.chapter-eight-history__step strong {
+  color: rgba(244, 240, 232, 0.92);
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.chapter-eight-history__step em {
+  color: rgba(244, 240, 232, 0.48);
+  font-size: 0.45rem;
+  letter-spacing: 0.09em;
+}
+
+.chapter-eight-history__step--active {
+  border-color: color-mix(in srgb, var(--ch8-strata) 48%, rgba(244, 240, 232, 0.12));
+  background:
+    radial-gradient(circle at 28% 16%, rgba(225, 182, 79, 0.18), transparent 2.8rem),
+    linear-gradient(180deg, rgba(255, 227, 156, 0.08), rgba(244, 240, 232, 0.02));
+  opacity: 1;
+  transform: translateY(-0.04rem);
+}
+
+.chapter-eight-history[data-active-panel="christian"] .chapter-eight-history__step--active {
+  border-color: color-mix(in srgb, var(--ch8-carrier) 48%, rgba(244, 240, 232, 0.12));
+  background:
+    radial-gradient(circle at 28% 16%, rgba(130, 226, 165, 0.16), transparent 2.8rem),
+    linear-gradient(180deg, rgba(130, 226, 165, 0.065), rgba(244, 240, 232, 0.02));
+}
+
+.chapter-eight-history[data-active-panel="modern"] .chapter-eight-history__step--active {
+  border-color: color-mix(in srgb, var(--ch8-afterlife) 52%, rgba(244, 240, 232, 0.12));
+  background:
+    radial-gradient(circle at 28% 16%, rgba(83, 216, 232, 0.16), transparent 2.8rem),
+    linear-gradient(180deg, rgba(83, 216, 232, 0.065), rgba(244, 240, 232, 0.02));
+}
+
+.chapter-eight-history__readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .chapter-eight-history {
+    width: min(100%, 28.5rem);
+    margin-top: 0.7rem;
+    padding: 0.28rem;
+  }
+
+  .chapter-eight-history__header {
+    top: 0.48rem;
+    left: 0.52rem;
+    right: 0.52rem;
+    gap: 0.04rem 0.48rem;
+  }
+
+  .chapter-eight-history__header strong {
+    font-size: 0.88rem;
+  }
+
+  .chapter-eight-history__plate {
+    padding: 0.24rem;
+  }
+
+  .chapter-eight-history__legend {
+    left: 0.52rem;
+    right: 0.52rem;
+    bottom: 0.52rem;
+    gap: 0.22rem;
+  }
+
+  .chapter-eight-history__step {
+    min-height: 2.04rem;
+    padding: 0.34rem 0.34rem;
+  }
+
+  .chapter-eight-history__step strong {
+    font-size: 0.58rem;
+  }
+
+  .chapter-eight-history__step em {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-eight-history *,
+  .chapter-eight-history *::before,
+  .chapter-eight-history *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
