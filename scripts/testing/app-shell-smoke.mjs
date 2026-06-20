@@ -339,6 +339,87 @@ async function smokeAtlasVisualSearch(page, failures) {
   if (!emptyImageVisible) failures.push('atlas empty field did not expose empty accessible name');
 }
 
+async function smokeTimelineVisualField(page, failures) {
+  await gotoAppRoute(page, '/timeline');
+
+  const search = page.getByLabel('Search');
+  const category = page.getByLabel('Category');
+  const orbitButtons = page.locator('.timeline-orbit__node');
+  const railItems = page.locator('.timeline-rail__item');
+  const fieldNodes = page.locator('.timeline-field__node');
+  const timelineField = page.getByRole('group', { name: /Timeline field:/ });
+  const initialDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const initialOrbitLabel = await page.locator('.timeline-orbit').getAttribute('aria-label');
+  const initialFieldLabel = await timelineField.getAttribute('aria-label');
+  const initialActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
+  const initialActiveFieldCount = await page.locator('.timeline-field__node[aria-pressed="true"]').count();
+
+  if (await orbitButtons.count() !== 12) failures.push(`timeline initial orbit button count mismatch: ${await orbitButtons.count()}`);
+  if (await railItems.count() !== 22) failures.push(`timeline initial rail count mismatch: ${await railItems.count()}`);
+  if (await fieldNodes.count() !== 22) failures.push(`timeline initial field node count mismatch: ${await fieldNodes.count()}`);
+  if (!initialDetail?.includes('Born in Kesswil')) failures.push(`timeline initial detail mismatch: ${initialDetail}`);
+  if (!initialOrbitLabel?.includes('12 events in view')) failures.push(`timeline initial orbit label mismatch: ${initialOrbitLabel}`);
+  if (!initialFieldLabel?.includes('22 of 22 events visible')) failures.push(`timeline initial field label mismatch: ${initialFieldLabel}`);
+  if (initialActiveRailCount !== 1) failures.push(`timeline initial active rail count mismatch: ${initialActiveRailCount}`);
+  if (initialActiveFieldCount !== 1) failures.push(`timeline initial active field count mismatch: ${initialActiveFieldCount}`);
+
+  const freudRail = page.getByRole('button', { name: /1907 · Encounters First meeting with Sigmund Freud/ });
+  await freudRail.click();
+  await page.waitForTimeout(100);
+  const freudPressed = await freudRail.getAttribute('aria-pressed');
+  const freudDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const freudOrbitCore = await page.locator('#timeline-selected-orbit-detail').textContent();
+  if (freudPressed !== 'true') failures.push(`timeline Freud rail did not become active: ${freudPressed}`);
+  if (!freudDetail?.includes('First meeting with Sigmund Freud')) failures.push(`timeline Freud detail mismatch: ${freudDetail}`);
+  if (!freudOrbitCore?.includes('1907') || !freudOrbitCore?.includes('First meeting with Sigmund Freud')) failures.push(`timeline Freud orbit core mismatch: ${freudOrbitCore}`);
+
+  await search.fill('Aion');
+  await page.waitForTimeout(100);
+  const aionRailCount = await railItems.count();
+  const aionOrbitCount = await orbitButtons.count();
+  const aionFieldCount = await fieldNodes.count();
+  const aionDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const aionResult = await page.locator('.timeline-controls__result').textContent();
+  const aionFieldLabel = await timelineField.getAttribute('aria-label');
+  if (aionRailCount !== 1) failures.push(`timeline Aion rail count mismatch: ${aionRailCount}`);
+  if (aionOrbitCount !== 1) failures.push(`timeline Aion orbit count mismatch: ${aionOrbitCount}`);
+  if (aionFieldCount !== 1) failures.push(`timeline Aion field count mismatch: ${aionFieldCount}`);
+  if (!aionDetail?.includes('Publishes "Aion"')) failures.push(`timeline Aion detail mismatch: ${aionDetail}`);
+  if (!aionResult?.includes('1 of 22 events visible')) failures.push(`timeline Aion result mismatch: ${aionResult}`);
+  if (!aionFieldLabel?.includes('1 of 22 events visible')) failures.push(`timeline Aion field label mismatch: ${aionFieldLabel}`);
+
+  await search.fill('');
+  await category.selectOption('concepts');
+  await page.waitForTimeout(100);
+  const conceptsRailCount = await railItems.count();
+  const conceptsOrbitCount = await orbitButtons.count();
+  const conceptsFieldCount = await fieldNodes.count();
+  const conceptsDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const conceptsActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
+  if (conceptsRailCount !== 4) failures.push(`timeline concepts rail count mismatch: ${conceptsRailCount}`);
+  if (conceptsOrbitCount !== 4) failures.push(`timeline concepts orbit count mismatch: ${conceptsOrbitCount}`);
+  if (conceptsFieldCount !== 4) failures.push(`timeline concepts field count mismatch: ${conceptsFieldCount}`);
+  if (!conceptsDetail?.includes('Seven Sermons to the Dead')) failures.push(`timeline concepts detail mismatch: ${conceptsDetail}`);
+  if (conceptsActiveRailCount !== 1) failures.push(`timeline concepts active rail count mismatch: ${conceptsActiveRailCount}`);
+
+  await search.fill('not-a-real-term');
+  await page.waitForTimeout(100);
+  const emptyRailCount = await railItems.count();
+  const emptyOrbitCount = await orbitButtons.count();
+  const emptyFieldCount = await fieldNodes.count();
+  const emptyDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const emptyMessageVisible = await page.locator('.timeline-field__empty').isVisible();
+  const emptyResult = await page.locator('.timeline-controls__result').textContent();
+  const emptyOrbitCore = await page.locator('#timeline-selected-orbit-detail').textContent();
+  if (emptyRailCount !== 0) failures.push(`timeline empty rail still rendered items: ${emptyRailCount}`);
+  if (emptyOrbitCount !== 0) failures.push(`timeline empty orbit still rendered buttons: ${emptyOrbitCount}`);
+  if (emptyFieldCount !== 0) failures.push(`timeline empty field still rendered nodes: ${emptyFieldCount}`);
+  if (!emptyDetail?.includes('Adjust the field')) failures.push(`timeline empty detail mismatch: ${emptyDetail}`);
+  if (!emptyMessageVisible) failures.push('timeline empty field message is not visible');
+  if (!emptyResult?.includes('0 of 22 events visible')) failures.push(`timeline empty result mismatch: ${emptyResult}`);
+  if (!emptyOrbitCore?.includes('No match') || !emptyOrbitCore?.includes('Adjust the field')) failures.push(`timeline empty orbit core mismatch: ${emptyOrbitCore}`);
+}
+
 async function smokeSymbolsVisualField(page, failures) {
   await gotoAppRoute(page, '/symbols');
 
@@ -3184,6 +3265,7 @@ async function runSmoke() {
     await smokeCanonicalRoutes(page, failures);
     await smokeHomeVisualDetail(page, failures);
     await smokeAtlasVisualSearch(page, failures);
+    await smokeTimelineVisualField(page, failures);
     await smokeSymbolsVisualField(page, failures);
     await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
