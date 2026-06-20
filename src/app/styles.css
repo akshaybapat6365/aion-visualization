@@ -7620,10 +7620,11 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch14"] .chapter-stage__scrim {
   background:
-    radial-gradient(circle at 54% 40%, rgba(255, 227, 156, 0.1), transparent 20rem),
-    radial-gradient(circle at 66% 58%, rgba(83, 216, 232, 0.1), transparent 22rem),
-    radial-gradient(circle at 48% 72%, rgba(91, 214, 143, 0.08), transparent 20rem),
-    linear-gradient(90deg, rgba(3, 3, 7, 0.92), rgba(3, 3, 7, 0.22) 47%, rgba(3, 3, 7, 0.64) 100%);
+    radial-gradient(circle at 54% 37%, rgba(255, 227, 156, 0.14), transparent 21rem),
+    radial-gradient(circle at 68% 57%, rgba(83, 216, 232, 0.13), transparent 23rem),
+    radial-gradient(circle at 48% 74%, rgba(91, 214, 143, 0.11), transparent 21rem),
+    radial-gradient(circle at 33% 58%, rgba(204, 109, 134, 0.07), transparent 20rem),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.94), rgba(3, 3, 7, 0.22) 47%, rgba(3, 3, 7, 0.66) 100%);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro h1 {
@@ -7697,22 +7698,24 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument {
   position: relative;
-  width: min(32rem, 100%);
-  min-height: clamp(9.2rem, 14.2vh, 10.85rem);
+  width: min(34rem, 100%);
+  min-height: clamp(10rem, 15.2vh, 11.8rem);
   overflow: hidden;
-  margin-top: 0.82rem;
-  border: 1px solid rgba(244, 240, 232, 0.12);
+  isolation: isolate;
+  margin-top: 0.92rem;
+  border: 1px solid rgba(244, 240, 232, 0.16);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 51% 43%, rgba(255, 227, 156, 0.2), transparent 3.6rem),
-    radial-gradient(circle at 23% 57%, rgba(83, 216, 232, 0.16), transparent 5.2rem),
-    radial-gradient(circle at 75% 57%, rgba(91, 214, 143, 0.16), transparent 5rem),
-    conic-gradient(from 218deg at 52% 56%, rgba(83, 216, 232, 0.08), rgba(255, 227, 156, 0.1), rgba(204, 109, 134, 0.07), rgba(91, 214, 143, 0.08), rgba(83, 216, 232, 0.08)),
-    linear-gradient(108deg, rgba(5, 7, 12, 0.94), rgba(8, 11, 16, 0.78) 52%, rgba(3, 18, 20, 0.72));
+    radial-gradient(circle at 51% 43%, rgba(255, 227, 156, 0.27), transparent 4rem),
+    radial-gradient(circle at 22% 57%, rgba(83, 216, 232, 0.21), transparent 5.8rem),
+    radial-gradient(circle at 78% 58%, rgba(91, 214, 143, 0.21), transparent 5.8rem),
+    radial-gradient(circle at 15% 78%, rgba(255, 173, 112, 0.11), transparent 4.6rem),
+    conic-gradient(from 218deg at 52% 56%, rgba(83, 216, 232, 0.12), rgba(255, 227, 156, 0.15), rgba(204, 109, 134, 0.1), rgba(91, 214, 143, 0.12), rgba(83, 216, 232, 0.12)),
+    linear-gradient(108deg, rgba(5, 7, 12, 0.96), rgba(8, 11, 16, 0.82) 52%, rgba(3, 18, 20, 0.76));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.28),
-    0 0 2.7rem rgba(83, 216, 232, 0.08);
+    0 1.5rem 4.4rem rgba(0, 0, 0, 0.34),
+    0 0 3.2rem rgba(83, 216, 232, 0.12);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::before,
@@ -7724,25 +7727,29 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::before {
   inset: 0.58rem;
-  border: 1px solid rgba(255, 227, 156, 0.08);
+  z-index: 0;
+  border: 1px solid rgba(255, 227, 156, 0.12);
   border-radius: calc(var(--radius) - 2px);
   background:
-    linear-gradient(90deg, transparent 0 49.65%, rgba(244, 240, 232, 0.12) 49.85% 50.15%, transparent 50.35%),
-    linear-gradient(180deg, transparent 0 49.65%, rgba(244, 240, 232, 0.1) 49.85% 50.15%, transparent 50.35%);
+    radial-gradient(circle at 52% 55%, rgba(255, 227, 156, 0.12), transparent 3.2rem),
+    linear-gradient(90deg, transparent 0 49.6%, rgba(244, 240, 232, 0.18) 49.84% 50.16%, transparent 50.4%),
+    linear-gradient(180deg, transparent 0 49.6%, rgba(244, 240, 232, 0.14) 49.84% 50.16%, transparent 50.4%),
+    repeating-radial-gradient(ellipse at 52% 55%, transparent 0 2.4rem, rgba(244, 240, 232, 0.035) 2.44rem 2.48rem, transparent 2.54rem 4.8rem);
   mask-image: radial-gradient(ellipse at 50% 55%, black 0 63%, transparent 77%);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument::after {
   left: 50%;
   top: 56%;
-  width: 72%;
-  height: 42%;
-  border: 1px solid rgba(83, 216, 232, 0.1);
-  border-left-color: rgba(255, 227, 156, 0.17);
+  width: 78%;
+  height: 48%;
+  z-index: 0;
+  border: 1px solid rgba(83, 216, 232, 0.16);
+  border-left-color: rgba(255, 227, 156, 0.24);
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(255, 227, 156, 0.08), transparent 58%),
-    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.1), transparent);
+    radial-gradient(ellipse at 50% 50%, rgba(255, 227, 156, 0.12), transparent 58%),
+    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.16), transparent);
   transform: translate(-50%, -50%);
 }
 
@@ -7759,49 +7766,55 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark,
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label {
   position: absolute;
+  z-index: 1;
   pointer-events: none;
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field {
   top: 18%;
-  width: 35%;
-  height: 64%;
+  width: 38%;
+  height: 66%;
   border-radius: 50%;
-  opacity: 0.34;
-  filter: drop-shadow(0 0 1.3rem rgba(83, 216, 232, 0.08));
+  opacity: 0.46;
+  filter: drop-shadow(0 0 1.5rem rgba(83, 216, 232, 0.12));
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field--memory {
-  left: 7%;
-  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.13), transparent 72%);
+  left: 5.5%;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.19), transparent 73%),
+    radial-gradient(circle at 34% 50%, rgba(255, 173, 112, 0.12), transparent 2.2rem);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__field--future {
-  right: 7%;
-  background: radial-gradient(ellipse at 50% 50%, rgba(91, 214, 143, 0.14), transparent 72%);
+  right: 5.5%;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(91, 214, 143, 0.2), transparent 73%),
+    radial-gradient(circle at 68% 50%, rgba(83, 216, 232, 0.12), transparent 2.2rem);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis {
   left: 50%;
   top: 55%;
-  opacity: 0.34;
+  opacity: 0.48;
   transition: opacity 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--vertical {
   width: 1px;
-  height: 5.9rem;
-  background: linear-gradient(180deg, rgba(255, 227, 156, 0.42), rgba(244, 240, 232, 0.16), rgba(83, 216, 232, 0.34));
+  height: 6.55rem;
+  background: linear-gradient(180deg, rgba(255, 227, 156, 0.58), rgba(244, 240, 232, 0.24), rgba(83, 216, 232, 0.48));
+  box-shadow: 0 0 1.3rem rgba(83, 216, 232, 0.14);
   transform: translate(-50%, -50%);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__axis--horizontal {
-  width: 12.1rem;
+  width: 13.2rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.28), transparent);
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.4), transparent);
   transform: translate(-50%, -50%);
 }
 
@@ -7810,7 +7823,7 @@ h3 {
   top: 55%;
   border: 1px solid rgba(83, 216, 232, 0.18);
   border-radius: 50%;
-  opacity: 0.5;
+  opacity: 0.62;
   transform: translate(-50%, -50%) rotate(-12deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7820,23 +7833,23 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--outer {
-  width: 16.6rem;
-  height: 5.5rem;
+  width: 18rem;
+  height: 6rem;
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__orbit--inner {
-  width: 10.2rem;
-  height: 3.5rem;
-  border-color: rgba(255, 227, 156, 0.18);
+  width: 11.1rem;
+  height: 3.85rem;
+  border-color: rgba(255, 227, 156, 0.26);
   transform: translate(-50%, -50%) rotate(18deg);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring {
-  left: 26%;
+  left: 25%;
   top: 55%;
-  width: 7.5rem;
+  width: 8.25rem;
   aspect-ratio: 1;
-  opacity: 0.72;
+  opacity: 0.84;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7852,9 +7865,11 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring::before {
-  inset: 12%;
-  border: 1px solid rgba(255, 227, 156, 0.14);
-  box-shadow: inset 0 0 1.2rem rgba(83, 216, 232, 0.07);
+  inset: 10%;
+  border: 1px solid rgba(255, 227, 156, 0.22);
+  box-shadow:
+    inset 0 0 1.35rem rgba(83, 216, 232, 0.1),
+    0 0 1.1rem rgba(212, 175, 55, 0.12);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif-ring::after {
@@ -7862,15 +7877,15 @@ h3 {
   top: 50%;
   width: 72%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(83, 216, 232, 0.32), rgba(255, 227, 156, 0.44), rgba(204, 109, 134, 0.3));
+  background: linear-gradient(90deg, rgba(83, 216, 232, 0.42), rgba(255, 227, 156, 0.58), rgba(204, 109, 134, 0.4));
   transform: translate(-50%, -50%) rotate(-23deg);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif {
-  width: 0.54rem;
+  width: 0.62rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  opacity: 0.58;
+  opacity: 0.7;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7899,8 +7914,8 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__motif--fish {
   left: 50%;
   top: 95%;
-  width: 0.72rem;
-  height: 0.32rem;
+  width: 0.82rem;
+  height: 0.36rem;
   background: rgba(83, 216, 232, 0.9);
 }
 
@@ -7920,14 +7935,14 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__quaternity {
   left: 52%;
   top: 55%;
-  width: 6.5rem;
+  width: 7.25rem;
   aspect-ratio: 1;
   border: 1px solid rgba(244, 240, 232, 0.18);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.1), transparent 21%),
     conic-gradient(from 45deg, rgba(255, 227, 156, 0.12), rgba(83, 216, 232, 0.08), rgba(91, 214, 143, 0.08), rgba(204, 109, 134, 0.08), rgba(255, 227, 156, 0.12));
-  opacity: 0.75;
+  opacity: 0.88;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7959,7 +7974,7 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__point {
-  width: 0.58rem;
+  width: 0.64rem;
   aspect-ratio: 1;
   border-radius: 50%;
   opacity: 0.72;
@@ -7996,14 +8011,14 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__ego {
   left: 52%;
   top: 31%;
-  width: 0.58rem;
+  width: 0.64rem;
   aspect-ratio: 1;
   border-radius: 50%;
   background: rgba(244, 240, 232, 0.96);
   box-shadow:
     0 0 0 0.44rem rgba(244, 240, 232, 0.06),
     0 0 1.3rem rgba(244, 240, 232, 0.2);
-  opacity: 0.72;
+  opacity: 0.82;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -8014,14 +8029,14 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__self {
   left: 52%;
   top: 55%;
-  width: 0.86rem;
+  width: 1rem;
   aspect-ratio: 1;
   border-radius: 50%;
   background: rgba(255, 227, 156, 0.95);
   box-shadow:
-    0 0 0 0.72rem rgba(212, 175, 55, 0.08),
-    0 0 1.65rem rgba(212, 175, 55, 0.32);
-  opacity: 0.86;
+    0 0 0 0.78rem rgba(212, 175, 55, 0.1),
+    0 0 1.9rem rgba(212, 175, 55, 0.42);
+  opacity: 0.94;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -8032,12 +8047,12 @@ h3 {
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__path {
   right: 12%;
   top: 55%;
-  width: 6.8rem;
-  height: 4rem;
-  border-top: 1px solid rgba(91, 214, 143, 0.28);
-  border-right: 1px solid rgba(83, 216, 232, 0.2);
+  width: 7.55rem;
+  height: 4.4rem;
+  border-top: 1px solid rgba(91, 214, 143, 0.42);
+  border-right: 1px solid rgba(83, 216, 232, 0.3);
   border-radius: 50%;
-  opacity: 0.5;
+  opacity: 0.64;
   transform: translateY(-50%) rotate(12deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -8049,16 +8064,16 @@ h3 {
   content: '';
   position: absolute;
   inset: 13% 9% 8% 14%;
-  border-top: 1px solid rgba(255, 227, 156, 0.22);
+  border-top: 1px solid rgba(255, 227, 156, 0.34);
   border-radius: 50%;
   transform: rotate(-18deg);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__mark {
-  width: 0.5rem;
+  width: 0.56rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  opacity: 0.62;
+  opacity: 0.74;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -8085,6 +8100,7 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument__label {
+  z-index: 3;
   color: rgba(244, 240, 232, 0.82);
   font-family: var(--font-ui);
   font-size: 0.58rem;
@@ -8119,13 +8135,13 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif-ring {
-  transform: translate(-50%, -50%) scale(1.08);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="gather"] .final-synthesis-instrument__motif {
   box-shadow:
-    0 0 0 0.22rem rgba(255, 227, 156, 0.06),
-    0 0 1rem rgba(212, 175, 55, 0.26);
+    0 0 0 0.26rem rgba(255, 227, 156, 0.08),
+    0 0 1.18rem rgba(212, 175, 55, 0.32);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__axis,
@@ -8137,16 +8153,16 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__quaternity {
-  border-color: rgba(255, 227, 156, 0.34);
+  border-color: rgba(255, 227, 156, 0.46);
   box-shadow:
-    inset 0 0 1.1rem rgba(83, 216, 232, 0.08),
-    0 0 1.75rem rgba(212, 175, 55, 0.24);
-  transform: translate(-50%, -50%) scale(1.08);
+    inset 0 0 1.2rem rgba(83, 216, 232, 0.12),
+    0 0 2rem rgba(212, 175, 55, 0.32);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__orbit {
-  border-color: rgba(255, 227, 156, 0.28);
-  box-shadow: 0 0 1.4rem rgba(83, 216, 232, 0.08);
+  border-color: rgba(255, 227, 156, 0.38);
+  box-shadow: 0 0 1.55rem rgba(83, 216, 232, 0.12);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="axis"] .final-synthesis-instrument__ego {
@@ -8166,12 +8182,12 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__path {
-  border-color: rgba(91, 214, 143, 0.42);
-  transform: translateY(-50%) rotate(12deg) scale(1.08);
+  border-color: rgba(91, 214, 143, 0.62);
+  transform: translateY(-50%) rotate(12deg) scale(1.1);
 }
 
 .chapter-experience[data-chapter-id="ch14"] .final-synthesis-instrument[data-active-panel="aeon"] .final-synthesis-instrument__mark {
-  box-shadow: 0 0 1.1rem rgba(91, 214, 143, 0.24);
+  box-shadow: 0 0 1.25rem rgba(91, 214, 143, 0.32);
 }
 
 @keyframes alchemical-tree-wheel {

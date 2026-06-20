@@ -135,8 +135,12 @@ export default class ThreeUnusMundusViz extends BaseViz {
     }
     dispose() {
         removeEventListener('mousemove', this._onMM); removeEventListener('wheel', this._onWheel);
-        this.renderer?.dispose(); this.renderer?.forceContextLoss();
+        this.stop();
+        this.resizeObserver?.disconnect();
+        this.bloom?.dispose?.();
+        this.composer?.dispose?.();
         this.scene?.traverse(o => { o.geometry?.dispose(); if (o.material) [].concat(o.material).forEach(m => m.dispose()); });
-        this.composer = null; this.scene = null; this.renderer = null; super.dispose();
+        this.renderer?.dispose(); this.renderer?.forceContextLoss();
+        this.bloom = null; this.composer = null; this.scene = null; this.renderer = null; super.dispose();
     }
 }
