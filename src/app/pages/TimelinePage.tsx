@@ -278,6 +278,7 @@ export default function TimelinePage() {
                 <button
                   type="button"
                   className={event.id === selected?.id ? 'timeline-rail__item timeline-rail__item--active' : 'timeline-rail__item'}
+                  data-tone={categoryTone(event.category)}
                   onClick={() => setSelectedId(event.id)}
                   aria-controls="timeline-selected-detail timeline-selected-orbit-detail timeline-field"
                   aria-pressed={event.id === selected?.id}
@@ -289,7 +290,12 @@ export default function TimelinePage() {
             ))}
           </ol>
         </div>
-        <aside id="timeline-selected-detail" className={selected ? 'timeline-detail' : 'timeline-detail timeline-detail--empty'} aria-live="polite">
+        <aside
+          id="timeline-selected-detail"
+          className={selected ? 'timeline-detail' : 'timeline-detail timeline-detail--empty'}
+          data-tone={selectedTone}
+          aria-live="polite"
+        >
           {selected ? (
             <>
               <p className="eyebrow">{categoryLabels[selected.category] || selected.category}</p>
