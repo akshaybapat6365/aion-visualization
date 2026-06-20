@@ -35,6 +35,16 @@
 .psyche-arc-instrument--ch3 {
   --psyche-accent: #ffd060;
   --psyche-secondary: #53d8e8;
+  width: min(33.5rem, 100%);
+  background:
+    radial-gradient(circle at 18% 4%, rgba(83, 216, 232, 0.18), transparent 6.4rem),
+    radial-gradient(circle at 84% 16%, rgba(255, 208, 96, 0.19), transparent 6.6rem),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 224, 240, 0.08), transparent 64%),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.06), rgba(244, 240, 232, 0.018));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 0 0 1px rgba(255, 224, 240, 0.035),
+    0 1.9rem 4.4rem rgba(0, 0, 0, 0.25);
 }
 
 .psyche-arc-instrument--ch4 {
@@ -92,7 +102,10 @@
   border-radius: calc(var(--radius) - 0.05rem);
 }
 
-.psyche-arc-instrument--ch3 .psyche-arc-instrument__field,
+.psyche-arc-instrument--ch3 .psyche-arc-instrument__field {
+  min-height: clamp(7.15rem, 13vh, 8.55rem);
+}
+
 .psyche-arc-instrument--ch4 .psyche-arc-instrument__field {
   min-height: clamp(4.45rem, 7vh, 5.1rem);
 }

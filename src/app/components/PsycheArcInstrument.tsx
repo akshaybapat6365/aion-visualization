@@ -156,17 +156,32 @@ function SyzygyRelationField({ activePanelId, label }: { activePanelId: string; 
       role="img"
       aria-label={label}
     >
+      <span className="syzygy-relation-instrument__veil syzygy-relation-instrument__veil--lunar" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__veil syzygy-relation-instrument__veil--solar" aria-hidden="true" />
       <span className="syzygy-relation-instrument__axis" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__axis-pulse" aria-hidden="true" />
       <span className="syzygy-relation-instrument__orbit syzygy-relation-instrument__orbit--outer" aria-hidden="true" />
       <span className="syzygy-relation-instrument__orbit syzygy-relation-instrument__orbit--inner" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__orbit syzygy-relation-instrument__orbit--thread" aria-hidden="true" />
       <span className="syzygy-relation-instrument__field syzygy-relation-instrument__field--upper" aria-hidden="true" />
       <span className="syzygy-relation-instrument__field syzygy-relation-instrument__field--lower" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__braid syzygy-relation-instrument__braid--upper" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__braid syzygy-relation-instrument__braid--lower" aria-hidden="true" />
       <span className="syzygy-relation-instrument__projection syzygy-relation-instrument__projection--outward" aria-hidden="true" />
       <span className="syzygy-relation-instrument__projection syzygy-relation-instrument__projection--return" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__target syzygy-relation-instrument__target--anima" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__target syzygy-relation-instrument__target--animus" aria-hidden="true" />
       <span className="syzygy-relation-instrument__mandorla" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__mandorla-ring syzygy-relation-instrument__mandorla-ring--left" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__mandorla-ring syzygy-relation-instrument__mandorla-ring--right" aria-hidden="true" />
       <span className="syzygy-relation-instrument__conjunction-core" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__return-seed" aria-hidden="true" />
       <span className="syzygy-relation-instrument__pole syzygy-relation-instrument__pole--anima" aria-hidden="true" />
       <span className="syzygy-relation-instrument__pole syzygy-relation-instrument__pole--animus" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__quaternio syzygy-relation-instrument__quaternio--north" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__quaternio syzygy-relation-instrument__quaternio--east" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__quaternio syzygy-relation-instrument__quaternio--south" aria-hidden="true" />
+      <span className="syzygy-relation-instrument__quaternio syzygy-relation-instrument__quaternio--west" aria-hidden="true" />
       <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--anima" aria-hidden="true">anima</span>
       <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--animus" aria-hidden="true">animus</span>
       <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--orbit" aria-hidden="true">orbit</span>

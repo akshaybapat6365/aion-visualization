@@ -141,15 +141,15 @@ export default class ThreeSyzygyViz extends BaseViz {
         this._buildAnnotations();
 
         /* ── Lighting ── */
-        S.add(new THREE.AmbientLight(0x080815, 0.15));
+        S.add(new THREE.AmbientLight(0x080815, 0.2));
 
-        this.animaLight = new THREE.PointLight(0x8090c0, 0.8, 18);
+        this.animaLight = new THREE.PointLight(0x8090c0, 0.92, 19);
         S.add(this.animaLight);
 
-        this.animusLight = new THREE.PointLight(0xd0a030, 1.0, 18);
+        this.animusLight = new THREE.PointLight(0xd0a030, 1.08, 19);
         S.add(this.animusLight);
 
-        this.conjLight = new THREE.PointLight(0xffe0f0, 0, 20);
+        this.conjLight = new THREE.PointLight(0xffe0f0, 0, 22);
         S.add(this.conjLight);
 
         // Subtle rim
@@ -161,7 +161,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(S, cam));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.5, 0.4, 0.2
+            new THREE.Vector2(this.width, this.height), 1.42, 0.38, 0.22
         );
         this.composer.addPass(this.bloom);
 
@@ -311,7 +311,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         }
         this.animaTrailGeo = new THREE.BufferGeometry().setFromPoints(this.animaTrailPts);
         this.animaTrail = new THREE.Line(this.animaTrailGeo, new THREE.LineBasicMaterial({
-            color: ANIMA_TRAIL, transparent: true, opacity: 0.18,
+            color: ANIMA_TRAIL, transparent: true, opacity: 0.22,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.animaTrail);
@@ -323,7 +323,7 @@ export default class ThreeSyzygyViz extends BaseViz {
         }
         this.animusTrailGeo = new THREE.BufferGeometry().setFromPoints(this.animusTrailPts);
         this.animusTrail = new THREE.Line(this.animusTrailGeo, new THREE.LineBasicMaterial({
-            color: ANIMUS_TRAIL, transparent: true, opacity: 0.18,
+            color: ANIMUS_TRAIL, transparent: true, opacity: 0.22,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.animusTrail);
@@ -341,7 +341,7 @@ export default class ThreeSyzygyViz extends BaseViz {
             for (let j = 0; j <= 50; j++) pts.push(new THREE.Vector3());
             const geo = new THREE.BufferGeometry().setFromPoints(pts);
             const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
-                color: FIELD_CLR, transparent: true, opacity: 0.08,
+                color: FIELD_CLR, transparent: true, opacity: 0.1,
                 blending: THREE.AdditiveBlending
             }));
             this.scene.add(line);
@@ -401,7 +401,7 @@ export default class ThreeSyzygyViz extends BaseViz {
     _buildProjectionArcs() {
         this.projArcs = [];
         const arcMat = (clr) => new THREE.LineBasicMaterial({
-            color: clr, transparent: true, opacity: 0.06,
+            color: clr, transparent: true, opacity: 0.075,
             blending: THREE.AdditiveBlending
         });
 
@@ -428,7 +428,7 @@ export default class ThreeSyzygyViz extends BaseViz {
             const dot = new THREE.Mesh(
                 new THREE.SphereGeometry(0.06, 6, 6),
                 new THREE.MeshBasicMaterial({
-                    color: t.clr, transparent: true, opacity: 0.15,
+                    color: t.clr, transparent: true, opacity: 0.18,
                     blending: THREE.AdditiveBlending
                 })
             );
@@ -1217,12 +1217,12 @@ export default class ThreeSyzygyViz extends BaseViz {
                 pts[j * 3 + 2] = mz + Math.sin(fl.offset + t * 0.15) * bow;
             }
             fl.geo.attributes.position.needsUpdate = true;
-            fl.line.material.opacity = 0.08 + Math.sin(t * 0.3 + fl.offset) * 0.06 + this.orbitFocus * 0.12 + this.unionFocus * 0.08;
+            fl.line.material.opacity = 0.1 + Math.sin(t * 0.3 + fl.offset) * 0.055 + this.orbitFocus * 0.15 + this.unionFocus * 0.1;
         }
 
         /* ── Conjunction — when they're close ── */
         const dist = a.distanceTo(b);
-        const isConjunction = dist < 3 || this.unionFocus > 0.65;
+        const isConjunction = (panelId !== 'pair' && dist < 2.45) || this.unionFocus > 0.6;
 
         if (isConjunction && this.conjTimer <= 0) {
             this.conjTimer = 4;
@@ -1244,9 +1244,9 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         if (this.conjTimer > 0) {
             this.conjTimer -= dt;
-            const fade = Math.max(0, this.conjTimer / 4, this.unionFocus * 0.85);
-            this.conjPts.material.opacity = fade * 0.6;
-            this.conjLight.intensity = fade * 3;
+            const fade = Math.max(0, this.conjTimer / 4, this.unionFocus * 0.9);
+            this.conjPts.material.opacity = fade * 0.55;
+            this.conjLight.intensity = fade * 3.2;
             const mid = new THREE.Vector3().lerpVectors(a, b, 0.5);
             this.conjLight.position.copy(mid);
 
@@ -1291,22 +1291,22 @@ export default class ThreeSyzygyViz extends BaseViz {
                     pts[j * 3 + 2] = inv * inv * src.z + 2 * inv * frac * cZ + frac * frac * arc.end.z;
                 }
                 arc.geo.attributes.position.needsUpdate = true;
-                arc.line.material.opacity = 0.04 + Math.sin(t * 0.2) * 0.03 + this.orbitFocus * 0.08;
-                arc.dot.material.opacity = 0.1 + Math.sin(t * 0.5) * 0.08 + this.orbitFocus * 0.18;
+                arc.line.material.opacity = 0.05 + Math.sin(t * 0.2) * 0.025 + this.orbitFocus * 0.12;
+                arc.dot.material.opacity = 0.12 + Math.sin(t * 0.5) * 0.07 + this.orbitFocus * 0.22;
             }
         }
 
         /* ── Mandorla — position rings at conjunction ── */
         if (this.mandorlaRing1) {
             const mid = new THREE.Vector3().lerpVectors(a, b, 0.5);
-            const conjFade = Math.max(this.conjTimer > 0 ? Math.min(this.conjTimer / 2, 1) * 0.25 : 0, this.unionFocus * 0.34);
+            const conjFade = Math.max(this.conjTimer > 0 ? Math.min(this.conjTimer / 2, 1) * 0.22 : 0, this.unionFocus * 0.44);
             // Position rings slightly offset to form vesica piscis
             this.mandorlaRing1.position.copy(mid).add(new THREE.Vector3(-0.5, 0, 0));
             this.mandorlaRing2.position.copy(mid).add(new THREE.Vector3(0.5, 0, 0));
             this.mandorlaRing1.material.opacity = conjFade;
             this.mandorlaRing2.material.opacity = conjFade;
             this.mandorlaGlow.position.copy(mid);
-            this.mandorlaGlow.material.opacity = conjFade * 0.5;
+            this.mandorlaGlow.material.opacity = conjFade * 0.56;
         }
 
         /* ── Atmosphere ── */
@@ -1327,8 +1327,8 @@ export default class ThreeSyzygyViz extends BaseViz {
 
         /* ── Bloom ── */
         if (this.bloom) {
-            const conjBoost = Math.max(this.conjTimer > 0 ? (this.conjTimer / 4) * 0.8 : 0, this.unionFocus * 0.85);
-            this.bloom.strength = 1.3 + Math.sin(t * 0.04) * 0.15 + conjBoost + this.orbitFocus * 0.18;
+            const conjBoost = Math.max(this.conjTimer > 0 ? (this.conjTimer / 4) * 0.72 : 0, this.unionFocus * 0.82);
+            this.bloom.strength = 1.2 + Math.sin(t * 0.04) * 0.12 + conjBoost + this.orbitFocus * 0.16;
         }
     }
 
