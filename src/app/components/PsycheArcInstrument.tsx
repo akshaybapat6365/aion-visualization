@@ -121,13 +121,24 @@ function ShadowProjectionField({ activePanelId, label }: { activePanelId: string
       role="img"
       aria-label={label}
     >
+      <span className="shadow-projection-instrument__veil shadow-projection-instrument__veil--left" aria-hidden="true" />
+      <span className="shadow-projection-instrument__veil shadow-projection-instrument__veil--right" aria-hidden="true" />
       <span className="shadow-projection-instrument__vessel" aria-hidden="true" />
       <span className="shadow-projection-instrument__mirror" aria-hidden="true" />
+      <span className="shadow-projection-instrument__mirror-core" aria-hidden="true" />
+      <span className="shadow-projection-instrument__mirror-glint shadow-projection-instrument__mirror-glint--one" aria-hidden="true" />
+      <span className="shadow-projection-instrument__mirror-glint shadow-projection-instrument__mirror-glint--two" aria-hidden="true" />
+      <span className="shadow-projection-instrument__persona" aria-hidden="true" />
       <span className="shadow-projection-instrument__ego" aria-hidden="true" />
       <span className="shadow-projection-instrument__shadow" aria-hidden="true" />
+      <span className="shadow-projection-instrument__shadow-double" aria-hidden="true" />
       <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--projection" aria-hidden="true" />
       <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--return" aria-hidden="true" />
+      <span className="shadow-projection-instrument__target shadow-projection-instrument__target--one" aria-hidden="true" />
+      <span className="shadow-projection-instrument__target shadow-projection-instrument__target--two" aria-hidden="true" />
+      <span className="shadow-projection-instrument__target shadow-projection-instrument__target--three" aria-hidden="true" />
       <span className="shadow-projection-instrument__bridge" aria-hidden="true" />
+      <span className="shadow-projection-instrument__return-seed" aria-hidden="true" />
       <span className="shadow-projection-instrument__label shadow-projection-instrument__label--ego" aria-hidden="true">ego</span>
       <span className="shadow-projection-instrument__label shadow-projection-instrument__label--mirror" aria-hidden="true">mirror</span>
       <span className="shadow-projection-instrument__label shadow-projection-instrument__label--shadow" aria-hidden="true">shadow</span>
