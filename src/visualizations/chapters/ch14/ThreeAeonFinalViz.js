@@ -18,6 +18,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
+import { createFinalSynthesisField } from './finalSynthesisPrimitives.js';
 
 /* ─── Palette ─── */
 const ANTHROPOS_GOLD = new THREE.Color('#ffd700');
@@ -86,6 +87,13 @@ export default class ThreeAeonFinalViz extends BaseViz {
         this._createCoagulaField();
         this._createHermeticVessel();
         this._createPhoenixCore();
+        createFinalSynthesisField(this, {
+            gold: ANTHROPOS_GOLD,
+            cyan: VESSEL_CYAN,
+            green: PARADISE_GREEN,
+            red: LAPIS_RED,
+            white: ARROW_WHITE,
+        });
         this._createCosmicField();
         this._createLights();
 
@@ -557,6 +565,43 @@ export default class ThreeAeonFinalViz extends BaseViz {
         this.phoenixCore.scale.setScalar(0.5 + phoenixPulse * 0.5);
         this.phoenixHalo.material.opacity = phoenixProgress * phoenixPulse * 0.08;
         this.phoenixHalo.scale.setScalar(1 + phoenixPulse * 1.5);
+
+        // ─── Final synthesis field — temenos, bridges, and living path ───
+        this.finalSynthesisGroup.rotation.y = -t * 0.009 * motionScale + this.aeonFocus * 0.1;
+        this.finalSynthesisGroup.rotation.z = Math.sin(t * 0.035 * motionScale) * 0.025;
+        this.temenosRings?.forEach((ring, index) => {
+            const drift = this.reducedMotion ? 0 : t * (0.01 + index * 0.003) * (index % 2 ? -1 : 1);
+            ring.rotation.copy(ring.userData.baseRotation);
+            ring.rotation.z += drift + this.axisFocus * 0.08;
+            ring.scale.copy(ring.userData.baseScale);
+            ring.scale.multiplyScalar(1 + this.gatherFocus * 0.025 + this.axisFocus * 0.035 + this.aeonFocus * 0.02);
+            ring.material.opacity = 0.02 + this.gatherFocus * 0.045 + this.axisFocus * 0.035 + this.aeonFocus * 0.04;
+        });
+        this.synthesisPetals?.forEach((petal, index) => {
+            petal.material.opacity = 0.015 + this.gatherFocus * 0.055 + this.axisFocus * 0.035 + (index % 2 ? this.aeonFocus * 0.014 : 0);
+        });
+        this.axisBridgeLines?.forEach((line, index) => {
+            line.material.opacity = 0.018 + this.axisFocus * 0.18 + this.gatherFocus * 0.018 + (index === 3 ? this.aeonFocus * 0.055 : 0);
+        });
+        if (this.individuationPath) {
+            this.individuationPath.material.opacity = 0.035 + this.aeonFocus * 0.32 + this.gatherFocus * 0.035;
+        }
+        this.pathSparks?.forEach((spark, index) => {
+            const phase = this.reducedMotion ? index / Math.max(1, this.pathSparks.length - 1) : (t * 0.035 + index / this.pathSparks.length) % 1;
+            const pointIndex = Math.min(this.individuationPathPoints.length - 1, Math.floor(phase * (this.individuationPathPoints.length - 1)));
+            const pathPoint = this.individuationPathPoints[pointIndex] || this.individuationPathPoints[0];
+            if (pathPoint) spark.position.copy(pathPoint);
+            spark.rotation.y = (this.reducedMotion ? 0 : t * 0.22) + index;
+            spark.material.opacity = 0.04 + this.aeonFocus * 0.36 + (phase > 0.72 ? this.gatherFocus * 0.08 : 0);
+            const sparkPulse = this.reducedMotion ? 0 : Math.sin(t * 0.38 + index) * 0.08;
+            spark.scale.setScalar(0.78 + this.aeonFocus * 0.82 + sparkPulse);
+        });
+        if (this.selfLens) {
+            this.selfLens.rotation.y = this.reducedMotion ? 0 : t * 0.18;
+            this.selfLens.rotation.x = this.reducedMotion ? 0 : t * 0.11;
+            this.selfLens.material.opacity = 0.1 + this.axisFocus * 0.28 + this.aeonFocus * 0.12;
+            this.selfLens.scale.setScalar(0.85 + this.axisFocus * 0.42 + this.aeonFocus * 0.18);
+        }
 
         // ─── Vessel subtle shimmer ───
         this.vessel.material.opacity = 0.02 + this.gatherFocus * 0.025 + this.aeonFocus * 0.025 + Math.sin(t * 0.1 * motionScale) * 0.01;

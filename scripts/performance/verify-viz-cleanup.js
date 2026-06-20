@@ -1,62 +1,186 @@
 import { chromium } from 'playwright';
 
 const BASE_URL = process.env.PERF_BASE_URL || 'http://localhost:3000';
+const ROUTES = [
+  '/journey/chapter/ch1',
+  '/journey/chapter/ch14',
+  '/journey/chapter/ch13',
+  '/journey/chapter/ch14',
+  '/journey/chapter/ch12',
+];
+const TRACKED_WINDOW_EVENTS = ['mousemove', 'pointermove', 'wheel'];
+
+function getChapterId(route) {
+  const match = route.match(/\/journey\/chapter\/(ch\d+)$/);
+  if (!match) {
+    throw new Error(`Route ${route} does not contain a chapter id.`);
+  }
+  return match[1];
+}
+
+async function waitForScene(page, route) {
+  const expectedChapterId = getChapterId(route);
+  const chapterLocator = page.locator(`.chapter-experience[data-chapter-id="${expectedChapterId}"]`);
+  await chapterLocator.waitFor({ state: 'visible', timeout: 15_000 });
+  await chapterLocator.locator('.scene-host__mount[data-state="ready"]')
+    .waitFor({ state: 'visible', timeout: 15_000 });
+
+  const result = await page.evaluate(({ expectedRoute, expectedChapterId }) => {
+    const chapter = document.querySelector(`.chapter-experience[data-chapter-id="${expectedChapterId}"]`);
+    const canvasCount = chapter?.querySelectorAll('.scene-host canvas').length || 0;
+    const totalCanvasCount = document.querySelectorAll('.scene-host canvas').length;
+    const mountState = chapter?.querySelector('.scene-host__mount')?.getAttribute('data-state') || null;
+    const fallbackVisible = Boolean(chapter?.querySelector('.scene-host__fallback'));
+    const reduced = chapter?.getAttribute('data-reduced-motion') || null;
+    return {
+      route: window.location.pathname,
+      expectedRoute,
+      expectedChapterId,
+      canvasCount,
+      totalCanvasCount,
+      mountState,
+      fallbackVisible,
+      reduced,
+    };
+  }, { expectedRoute: route, expectedChapterId });
+
+  if (result.route !== route) {
+    throw new Error(`Expected route ${route} but browser is at ${result.route}`);
+  }
+
+  if (result.reduced === 'true') {
+    throw new Error(`Expected animated scene on ${route}, but reduced-motion fallback is active.`);
+  }
+
+  if (result.mountState !== 'ready') {
+    throw new Error(`Expected ready scene mount on ${route}, found ${result.mountState}.`);
+  }
+
+  if (result.fallbackVisible) {
+    throw new Error(`Expected no fallback scene on ${route} during cleanup verification.`);
+  }
+
+  if (result.canvasCount !== 1) {
+    throw new Error(`Expected exactly one scoped canvas on ${route}, found ${result.canvasCount}.`);
+  }
+
+  if (result.totalCanvasCount !== 1) {
+    throw new Error(`Expected exactly one active canvas after ${route}, found ${result.totalCanvasCount}.`);
+  }
+
+  return result;
+}
+
+async function routeTo(page, route) {
+  await page.evaluate((nextRoute) => {
+    window.history.pushState({}, '', nextRoute);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }, route);
+  return waitForScene(page, route);
+}
 
 async function main() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'domcontentloaded' });
-
-  const result = await page.evaluate(async () => {
-    window.__AION_VIZ_MAP__ = {
-      'chapter-2': {
-        path: '/src/visualizations/testing/MockViz.js',
-        className: 'MockViz'
-      }
+  await page.addInitScript(() => {
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    const originalAddEventListener = EventTarget.prototype.addEventListener;
+    const originalRemoveEventListener = EventTarget.prototype.removeEventListener;
+    const trackedEvents = new Set(['mousemove', 'pointermove', 'wheel']);
+    window.__aionCleanupProbe = {
+      webglContextsCreated: 0,
+      webglContextsLost: 0,
+      windowEventAdds: {},
+      windowEventRemovals: {},
     };
 
-    const module = await import('/src/core/simple-viz-loader.js');
-
-    const container = document.createElement('div');
-    document.body.appendChild(container);
-
-    module.setupVisualizationIntent('chapter-2', container);
-
-    const trigger = container.querySelector('.viz-intent-trigger');
-    trigger.click();
-
-    await new Promise(resolve => setTimeout(resolve, 50));
-
-    document.dispatchEvent(new CustomEvent('aion:routeChange', {
-      detail: {
-        route: { path: '/chapter3.html' },
-        previousRoute: { path: '/chapter2.html' }
+    EventTarget.prototype.addEventListener = function patchedAddEventListener(type, listener, options) {
+      if (this === window && trackedEvents.has(type)) {
+        window.__aionCleanupProbe.windowEventAdds[type] =
+          (window.__aionCleanupProbe.windowEventAdds[type] || 0) + 1;
       }
-    }));
+      return originalAddEventListener.call(this, type, listener, options);
+    };
 
-    return {
-      lifecycle: window.__aionVizLifecycle,
-      disposeCalls: window.__mockVizDisposeCalls || 0,
-      listenerRemovals: window.__mockListenerRemovals || 0
+    EventTarget.prototype.removeEventListener = function patchedRemoveEventListener(type, listener, options) {
+      if (this === window && trackedEvents.has(type)) {
+        window.__aionCleanupProbe.windowEventRemovals[type] =
+          (window.__aionCleanupProbe.windowEventRemovals[type] || 0) + 1;
+      }
+      return originalRemoveEventListener.call(this, type, listener, options);
+    };
+
+    HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
+      const context = originalGetContext.call(this, type, ...args);
+      if (!context || !String(type).startsWith('webgl') || context.__aionCleanupPatched) {
+        return context;
+      }
+
+      context.__aionCleanupPatched = true;
+      window.__aionCleanupProbe.webglContextsCreated += 1;
+
+      const originalGetExtension = context.getExtension.bind(context);
+      context.getExtension = function patchedGetExtension(name) {
+        const extension = originalGetExtension(name);
+        if (name === 'WEBGL_lose_context' && extension && !extension.__aionCleanupPatched) {
+          extension.__aionCleanupPatched = true;
+          const originalLoseContext = extension.loseContext.bind(extension);
+          extension.loseContext = function patchedLoseContext(...loseArgs) {
+            window.__aionCleanupProbe.webglContextsLost += 1;
+            return originalLoseContext(...loseArgs);
+          };
+        }
+        return extension;
+      };
+
+      return context;
     };
   });
 
+  await page.goto(`${BASE_URL}${ROUTES[0]}`, { waitUntil: 'domcontentloaded' });
+  const snapshots = [await waitForScene(page, ROUTES[0])];
+
+  for (const route of ROUTES.slice(1)) {
+    snapshots.push(await routeTo(page, route));
+  }
+
+  const result = await page.evaluate(() => ({
+    ...window.__aionCleanupProbe,
+    canvasCount: document.querySelectorAll('.scene-host canvas').length,
+  }));
+
   await browser.close();
 
-  if (!result.lifecycle || result.lifecycle.disposeCalls < 1) {
-    throw new Error('Expected visualization dispose() to be called on route change.');
+  if (result.webglContextsCreated < 2) {
+    throw new Error(`Expected multiple WebGL contexts during route cycling, saw ${result.webglContextsCreated}.`);
   }
 
-  if (result.listenerRemovals < 1) {
-    throw new Error('Expected listener cleanup to run on route change.');
+  if (result.webglContextsLost < ROUTES.length - 1) {
+    throw new Error(`Expected context loss on route cleanup. Lost ${result.webglContextsLost} of ${ROUTES.length - 1} transitions.`);
   }
 
-  if (result.lifecycle.routeCleanupCalls < 1) {
-    throw new Error('Expected route cleanup lifecycle counter to increment.');
+  if (result.canvasCount > 1) {
+    throw new Error(`Expected no more than one canvas after route cycling, found ${result.canvasCount}.`);
   }
 
-  console.log('Visualization cleanup verification passed:', result);
+  for (const eventType of TRACKED_WINDOW_EVENTS) {
+    const additions = result.windowEventAdds[eventType] || 0;
+    const removals = result.windowEventRemovals[eventType] || 0;
+    const activeListeners = additions - removals;
+    if (activeListeners > 1) {
+      throw new Error(
+        `Expected at most one active ${eventType} listener after route cycling, ` +
+        `found ${activeListeners} (${additions} added, ${removals} removed).`
+      );
+    }
+  }
+
+  console.log('Visualization cleanup verification passed:', {
+    routes: snapshots.map((snapshot) => snapshot.route),
+    chapters: snapshots.map((snapshot) => snapshot.expectedChapterId),
+    ...result,
+  });
 }
 
 main().catch(error => {
