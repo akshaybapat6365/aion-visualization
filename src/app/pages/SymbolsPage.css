@@ -5,11 +5,12 @@
 .symbols-hero::before {
   content: '';
   position: absolute;
-  inset: 0 50% 0 0;
+  inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 42%, rgba(83, 216, 232, 0.12), transparent 22rem),
-    linear-gradient(90deg, rgba(5, 5, 8, 0.96), rgba(5, 5, 8, 0));
+    radial-gradient(circle at 17% 44%, rgba(83, 216, 232, 0.13), transparent 24rem),
+    radial-gradient(circle at 70% 48%, rgba(212, 175, 55, 0.08), transparent 26rem),
+    linear-gradient(90deg, rgba(5, 5, 8, 0.98), rgba(5, 5, 8, 0.45) 44%, rgba(5, 5, 8, 0.78));
 }
 
 .symbols-hero > div {
@@ -52,6 +53,286 @@
   line-height: 1;
 }
 
+.symbol-mark {
+  --mark-color: var(--gold-soft);
+  --mark-soft: rgba(212, 175, 55, 0.2);
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  aspect-ratio: 1;
+  color: var(--mark-color);
+  flex: 0 0 auto;
+}
+
+.symbol-mark::before,
+.symbol-mark::after,
+.symbol-mark > span {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+}
+
+.symbol-orbit__node .symbol-mark {
+  --mark-color: rgba(244, 240, 232, 0.8);
+  --mark-soft: rgba(212, 175, 55, 0.24);
+}
+
+.symbol-orbit__node--active .symbol-mark,
+.symbol-panel--active .symbol-mark {
+  --mark-color: var(--gold-soft);
+  --mark-soft: rgba(212, 175, 55, 0.36);
+}
+
+.symbol-mark--core {
+  width: 2.35rem;
+}
+
+.symbol-mark--specimen {
+  width: clamp(3.4rem, 7vw, 4.9rem);
+}
+
+.symbol-mark--detail {
+  width: 2.6rem;
+}
+
+.symbol-panel__glyph {
+  width: 2.05rem;
+}
+
+.symbol-panel__glyph.symbol-mark {
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.symbol-mark--fish::before,
+.symbol-mark--fish::after {
+  width: 72%;
+  height: 32%;
+  border: 1px solid currentColor;
+  border-radius: 70% 10% 70% 10%;
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--fish::before {
+  transform: translate(-56%, -58%) rotate(-20deg);
+}
+
+.symbol-mark--fish::after {
+  transform: translate(-38%, -28%) rotate(160deg);
+}
+
+.symbol-mark--fish > span {
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0.82rem 0.42rem 0 currentColor;
+}
+
+.symbol-mark--mandala::before {
+  width: 86%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 0.32rem rgba(212, 175, 55, 0.05),
+    0 0 1.1rem var(--mark-soft);
+}
+
+.symbol-mark--mandala::after {
+  width: 62%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.symbol-mark--mandala > span,
+.symbol-mark--zodiac > span {
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  box-shadow: 0 0 0.8rem var(--mark-soft);
+}
+
+.symbol-mark--mandala > span::after,
+.symbol-mark--zodiac > span::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 100%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.symbol-mark--dragon::before {
+  width: 78%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-28deg);
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--dragon::after {
+  width: 30%;
+  height: 22%;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translate(6%, -77%) rotate(28deg);
+}
+
+.symbol-mark--dragon > span {
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translate(128%, -114%);
+}
+
+.symbol-mark--sophia::before {
+  width: 72%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--sophia::after {
+  width: 34%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -96%);
+}
+
+.symbol-mark--sophia > span {
+  width: 1px;
+  height: 78%;
+  background: currentColor;
+}
+
+.symbol-mark--sword::before {
+  width: 10%;
+  height: 86%;
+  border-radius: 999px 999px 0 0;
+  background: currentColor;
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--sword::after {
+  width: 76%;
+  height: 1px;
+  background: currentColor;
+  transform: translate(-50%, -12%) rotate(-8deg);
+}
+
+.symbol-mark--sword > span {
+  width: 28%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, 78%);
+}
+
+.symbol-mark--lapis::before {
+  width: 82%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  clip-path: polygon(50% 0, 90% 22%, 90% 74%, 50% 100%, 10% 74%, 10% 22%);
+  background: linear-gradient(145deg, var(--mark-soft), transparent 68%);
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--lapis::after {
+  width: 44%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.symbol-mark--lapis > span {
+  width: 16%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.symbol-mark--cross::before {
+  width: 1px;
+  height: 86%;
+  background: currentColor;
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--cross::after {
+  width: 76%;
+  height: 1px;
+  background: currentColor;
+}
+
+.symbol-mark--cross > span {
+  width: 68%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.symbol-mark--ouroboros::before {
+  width: 82%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(26deg);
+  box-shadow: 0 0 1rem var(--mark-soft);
+}
+
+.symbol-mark--ouroboros::after {
+  width: 24%;
+  height: 16%;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translate(80%, -60%) rotate(38deg);
+}
+
+.symbol-mark--ouroboros > span {
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translate(142%, -38%);
+}
+
+.symbol-mark--zodiac::before {
+  width: 86%;
+  aspect-ratio: 1;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 0.32rem rgba(83, 216, 232, 0.04),
+    0 0 1.1rem var(--mark-soft);
+}
+
+.symbol-mark--zodiac::after {
+  width: 58%;
+  aspect-ratio: 1;
+  border: 1px dotted currentColor;
+  border-radius: 50%;
+}
+
 .symbol-orbit--interactive {
   isolation: isolate;
 }
@@ -70,15 +351,17 @@
 
 .symbol-orbit__center {
   gap: 0.1rem;
+  align-content: center;
 }
 
-.symbol-orbit__center span {
+.symbol-orbit__center em {
   display: block;
   color: var(--cyan);
   font-family: var(--font-ui);
-  font-size: 0.72rem;
+  font-size: 0.58rem;
+  font-style: normal;
   font-weight: 900;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -127,6 +410,8 @@
 
 .symbol-field,
 .symbol-detail {
+  --symbol-tone: rgba(212, 175, 55, 0.82);
+  --symbol-soft: rgba(212, 175, 55, 0.16);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:
@@ -136,25 +421,26 @@
 }
 
 .symbol-field {
-  --symbol-tone: rgba(212, 175, 55, 0.82);
-  --symbol-soft: rgba(212, 175, 55, 0.16);
   position: relative;
   min-height: clamp(28rem, 58vw, 39rem);
   overflow: hidden;
   isolation: isolate;
 }
 
-.symbol-field[data-tone='cyan'] {
+.symbol-field[data-tone='cyan'],
+.symbol-detail[data-tone='cyan'] {
   --symbol-tone: rgba(83, 216, 232, 0.86);
   --symbol-soft: rgba(83, 216, 232, 0.16);
 }
 
-.symbol-field[data-tone='rose'] {
+.symbol-field[data-tone='rose'],
+.symbol-detail[data-tone='rose'] {
   --symbol-tone: rgba(218, 112, 139, 0.82);
   --symbol-soft: rgba(218, 112, 139, 0.16);
 }
 
-.symbol-field[data-tone='green'] {
+.symbol-field[data-tone='green'],
+.symbol-detail[data-tone='green'] {
   --symbol-tone: rgba(136, 214, 167, 0.82);
   --symbol-soft: rgba(136, 214, 167, 0.16);
 }
@@ -165,6 +451,7 @@
 .symbol-field__axis,
 .symbol-field__glyph,
 .symbol-field__index,
+.symbol-field__thread,
 .symbol-field__concept,
 .symbol-field__chapter {
   position: absolute;
@@ -235,9 +522,11 @@
 .symbol-field__glyph {
   left: 50%;
   top: 50%;
-  width: clamp(5.8rem, 13vw, 8.25rem);
+  width: clamp(7rem, 15vw, 10rem);
   aspect-ratio: 1;
   display: grid;
+  align-content: center;
+  gap: 0.25rem;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--symbol-tone) 58%, transparent);
   border-radius: 50%;
@@ -254,6 +543,27 @@
   transform: translate(-50%, -50%);
 }
 
+.symbol-field__glyph strong {
+  color: var(--gold-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.symbol-field__glyph em {
+  max-width: 7.4rem;
+  color: rgba(244, 240, 232, 0.56);
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1.15;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .symbol-field__index {
   left: 1.1rem;
   top: 1rem;
@@ -262,6 +572,31 @@
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.18em;
+}
+
+.symbol-field__thread {
+  --angle: calc((360deg / var(--node-count)) * var(--node-index));
+  left: 50%;
+  top: 50%;
+  width: min(18vw, 10.6rem);
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--symbol-tone) 62%, transparent), transparent);
+  opacity: 0.54;
+  transform: rotate(calc(var(--angle) + 17deg));
+  transform-origin: left center;
+}
+
+.symbol-field__thread::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0.32rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--symbol-tone);
+  box-shadow: 0 0 1rem var(--symbol-soft);
+  transform: translate(50%, -50%);
 }
 
 .symbol-field__concept,
@@ -318,6 +653,41 @@
 .symbol-detail p:not(.eyebrow) {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.symbol-detail__specimen {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.72rem;
+  align-items: center;
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at 14% 48%, var(--symbol-soft), transparent 5.4rem),
+    rgba(3, 3, 7, 0.36);
+  padding: 0.72rem;
+}
+
+.symbol-detail__specimen strong,
+.symbol-detail__specimen > div > span {
+  display: block;
+}
+
+.symbol-detail__specimen strong {
+  color: var(--gold-soft);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.symbol-detail__specimen > div > span {
+  margin-top: 0.18rem;
+  color: rgba(244, 240, 232, 0.62);
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 
 .symbol-detail__thread-group,
@@ -432,6 +802,19 @@
     min-height: 23.5rem;
   }
 
+  .symbol-field__glyph {
+    width: clamp(6.2rem, 34vw, 8rem);
+  }
+
+  .symbol-field__glyph em {
+    max-width: 6rem;
+    font-size: 0.46rem;
+  }
+
+  .symbol-field__thread {
+    width: min(29vw, 7.2rem);
+  }
+
   .symbol-field__concept {
     max-width: 6.6rem;
     min-height: 1.95rem;
@@ -453,11 +836,38 @@
 
 @media (max-width: 420px) {
   .symbols-hero__metrics {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 10rem;
+  }
+
+  .symbols-hero__metrics span:not(:first-child) {
     display: none;
+  }
+
+  .symbols-hero__metrics strong {
+    font-size: 1.45rem;
   }
 
   .symbol-field {
     min-height: 22rem;
+  }
+
+  .symbol-field__glyph {
+    width: 6rem;
+  }
+
+  .symbol-field__glyph strong {
+    font-size: 1rem;
+  }
+
+  .symbol-field__glyph em {
+    display: none;
+  }
+
+  .symbol-field__thread {
+    width: min(21vw, 4.75rem);
+    opacity: 0.42;
   }
 
   .symbol-field__concept {
@@ -477,6 +887,22 @@
 
   .symbol-detail__chapter-links a {
     width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .symbols-hero__metrics {
+    display: none;
+  }
+
+  .symbols-hero .lede {
+    max-width: 18rem;
+    font-size: 0.98rem;
+    line-height: 1.48;
+  }
+
+  .symbol-orbit--interactive {
+    margin-top: -0.75rem;
   }
 }
 

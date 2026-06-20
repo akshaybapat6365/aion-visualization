@@ -493,10 +493,13 @@ async function checkSymbolsDynamicAccessibility(page, failures) {
   const fishField = page.getByRole('img', { name: /Fish symbol field/ });
   const initialFieldVisible = await fishField.isVisible();
   const initialFieldLabel = initialFieldVisible ? await fishField.getAttribute('aria-label') : null;
+  const detailRegion = page.locator('#symbol-selected-detail');
+  const detailAtomic = await detailRegion.getAttribute('aria-atomic');
   const initialDetail = await page.locator('#symbol-selected-detail h2').textContent();
 
   if (!initialFieldVisible) failures.push('/symbols: active symbol field is missing an accessible image role');
   if (!initialFieldLabel?.includes('Piscean fish pair') || !initialFieldLabel?.includes('Chapter 6')) failures.push(`/symbols: initial field label mismatch: ${initialFieldLabel}`);
+  if (detailAtomic !== 'true') failures.push(`/symbols: detail live region is not atomic: ${detailAtomic}`);
   if (!initialDetail?.includes('Fish')) failures.push(`/symbols: initial detail mismatch: ${initialDetail}`);
 
   const sophia = page.getByRole('button', { name: /Select Sophia:/ });

@@ -542,6 +542,10 @@ async function smokeSymbolsVisualField(page, failures) {
   const initialActivePanelCount = await page.locator('.symbol-panel__activate[aria-pressed="true"]').count();
   const initialConceptCount = await page.locator('.symbol-field__concept').count();
   const initialChapterCount = await page.locator('.symbol-field__chapter').count();
+  const initialThreadCount = await page.locator('.symbol-field__thread').count();
+  const initialMarkCount = await page.locator('.symbol-mark').count();
+  const specimenVisible = await page.locator('.symbol-field__specimen').isVisible();
+  const detailSpecimen = await page.locator('.symbol-detail__specimen').textContent();
   const initialChapterLinkCount = await page.locator('.symbol-detail__chapter-links a').count();
   const scrollYBeforeSelect = await page.evaluate(() => window.scrollY);
 
@@ -554,6 +558,10 @@ async function smokeSymbolsVisualField(page, failures) {
   if (initialActivePanelCount !== 1) failures.push(`symbols active panel count mismatch: ${initialActivePanelCount}`);
   if (initialConceptCount < 4) failures.push(`symbols concept node count too low: ${initialConceptCount}`);
   if (initialChapterCount < 2) failures.push(`symbols chapter node count too low: ${initialChapterCount}`);
+  if (initialThreadCount < 2) failures.push(`symbols chapter thread count too low: ${initialThreadCount}`);
+  if (initialMarkCount < 20) failures.push(`symbols mark count too low: ${initialMarkCount}`);
+  if (!specimenVisible) failures.push('symbols active specimen is not visible');
+  if (!detailSpecimen?.includes('Aeon / shadow')) failures.push(`symbols detail specimen mismatch: ${detailSpecimen}`);
   if (initialChapterLinkCount < 2) failures.push(`symbols chapter link count too low: ${initialChapterLinkCount}`);
 
   const sophia = page.getByRole('button', { name: /Select Sophia:/ });
@@ -581,10 +589,14 @@ async function smokeSymbolsVisualField(page, failures) {
   const lapisPanelPressed = await lapisPanelButton.getAttribute('aria-pressed');
   const lapisDetail = await page.locator('#symbol-selected-detail h2').textContent();
   const lapisFieldLabel = await page.getByRole('img', { name: /Lapis symbol field/ }).getAttribute('aria-label');
+  const lapisActiveOrbitCount = await page.locator('.symbol-orbit__node[aria-pressed="true"]').count();
+  const lapisThreadCount = await page.locator('.symbol-field__thread').count();
 
   if (lapisPanelPressed !== 'true') failures.push(`symbols Lapis panel did not become active: ${lapisPanelPressed}`);
   if (!lapisDetail?.includes('Lapis')) failures.push(`symbols detail did not follow Lapis panel selection: ${lapisDetail}`);
   if (!lapisFieldLabel?.includes('Lapis philosophorum') || !lapisFieldLabel?.toLowerCase().includes('individuation')) failures.push(`symbols Lapis field label mismatch: ${lapisFieldLabel}`);
+  if (lapisActiveOrbitCount !== 1) failures.push(`symbols Lapis active orbit count mismatch: ${lapisActiveOrbitCount}`);
+  if (lapisThreadCount < 2) failures.push(`symbols Lapis chapter thread count too low: ${lapisThreadCount}`);
 }
 
 async function smokeAboutOrientation(page, failures) {
