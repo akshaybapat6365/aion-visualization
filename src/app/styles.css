@@ -4871,21 +4871,22 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument {
   position: relative;
-  width: min(31rem, 100%);
-  min-height: clamp(7.4rem, 11.6vh, 8.8rem);
+  width: min(33.5rem, 100%);
+  min-height: clamp(8.35rem, 13vh, 10.1rem);
   overflow: hidden;
-  margin-top: 0.82rem;
-  border: 1px solid rgba(244, 240, 232, 0.16);
+  margin-top: 0.92rem;
+  border: 1px solid rgba(244, 240, 232, 0.2);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 28% 50%, rgba(255, 227, 156, 0.24), transparent 4.4rem),
-    radial-gradient(circle at 71% 52%, rgba(83, 216, 232, 0.2), transparent 4.8rem),
-    radial-gradient(ellipse at 50% 50%, rgba(244, 240, 232, 0.11), transparent 48%),
-    linear-gradient(90deg, rgba(24, 17, 8, 0.86), rgba(8, 8, 12, 0.72) 48%, rgba(3, 17, 22, 0.76));
+    radial-gradient(circle at 27% 48%, rgba(255, 227, 156, 0.34), transparent 4.95rem),
+    radial-gradient(circle at 72% 52%, rgba(83, 216, 232, 0.28), transparent 5.25rem),
+    radial-gradient(ellipse at 50% 50%, rgba(244, 240, 232, 0.15), transparent 48%),
+    linear-gradient(90deg, rgba(28, 18, 7, 0.92), rgba(8, 8, 12, 0.78) 47%, rgba(3, 18, 23, 0.84));
   box-shadow:
     var(--shadow-inset),
-    0 1.5rem 4.4rem rgba(0, 0, 0, 0.28),
-    0 0 2.4rem rgba(83, 216, 232, 0.08);
+    0 1.7rem 4.8rem rgba(0, 0, 0, 0.34),
+    0 0 2.8rem rgba(83, 216, 232, 0.12),
+    0 0 1.9rem rgba(212, 175, 55, 0.08);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::before,
@@ -4896,23 +4897,25 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::before {
-  inset: 0.58rem;
-  border: 1px solid rgba(255, 227, 156, 0.12);
+  inset: 0.62rem;
+  border: 1px solid rgba(255, 227, 156, 0.15);
   border-radius: calc(var(--radius) - 2px);
   background:
-    linear-gradient(90deg, rgba(255, 227, 156, 0.05), transparent 34%, transparent 66%, rgba(83, 216, 232, 0.05)),
-    repeating-linear-gradient(90deg, transparent 0 18%, rgba(244, 240, 232, 0.035) 18.2% 18.45%, transparent 18.7% 36%);
+    radial-gradient(ellipse at 50% 50%, transparent 47%, rgba(244, 240, 232, 0.06) 47.4% 47.8%, transparent 49%),
+    linear-gradient(90deg, rgba(255, 227, 156, 0.07), transparent 34%, transparent 66%, rgba(83, 216, 232, 0.07)),
+    repeating-linear-gradient(90deg, transparent 0 16%, rgba(244, 240, 232, 0.04) 16.2% 16.45%, transparent 16.8% 32%);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::after {
   left: 50%;
   top: 50%;
-  width: 0.1rem;
-  height: 6rem;
-  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.42), transparent);
+  width: 0.16rem;
+  height: 6.9rem;
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.5), transparent);
   box-shadow:
-    0 0 1.35rem rgba(244, 240, 232, 0.18),
-    0 0 2.2rem rgba(83, 216, 232, 0.12);
+    0 0 1.55rem rgba(244, 240, 232, 0.22),
+    0 0 2.6rem rgba(83, 216, 232, 0.16),
+    0 0 2rem rgba(212, 175, 55, 0.12);
   transform: translate(-50%, -50%) rotate(4deg);
 }
 
@@ -4940,20 +4943,38 @@ h3 {
     transform 0.55s var(--motion-spring);
 }
 
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field::before {
+  content: '';
+  position: absolute;
+  inset: 0.7rem;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--light {
   left: 0;
   background:
-    radial-gradient(circle at 40% 48%, rgba(255, 227, 156, 0.32), transparent 4.2rem),
-    radial-gradient(ellipse at 68% 50%, rgba(244, 240, 232, 0.12), transparent 3.2rem),
+    radial-gradient(circle at 42% 48%, rgba(255, 227, 156, 0.4), transparent 4.45rem),
+    radial-gradient(ellipse at 70% 50%, rgba(244, 240, 232, 0.16), transparent 3.4rem),
     linear-gradient(90deg, rgba(212, 175, 55, 0.13), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--light::before {
+  border: 1px solid rgba(255, 227, 156, 0.16);
+  box-shadow: inset 0 0 2.4rem rgba(212, 175, 55, 0.08);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--shadow {
   right: 0;
   background:
-    radial-gradient(circle at 58% 52%, rgba(83, 216, 232, 0.26), transparent 4.4rem),
-    radial-gradient(ellipse at 34% 50%, rgba(181, 130, 255, 0.13), transparent 3.2rem),
+    radial-gradient(circle at 58% 52%, rgba(83, 216, 232, 0.34), transparent 4.55rem),
+    radial-gradient(ellipse at 34% 50%, rgba(181, 130, 255, 0.17), transparent 3.4rem),
     linear-gradient(270deg, rgba(83, 216, 232, 0.12), rgba(181, 130, 255, 0.06), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__field--shadow::before {
+  border: 1px solid rgba(83, 216, 232, 0.16);
+  box-shadow: inset 0 0 2.4rem rgba(83, 216, 232, 0.08);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__axis {
@@ -4983,18 +5004,18 @@ h3 {
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror {
   left: 50%;
   top: 50%;
-  width: 3.35rem;
-  height: 5.55rem;
-  border: 1px solid rgba(244, 240, 232, 0.22);
+  width: 3.8rem;
+  height: 6.35rem;
+  border: 1px solid rgba(244, 240, 232, 0.28);
   border-radius: 50%;
   background:
-    linear-gradient(92deg, transparent 45%, rgba(244, 240, 232, 0.22) 49%, transparent 53%),
-    radial-gradient(ellipse at 50% 50%, rgba(244, 240, 232, 0.13), transparent 72%);
+    linear-gradient(92deg, transparent 44%, rgba(244, 240, 232, 0.3) 49%, transparent 54%),
+    radial-gradient(ellipse at 50% 50%, rgba(244, 240, 232, 0.18), transparent 72%);
   box-shadow:
-    inset 0 0 1.25rem rgba(244, 240, 232, 0.1),
-    0 0 1.75rem rgba(83, 216, 232, 0.18),
-    0 0 2.5rem rgba(212, 175, 55, 0.08);
-  opacity: 0.82;
+    inset 0 0 1.4rem rgba(244, 240, 232, 0.13),
+    0 0 1.95rem rgba(83, 216, 232, 0.2),
+    0 0 2.75rem rgba(212, 175, 55, 0.1);
+  opacity: 0.88;
   transform: translate(-50%, -50%) rotate(4deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5015,31 +5036,33 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--outer {
-  width: 10.8rem;
-  height: 5.35rem;
-  border: 1px solid rgba(255, 227, 156, 0.34);
-  border-left-color: rgba(83, 216, 232, 0.4);
-  box-shadow: 0 0 1.5rem rgba(83, 216, 232, 0.08);
+  width: 12rem;
+  height: 5.95rem;
+  border: 1px solid rgba(255, 227, 156, 0.42);
+  border-left-color: rgba(83, 216, 232, 0.5);
+  box-shadow:
+    0 0 1.7rem rgba(83, 216, 232, 0.1),
+    inset 0 0 1.3rem rgba(244, 240, 232, 0.05);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--inner {
-  width: 7.35rem;
-  height: 3.42rem;
-  border: 1px solid rgba(83, 216, 232, 0.34);
-  border-right-color: rgba(255, 227, 156, 0.36);
-  opacity: 0.42;
+  width: 8.1rem;
+  height: 3.85rem;
+  border: 1px solid rgba(83, 216, 232, 0.4);
+  border-right-color: rgba(255, 227, 156, 0.42);
+  opacity: 0.48;
   transform: translate(-50%, -50%) rotate(16deg);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread {
   left: 50%;
   top: 50%;
-  width: 9.35rem;
-  height: 4.05rem;
-  border-top: 1px solid rgba(255, 227, 156, 0.32);
-  border-bottom: 1px solid rgba(83, 216, 232, 0.34);
+  width: 10.25rem;
+  height: 4.45rem;
+  border-top: 1px solid rgba(255, 227, 156, 0.42);
+  border-bottom: 1px solid rgba(83, 216, 232, 0.44);
   border-radius: 50%;
-  opacity: 0.58;
+  opacity: 0.64;
   transform: translate(-50%, -50%) rotate(-8deg);
   transition:
     border-color 0.55s var(--motion-spring),
@@ -5049,8 +5072,8 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish {
   top: 50%;
-  width: 4.35rem;
-  height: 1.34rem;
+  width: 4.9rem;
+  height: 1.5rem;
   border-radius: 50%;
   opacity: 0.9;
   transition:
@@ -5070,15 +5093,15 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--light {
-  left: 25%;
-  border-top: 1px solid rgba(255, 227, 156, 0.7);
-  border-bottom: 1px solid rgba(244, 240, 232, 0.34);
+  left: 24%;
+  border-top: 1px solid rgba(255, 227, 156, 0.82);
+  border-bottom: 1px solid rgba(244, 240, 232, 0.42);
   background:
-    radial-gradient(circle at 32% 50%, rgba(255, 227, 156, 0.9) 0 0.17rem, transparent 0.19rem),
-    radial-gradient(ellipse at 52% 50%, rgba(212, 175, 55, 0.3), transparent 68%);
+    radial-gradient(circle at 32% 50%, rgba(255, 227, 156, 0.96) 0 0.18rem, transparent 0.2rem),
+    radial-gradient(ellipse at 52% 50%, rgba(212, 175, 55, 0.38), transparent 68%);
   box-shadow:
-    0 0 1.55rem rgba(212, 175, 55, 0.34),
-    0 0 2.4rem rgba(255, 227, 156, 0.12);
+    0 0 1.75rem rgba(212, 175, 55, 0.38),
+    0 0 2.65rem rgba(255, 227, 156, 0.16);
   transform: translate(-50%, -50%) rotate(-8deg);
 }
 
@@ -5090,15 +5113,15 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--shadow {
-  right: 24%;
-  border-top: 1px solid rgba(83, 216, 232, 0.6);
-  border-bottom: 1px solid rgba(181, 130, 255, 0.42);
+  right: 23%;
+  border-top: 1px solid rgba(83, 216, 232, 0.72);
+  border-bottom: 1px solid rgba(181, 130, 255, 0.5);
   background:
-    radial-gradient(circle at 68% 50%, rgba(143, 231, 237, 0.74) 0 0.15rem, transparent 0.17rem),
-    radial-gradient(ellipse at 48% 50%, rgba(83, 216, 232, 0.22), rgba(181, 130, 255, 0.1) 58%, transparent 70%);
+    radial-gradient(circle at 68% 50%, rgba(143, 231, 237, 0.84) 0 0.16rem, transparent 0.18rem),
+    radial-gradient(ellipse at 48% 50%, rgba(83, 216, 232, 0.3), rgba(181, 130, 255, 0.14) 58%, transparent 70%);
   box-shadow:
-    0 0 1.45rem rgba(83, 216, 232, 0.28),
-    0 0 2.2rem rgba(181, 130, 255, 0.1);
+    0 0 1.65rem rgba(83, 216, 232, 0.34),
+    0 0 2.45rem rgba(181, 130, 255, 0.14);
   filter: saturate(1.05);
   transform: translate(50%, -50%) rotate(172deg);
 }
@@ -5113,7 +5136,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__junction {
   left: 50%;
   top: 50%;
-  width: 0.82rem;
+  width: 0.94rem;
   aspect-ratio: 1;
   border: 1px solid rgba(244, 240, 232, 0.34);
   border-radius: 50%;
@@ -5123,7 +5146,7 @@ h3 {
     0 0 0 0.48rem rgba(244, 240, 232, 0.06),
     0 0 1.55rem rgba(255, 227, 156, 0.22),
     0 0 2.1rem rgba(83, 216, 232, 0.12);
-  opacity: 0.84;
+  opacity: 0.88;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5132,11 +5155,11 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core {
-  right: 10%;
+  right: 9%;
   top: 50%;
-  width: 3.8rem;
-  height: 2.48rem;
-  border: 1px solid rgba(181, 130, 255, 0.32);
+  width: 4.25rem;
+  height: 2.72rem;
+  border: 1px solid rgba(181, 130, 255, 0.4);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(181, 130, 255, 0.24), transparent 68%),
@@ -5144,7 +5167,7 @@ h3 {
   box-shadow:
     inset 0 0 1.1rem rgba(83, 216, 232, 0.12),
     0 0 1.6rem rgba(181, 130, 255, 0.1);
-  opacity: 0.66;
+  opacity: 0.7;
   transform: translateY(-50%) rotate(-12deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5153,10 +5176,10 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__charge {
-  bottom: 15%;
+  bottom: 13%;
   color: rgba(244, 240, 232, 0.58);
   font-family: var(--font-ui);
-  font-size: 0.54rem;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -5177,9 +5200,10 @@ h3 {
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label {
   color: rgba(244, 240, 232, 0.82);
   font-family: var(--font-ui);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0;
+  text-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.72);
 }
 
 .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label--paradox {
@@ -6525,6 +6549,10 @@ h3 {
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__field,
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__seed--matter {
   opacity: 1;
+  transition:
+    opacity 0.12s ease-out,
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__stone {
@@ -12062,7 +12090,7 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument {
-	    min-height: 6.65rem;
+	    min-height: 7.15rem;
 	    margin-top: 0.68rem;
 	  }
 
@@ -12071,32 +12099,32 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument::after {
-	    height: 4.55rem;
+	    height: 4.95rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__mirror {
-	    width: 2.55rem;
-	    height: 4.3rem;
+	    width: 2.7rem;
+	    height: 4.55rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--outer {
-	    width: 7.15rem;
-	    height: 4rem;
+	    width: 7.65rem;
+	    height: 4.18rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__ring--inner {
-	    width: 5.05rem;
-	    height: 2.72rem;
+	    width: 5.36rem;
+	    height: 2.86rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__thread {
-	    width: 6.1rem;
-	    height: 3rem;
+	    width: 6.58rem;
+	    height: 3.16rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish {
-	    width: 3.05rem;
-	    height: 1rem;
+	    width: 3.22rem;
+	    height: 1.04rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__fish--light {
@@ -12109,8 +12137,13 @@ h3 {
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__shadow-core {
 	    right: 5%;
-	    width: 2.44rem;
-	    height: 1.68rem;
+	    width: 2.62rem;
+	    height: 1.78rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__charge {
+	    bottom: 12%;
+	    font-size: 0.55rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch9"] .ambivalent-fish-instrument__label {
