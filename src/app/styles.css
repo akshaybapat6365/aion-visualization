@@ -6549,6 +6549,10 @@ h3 {
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__field,
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__seed--matter {
   opacity: 1;
+  transition:
+    opacity 0.12s ease-out,
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument[data-active-panel="lapis"] .alchemical-tree-instrument__stone {
