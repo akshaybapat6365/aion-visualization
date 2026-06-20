@@ -121,11 +121,17 @@ async function waitForServer(server) {
 function watchForRouteFailures(page) {
   const consoleErrors = [];
   const notFound = [];
+  const pageErrors = [];
+  const requestFailures = [];
 
   page.on('console', (message) => {
     if (message.type() === 'error') {
       consoleErrors.push(message.text());
     }
+  });
+
+  page.on('pageerror', (error) => {
+    pageErrors.push(error.message);
   });
 
   page.on('response', (response) => {
@@ -135,7 +141,15 @@ function watchForRouteFailures(page) {
     }
   });
 
-  return { consoleErrors, notFound };
+  page.on('requestfailed', (request) => {
+    const url = request.url();
+    const errorText = request.failure()?.errorText || 'request failed';
+    if (!url.endsWith('/favicon.ico') && errorText !== 'net::ERR_ABORTED') {
+      requestFailures.push(`${errorText}: ${url}`);
+    }
+  });
+
+  return { consoleErrors, notFound, pageErrors, requestFailures };
 }
 
 async function withWatchedPage(browser, failures, callback, { viewport = desktopViewport } = {}) {
@@ -146,6 +160,8 @@ async function withWatchedPage(browser, failures, callback, { viewport = desktop
     await callback(page);
   } finally {
     failures.push(...routeFailures.notFound.map((url) => `404 response: ${url}`));
+    failures.push(...routeFailures.pageErrors.map((message) => `page error: ${message}`));
+    failures.push(...routeFailures.requestFailures.map((message) => `request failed: ${message}`));
     failures.push(...routeFailures.consoleErrors.map((message) => `console error: ${message}`));
     await page.close();
   }
@@ -1151,7 +1167,7 @@ async function smokeReducedMotion(browser, failures) {
   const chapterTenInstrumentCount = await page.locator('.alchemical-vessel-instrument').count();
   const chapterTenInstrumentBox = await page.locator('.alchemical-vessel-instrument').boundingBox();
   const chapterTenReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
-  const chapterTenInstrumentMotion = await page.locator('.alchemical-vessel-instrument__field, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__vessel, .alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__fish, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__thread, .alchemical-vessel-instrument__particle, .alchemical-vessel-instrument__stages').evaluateAll((nodes) => nodes.map((node) => {
+  const chapterTenInstrumentMotion = await page.locator('.alchemical-vessel-instrument__field, .alchemical-vessel-instrument__aura, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__flame, .alchemical-vessel-instrument__retort, .alchemical-vessel-instrument__vessel, .alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__fish, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__plough, .alchemical-vessel-instrument__thread, .alchemical-vessel-instrument__particle, .alchemical-vessel-instrument__stages').evaluateAll((nodes) => nodes.map((node) => {
     const styles = window.getComputedStyle(node);
     return {
       animationName: styles.animationName,
@@ -2561,11 +2577,15 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterTenInstrumentRole = await chapterTenInstrument.getAttribute('role');
   const chapterTenInstrumentLabel = await chapterTenInstrument.getAttribute('aria-label');
   const chapterTenInstrumentPanel = await chapterTenInstrument.getAttribute('data-active-panel');
+  const chapterTenInstrumentAuraCount = await page.locator('.alchemical-vessel-instrument__aura').count();
   const chapterTenInstrumentStageCount = await page.locator('.alchemical-vessel-instrument__stage').count();
   const chapterTenInstrumentParticleCount = await page.locator('.alchemical-vessel-instrument__particle').count();
+  const chapterTenInstrumentFlameCount = await page.locator('.alchemical-vessel-instrument__flame').count();
+  const chapterTenInstrumentRetortCount = await page.locator('.alchemical-vessel-instrument__retort').count();
+  const chapterTenInstrumentPloughCount = await page.locator('.alchemical-vessel-instrument__plough').count();
   const chapterTenInstrumentLabelCount = await page.locator('.alchemical-vessel-instrument__label').count();
   const chapterTenInitialDescription = await page.locator('#scene-host-description-ch10').textContent();
-  const chapterTenInstrumentMarksVisible = await page.locator('.alchemical-vessel-instrument__field, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__vessel, .alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__fish, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__thread, .alchemical-vessel-instrument__particle, .alchemical-vessel-instrument__stages').evaluateAll((nodes) => nodes.length >= 14 && nodes.every((node) => {
+  const chapterTenInstrumentMarksVisible = await page.locator('.alchemical-vessel-instrument__field, .alchemical-vessel-instrument__aura, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__flame, .alchemical-vessel-instrument__retort, .alchemical-vessel-instrument__vessel, .alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__fish, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__plough, .alchemical-vessel-instrument__thread, .alchemical-vessel-instrument__particle, .alchemical-vessel-instrument__stages').evaluateAll((nodes) => nodes.length >= 19 && nodes.every((node) => {
     const styles = window.getComputedStyle(node);
     const box = node.getBoundingClientRect();
     return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
@@ -2590,8 +2610,12 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterTenReferenceCount !== 3) failures.push(`chapter 10 reference node count mismatch: ${chapterTenReferenceCount}`);
   if (chapterTenPanelIds.join(',') !== 'vessel,prima,opus') failures.push(`chapter 10 reference nodes out of order: ${chapterTenPanelIds.join(',')}`);
   if (chapterTenInstrumentCount !== 1) failures.push(`chapter 10 alchemical vessel instrument count mismatch: ${chapterTenInstrumentCount}`);
+  if (chapterTenInstrumentAuraCount !== 2) failures.push(`chapter 10 alchemical vessel aura count mismatch: ${chapterTenInstrumentAuraCount}`);
   if (chapterTenInstrumentStageCount !== 4) failures.push(`chapter 10 alchemical vessel stage count mismatch: ${chapterTenInstrumentStageCount}`);
   if (chapterTenInstrumentParticleCount !== 4) failures.push(`chapter 10 alchemical vessel particle count mismatch: ${chapterTenInstrumentParticleCount}`);
+  if (chapterTenInstrumentFlameCount !== 1) failures.push(`chapter 10 alchemical vessel flame count mismatch: ${chapterTenInstrumentFlameCount}`);
+  if (chapterTenInstrumentRetortCount !== 1) failures.push(`chapter 10 alchemical vessel retort count mismatch: ${chapterTenInstrumentRetortCount}`);
+  if (chapterTenInstrumentPloughCount !== 1) failures.push(`chapter 10 alchemical vessel plough count mismatch: ${chapterTenInstrumentPloughCount}`);
   if (chapterTenInstrumentLabelCount !== 3) failures.push(`chapter 10 alchemical vessel label count mismatch: ${chapterTenInstrumentLabelCount}`);
   if (chapterTenInstrumentRole !== 'img') failures.push(`chapter 10 alchemical vessel instrument role mismatch: ${chapterTenInstrumentRole}`);
   if (!chapterTenInstrumentLabel?.includes('Alchemical vessel model') || !chapterTenInstrumentLabel?.includes('fish-symbol enters') || !chapterTenInstrumentLabel?.includes('Current emphasis: Alchemy')) {
@@ -2613,14 +2637,14 @@ async function smokeChapterSceneControls(page, failures) {
   const primaDescription = await page.locator('#scene-host-description-ch10').textContent();
   const primaInstrumentPanel = await chapterTenInstrument.getAttribute('data-active-panel');
   const primaInstrumentLabel = await chapterTenInstrument.getAttribute('aria-label');
-  const primaVisualState = await page.locator('.alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__particle').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const primaVisualState = await page.locator('.alchemical-vessel-instrument__aura, .alchemical-vessel-instrument__bath, .alchemical-vessel-instrument__magnet, .alchemical-vessel-instrument__particle').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   if (primaPressed !== 'true') failures.push(`chapter 10 prima reference did not become active: ${primaPressed}`);
   if (primaPanelActive !== 1) failures.push(`chapter 10 prima panel did not become active: ${primaPanelActive}`);
   if (primaInstrumentPanel !== 'prima') failures.push(`chapter 10 alchemical vessel instrument did not follow prima panel: ${primaInstrumentPanel}`);
   if (!primaInstrumentLabel?.includes('Current emphasis: Prima Materia') || !primaInstrumentLabel?.includes('The raw state is not a mistake')) {
     failures.push(`chapter 10 alchemical vessel instrument label did not follow prima panel: ${primaInstrumentLabel}`);
   }
-  if (primaVisualState.length !== 6 || !primaVisualState.every((opacity) => opacity >= 0.62)) {
+  if (primaVisualState.length !== 8 || !primaVisualState.every((opacity) => opacity >= 0.62)) {
     failures.push(`chapter 10 alchemical vessel instrument did not visually emphasize prima materia: ${primaVisualState.join(',')}`);
   }
   if (!primaDescription?.includes('Prima Materia: Begin with the mixed thing')) failures.push(`chapter 10 scene description did not follow prima panel: ${primaDescription}`);
@@ -2635,7 +2659,7 @@ async function smokeChapterSceneControls(page, failures) {
   const opusDescription = await page.locator('#scene-host-description-ch10').textContent();
   const opusInstrumentPanel = await chapterTenInstrument.getAttribute('data-active-panel');
   const opusInstrumentLabel = await chapterTenInstrument.getAttribute('aria-label');
-  const opusVisualState = await page.locator('.alchemical-vessel-instrument__stages, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__thread--ascent').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
+  const opusVisualState = await page.locator('.alchemical-vessel-instrument__stages, .alchemical-vessel-instrument__heat, .alchemical-vessel-instrument__flame, .alchemical-vessel-instrument__plough, .alchemical-vessel-instrument__lapis, .alchemical-vessel-instrument__thread--ascent').evaluateAll((nodes) => nodes.map((node) => Number(window.getComputedStyle(node).opacity)));
   const chapterTenScrollY = await page.evaluate(() => window.scrollY);
   if (opusPressed !== 'true') failures.push(`chapter 10 scene control did not become active: ${opusPressed}`);
   if (opusPanelActive !== 1) failures.push(`chapter 10 opus panel did not become active: ${opusPanelActive}`);
@@ -2643,7 +2667,7 @@ async function smokeChapterSceneControls(page, failures) {
   if (!opusInstrumentLabel?.includes('Current emphasis: Opus') || !opusInstrumentLabel?.includes('Alchemy gives psychology a theater')) {
     failures.push(`chapter 10 alchemical vessel instrument label did not follow opus panel: ${opusInstrumentLabel}`);
   }
-  if (opusVisualState.length !== 4 || !opusVisualState.every((opacity) => opacity >= 0.65)) {
+  if (opusVisualState.length !== 6 || !opusVisualState.every((opacity) => opacity >= 0.65)) {
     failures.push(`chapter 10 alchemical vessel instrument did not visually emphasize opus: ${opusVisualState.join(',')}`);
   }
   if (!opusDescription?.includes('Opus: Matter teaches psyche')) failures.push(`chapter 10 scene description did not follow opus panel: ${opusDescription}`);
@@ -3534,7 +3558,13 @@ async function smokeMobile(page, failures) {
     if (viewport.width === mobileViewport.width) {
       const chapterTenCanvas = page.locator('.scene-host canvas').first();
       const chapterTenCanvasCount = await chapterTenCanvas.count();
-      if (chapterTenCanvasCount > 0) {
+      if (chapterTenCanvasCount !== 1) {
+        failures.push(`mobile chapter 10 expected one ready canvas at ${viewport.width}x${viewport.height} but found ${chapterTenCanvasCount}`);
+      } else {
+        const chapterTenCanvasBox = await chapterTenCanvas.boundingBox();
+        if (!chapterTenCanvasBox || chapterTenCanvasBox.width < 300 || chapterTenCanvasBox.height < 260) {
+          failures.push(`mobile chapter 10 canvas geometry too small at ${viewport.width}x${viewport.height}: ${chapterTenCanvasBox ? `${Math.round(chapterTenCanvasBox.width)}x${Math.round(chapterTenCanvasBox.height)}` : 'missing'}`);
+        }
         const chapterTenPixelSample = await waitForCanvasPixels(chapterTenCanvas);
         recordCanvasPixelFailure(failures, `mobile chapter 10 at ${viewport.width}x${viewport.height}`, chapterTenPixelSample);
       }

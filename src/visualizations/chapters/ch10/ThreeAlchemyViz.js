@@ -25,10 +25,11 @@ const ECHENEIS_CYAN = new THREE.Color('#22d3ee');
 const SHIP_GREY = new THREE.Color('#3a3a4a');
 const MAGNET_PURPLE = new THREE.Color('#6a2c91');
 const LAPIS_GOLD = new THREE.Color('#d4af37');
+const FIRE_ORANGE = new THREE.Color('#ff8a3d');
 const YOKE_BROWN = new THREE.Color('#8b6914');
 const VOID = 0x030308;
 
-const MAGNET_PARTICLES = 200;
+const MAGNET_PARTICLES = 260;
 
 export default class ThreeAlchemyViz extends BaseViz {
     constructor(container, opts = {}) {
@@ -37,6 +38,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.vesselFocus = 1;
         this.primaFocus = 0;
         this.opusFocus = 0;
+        this.labMaterials = [];
+        this.labStageStones = [];
         this.reducedMotion = false;
     }
 
@@ -74,14 +77,29 @@ export default class ThreeAlchemyViz extends BaseViz {
         this._createLapisAnimatus();
         this._createYokedFish();
         this._createAlchemicalGround();
+        this._createLaboratoryField();
         this._createLights();
 
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.2, 0.5, 0.4
+            new THREE.Vector2(this.width, this.height), 1.35, 0.48, 0.32
         );
         this.composer.addPass(this.bloomPass);
+    }
+
+    _makeLabMaterial({ color, opacity = 0.45, additive = true, side = THREE.DoubleSide, wireframe = false }) {
+        const mat = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity,
+            side,
+            wireframe,
+            blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+            depthWrite: false,
+        });
+        this.labMaterials.push(mat);
+        return mat;
     }
 
     _createEcheneis() {
@@ -89,8 +107,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         const bodyGeo = new THREE.SphereGeometry(0.1, 10, 8);
         bodyGeo.scale(2, 0.5, 0.4);
         const bodyMat = new THREE.MeshStandardMaterial({
-            color: ECHENEIS_CYAN, emissive: ECHENEIS_CYAN, emissiveIntensity: 0.8,
-            transparent: true, opacity: 0.8,
+            color: ECHENEIS_CYAN, emissive: ECHENEIS_CYAN, emissiveIntensity: 1.2,
+            transparent: true, opacity: 0.88,
         });
         this.echeneisBody = new THREE.Mesh(bodyGeo, bodyMat);
         this.echeneisGroup.add(this.echeneisBody);
@@ -98,12 +116,12 @@ export default class ThreeAlchemyViz extends BaseViz {
         // Aura of stopping power
         const auraGeo = new THREE.SphereGeometry(0.5, 12, 12);
         this.echeneisAura = new THREE.Mesh(auraGeo, new THREE.MeshBasicMaterial({
-            color: ECHENEIS_CYAN, transparent: true, opacity: 0.05,
+            color: ECHENEIS_CYAN, transparent: true, opacity: 0.09,
             blending: THREE.AdditiveBlending,
         }));
         this.echeneisGroup.add(this.echeneisAura);
 
-        this.echeneisGroup.position.set(-4, 2, 1);
+        this.echeneisGroup.position.set(-4.2, 2.1, 1);
         this.scene.add(this.echeneisGroup);
     }
 
@@ -164,7 +182,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         this.magnetField = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: MAGNET_PURPLE, size: 0.08, transparent: true, opacity: 0.5,
+            color: ECHENEIS_CYAN, size: 0.095, transparent: true, opacity: 0.52,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.magnetField);
@@ -172,8 +190,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         // Magnet core
         const magnetGeo = new THREE.OctahedronGeometry(0.3, 0);
         this.magnetCore = new THREE.Mesh(magnetGeo, new THREE.MeshStandardMaterial({
-            color: MAGNET_PURPLE, emissive: MAGNET_PURPLE, emissiveIntensity: 0.6,
-            transparent: true, opacity: 0.7,
+            color: MAGNET_PURPLE, emissive: MAGNET_PURPLE, emissiveIntensity: 0.9,
+            transparent: true, opacity: 0.78,
         }));
         this.magnetCore.position.set(3, -1, 1);
         this.scene.add(this.magnetCore);
@@ -184,8 +202,8 @@ export default class ThreeAlchemyViz extends BaseViz {
 
         const stoneGeo = new THREE.DodecahedronGeometry(0.5, 0);
         const stoneMat = new THREE.MeshStandardMaterial({
-            color: LAPIS_GOLD, emissive: LAPIS_GOLD, emissiveIntensity: 0.4,
-            metalness: 0.7, roughness: 0.2, transparent: true, opacity: 0.7,
+            color: LAPIS_GOLD, emissive: LAPIS_GOLD, emissiveIntensity: 0.75,
+            metalness: 0.68, roughness: 0.18, transparent: true, opacity: 0.82,
         });
         this.lapisStone = new THREE.Mesh(stoneGeo, stoneMat);
         this.lapisGroup.add(this.lapisStone);
@@ -198,21 +216,87 @@ export default class ThreeAlchemyViz extends BaseViz {
         }));
         this.lapisGroup.add(this.heartAura);
 
-        this.lapisGroup.position.set(0, -2, 2);
+        this.lapisGroup.position.set(0, -1.18, 1.2);
         this.scene.add(this.lapisGroup);
 
-        const vesselGeo = new THREE.SphereGeometry(1.25, 28, 18);
+        const vesselGeo = new THREE.SphereGeometry(1.7, 36, 22);
         vesselGeo.scale(1.15, 1.35, 1);
         this.vesselGlass = new THREE.Mesh(vesselGeo, new THREE.MeshBasicMaterial({
             color: 0x9fdcff,
             transparent: true,
-            opacity: 0.035,
+            opacity: 0.075,
             blending: THREE.AdditiveBlending,
             wireframe: true,
             depthWrite: false,
         }));
         this.vesselGlass.position.copy(this.lapisGroup.position);
         this.scene.add(this.vesselGlass);
+    }
+
+    _createLaboratoryField() {
+        this.labField = new THREE.Group();
+        this.labField.position.set(0, -1.1, 0.4);
+
+        const retortGeo = new THREE.TorusGeometry(1.95, 0.018, 12, 128);
+        this.retortOuter = new THREE.Mesh(retortGeo, this._makeLabMaterial({ color: ECHENEIS_CYAN, opacity: 0.34 }));
+        this.retortOuter.scale.set(1.18, 0.72, 1);
+        this.retortOuter.rotation.z = -0.18;
+        this.labField.add(this.retortOuter);
+
+        this.retortInner = new THREE.Mesh(retortGeo, this._makeLabMaterial({ color: LAPIS_GOLD, opacity: 0.28 }));
+        this.retortInner.scale.set(0.82, 0.5, 1);
+        this.retortInner.rotation.z = 0.28;
+        this.labField.add(this.retortInner);
+
+        const crucibleGeo = new THREE.CylinderGeometry(1.28, 1.72, 1.75, 48, 1, true);
+        this.crucible = new THREE.Mesh(crucibleGeo, this._makeLabMaterial({ color: ECHENEIS_CYAN, opacity: 0.1, side: THREE.DoubleSide, wireframe: true }));
+        this.crucible.position.y = -0.32;
+        this.crucible.scale.set(1.06, 1.08, 0.72);
+        this.labField.add(this.crucible);
+
+        const flameGeo = new THREE.ConeGeometry(1.18, 2.36, 40, 1, true);
+        this.alembicFlame = new THREE.Mesh(flameGeo, this._makeLabMaterial({ color: FIRE_ORANGE, opacity: 0.18, side: THREE.DoubleSide }));
+        this.alembicFlame.position.y = -2.18;
+        this.alembicFlame.rotation.x = Math.PI;
+        this.labField.add(this.alembicFlame);
+
+        const linePositions = new Float32Array([
+            -4.2, 3.2, 0.2, -1.34, 0.15, 0.2,
+            -1.34, 0.15, 0.2, 0, -0.2, 0.2,
+            0, -0.2, 0.2, 2.9, 0.35, 0.2,
+            -3.5, -2.68, 0.2, 3.5, -2.68, 0.2,
+        ]);
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+        this.labThreads = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({
+            color: LAPIS_GOLD,
+            transparent: true,
+            opacity: 0.24,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+        }));
+        this.labField.add(this.labThreads);
+
+        const stageColors = [NIGREDO_BLACK, ALBEDO_WHITE, CITRINITAS, RUBEDO_RED];
+        stageColors.forEach((color, index) => {
+            const stage = new THREE.Mesh(
+                new THREE.SphereGeometry(0.17, 18, 12),
+                new THREE.MeshStandardMaterial({
+                    color,
+                    emissive: color,
+                    emissiveIntensity: index === 0 ? 0.18 : 0.55,
+                    metalness: 0.4,
+                    roughness: 0.22,
+                    transparent: true,
+                    opacity: 0.78,
+                }),
+            );
+            stage.position.set(-2.25 + index * 1.5, -2.7, 0.58);
+            this.labStageStones.push(stage);
+            this.labField.add(stage);
+        });
+
+        this.scene.add(this.labField);
     }
 
     _createYokedFish() {
@@ -252,7 +336,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         for (let i = 0; i < 4; i++) {
             const stripGeo = new THREE.PlaneGeometry(4, 1);
             const stripMat = new THREE.MeshBasicMaterial({
-                color: stages[i], transparent: true, opacity: 0.06,
+                color: stages[i], transparent: true, opacity: 0.085,
                 side: THREE.DoubleSide,
             });
             const strip = new THREE.Mesh(stripGeo, stripMat);
@@ -264,18 +348,22 @@ export default class ThreeAlchemyViz extends BaseViz {
     }
 
     _createLights() {
-        this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        const echeneisLight = new THREE.PointLight(0x22d3ee, 0.6, 12);
+        this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.42));
+        const echeneisLight = new THREE.PointLight(0x22d3ee, 0.85, 12);
         echeneisLight.position.set(-4, 3, 3);
         this.scene.add(echeneisLight);
 
-        const magnetLight = new THREE.PointLight(0x6a2c91, 0.5, 15);
+        const magnetLight = new THREE.PointLight(0x6a2c91, 0.68, 15);
         magnetLight.position.set(3, -2, 3);
         this.scene.add(magnetLight);
 
-        const lapisLight = new THREE.PointLight(0xd4af37, 0.4, 10);
-        lapisLight.position.set(0, -2, 3);
+        const lapisLight = new THREE.PointLight(0xd4af37, 0.78, 12);
+        lapisLight.position.set(0, -1.2, 3);
         this.scene.add(lapisLight);
+
+        const fireLight = new THREE.PointLight(0xff8a3d, 0.52, 9);
+        fireLight.position.set(0, -3.1, 2.2);
+        this.scene.add(fireLight);
     }
 
     update(dt) {
@@ -293,8 +381,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.echeneisGroup.position.x = -3 + Math.sin(t * 0.08 * motionScale) * 0.3;
         this.echeneisGroup.position.y = 2 + Math.sin(t * 0.15 * motionScale) * 0.2;
         this.echeneisGroup.scale.setScalar(0.88 + this.vesselFocus * 0.28);
-        this.echeneisBody.material.opacity = 0.36 + this.vesselFocus * 0.5;
-        this.echeneisAura.material.opacity = (0.03 + Math.sin(t * 0.6 * motionScale) * 0.02) + this.vesselFocus * 0.13;
+        this.echeneisBody.material.opacity = 0.42 + this.vesselFocus * 0.5;
+        this.echeneisAura.material.opacity = (0.06 + Math.sin(t * 0.6 * motionScale) * 0.02) + this.vesselFocus * 0.15;
 
         // Ship halted — only rocking
         this.shipGroup.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.03;
@@ -325,22 +413,52 @@ export default class ThreeAlchemyViz extends BaseViz {
             }
         }
         this.magnetField.geometry.attributes.position.needsUpdate = true;
-        this.magnetField.material.opacity = 0.16 + this.primaFocus * 0.55;
+        this.magnetField.material.opacity = 0.2 + this.primaFocus * 0.58;
         this.magnetCore.rotation.y = t * 0.1 * motionScale;
         this.magnetCore.scale.setScalar(0.72 + this.primaFocus * 0.5);
-        this.magnetCore.material.opacity = 0.28 + this.primaFocus * 0.56;
+        this.magnetCore.material.opacity = 0.32 + this.primaFocus * 0.58;
 
         // Lapis heartbeat — systole/diastole
         const heartbeat = Math.sin(t * 2 * motionScale); // Fast pulse
         const pulse = heartbeat > 0.7 ? 1 : 0; // Sharp beat
         this.lapisStone.scale.setScalar(0.82 + this.primaFocus * 0.16 + this.opusFocus * 0.22 + pulse * 0.15);
-        this.lapisStone.material.opacity = 0.3 + this.primaFocus * 0.22 + this.opusFocus * 0.32;
-        this.lapisStone.material.emissiveIntensity = 0.22 + this.opusFocus * 0.38 + pulse * 0.5;
-        this.heartAura.material.opacity = pulse * (0.04 + this.opusFocus * 0.08);
+        this.lapisStone.material.opacity = 0.44 + this.primaFocus * 0.2 + this.opusFocus * 0.34;
+        this.lapisStone.material.emissiveIntensity = 0.38 + this.opusFocus * 0.46 + pulse * 0.5;
+        this.heartAura.material.opacity = pulse * (0.06 + this.opusFocus * 0.1);
         this.heartAura.scale.setScalar(1 + pulse * 0.5 + this.opusFocus * 0.2);
         this.lapisStone.rotation.y = t * 0.05 * motionScale;
-        this.vesselGlass.material.opacity = 0.02 + this.vesselFocus * 0.04 + this.primaFocus * 0.04 + this.opusFocus * 0.05;
+        this.vesselGlass.material.opacity = 0.04 + this.vesselFocus * 0.055 + this.primaFocus * 0.045 + this.opusFocus * 0.055;
         this.vesselGlass.rotation.y = -t * 0.025 * motionScale;
+
+        if (this.labField) {
+            this.labField.rotation.y = Math.sin(t * 0.08 * motionScale) * 0.08 + this.mouseSmooth.x * 0.05;
+            this.labField.scale.setScalar(1 + this.vesselFocus * 0.03 + this.opusFocus * 0.04);
+        }
+        if (this.retortOuter) {
+            this.retortOuter.rotation.z = -0.18 + Math.sin(t * 0.14 * motionScale) * 0.08;
+            this.retortOuter.material.opacity = 0.24 + this.vesselFocus * 0.18 + this.primaFocus * 0.08;
+        }
+        if (this.retortInner) {
+            this.retortInner.rotation.z = 0.28 - Math.sin(t * 0.12 * motionScale) * 0.08;
+            this.retortInner.material.opacity = 0.2 + this.opusFocus * 0.2 + this.primaFocus * 0.08;
+        }
+        if (this.crucible) {
+            this.crucible.material.opacity = 0.08 + this.vesselFocus * 0.05 + this.primaFocus * 0.05 + this.opusFocus * 0.05;
+        }
+        if (this.alembicFlame) {
+            this.alembicFlame.scale.set(1 + this.opusFocus * 0.1, 0.74 + this.opusFocus * 0.44 + Math.sin(t * 1.3 * motionScale) * 0.04, 1);
+            this.alembicFlame.material.opacity = 0.12 + this.opusFocus * 0.22;
+        }
+        if (this.labThreads) {
+            this.labThreads.material.opacity = 0.18 + this.vesselFocus * 0.08 + this.opusFocus * 0.16;
+        }
+        this.labStageStones?.forEach((stage, index) => {
+            const stageLift = index / Math.max(this.labStageStones.length - 1, 1);
+            stage.position.y = -2.7 + this.opusFocus * 0.2 * stageLift + Math.sin(t * 0.6 * motionScale + index) * 0.025;
+            stage.scale.setScalar(0.88 + this.opusFocus * (0.18 + stageLift * 0.2));
+            stage.material.opacity = 0.6 + this.opusFocus * 0.28;
+            stage.material.emissiveIntensity = 0.32 + this.opusFocus * (0.32 + stageLift * 0.22);
+        });
 
         // Yoked fish ploughing across stages
         this.yokeGroup.position.x = -5 + ((t * 0.2 * motionScale * (0.5 + this.opusFocus)) % 14);
@@ -356,12 +474,12 @@ export default class ThreeAlchemyViz extends BaseViz {
 
         // Camera
         const camAngle = t * 0.015 * motionScale + this.mouseSmooth.x * 0.3;
-        const camH = 2 + this.mouseSmooth.y * 3 - this.opusFocus * 0.6;
-        const camRadius = 14 - this.vesselFocus * 1.2 - this.primaFocus * 0.6 + this.opusFocus * 0.8;
+        const camH = 1.65 + this.mouseSmooth.y * 2.4 - this.opusFocus * 0.45;
+        const camRadius = 12.3 - this.vesselFocus * 0.95 - this.primaFocus * 0.46 + this.opusFocus * 0.7;
         this.camera.position.set(Math.sin(camAngle) * camRadius, camH, Math.cos(camAngle) * camRadius);
-        this.camera.lookAt(this.primaFocus * 1.2 - this.vesselFocus * 0.8, -0.5 - this.opusFocus * 0.8, 0);
+        this.camera.lookAt(this.primaFocus * 0.74 - this.vesselFocus * 0.34, -0.86 - this.opusFocus * 0.58, 0.2);
 
-        if (this.bloomPass) this.bloomPass.strength = 0.95 + Math.sin(t * 0.1 * motionScale) * 0.2 + this.vesselFocus * 0.2 + this.opusFocus * 0.18;
+        if (this.bloomPass) this.bloomPass.strength = 1.08 + Math.sin(t * 0.1 * motionScale) * 0.18 + this.vesselFocus * 0.18 + this.opusFocus * 0.24;
     }
 
     render() { this.composer?.render(); }

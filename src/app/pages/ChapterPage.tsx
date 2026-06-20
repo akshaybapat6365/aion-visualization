@@ -288,12 +288,17 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               aria-label={alchemicalVesselInstrumentLabel}
             >
               <span className="alchemical-vessel-instrument__field" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__aura alchemical-vessel-instrument__aura--solve" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__aura alchemical-vessel-instrument__aura--coagula" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__heat" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__flame" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__retort" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__vessel" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__bath" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__fish" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__magnet" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__lapis" aria-hidden="true" />
+              <span className="alchemical-vessel-instrument__plough" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__thread alchemical-vessel-instrument__thread--descent" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__thread alchemical-vessel-instrument__thread--ascent" aria-hidden="true" />
               <span className="alchemical-vessel-instrument__particle alchemical-vessel-instrument__particle--one" aria-hidden="true" />

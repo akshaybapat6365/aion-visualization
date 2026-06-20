@@ -5764,19 +5764,20 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
   position: relative;
   width: min(31rem, 100%);
-  min-height: clamp(6.8rem, 10.2vh, 7.85rem);
+  min-height: clamp(7.75rem, 11.4vh, 8.85rem);
   overflow: hidden;
   margin-top: 0.78rem;
   border: 1px solid rgba(244, 240, 232, 0.12);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 29% 58%, rgba(83, 216, 232, 0.13), transparent 4.6rem),
-    radial-gradient(circle at 52% 56%, rgba(212, 175, 55, 0.16), transparent 4.5rem),
-    radial-gradient(circle at 78% 70%, rgba(194, 55, 43, 0.12), transparent 4.6rem),
-    linear-gradient(90deg, rgba(7, 8, 13, 0.86), rgba(11, 9, 12, 0.72) 48%, rgba(19, 8, 7, 0.62));
+    radial-gradient(circle at 26% 52%, rgba(83, 216, 232, 0.18), transparent 5.2rem),
+    radial-gradient(circle at 51% 53%, rgba(212, 175, 55, 0.24), transparent 5.6rem),
+    radial-gradient(circle at 74% 68%, rgba(194, 55, 43, 0.17), transparent 5.2rem),
+    linear-gradient(90deg, rgba(7, 9, 13, 0.9), rgba(12, 9, 10, 0.78) 46%, rgba(24, 8, 6, 0.68));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.24);
+    0 1.4rem 4rem rgba(0, 0, 0, 0.24),
+    0 0 3.6rem rgba(212, 175, 55, 0.06);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before,
@@ -5794,8 +5795,8 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::after {
   left: 50%;
-  bottom: 1.02rem;
-  width: 58%;
+  bottom: 1.16rem;
+  width: 64%;
   height: 0.06rem;
   background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.28), transparent);
   box-shadow: 0 0 1.2rem rgba(244, 240, 232, 0.1);
@@ -5803,12 +5804,16 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__field,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__heat,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__bath,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__fish,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__magnet,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__lapis,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__particle,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stages,
@@ -5829,21 +5834,52 @@ h3 {
     transform 0.55s var(--motion-spring);
 }
 
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura {
+  left: 50%;
+  top: 54%;
+  width: 11.6rem;
+  height: 5.8rem;
+  border-radius: 50%;
+  opacity: 0.44;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    filter 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura--solve {
+  border-top: 1px solid rgba(83, 216, 232, 0.32);
+  border-left: 1px solid rgba(83, 216, 232, 0.16);
+  background: radial-gradient(ellipse at 38% 48%, rgba(83, 216, 232, 0.12), transparent 68%);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura--coagula {
+  width: 9.4rem;
+  height: 4.9rem;
+  border-bottom: 1px solid rgba(255, 173, 112, 0.3);
+  border-right: 1px solid rgba(255, 227, 156, 0.16);
+  background: radial-gradient(ellipse at 64% 58%, rgba(212, 175, 55, 0.14), transparent 68%);
+  transform: translate(-50%, -50%) rotate(12deg);
+}
+
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel {
   left: 50%;
   top: 50%;
-  width: 6.25rem;
-  height: 5.35rem;
-  border: 1px solid rgba(143, 231, 237, 0.34);
-  border-top-color: rgba(244, 240, 232, 0.18);
+  width: 7.05rem;
+  height: 5.95rem;
+  border: 1px solid rgba(143, 231, 237, 0.46);
+  border-top-color: rgba(244, 240, 232, 0.26);
   border-radius: 45% 45% 52% 52%;
   background:
-    linear-gradient(90deg, transparent 46%, rgba(244, 240, 232, 0.16) 49%, transparent 52%),
-    radial-gradient(ellipse at 50% 62%, rgba(255, 227, 156, 0.12), transparent 70%);
+    linear-gradient(90deg, transparent 45%, rgba(244, 240, 232, 0.22) 49%, transparent 53%),
+    radial-gradient(ellipse at 50% 58%, rgba(83, 216, 232, 0.12), transparent 42%),
+    radial-gradient(ellipse at 50% 66%, rgba(255, 227, 156, 0.18), transparent 72%);
   box-shadow:
-    inset 0 0 1.25rem rgba(143, 231, 237, 0.1),
-    0 0 1.7rem rgba(83, 216, 232, 0.14);
-  opacity: 0.74;
+    inset 0 0 1.45rem rgba(143, 231, 237, 0.13),
+    0 0 2.1rem rgba(83, 216, 232, 0.18),
+    0 0 2.6rem rgba(212, 175, 55, 0.08);
+  opacity: 0.82;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5851,17 +5887,61 @@ h3 {
     box-shadow 0.55s var(--motion-spring);
 }
 
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort {
+  left: 50%;
+  top: 47%;
+  width: 4.35rem;
+  height: 4.35rem;
+  border: 1px solid rgba(244, 240, 232, 0.16);
+  border-top-color: rgba(143, 231, 237, 0.42);
+  border-radius: 50%;
+  opacity: 0.56;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort::before,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort::before {
+  left: 50%;
+  top: -1.02rem;
+  width: 0.74rem;
+  height: 1.34rem;
+  border: 1px solid rgba(143, 231, 237, 0.28);
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  transform: translateX(-50%);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort::after {
+  left: 50%;
+  bottom: 0.24rem;
+  width: 3.4rem;
+  height: 0.86rem;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 227, 156, 0.18), transparent 72%);
+  transform: translateX(-50%);
+}
+
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__bath {
   left: 50%;
   top: 59%;
-  width: 4.8rem;
-  height: 1.18rem;
+  width: 5.4rem;
+  height: 1.28rem;
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.26), transparent 68%),
+    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.34), transparent 68%),
     linear-gradient(90deg, rgba(83, 216, 232, 0.18), rgba(212, 175, 55, 0.14), rgba(194, 55, 43, 0.12));
-  box-shadow: 0 0 1.35rem rgba(83, 216, 232, 0.14);
-  opacity: 0.64;
+  box-shadow: 0 0 1.55rem rgba(83, 216, 232, 0.18);
+  opacity: 0.72;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5943,18 +6023,37 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__heat {
   left: 50%;
-  bottom: 1.26rem;
-  width: 5rem;
-  height: 1.22rem;
+  bottom: 1.34rem;
+  width: 5.8rem;
+  height: 1.36rem;
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at 50% 70%, rgba(194, 55, 43, 0.38), rgba(212, 175, 55, 0.18) 46%, transparent 72%);
+    radial-gradient(ellipse at 50% 70%, rgba(194, 55, 43, 0.46), rgba(212, 175, 55, 0.24) 46%, transparent 72%);
   filter: blur(0.08rem);
-  opacity: 0.58;
+  opacity: 0.66;
   transform: translateX(-50%);
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame {
+  left: 50%;
+  bottom: 1.42rem;
+  width: 2.65rem;
+  height: 2.8rem;
+  border-radius: 50% 50% 46% 46%;
+  background:
+    radial-gradient(ellipse at 50% 72%, rgba(255, 227, 156, 0.42), transparent 54%),
+    radial-gradient(ellipse at 50% 35%, rgba(194, 55, 43, 0.34), transparent 68%);
+  filter: blur(0.03rem);
+  opacity: 0.52;
+  transform: translateX(-50%) scaleY(0.74);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    filter 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread {
@@ -6016,9 +6115,52 @@ h3 {
   background: rgba(194, 55, 43, 0.7);
 }
 
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough {
+  left: 31%;
+  bottom: 1.05rem;
+  width: 4.85rem;
+  height: 1.08rem;
+  border-bottom: 1px solid rgba(255, 227, 156, 0.3);
+  border-radius: 50%;
+  opacity: 0.44;
+  transform: translateX(-50%) rotate(-8deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough::before,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough::before {
+  left: 22%;
+  top: 0.38rem;
+  width: 1.9rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(83, 216, 232, 0.42), rgba(255, 227, 156, 0.42));
+  box-shadow: 0 0 0.9rem rgba(83, 216, 232, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough::after {
+  right: 0.2rem;
+  top: 0.22rem;
+  width: 0.88rem;
+  height: 0.56rem;
+  border-right: 1px solid rgba(255, 227, 156, 0.42);
+  border-bottom: 1px solid rgba(255, 227, 156, 0.32);
+  transform: rotate(-19deg);
+}
+
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stages {
   left: 50%;
-  bottom: 1.08rem;
+  bottom: 1.12rem;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.18rem;
@@ -6085,6 +6227,8 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__vessel,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__retort,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__aura--solve,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__fish,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__thread--descent {
   opacity: 1;
@@ -6093,11 +6237,18 @@ h3 {
     0 0 1.75rem rgba(83, 216, 232, 0.18);
 }
 
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__retort {
+  box-shadow: 0 0 1.6rem rgba(83, 216, 232, 0.2);
+  transform: translate(-50%, -50%) rotate(-12deg) scale(1.06);
+}
+
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="vessel"] .alchemical-vessel-instrument__fish {
   transform: translate(-34%, -50%) rotate(-4deg) scale(1.08);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__bath,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__aura--solve,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__aura--coagula,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__magnet,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__particle {
   opacity: 1;
@@ -6129,6 +6280,8 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__stages,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__heat,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__flame,
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__plough,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__lapis,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__thread--ascent {
   opacity: 1;
@@ -6141,6 +6294,17 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__heat {
   transform: translateX(-50%) scaleX(1.18);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__flame {
+  filter: blur(0);
+  transform: translateX(-50%) scaleY(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__plough {
+  border-color: rgba(255, 227, 156, 0.48);
+  box-shadow: 0 0 1rem rgba(212, 175, 55, 0.16);
+  transform: translateX(-39%) rotate(-4deg);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="opus"] .alchemical-vessel-instrument__lapis {
@@ -9910,12 +10074,16 @@ h3 {
 		  .ambivalent-fish-instrument__shadow-core,
 		  .ambivalent-fish-instrument__charge,
 		  .alchemical-vessel-instrument__field,
+		  .alchemical-vessel-instrument__aura,
 		  .alchemical-vessel-instrument__heat,
+		  .alchemical-vessel-instrument__flame,
+		  .alchemical-vessel-instrument__retort,
 		  .alchemical-vessel-instrument__vessel,
 		  .alchemical-vessel-instrument__bath,
 		  .alchemical-vessel-instrument__fish,
 		  .alchemical-vessel-instrument__magnet,
 		  .alchemical-vessel-instrument__lapis,
+		  .alchemical-vessel-instrument__plough,
 			  .alchemical-vessel-instrument__thread,
 			  .alchemical-vessel-instrument__particle,
 			  .alchemical-vessel-instrument__stages,
@@ -10042,12 +10210,16 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__field,
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__heat,
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame,
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__bath,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__fish,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__magnet,
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__lapis,
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough,
 		  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread,
 		  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__particle,
 		  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stages {
@@ -12153,7 +12325,7 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
-	    min-height: 6.65rem;
+	    min-height: 7.1rem;
 	    margin-top: 0.66rem;
 	  }
 
@@ -12162,12 +12334,27 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel {
-	    width: 4.9rem;
-	    height: 4.35rem;
+	    width: 5.3rem;
+	    height: 4.55rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura {
+	    width: 8.3rem;
+	    height: 4.5rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura--coagula {
+	    width: 6.9rem;
+	    height: 3.85rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort {
+	    width: 3.45rem;
+	    height: 3.45rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__bath {
-	    width: 3.85rem;
+	    width: 4.15rem;
 	    height: 1rem;
 	  }
 
@@ -12185,6 +12372,17 @@ h3 {
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__lapis {
 	    left: 74%;
 	    width: 0.92rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame {
+	    width: 2rem;
+	    height: 2.12rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough {
+	    left: 28%;
+	    width: 3.45rem;
+	    height: 0.92rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread {
