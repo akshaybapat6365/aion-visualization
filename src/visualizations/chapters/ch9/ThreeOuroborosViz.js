@@ -9,11 +9,11 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
-const SERPENT_CLR = new THREE.Color('#2e7d32');
-const SERPENT_DARK = new THREE.Color('#0a2a0a');
-const GOLD = new THREE.Color('#ffd700');
-const SILVER = new THREE.Color('#b8c7dd');
-const SHADOW = new THREE.Color('#24304f');
+const SERPENT_CLR = new THREE.Color('#53d8e8');
+const SERPENT_DARK = new THREE.Color('#123f38');
+const GOLD = new THREE.Color('#f2c95d');
+const SILVER = new THREE.Color('#f4f0e8');
+const SHADOW = new THREE.Color('#6d5a9c');
 
 export default class ThreeOuroborosViz extends BaseViz {
     constructor(c, o = {}) {
@@ -35,25 +35,29 @@ export default class ThreeOuroborosViz extends BaseViz {
 
     async init() {
         const R = this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.setSize(this.width, this.height); R.setClearColor(0x030308);
+        R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.setSize(this.width, this.height); R.setClearColor(0x04050d);
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x030308, 0.01);
+        this.scene.fog = new THREE.FogExp2(0x04050d, 0.007);
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 100);
-        this.camera.position.set(0, 5, 16);
+        this.camera.position.set(0, 4.7, 15);
+        this.focusTarget = new THREE.Vector3(0.9, 0, 0);
 
         this.mouse = new THREE.Vector2(); this.mouseSmooth = new THREE.Vector2();
         this._onMM = e => { this.mouse.x = (e.clientX / innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / innerHeight) * 2 + 1; };
         addEventListener('mousemove', this._onMM);
 
+        this._createTeachingField();
+
         // Serpent body: torus geometry (the ouroboros ring)
         this.serpentBody = new THREE.Mesh(new THREE.TorusGeometry(4, 0.35, 16, 100), new THREE.MeshStandardMaterial({
-            color: SERPENT_CLR, emissive: SERPENT_DARK, emissiveIntensity: 0.3, roughness: 0.5, metalness: 0.3,
+            color: SERPENT_CLR, emissive: SERPENT_DARK, emissiveIntensity: 0.52, roughness: 0.45, metalness: 0.36,
+            transparent: true, opacity: 0.82,
         }));
         this.scene.add(this.serpentBody);
 
         // Serpent scale pattern (wireframe overlay)
         this.serpentWire = new THREE.Mesh(new THREE.TorusGeometry(4, 0.37, 16, 100), new THREE.MeshBasicMaterial({
-            color: SERPENT_CLR, wireframe: true, transparent: true, opacity: 0.1,
+            color: SERPENT_CLR, wireframe: true, transparent: true, opacity: 0.18,
         }));
         this.scene.add(this.serpentWire);
 
@@ -78,7 +82,7 @@ export default class ThreeOuroborosViz extends BaseViz {
         const flowGeo = new THREE.BufferGeometry();
         flowGeo.setAttribute('position', new THREE.BufferAttribute(flowPos, 3));
         this.flowPts = new THREE.Points(flowGeo, new THREE.PointsMaterial({
-            color: SERPENT_CLR, size: 0.06, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false,
+            color: GOLD, size: 0.07, transparent: true, opacity: 0.74, blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.flowPts);
 
@@ -120,7 +124,7 @@ export default class ThreeOuroborosViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color: glowColor,
                     transparent: true,
-                    opacity: 0.08,
+                    opacity: 0.11,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                 })
@@ -148,7 +152,7 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.shadowVeil = new THREE.Mesh(
             new THREE.SphereGeometry(5.8, 28, 20),
             new THREE.MeshBasicMaterial({
-                color: 0x111832,
+                color: 0x172044,
                 transparent: true,
                 opacity: 0,
                 blending: THREE.AdditiveBlending,
@@ -160,7 +164,7 @@ export default class ThreeOuroborosViz extends BaseViz {
 
         // Inner recursion — smaller ouroboros inside
         this.innerSerpent = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.12, 10, 60), new THREE.MeshBasicMaterial({
-            color: SERPENT_CLR, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending,
+            color: GOLD, transparent: true, opacity: 0.18, blending: THREE.AdditiveBlending,
         }));
         this.scene.add(this.innerSerpent);
 
@@ -170,14 +174,98 @@ export default class ThreeOuroborosViz extends BaseViz {
         }));
         this.scene.add(this.innerSerpent2);
 
-        this.scene.add(new THREE.AmbientLight(0x0a150a, 0.3));
-        this.scene.add(new THREE.PointLight(0x2e7d32, 0.4, 15));
-        this.scene.add(new THREE.PointLight(0xffd700, 0.2, 8));
+        this.scene.add(new THREE.AmbientLight(0x101822, 0.45));
+        const serpentLight = new THREE.PointLight(0x53d8e8, 0.72, 16);
+        serpentLight.position.set(-2, 3, 5);
+        this.scene.add(serpentLight);
+        const goldLight = new THREE.PointLight(0xf2c95d, 0.55, 12);
+        goldLight.position.set(4, 2, 4);
+        this.scene.add(goldLight);
+        const shadowLight = new THREE.PointLight(0x7b6aa8, 0.42, 14);
+        shadowLight.position.set(5, -1, 3);
+        this.scene.add(shadowLight);
 
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(new THREE.Vector2(this.width, this.height), 1.2, 0.5, 0.35);
         this.composer.addPass(this.bloom);
+    }
+
+    _createTeachingField() {
+        this.teachingField = new THREE.Group();
+
+        const makeVeil = (color, x) => {
+            const veil = new THREE.Mesh(
+                new THREE.PlaneGeometry(8.5, 11.5),
+                new THREE.MeshBasicMaterial({
+                    map: this._createRadialTexture(color),
+                    transparent: true,
+                    opacity: 0.18,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
+                })
+            );
+            veil.position.set(x, 0, -3.5);
+            this.teachingField.add(veil);
+        };
+
+        makeVeil(GOLD, -3.1);
+        makeVeil(SERPENT_CLR, 3.1);
+
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xf4f0e8,
+            transparent: true,
+            opacity: 0.16,
+            blending: THREE.AdditiveBlending,
+        });
+        this.teachingField.add(new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-7.2, 0, -1.6), new THREE.Vector3(7.2, 0, -1.6)]),
+            lineMaterial.clone()
+        ));
+        this.teachingField.add(new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -4.9, -1.6), new THREE.Vector3(0, 4.9, -1.6)]),
+            lineMaterial.clone()
+        ));
+
+        const arcPoints = [];
+        for (let i = 0; i <= 160; i++) {
+            const a = (i / 160) * Math.PI * 2;
+            arcPoints.push(new THREE.Vector3(Math.cos(a) * 5.65, Math.sin(a) * 2.75, -1.9));
+        }
+        this.returnOrbit = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(arcPoints),
+            new THREE.LineBasicMaterial({
+                color: 0xf2c95d,
+                transparent: true,
+                opacity: 0.22,
+                blending: THREE.AdditiveBlending,
+            })
+        );
+        this.teachingField.add(this.returnOrbit);
+
+        this.scene.add(this.teachingField);
+    }
+
+    _createRadialTexture(color) {
+        const size = 160;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const r = Math.round(color.r * 255);
+        const g = Math.round(color.g * 255);
+        const b = Math.round(color.b * 255);
+        const gradient = ctx.createRadialGradient(size / 2, size / 2, 4, size / 2, size / 2, size / 2);
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.72)`);
+        gradient.addColorStop(0.45, `rgba(${r}, ${g}, ${b}, 0.22)`);
+        gradient.addColorStop(0.78, `rgba(${r}, ${g}, ${b}, 0.06)`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        return texture;
     }
 
     update(dt) {
@@ -191,13 +279,22 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.shadowFocus = THREE.MathUtils.damp(this.shadowFocus, panelId === 'shadow-fish' ? 1 : 0, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.04);
 
+        if (this.teachingField) {
+            this.teachingField.rotation.z = Math.sin(t * 0.03 * motionScale) * 0.035;
+            this.teachingField.position.x = 0.3 + this.ambivalenceFocus * 0.18 - this.shadowFocus * 0.12;
+        }
+        if (this.returnOrbit) {
+            this.returnOrbit.material.opacity = 0.18 + this.ouroborosFocus * 0.22 + this.ambivalenceFocus * 0.08;
+            this.returnOrbit.rotation.z -= 0.0015 * motionScale * (0.7 + this.ouroborosFocus);
+        }
+
         // Serpent slow rotation (eating its tail)
         this.serpentBody.rotation.z += 0.003 * motionScale * (0.7 + this.ouroborosFocus * 1.4);
         this.serpentBody.rotation.x = Math.sin(t * 0.1 * motionScale) * (0.12 + this.ouroborosFocus * 0.1);
         this.serpentWire.rotation.z = this.serpentBody.rotation.z;
         this.serpentWire.rotation.x = this.serpentBody.rotation.x;
         this.serpentBody.scale.setScalar(0.92 + this.ouroborosFocus * 0.14 + this.shadowFocus * 0.08);
-        this.serpentWire.material.opacity = 0.08 + this.ouroborosFocus * 0.12 + this.shadowFocus * 0.04;
+        this.serpentWire.material.opacity = 0.14 + this.ouroborosFocus * 0.18 + this.shadowFocus * 0.06;
 
         // Junction follows rotation
         const jA = this.serpentBody.rotation.z;
@@ -214,7 +311,7 @@ export default class ThreeOuroborosViz extends BaseViz {
             fp[i * 3 + 2] = Math.sin(a) * 4 * Math.sin(this.serpentBody.rotation.x);
         }
         this.flowPts.geometry.attributes.position.needsUpdate = true;
-        this.flowPts.material.opacity = 0.35 + this.ouroborosFocus * 0.45 + this.shadowFocus * 0.16;
+        this.flowPts.material.opacity = 0.45 + this.ouroborosFocus * 0.44 + this.shadowFocus * 0.18;
 
         // Inner recursion rotation (opposite direction)
         this.innerSerpent.rotation.z -= 0.005 * motionScale * (0.5 + this.ouroborosFocus);
@@ -235,7 +332,7 @@ export default class ThreeOuroborosViz extends BaseViz {
             fish.rotation.y = -angle + Math.PI / 2;
             fish.rotation.z = Math.sin(t * 0.25 * motionScale + angle) * 0.08;
             const focus = isShadow ? Math.max(this.ambivalenceFocus * 0.75, this.shadowFocus) : this.ambivalenceFocus;
-            const opacity = isShadow ? 0.34 + focus * 0.42 : 0.38 + focus * 0.5;
+            const opacity = isShadow ? 0.46 + focus * 0.42 : 0.52 + focus * 0.46;
             fish.userData.bodyMat.opacity = opacity;
             fish.userData.tailMat.opacity = opacity * 0.8;
             fish.userData.glowMat.opacity = (isShadow ? 0.04 : 0.07) + focus * (isShadow ? 0.1 : 0.16);
@@ -254,11 +351,11 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.oppositionLine.geometry.attributes.position.needsUpdate = true;
         const lineScale = this.width < 700 ? 0 : 1;
         this.oppositionLine.material.opacity = (0.04 + this.ambivalenceFocus * 0.14 + this.shadowFocus * 0.04) * lineScale;
-        this.shadowVeil.material.opacity = this.shadowFocus * 0.18;
+        this.shadowVeil.material.opacity = this.shadowFocus * 0.22;
 
         // Death-rebirth dissolution: periodic opacity pulse
         const drCycle = Math.sin(t * 0.15 * motionScale);
-        this.serpentBody.material.opacity = 0.58 + drCycle * 0.18 + this.ouroborosFocus * 0.22 + this.shadowFocus * 0.12;
+        this.serpentBody.material.opacity = 0.7 + drCycle * 0.14 + this.ouroborosFocus * 0.2 + this.shadowFocus * 0.1;
         this.serpentBody.material.transparent = true;
 
         // Camera
@@ -267,9 +364,9 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.camera.position.x = Math.sin(ca) * camRadius;
         this.camera.position.y = 5 + this.mouseSmooth.y * 3 - this.shadowFocus * 0.4;
         this.camera.position.z = Math.cos(ca) * camRadius;
-        this.camera.lookAt(0, 0, 0);
+        this.camera.lookAt(this.focusTarget);
         if (this.bloom) {
-            this.bloom.strength = 1.05 + this.ouroborosFocus * 0.35 + this.ambivalenceFocus * 0.16 + this.shadowFocus * 0.2;
+            this.bloom.strength = 1.16 + this.ouroborosFocus * 0.34 + this.ambivalenceFocus * 0.18 + this.shadowFocus * 0.24;
         }
     }
 
@@ -282,7 +379,15 @@ export default class ThreeOuroborosViz extends BaseViz {
     dispose() {
         removeEventListener('mousemove', this._onMM);
         this.renderer?.dispose(); this.renderer?.forceContextLoss();
-        this.scene?.traverse(o => { o.geometry?.dispose(); if (o.material) [].concat(o.material).forEach(m => m.dispose()); });
+        this.scene?.traverse(o => {
+            o.geometry?.dispose();
+            if (o.material) {
+                [].concat(o.material).forEach(m => {
+                    m.map?.dispose();
+                    m.dispose();
+                });
+            }
+        });
         this.composer = null; this.scene = null; this.renderer = null; super.dispose();
     }
 }

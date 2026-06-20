@@ -264,6 +264,8 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="ambivalent-fish-instrument__field ambivalent-fish-instrument__field--light" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__field ambivalent-fish-instrument__field--shadow" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__mirror" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__axis ambivalent-fish-instrument__axis--horizontal" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__axis ambivalent-fish-instrument__axis--vertical" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__ring ambivalent-fish-instrument__ring--outer" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__ring ambivalent-fish-instrument__ring--inner" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__thread" aria-hidden="true" />
@@ -271,6 +273,8 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               <span className="ambivalent-fish-instrument__fish ambivalent-fish-instrument__fish--shadow" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__junction" aria-hidden="true" />
               <span className="ambivalent-fish-instrument__shadow-core" aria-hidden="true" />
+              <span className="ambivalent-fish-instrument__charge ambivalent-fish-instrument__charge--light" aria-hidden="true">salvific</span>
+              <span className="ambivalent-fish-instrument__charge ambivalent-fish-instrument__charge--shadow" aria-hidden="true">counter</span>
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--paradox" aria-hidden="true">double edge</span>
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--return" aria-hidden="true">return</span>
               <span className="ambivalent-fish-instrument__label ambivalent-fish-instrument__label--shadow" aria-hidden="true">counter-pole</span>
