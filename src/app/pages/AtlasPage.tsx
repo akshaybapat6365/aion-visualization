@@ -137,26 +137,6 @@ export default function AtlasPage() {
 
         <div className="atlas-layout atlas-layout--hero">
           <section className="atlas-map" aria-labelledby="atlas-map-title">
-            <div className="atlas-map__controls">
-              <div>
-                <p className="eyebrow">Field Filter</p>
-                <h2 id="atlas-map-title">Concept Field</h2>
-              </div>
-              <div className="atlas-map__search">
-                <label htmlFor="atlas-search">Search Atlas Field</label>
-                <input
-                  id="atlas-search"
-                  name="atlas-search"
-                  type="search"
-                  autoComplete="off"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  aria-describedby="atlas-search-status"
-                  placeholder="shadow, fish, quaternity…"
-                />
-              </div>
-              <output id="atlas-search-status" role="status" aria-live="polite">{chapterResultText}</output>
-            </div>
             <AtlasConstellation
               active={active}
               activeConcepts={activeConcepts}
@@ -165,6 +145,28 @@ export default function AtlasPage() {
               linkedSymbols={linkedSymbols}
               entityLabel={entityLabel}
               onSelectChapter={setSelected}
+              controls={(
+                <div className="atlas-map__controls">
+                  <div>
+                    <p className="eyebrow">Field Filter</p>
+                    <h2 id="atlas-map-title">Concept Field</h2>
+                  </div>
+                  <div className="atlas-map__search">
+                    <label htmlFor="atlas-search">Search Atlas Field</label>
+                    <input
+                      id="atlas-search"
+                      name="atlas-search"
+                      type="search"
+                      autoComplete="off"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      aria-describedby="atlas-search-status"
+                      placeholder="shadow, fish, quaternity…"
+                    />
+                  </div>
+                  <output id="atlas-search-status" role="status" aria-live="polite">{chapterResultText}</output>
+                </div>
+              )}
             />
           </section>
 

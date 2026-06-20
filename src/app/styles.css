@@ -10704,9 +10704,9 @@ h3 {
 
   .atlas-hero {
     display: grid;
-    gap: 1rem;
+    gap: 0.72rem;
     min-height: auto;
-    padding-top: 10.25rem;
+    padding-top: 9.85rem;
   }
 
   .atlas-layout--hero {
@@ -10714,24 +10714,45 @@ h3 {
   }
 
   .atlas-map {
+    display: flex;
+    flex-direction: column;
+    gap: 0.68rem;
     min-height: auto;
+    padding: 0.62rem;
   }
 
   .atlas-map__controls {
     grid-template-columns: 1fr;
     align-items: stretch;
+    padding: 0.68rem;
   }
 
   .atlas-map__controls output {
     justify-self: start;
   }
 
+  .atlas-constellation {
+    order: 1;
+    gap: 0.62rem;
+  }
+
   .atlas-constellation__stage {
-    min-height: clamp(22rem, 82vw, 30rem);
+    min-height: clamp(20rem, 74vw, 28rem);
+    border: 1px solid rgba(212, 175, 55, 0.12);
   }
 
   .atlas-constellation__chapter-rail {
-    grid-auto-columns: minmax(10.5rem, 76vw);
+    grid-auto-columns: minmax(8.4rem, 48vw);
+  }
+
+  .atlas-constellation__chapter,
+  .atlas-constellation__empty {
+    min-height: 4.25rem;
+    padding: 0.58rem;
+  }
+
+  .atlas-constellation__chapter strong {
+    font-size: 0.92rem;
   }
 
   .atlas-constellation__relation-band span {
@@ -10758,16 +10779,13 @@ h3 {
   }
 
   .atlas-hero__copy h1 {
-    max-width: 11ch;
-    font-size: clamp(2.55rem, 12.5vw, 3.6rem);
+    max-width: 10.8ch;
+    font-size: clamp(2.45rem, 12vw, 3.5rem);
     line-height: 0.95;
   }
 
   .atlas-hero__copy .lede {
-    display: block;
-    max-width: 20rem;
-    font-size: 0.9rem;
-    line-height: 1.55;
+    display: none;
   }
 
   .page-header--visual h1,
@@ -10778,11 +10796,7 @@ h3 {
   }
 
   .atlas-hero__metrics {
-    margin-top: 0.9rem;
-  }
-
-  .atlas-hero__metrics span {
-    padding-block: 0.58rem;
+    display: none;
   }
 
   .path-grid,
@@ -11834,6 +11848,40 @@ h3 {
     min-width: 0;
     justify-content: center;
     text-align: center;
+  }
+
+  .atlas-hero {
+    padding-top: 9.65rem;
+  }
+
+  .atlas-hero__copy > .eyebrow {
+    display: none;
+  }
+
+  .atlas-hero__copy h1 {
+    max-width: 100%;
+    font-size: clamp(2.2rem, 10.8vw, 2.9rem);
+  }
+
+  .atlas-map {
+    padding: 0.52rem;
+  }
+
+  .atlas-constellation__stage {
+    min-height: clamp(17.6rem, 82vw, 20.5rem);
+  }
+
+  .atlas-constellation__chapter-rail {
+    grid-auto-columns: minmax(7.3rem, 44vw);
+  }
+
+  .atlas-map__controls h2 {
+    font-size: 1.34rem;
+  }
+
+  .atlas-map__controls output {
+    min-height: 2.1rem;
+    font-size: 0.7rem;
   }
 
   .chapter-experience[data-chapter-id="ch3"] .chapter-stage__intro {
