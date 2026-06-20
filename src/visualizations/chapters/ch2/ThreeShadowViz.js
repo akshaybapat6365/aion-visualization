@@ -155,7 +155,7 @@ export default class ThreeShadowViz extends BaseViz {
         S.add(this.egoLight);
 
         // Shadow dim light
-        this.shadowLight = new THREE.PointLight(0x200040, 0.6, 12);
+        this.shadowLight = new THREE.PointLight(0x2a0b55, 0.78, 13);
         this.shadowLight.position.set(3, -1, 3);
         S.add(this.shadowLight);
 
@@ -1010,20 +1010,20 @@ export default class ThreeShadowViz extends BaseViz {
         // Shadow scale distortion — squashes/stretches autonomously
         const distort = 1 + Math.sin(t * 0.6) * (0.24 + this.projectionFocus * 0.16);
         this.shadowCore.scale.set(distort, 1 / distort, distort);
-        this.shadowAura.material.opacity = 0.06 + Math.sin(t * 0.35) * 0.04 + this.projectionFocus * 0.08 + this.integrationFocus * 0.04;
+        this.shadowAura.material.opacity = 0.08 + Math.sin(t * 0.35) * 0.045 + this.projectionFocus * 0.1 + this.integrationFocus * 0.05;
 
         // Tendrils pulse
         for (const td of this.tendrils) {
-            td.line.material.opacity = 0.08 + Math.sin(t * 0.5 + td.ph) * 0.08 + this.projectionFocus * 0.08;
+            td.line.material.opacity = 0.1 + Math.sin(t * 0.5 + td.ph) * 0.08 + this.projectionFocus * 0.1;
         }
 
         /* ── Mirror shimmer ── */
-        this.mirrorPlane.material.opacity = 0.15 + Math.sin(t * 0.25) * 0.08 + this.mirrorFocus * 0.18 - this.integrationFocus * 0.08;
+        this.mirrorPlane.material.opacity = 0.2 + Math.sin(t * 0.25) * 0.07 + this.mirrorFocus * 0.2 - this.integrationFocus * 0.08;
         if (this.mirrorHalo) {
-            this.mirrorHalo.material.opacity = 0.05 + this.mirrorFocus * 0.11 - this.integrationFocus * 0.04;
+            this.mirrorHalo.material.opacity = 0.07 + this.mirrorFocus * 0.12 - this.integrationFocus * 0.04;
         }
         for (const md of this.mirrorDots) {
-            md.dot.material.opacity = 0.08 + Math.sin(t * 0.6 + md.ph) * 0.1 + this.mirrorFocus * 0.1;
+            md.dot.material.opacity = 0.11 + Math.sin(t * 0.6 + md.ph) * 0.09 + this.mirrorFocus * 0.1;
         }
 
         /* ── Projection arcs — periodic visibility ── */
@@ -1035,10 +1035,10 @@ export default class ThreeShadowViz extends BaseViz {
         const projFade = Math.max(cycleProjFade, this.projectionFocus * 0.95);
         for (const arc of this.projArcs) {
             const pulse = Math.sin(t * arc.speed + arc.ph) * 0.5 + 0.5;
-            arc.line.material.opacity = projFade * 0.25;
-            arc.dot.material.opacity = projFade * 0.5 * pulse;
-            arc.targetGlow.material.opacity = projFade * 0.1 * pulse;
-            arc.returnLine.material.opacity = Math.max(this.projectionFocus * 0.18, this.integrationFocus * 0.24) * (0.45 + pulse * 0.55);
+            arc.line.material.opacity = 0.018 + projFade * 0.28;
+            arc.dot.material.opacity = projFade * 0.56 * pulse;
+            arc.targetGlow.material.opacity = projFade * 0.14 * pulse;
+            arc.returnLine.material.opacity = Math.max(this.projectionFocus * 0.2, this.integrationFocus * 0.3) * (0.45 + pulse * 0.55);
         }
 
         /* ── Cocoon wraps ego during projection ── */
