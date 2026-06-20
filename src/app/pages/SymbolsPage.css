@@ -1,5 +1,7 @@
 .symbols-hero {
   position: relative;
+  grid-template-columns: minmax(0, 0.72fr) minmax(30rem, 1.28fr);
+  overflow: hidden;
 }
 
 .symbols-hero::before {
@@ -13,9 +15,36 @@
     linear-gradient(90deg, rgba(5, 5, 8, 0.98), rgba(5, 5, 8, 0.45) 44%, rgba(5, 5, 8, 0.78));
 }
 
+.symbols-hero::after {
+  content: '';
+  position: absolute;
+  right: min(2vw, 1.5rem);
+  top: 50%;
+  width: min(56vw, 48rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  border: 1px solid rgba(212, 175, 55, 0.06);
+  border-radius: 50%;
+  background:
+    conic-gradient(from 20deg, transparent, rgba(83, 216, 232, 0.06), transparent 34%, rgba(212, 175, 55, 0.08), transparent 68%, rgba(136, 214, 167, 0.04), transparent),
+    radial-gradient(circle at 50% 50%, transparent 42%, rgba(212, 175, 55, 0.07) 42.4%, transparent 43%),
+    radial-gradient(circle at 50% 50%, transparent 64%, rgba(83, 216, 232, 0.06) 64.4%, transparent 65%);
+  opacity: 0.72;
+  transform: translateY(-50%) rotate(-10deg);
+}
+
 .symbols-hero > div {
   position: relative;
   z-index: 1;
+}
+
+.symbols-hero h1 {
+  max-width: 8.8ch;
+  font-size: 7.6rem;
+}
+
+.symbols-hero .lede {
+  max-width: 32rem;
 }
 
 .symbols-hero__metrics {
@@ -335,11 +364,14 @@
 
 .symbol-orbit--interactive {
   isolation: isolate;
+  width: min(100%, 38rem);
+  filter: drop-shadow(0 1.6rem 4.5rem rgba(0, 0, 0, 0.42));
 }
 
 .symbol-orbit--interactive::before {
   background:
-    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08), transparent 48%),
+    conic-gradient(from 180deg, rgba(83, 216, 232, 0.08), transparent 21%, rgba(212, 175, 55, 0.14), transparent 56%, rgba(136, 214, 167, 0.08), transparent 78%),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.11), transparent 48%),
     rgba(3, 3, 7, 0.22);
 }
 
@@ -350,8 +382,35 @@
 }
 
 .symbol-orbit__center {
+  z-index: 2;
   gap: 0.1rem;
   align-content: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 0.72rem rgba(212, 175, 55, 0.045),
+    0 0 3rem rgba(212, 175, 55, 0.28);
+}
+
+.symbol-orbit__center::before,
+.symbol-orbit__center::after {
+  content: '';
+  position: absolute;
+  inset: -1.1rem;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.symbol-orbit__center::before {
+  border: 1px solid rgba(83, 216, 232, 0.18);
+  transform: rotateX(60deg);
+}
+
+.symbol-orbit__center::after {
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  background: conic-gradient(from 20deg, transparent, rgba(212, 175, 55, 0.16), transparent 42%, rgba(83, 216, 232, 0.11), transparent 72%);
+  opacity: 0.68;
+  animation: symbol-center-breathe 7s var(--motion-reveal) infinite alternate;
 }
 
 .symbol-orbit__center em {
@@ -397,6 +456,18 @@
   transform: rotate(var(--angle)) translateX(min(15vw, 13.2rem)) rotate(calc(-1 * var(--angle))) scale(1.12);
 }
 
+@keyframes symbol-center-breathe {
+  from {
+    opacity: 0.42;
+    transform: scale(0.94) rotate(-8deg);
+  }
+
+  to {
+    opacity: 0.76;
+    transform: scale(1.03) rotate(10deg);
+  }
+}
+
 .symbol-lab__layout {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
@@ -415,9 +486,13 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:
+    radial-gradient(circle at 50% 42%, var(--symbol-soft), transparent 17rem),
+    linear-gradient(115deg, color-mix(in srgb, var(--symbol-tone) 10%, transparent), transparent 34%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.018)),
     rgba(5, 5, 8, 0.76);
-  box-shadow: var(--shadow-inset);
+  box-shadow:
+    var(--shadow-inset),
+    0 1.6rem 4.2rem rgba(0, 0, 0, 0.24);
 }
 
 .symbol-field {
@@ -466,9 +541,11 @@
 .symbol-field::before {
   inset: 0;
   background:
+    conic-gradient(from 4deg at 50% 50%, transparent, color-mix(in srgb, var(--symbol-tone) 10%, transparent), transparent 28%, rgba(83, 216, 232, 0.07), transparent 61%, color-mix(in srgb, var(--symbol-tone) 12%, transparent), transparent),
     radial-gradient(circle at 50% 49%, var(--symbol-soft), transparent 17rem),
     radial-gradient(circle at 28% 26%, rgba(83, 216, 232, 0.08), transparent 14rem),
     radial-gradient(circle at 72% 72%, rgba(212, 175, 55, 0.08), transparent 14rem);
+  opacity: 0.9;
 }
 
 .symbol-field::after {
@@ -490,7 +567,8 @@
   aspect-ratio: 1;
   box-shadow:
     inset 0 0 4rem rgba(83, 216, 232, 0.035),
-    0 0 5rem var(--symbol-soft);
+    0 0 5rem var(--symbol-soft),
+    0 0 0 3.6rem rgba(244, 240, 232, 0.012);
 }
 
 .symbol-field__ring--inner {
@@ -531,6 +609,7 @@
   border: 1px solid color-mix(in srgb, var(--symbol-tone) 58%, transparent);
   border-radius: 50%;
   background:
+    conic-gradient(from 10deg, color-mix(in srgb, var(--symbol-tone) 20%, transparent), transparent 22%, rgba(244, 240, 232, 0.09), transparent 56%, color-mix(in srgb, var(--symbol-tone) 18%, transparent), transparent),
     radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--symbol-tone) 24%, transparent), transparent 68%),
     rgba(3, 3, 7, 0.7);
   color: var(--gold-soft);
@@ -539,6 +618,7 @@
   line-height: 1;
   box-shadow:
     0 0 0 0.7rem color-mix(in srgb, var(--symbol-tone) 8%, transparent),
+    0 0 0 1.6rem rgba(244, 240, 232, 0.018),
     0 0 3.5rem color-mix(in srgb, var(--symbol-tone) 26%, transparent);
   transform: translate(-50%, -50%);
 }
@@ -614,7 +694,9 @@
   min-height: 2.35rem;
   border: 1px solid rgba(83, 216, 232, 0.2);
   border-radius: 999px;
-  background: rgba(3, 3, 7, 0.74);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    rgba(3, 3, 7, 0.78);
   color: rgba(244, 240, 232, 0.82);
   font-family: var(--font-ui);
   font-size: 0.66rem;
@@ -661,7 +743,7 @@
   gap: 0.72rem;
   align-items: center;
   border: 1px solid rgba(212, 175, 55, 0.16);
-  border-radius: 0.9rem;
+  border-radius: var(--radius);
   background:
     radial-gradient(circle at 14% 48%, var(--symbol-soft), transparent 5.4rem),
     rgba(3, 3, 7, 0.36);
@@ -709,12 +791,17 @@
   letter-spacing: 0.02em;
   padding: 0.34rem 0.56rem;
   text-decoration: none;
+  transition:
+    border-color 0.38s var(--motion-spring),
+    color 0.38s var(--motion-spring),
+    transform 0.38s var(--motion-spring);
 }
 
 .symbol-detail__chapter-links a:hover,
 .symbol-detail__chapter-links a:focus-visible {
   border-color: var(--line-strong);
   color: var(--text);
+  transform: translateY(-1px);
 }
 
 .symbol-panel {
@@ -768,6 +855,14 @@
 }
 
 @media (max-width: 1120px) {
+  .symbols-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .symbols-hero h1 {
+    font-size: 5.2rem;
+  }
+
   .symbol-lab__layout {
     grid-template-columns: 1fr;
   }
@@ -778,6 +873,38 @@
 }
 
 @media (max-width: 860px) {
+  .symbols-hero {
+    gap: 1rem;
+  }
+
+  .symbols-hero::after {
+    left: 50%;
+    right: auto;
+    top: 17rem;
+    width: 24rem;
+    opacity: 0.55;
+    transform: translateX(-50%) rotate(-10deg);
+  }
+
+  .symbols-hero h1 {
+    max-width: 9.5ch;
+    font-size: 3.45rem;
+    line-height: 0.94;
+  }
+
+  .symbols-hero .lede {
+    max-width: 21rem;
+    font-size: 1rem;
+    line-height: 1.46;
+  }
+
+  .symbol-orbit--interactive {
+    order: -1;
+    width: min(100%, 21rem);
+    margin-top: -0.15rem;
+    margin-bottom: 0.35rem;
+  }
+
   .symbols-hero__metrics {
     grid-template-columns: 1fr;
     max-width: 18rem;
@@ -835,18 +962,48 @@
 }
 
 @media (max-width: 420px) {
-  .symbols-hero__metrics {
-    display: grid;
-    grid-template-columns: 1fr;
-    max-width: 10rem;
+  .symbols-hero {
+    gap: 0.42rem;
+    padding-top: 8.65rem;
   }
 
-  .symbols-hero__metrics span:not(:first-child) {
+  .symbols-hero::after {
+    top: 14.2rem;
+    width: 19rem;
+  }
+
+  .symbols-hero h1 {
+    max-width: 8.5ch;
+    font-size: 2.72rem;
+  }
+
+  .symbols-hero .lede {
+    max-width: 19rem;
+    margin-bottom: 0;
+    font-size: 0.92rem;
+    line-height: 1.42;
+  }
+
+  .symbols-hero__metrics {
     display: none;
   }
 
-  .symbols-hero__metrics strong {
-    font-size: 1.45rem;
+  .symbol-orbit--interactive {
+    width: min(100%, 17.2rem);
+    margin-bottom: 0;
+  }
+
+  .symbol-orbit__center {
+    width: 6.2rem;
+    min-height: 6.2rem;
+  }
+
+  .symbol-orbit__center strong {
+    font-size: 1rem;
+  }
+
+  .symbol-orbit__center em {
+    font-size: 0.48rem;
   }
 
   .symbol-field {
@@ -891,22 +1048,56 @@
 }
 
 @media (max-width: 360px) {
-  .symbols-hero__metrics {
-    display: none;
+  .symbols-hero {
+    gap: 0.25rem;
+    padding-top: 8.35rem;
   }
 
-  .symbols-hero .lede {
-    max-width: 18rem;
-    font-size: 0.98rem;
-    line-height: 1.48;
+  .symbols-hero::after {
+    top: 13rem;
+    width: 16rem;
+  }
+
+  .symbols-hero .eyebrow {
+    margin-bottom: 0.42rem;
+  }
+
+  .symbols-hero h1 {
+    max-width: 9.4ch;
+    font-size: 2.05rem;
+    line-height: 0.93;
   }
 
   .symbol-orbit--interactive {
-    margin-top: -0.75rem;
+    width: min(100%, 13.35rem);
+    margin-top: -0.15rem;
+  }
+
+  .symbols-hero .symbol-orbit__node {
+    width: 2.55rem;
+    height: 2.55rem;
+    transform: rotate(var(--angle)) translateX(5.48rem) rotate(calc(-1 * var(--angle)));
+  }
+
+  .symbols-hero .symbol-orbit__node--active {
+    transform: rotate(var(--angle)) translateX(5.48rem) rotate(calc(-1 * var(--angle))) scale(1.08);
+  }
+
+  .symbols-hero .symbol-orbit__center {
+    width: 5.7rem;
+    min-height: 5.7rem;
+  }
+
+  .symbols-hero .lede {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .symbol-orbit__center::after {
+    animation: none;
+  }
+
   .symbol-orbit__node,
   .symbol-field__concept,
   .symbol-field__chapter,
