@@ -184,6 +184,67 @@ async function checkRoute(page, route, failures) {
   }
 }
 
+async function checkChapterOneDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/journey/chapter/ch1`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+  const instrumentGroup = page.getByRole('group', { name: /The Ego calibration instrument/ });
+  const instrument = page.getByRole('img', { name: /Ego depth model/ });
+  const readout = page.locator('.chapter-one-reference__readout');
+  const thesisControls = page.locator('.chapter-stage__thesis-node[aria-controls^="ch1-"]');
+  const referenceControls = page.locator('.chapter-stage__reference-node[aria-controls^="ch1-"]');
+  const instrumentVisible = await instrument.isVisible();
+  const groupPanel = await instrumentGroup.getAttribute('data-active-panel');
+  const initialLabel = await instrument.getAttribute('aria-label');
+  const readoutLive = await readout.getAttribute('aria-live');
+  const readoutAtomic = await readout.getAttribute('aria-atomic');
+  const thesisControlCount = await thesisControls.count();
+  const referenceControlCount = await referenceControls.count();
+  const initialDescription = await page.locator('#scene-host-description-ch1').textContent();
+
+  if (!instrumentVisible) failures.push('/journey/chapter/ch1: ego calibration instrument is missing an accessible image role');
+  if (groupPanel !== 'ego-light') failures.push(`/journey/chapter/ch1: initial instrument panel mismatch: ${groupPanel}`);
+  if (!initialLabel?.includes('Current emphasis: Orientation') || !initialLabel?.includes('The ego is necessary, but not total')) failures.push(`/journey/chapter/ch1: initial instrument label mismatch: ${initialLabel}`);
+  if (!initialDescription?.includes('Orientation: A point of consciousness')) failures.push(`/journey/chapter/ch1: initial scene description mismatch: ${initialDescription}`);
+  if (readoutLive !== 'polite') failures.push(`/journey/chapter/ch1: readout aria-live mismatch: ${readoutLive}`);
+  if (readoutAtomic !== 'true') failures.push(`/journey/chapter/ch1: readout aria-atomic mismatch: ${readoutAtomic}`);
+  if (thesisControlCount !== 3) failures.push(`/journey/chapter/ch1: thesis control count mismatch: ${thesisControlCount}`);
+  if (referenceControlCount !== 3) failures.push(`/journey/chapter/ch1: reference control count mismatch: ${referenceControlCount}`);
+
+  const depth = page.getByRole('button', { name: /02\s+Depth/ });
+  await depth.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const depthPressed = await depth.getAttribute('aria-pressed');
+  const depthPanel = await instrumentGroup.getAttribute('data-active-panel');
+  const depthLabel = await instrument.getAttribute('aria-label');
+  const depthDescription = await page.locator('#scene-host-description-ch1').textContent();
+  if (depthPressed !== 'true') failures.push(`/journey/chapter/ch1: depth button did not become pressed: ${depthPressed}`);
+  if (depthPanel !== 'roots') failures.push(`/journey/chapter/ch1: depth instrument panel mismatch: ${depthPanel}`);
+  if (!depthLabel?.includes('Current emphasis: Depth') || !depthLabel?.includes('Consciousness rests on what it cannot fully command')) failures.push(`/journey/chapter/ch1: depth instrument label mismatch: ${depthLabel}`);
+  if (!depthDescription?.includes('Depth: Two roots feed the I')) failures.push(`/journey/chapter/ch1: depth scene description mismatch: ${depthDescription}`);
+
+  const wholeness = page.getByRole('button', { name: /03\s+Wholeness/ });
+  await wholeness.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+
+  const wholenessPressed = await wholeness.getAttribute('aria-pressed');
+  const wholenessPanel = await instrumentGroup.getAttribute('data-active-panel');
+  const wholenessLabel = await instrument.getAttribute('aria-label');
+  const wholenessDescription = await page.locator('#scene-host-description-ch1').textContent();
+  const pressedThesisCount = await page.locator('.chapter-stage__thesis-node[aria-pressed="true"]').count();
+  const ariaCurrentStepCount = await page.locator('.chapter-one-reference__step[aria-current="step"]').count();
+  if (wholenessPressed !== 'true') failures.push(`/journey/chapter/ch1: wholeness button did not become pressed: ${wholenessPressed}`);
+  if (wholenessPanel !== 'self-depth') failures.push(`/journey/chapter/ch1: wholeness instrument panel mismatch: ${wholenessPanel}`);
+  if (!wholenessLabel?.includes('Current emphasis: Wholeness') || !wholenessLabel?.includes('The journey starts by scaling the I correctly')) failures.push(`/journey/chapter/ch1: wholeness instrument label mismatch: ${wholenessLabel}`);
+  if (!wholenessDescription?.includes('Wholeness: The Self holds the field')) failures.push(`/journey/chapter/ch1: wholeness scene description mismatch: ${wholenessDescription}`);
+  if (pressedThesisCount !== 1) failures.push(`/journey/chapter/ch1: pressed thesis control count mismatch: ${pressedThesisCount}`);
+  if (ariaCurrentStepCount !== 1) failures.push(`/journey/chapter/ch1: aria-current calibration step count mismatch: ${ariaCurrentStepCount}`);
+}
+
 async function checkChaptersDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/chapters`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -769,6 +830,7 @@ async function runAccessibilitySmoke() {
     await checkTimelineDynamicAccessibility(desktop, failures);
     await checkSymbolsDynamicAccessibility(desktop, failures);
     await checkAboutDynamicAccessibility(desktop, failures);
+    await checkChapterOneDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
     await checkChapterEightDynamicAccessibility(desktop, failures);

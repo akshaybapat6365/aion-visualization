@@ -1,0 +1,217 @@
+.chapter-one-reference {
+  position: relative;
+  width: min(30rem, 100%);
+  margin-top: 0.95rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.13);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(145deg, rgba(244, 240, 232, 0.08), transparent 28%),
+    radial-gradient(circle at 50% 18%, rgba(244, 240, 232, 0.16), transparent 5.6rem),
+    radial-gradient(circle at 24% 74%, rgba(204, 109, 134, 0.12), transparent 6.2rem),
+    radial-gradient(circle at 76% 74%, rgba(83, 216, 232, 0.13), transparent 6.2rem),
+    rgba(3, 3, 7, 0.48);
+  box-shadow:
+    var(--shadow-inset),
+    0 1.6rem 4.2rem rgba(0, 0, 0, 0.28);
+}
+
+.chapter-one-reference::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.09), transparent),
+    repeating-linear-gradient(90deg, transparent 0 3.2rem, rgba(244, 240, 232, 0.035) 3.22rem 3.26rem);
+  opacity: 0.62;
+  mask-image: linear-gradient(180deg, #000, transparent 78%);
+}
+
+.chapter-one-reference__header {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.52rem 0.72rem 0.28rem;
+  color: rgba(244, 240, 232, 0.7);
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.chapter-one-reference__header span,
+.chapter-one-reference__header em {
+  color: rgba(244, 240, 232, 0.54);
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.chapter-one-reference__header strong {
+  color: rgba(255, 227, 156, 0.92);
+  text-align: center;
+}
+
+.chapter-one-reference .chapter-one-reference__field {
+  width: 100%;
+  min-height: clamp(5.8rem, 10vh, 6.6rem);
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(244, 240, 232, 0.15), transparent 3.5rem),
+    radial-gradient(circle at 36% 72%, rgba(204, 109, 134, 0.12), transparent 5.6rem),
+    radial-gradient(circle at 64% 72%, rgba(83, 216, 232, 0.14), transparent 5.6rem),
+    linear-gradient(180deg, rgba(3, 3, 7, 0.32), rgba(3, 3, 7, 0.1));
+  box-shadow: none;
+}
+
+.chapter-one-reference .chapter-one-reference__field::before {
+  inset: 0.62rem 0.82rem;
+  border-color: rgba(212, 175, 55, 0.11);
+}
+
+.chapter-one-reference .chapter-one-reference__field::after {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.07), transparent),
+    repeating-linear-gradient(180deg, transparent 0 2.2rem, rgba(244, 240, 232, 0.052) 2.24rem, transparent 2.3rem);
+}
+
+.chapter-one-reference__calibration-line {
+  position: absolute;
+  left: 50%;
+  top: 27%;
+  width: 38%;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.7), transparent);
+  transform: translateX(-50%);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    top 0.55s var(--motion-spring),
+    width 0.55s var(--motion-spring);
+}
+
+.chapter-one-reference__calibration-line--depth {
+  top: 74%;
+  width: 54%;
+  background: linear-gradient(90deg, transparent, rgba(83, 216, 232, 0.55), rgba(255, 227, 156, 0.5), transparent);
+}
+
+.chapter-one-reference[data-active-panel="ego-light"] .chapter-one-reference__calibration-line--surface,
+.chapter-one-reference[data-active-panel="roots"] .chapter-one-reference__calibration-line--surface,
+.chapter-one-reference[data-active-panel="self-depth"] .chapter-one-reference__calibration-line--depth {
+  opacity: 0.95;
+}
+
+.chapter-one-reference[data-active-panel="roots"] .chapter-one-reference__calibration-line--depth {
+  top: 57%;
+  opacity: 0.78;
+}
+
+.chapter-one-reference__scale {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin: 0;
+  padding: 0 0.62rem 0.48rem;
+  list-style: none;
+}
+
+.chapter-one-reference__step {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+  padding: 0.34rem 0.42rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(244, 240, 232, 0.035);
+  color: rgba(244, 240, 232, 0.5);
+  font-family: var(--font-ui);
+}
+
+.chapter-one-reference__step span,
+.chapter-one-reference__step em {
+  overflow: hidden;
+  font-size: 0.5rem;
+  font-style: normal;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.chapter-one-reference__step strong {
+  overflow: hidden;
+  color: rgba(244, 240, 232, 0.76);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chapter-one-reference__step--active {
+  border-color: rgba(212, 175, 55, 0.38);
+  background:
+    linear-gradient(180deg, rgba(212, 175, 55, 0.14), rgba(244, 240, 232, 0.035));
+  color: rgba(255, 227, 156, 0.86);
+  box-shadow: 0 0 1.35rem rgba(212, 175, 55, 0.14);
+}
+
+.chapter-one-reference__readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .chapter-one-reference {
+    width: min(100%, 25rem);
+    margin-inline: auto;
+  }
+
+  .chapter-one-reference .chapter-one-reference__field {
+    min-height: 5.8rem;
+  }
+
+  .chapter-one-reference__scale {
+    gap: 0.28rem;
+    padding-inline: 0.58rem;
+  }
+
+  .chapter-one-reference__step {
+    padding-inline: 0.38rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .chapter-one-reference__header {
+    grid-template-columns: 1fr;
+    gap: 0.12rem;
+    text-align: center;
+  }
+
+  .chapter-one-reference__scale {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-one-reference *,
+  .chapter-one-reference *::before,
+  .chapter-one-reference *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

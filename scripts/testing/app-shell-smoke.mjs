@@ -738,11 +738,27 @@ async function smokeReducedMotion(browser, failures) {
   const chapterReferenceVisible = await page.locator('.chapter-stage__reference-map').isVisible();
   const chapterPauseControlCount = await page.locator('.scene-host__pause').count();
   const fallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterOneInstrumentCount = await page.locator('.chapter-one-reference').count();
+  const chapterOneCanvasCount = await page.locator('.scene-host canvas').count();
+  const chapterOneAnimationParts = await page.locator('.chapter-one-reference *').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      className: node.className,
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterOneAnimatedParts = chapterOneAnimationParts.filter((motion) => motion.animationName !== 'none');
+  const chapterOneTransitioningParts = chapterOneAnimationParts.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
 
   if (!fallbackVisible) failures.push('reduced-motion fallback is not visible for chapter scene');
   if (reducedMotionAttribute !== 'true') failures.push('chapter did not record reduced-motion state');
   if (!chapterReferenceVisible) failures.push('reduced-motion chapter reference map is not visible');
   if (chapterPauseControlCount !== 0) failures.push(`reduced-motion chapter rendered pause controls: ${chapterPauseControlCount}`);
+  if (chapterOneCanvasCount !== 0) failures.push(`reduced-motion Chapter 1 rendered canvas: ${chapterOneCanvasCount}`);
+  if (chapterOneInstrumentCount !== 1) failures.push(`reduced-motion Chapter 1 calibration instrument count mismatch: ${chapterOneInstrumentCount}`);
+  if (chapterOneAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 1 calibration instrument still animates: ${JSON.stringify(chapterOneAnimatedParts)}`);
+  if (chapterOneTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 1 calibration instrument still transitions: ${JSON.stringify(chapterOneTransitioningParts)}`);
   if (!fallbackText?.includes('small surface light')) failures.push('reduced-motion chapter fallback lost Chapter 1 teaching summary');
 
   await gotoAppRoute(page, '/journey/chapter/ch2');
@@ -1417,10 +1433,48 @@ async function scrollSceneControlIntoView(locator) {
   });
 }
 
+async function assertChapterOneInstrumentState(page, failures, expected) {
+  const instrumentGroup = page.getByRole('group', { name: /The Ego calibration instrument/ });
+  const instrumentImage = page.getByRole('img', { name: /Ego depth model/ });
+  const readout = page.locator('.chapter-one-reference__readout');
+  const groupPanel = await instrumentGroup.getAttribute('data-active-panel');
+  const imageLabel = await instrumentImage.getAttribute('aria-label');
+  const readoutText = await readout.textContent();
+  const activeStepCount = await page.locator('.chapter-one-reference__step--active').count();
+  const ariaCurrentStepCount = await page.locator('.chapter-one-reference__step[aria-current="step"]').count();
+
+  if (groupPanel !== expected.panelId) failures.push(`chapter 1 calibration instrument panel mismatch: ${groupPanel}`);
+  if (activeStepCount !== 1) failures.push(`chapter 1 calibration active step count mismatch: ${activeStepCount}`);
+  if (ariaCurrentStepCount !== 1) failures.push(`chapter 1 calibration aria-current count mismatch: ${ariaCurrentStepCount}`);
+  if (!imageLabel?.includes(`Current emphasis: ${expected.emphasis}`)) {
+    failures.push(`chapter 1 calibration image label did not follow ${expected.emphasis}: ${imageLabel}`);
+  }
+  if (!imageLabel?.includes(expected.insight)) {
+    failures.push(`chapter 1 calibration image label lost insight for ${expected.emphasis}: ${imageLabel}`);
+  }
+  if (!readoutText?.includes(expected.insight)) {
+    failures.push(`chapter 1 calibration readout did not follow ${expected.emphasis}: ${readoutText}`);
+  }
+}
+
 async function smokeChapterSceneControls(page, failures) {
   await gotoAppRoute(page, '/journey/chapter/ch1');
-  const chapterOneReferenceCount = await page.locator('.chapter-stage__reference-node').count();
+  await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+  const chapterOneReferenceNodes = page.locator('.chapter-stage__reference-node');
+  const chapterOneReferenceCount = await chapterOneReferenceNodes.count();
+  const chapterOnePanelIds = await chapterOneReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterOneInstrumentVisible = await page.getByRole('group', { name: /The Ego calibration instrument/ }).isVisible();
+  const chapterOneModelVisible = await page.getByRole('img', { name: /Ego depth model/ }).isVisible();
+
   if (chapterOneReferenceCount !== 3) failures.push(`chapter 1 reference node count mismatch: ${chapterOneReferenceCount}`);
+  if (chapterOnePanelIds.join(',') !== 'ego-light,roots,self-depth') failures.push(`chapter 1 reference nodes out of order: ${chapterOnePanelIds.join(',')}`);
+  if (!chapterOneInstrumentVisible) failures.push('chapter 1 calibration instrument group is not visible');
+  if (!chapterOneModelVisible) failures.push('chapter 1 ego depth model image is not visible');
+  await assertChapterOneInstrumentState(page, failures, {
+    panelId: 'ego-light',
+    emphasis: 'Orientation',
+    insight: 'The ego is necessary, but not total.',
+  });
 
   const pauseAnimation = page.getByRole('button', { name: /Pause animation/ });
   await activateSceneButton(pauseAnimation);
@@ -1439,6 +1493,11 @@ async function smokeChapterSceneControls(page, failures) {
     egoVisible: document.querySelector('.ch1-a--ego')?.classList.contains('vis') || false,
     rootsPanelVisible: document.querySelector('.ch1-a--unconscious')?.classList.contains('panel-vis') || false,
   }));
+  await assertChapterOneInstrumentState(page, failures, {
+    panelId: 'roots',
+    emphasis: 'Depth',
+    insight: 'Consciousness rests on what it cannot fully command.',
+  });
   if (rootsReferencePressed !== 'true') failures.push(`chapter 1 reference node did not become active: ${rootsReferencePressed}`);
   if (rootsAnnotationState.egoVisible) failures.push('chapter 1 timed ego annotation stayed visible after selecting roots');
   if (!rootsAnnotationState.rootsPanelVisible) failures.push('chapter 1 roots annotation did not follow selected panel');
@@ -1450,7 +1509,14 @@ async function smokeChapterSceneControls(page, failures) {
   const pressed = await wholeness.getAttribute('aria-pressed');
   const scrollY = await page.evaluate(() => window.scrollY);
   const sceneDescription = await page.locator('#scene-host-description-ch1').textContent();
+  const wholenessPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="self-depth"]').count();
+  await assertChapterOneInstrumentState(page, failures, {
+    panelId: 'self-depth',
+    emphasis: 'Wholeness',
+    insight: 'The journey starts by scaling the I correctly.',
+  });
   if (pressed !== 'true') failures.push(`chapter scene control did not become active: ${pressed}`);
+  if (wholenessPanelActive !== 1) failures.push(`chapter 1 Wholeness panel did not become active: ${wholenessPanelActive}`);
   if (scrollY > 10) failures.push(`chapter scene control unexpectedly scrolled page: ${scrollY}`);
   if (!sceneDescription?.includes('The Self holds the field')) failures.push(`chapter 1 scene description did not follow active panel: ${sceneDescription}`);
 
@@ -2854,7 +2920,12 @@ async function smokeMobile(page, failures) {
     await gotoAppRoute(page, '/journey/chapter/ch1');
     const chapterNavBox = await page.locator('.app-nav').boundingBox();
     const chapterHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
-    const referenceCount = await page.locator('.chapter-stage__reference-node').count();
+    const referenceNodes = page.locator('.chapter-stage__reference-node');
+    const referenceCount = await referenceNodes.count();
+    const panelIds = await referenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+    const chapterScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const referenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const instrumentBox = await page.locator('.chapter-one-reference').boundingBox();
     if (!chapterNavBox || !chapterHeadingBox) {
       failures.push(`mobile chapter 1 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -2865,6 +2936,15 @@ async function smokeMobile(page, failures) {
       failures.push(`mobile nav overlaps chapter 1 heading at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(chapterNavBottom)}, heading top ${Math.round(chapterHeadingBox.y)}`);
     }
     if (referenceCount !== 3) failures.push(`mobile chapter 1 reference node count mismatch at ${viewport.width}x${viewport.height}: ${referenceCount}`);
+    if (panelIds.join(',') !== 'ego-light,roots,self-depth') failures.push(`mobile chapter 1 reference nodes out of order at ${viewport.width}x${viewport.height}: ${panelIds.join(',')}`);
+    if (chapterScrollWidth > viewport.width + 2) failures.push(`mobile chapter 1 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterScrollWidth}`);
+    if (referenceMapBox && referenceMapBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 1 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(referenceMapBox.width)}`);
+    }
+    if (!instrumentBox) failures.push(`mobile chapter 1 calibration instrument missing at ${viewport.width}x${viewport.height}`);
+    if (instrumentBox && instrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 1 calibration instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(instrumentBox.width)}`);
+    }
 
     await gotoAppRoute(page, '/journey/chapter/ch2');
     await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
