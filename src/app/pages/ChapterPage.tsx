@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 
+import AlchemyTransformationInstrument from '../components/AlchemyTransformationInstrument';
 import Chapter14FinalSynthesisInstrument from '../components/Chapter14FinalSynthesisInstrument';
 import ChapterOneReferenceInstrument from '../components/ChapterOneReferenceInstrument';
 import ChapterSigil from '../components/ChapterSigil';
@@ -452,6 +453,14 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
               </button>
             ))}
           </div>
+          {(chapter.id === 'ch10' || chapter.id === 'ch11') && (
+            <AlchemyTransformationInstrument
+              activePanel={activePanel}
+              activePanelId={activePanelId}
+              chapterId={chapter.id}
+              onSelectPanel={setActivePanelId}
+            />
+          )}
           {chapter.id === 'ch1' && (
             <ChapterOneReferenceInstrument activePanel={activePanel} activePanelId={activePanelId} />
           )}

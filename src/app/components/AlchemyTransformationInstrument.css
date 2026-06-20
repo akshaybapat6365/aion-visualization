@@ -1,0 +1,453 @@
+.alchemy-transformation-instrument {
+  --alchemy-accent: #d4af37;
+  --alchemy-secondary: #53d8e8;
+  --alchemy-red: #a6534f;
+  --alchemy-ink: rgba(3, 3, 7, 0.58);
+  position: relative;
+  width: min(30rem, 100%);
+  margin-top: 0.56rem;
+  padding: 0.32rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: calc(var(--radius) + 0.18rem);
+  background:
+    radial-gradient(circle at 18% 4%, color-mix(in srgb, var(--alchemy-secondary) 16%, transparent), transparent 6.8rem),
+    radial-gradient(circle at 86% 15%, color-mix(in srgb, var(--alchemy-accent) 18%, transparent), transparent 7.2rem),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.055), rgba(244, 240, 232, 0.018));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1.8rem 4rem rgba(0, 0, 0, 0.24);
+}
+
+.alchemy-transformation-instrument--ch11 {
+  --alchemy-accent: #e2c96d;
+  --alchemy-secondary: #61d2d8;
+}
+
+.alchemy-transformation-instrument__header,
+.alchemy-transformation-instrument__field,
+.alchemy-transformation-instrument__rail,
+.alchemy-transformation-instrument__steps {
+  position: relative;
+  z-index: 2;
+}
+
+.alchemy-transformation-instrument__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.04rem 0.6rem;
+  padding: 0.08rem 0.18rem 0.2rem;
+  text-align: left;
+}
+
+.alchemy-transformation-instrument__header span,
+.alchemy-transformation-instrument__header em,
+.alchemy-transformation-instrument__step span {
+  color: rgba(244, 240, 232, 0.54);
+  font-family: var(--font-ui);
+  font-size: 0.55rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.alchemy-transformation-instrument__header strong {
+  color: rgba(244, 240, 232, 0.94);
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+  font-weight: 650;
+  line-height: 0.94;
+}
+
+.alchemy-transformation-instrument__header em {
+  align-self: end;
+  color: color-mix(in srgb, var(--alchemy-accent) 86%, rgba(244, 240, 232, 0.78));
+  text-align: right;
+}
+
+.alchemy-transformation-instrument__field {
+  min-height: clamp(6.4rem, 12vh, 8.2rem);
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.085);
+  border-radius: calc(var(--radius) - 0.05rem);
+  background:
+    linear-gradient(90deg, rgba(83, 216, 232, 0.09), transparent 42%, rgba(166, 83, 79, 0.11)),
+    repeating-linear-gradient(0deg, transparent 0 0.66rem, rgba(244, 240, 232, 0.035) 0.68rem 0.72rem),
+    rgba(3, 3, 7, 0.34);
+}
+
+.alchemy-transformation-instrument__field > span {
+  position: absolute;
+  pointer-events: none;
+}
+
+.alchemy-transformation-instrument__horizon {
+  left: 7%;
+  right: 7%;
+  top: 54%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.16), transparent);
+}
+
+.alchemy-transformation-instrument__vessel {
+  left: 11%;
+  top: 35%;
+  width: 24%;
+  height: 35%;
+  border: 1px solid color-mix(in srgb, var(--alchemy-secondary) 48%, transparent);
+  border-radius: 50% 50% 44% 44% / 58% 58% 40% 40%;
+  background:
+    radial-gradient(circle at 54% 55%, rgba(212, 175, 55, 0.26), transparent 30%),
+    radial-gradient(circle at 34% 58%, rgba(83, 216, 232, 0.18), transparent 42%);
+  box-shadow: inset 0 -1.2rem 2.4rem rgba(83, 216, 232, 0.08);
+}
+
+.alchemy-transformation-instrument__bath {
+  left: 7%;
+  bottom: 18%;
+  width: 30%;
+  height: 10%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--alchemy-secondary) 40%, transparent), transparent 72%);
+}
+
+.alchemy-transformation-instrument__fish {
+  left: 12.5%;
+  top: 51%;
+  width: 15%;
+  height: 10%;
+  border: 1px solid rgba(244, 240, 232, 0.36);
+  border-radius: 52% 48% 48% 52%;
+  transform: rotate(-3deg);
+  background: rgba(212, 175, 55, 0.18);
+}
+
+.alchemy-transformation-instrument__fish::after {
+  content: '';
+  position: absolute;
+  right: -0.38rem;
+  top: 50%;
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 1px solid rgba(244, 240, 232, 0.32);
+  border-width: 1px 1px 0 0;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.alchemy-transformation-instrument__prima {
+  left: 34%;
+  top: 32%;
+  width: 22%;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--alchemy-accent) 34%, transparent);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(244, 240, 232, 0.22), transparent 20%),
+    radial-gradient(circle at 35% 38%, rgba(83, 216, 232, 0.18), transparent 34%),
+    radial-gradient(circle at 65% 58%, rgba(166, 83, 79, 0.2), transparent 34%);
+}
+
+.alchemy-transformation-instrument__axis {
+  left: 61%;
+  top: 13%;
+  width: 1px;
+  height: 72%;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--alchemy-accent) 58%, transparent), transparent);
+}
+
+.alchemy-transformation-instrument__serpent {
+  --alchemy-serpent-tilt: 19deg;
+  left: 53%;
+  top: 18%;
+  width: 16%;
+  height: 64%;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  transform: rotate(var(--alchemy-serpent-tilt));
+}
+
+.alchemy-transformation-instrument__serpent--gold {
+  --alchemy-serpent-tilt: 19deg;
+  border-left-color: color-mix(in srgb, var(--alchemy-accent) 64%, transparent);
+  border-right-color: color-mix(in srgb, var(--alchemy-accent) 22%, transparent);
+  animation: alchemy-bridge-breathe 8s var(--motion-spring) infinite alternate;
+}
+
+.alchemy-transformation-instrument__serpent--cyan {
+  --alchemy-serpent-tilt: -19deg;
+  border-left-color: color-mix(in srgb, var(--alchemy-secondary) 60%, transparent);
+  border-right-color: color-mix(in srgb, var(--alchemy-secondary) 18%, transparent);
+  animation: alchemy-bridge-breathe 8s var(--motion-spring) infinite alternate-reverse;
+}
+
+.alchemy-transformation-instrument__stone {
+  right: 13%;
+  top: 35%;
+  width: 15%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(244, 240, 232, 0.2);
+  transform: rotate(45deg);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(244, 240, 232, 0.2), transparent 26%),
+    linear-gradient(135deg, color-mix(in srgb, var(--alchemy-accent) 34%, transparent), color-mix(in srgb, var(--alchemy-red) 28%, transparent));
+}
+
+.alchemy-transformation-instrument__mirror {
+  right: 8%;
+  bottom: 18%;
+  width: 21%;
+  height: 13%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--alchemy-accent) 24%, transparent), transparent 72%);
+}
+
+.alchemy-transformation-instrument__path {
+  left: 16%;
+  right: 16%;
+  bottom: 12%;
+  height: 0.3rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(83, 216, 232, 0.55), rgba(244, 240, 232, 0.34), rgba(212, 175, 55, 0.66), rgba(166, 83, 79, 0.58));
+}
+
+.alchemy-transformation-instrument__path-node {
+  top: 50%;
+  left: calc(var(--alchemy-step-index) * 33.333%);
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 1px solid rgba(244, 240, 232, 0.34);
+  border-radius: 50%;
+  background: var(--alchemy-ink);
+  transform: translate(-50%, -50%);
+}
+
+.alchemy-transformation-instrument[data-active-panel="vessel"] .alchemy-transformation-instrument__path-node--vessel,
+.alchemy-transformation-instrument[data-active-panel="prima"] .alchemy-transformation-instrument__path-node--prima,
+.alchemy-transformation-instrument[data-active-panel="mercurius"] .alchemy-transformation-instrument__path-node--mercurius,
+.alchemy-transformation-instrument[data-active-panel="lapis"] .alchemy-transformation-instrument__path-node--lapis {
+  background: var(--alchemy-accent);
+  box-shadow: 0 0 1.2rem color-mix(in srgb, var(--alchemy-accent) 44%, transparent);
+}
+
+.alchemy-transformation-instrument__label {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.alchemy-transformation-instrument__label--vessel {
+  left: 8%;
+  top: 12%;
+  color: color-mix(in srgb, var(--alchemy-secondary) 82%, rgba(244, 240, 232, 0.72));
+}
+
+.alchemy-transformation-instrument__label--middle {
+  left: 52%;
+  top: 12%;
+}
+
+.alchemy-transformation-instrument__label--stone {
+  right: 6%;
+  top: 12%;
+  color: color-mix(in srgb, var(--alchemy-accent) 82%, rgba(244, 240, 232, 0.72));
+}
+
+.alchemy-transformation-instrument[data-active-panel="vessel"] .alchemy-transformation-instrument__vessel,
+.alchemy-transformation-instrument[data-active-panel="vessel"] .alchemy-transformation-instrument__fish,
+.alchemy-transformation-instrument[data-active-panel="prima"] .alchemy-transformation-instrument__prima,
+.alchemy-transformation-instrument[data-active-panel="mercurius"] .alchemy-transformation-instrument__axis,
+.alchemy-transformation-instrument[data-active-panel="mercurius"] .alchemy-transformation-instrument__serpent,
+.alchemy-transformation-instrument[data-active-panel="lapis"] .alchemy-transformation-instrument__stone,
+.alchemy-transformation-instrument[data-active-panel="lapis"] .alchemy-transformation-instrument__mirror {
+  opacity: 1;
+  filter: brightness(1.18);
+}
+
+.alchemy-transformation-instrument__rail {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin-top: 0.28rem;
+}
+
+.alchemy-transformation-instrument__rail-link,
+.alchemy-transformation-instrument__step {
+  display: grid;
+  width: 100%;
+  min-height: 1.72rem;
+  color: rgba(244, 240, 232, 0.58);
+  text-decoration: none;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 0.58rem;
+  background: rgba(3, 3, 7, 0.34);
+  transition:
+    color 0.42s var(--motion-spring),
+    border-color 0.42s var(--motion-spring),
+    background 0.42s var(--motion-spring),
+    transform 0.42s var(--motion-spring);
+}
+
+button.alchemy-transformation-instrument__step {
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.alchemy-transformation-instrument__rail-link {
+  padding: 0.18rem 0.3rem;
+}
+
+.alchemy-transformation-instrument__rail-link:hover,
+.alchemy-transformation-instrument__rail-link:focus-visible,
+.alchemy-transformation-instrument__step:hover,
+.alchemy-transformation-instrument__step:focus-visible {
+  color: rgba(244, 240, 232, 0.9);
+  border-color: rgba(244, 240, 232, 0.18);
+  background: rgba(244, 240, 232, 0.06);
+  transform: translateY(-1px);
+}
+
+.alchemy-transformation-instrument__rail-link--active,
+.alchemy-transformation-instrument__step--active {
+  color: rgba(244, 240, 232, 0.96);
+  border-color: color-mix(in srgb, var(--alchemy-accent) 44%, transparent);
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--alchemy-accent) 20%, transparent), transparent 2rem),
+    rgba(244, 240, 232, 0.07);
+}
+
+.alchemy-transformation-instrument__rail-link span {
+  color: color-mix(in srgb, var(--alchemy-accent) 86%, rgba(244, 240, 232, 0.72));
+  font-family: var(--font-ui);
+  font-size: 0.48rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.alchemy-transformation-instrument__rail-link strong {
+  margin-top: 0.04rem;
+  font-family: var(--font-ui);
+  font-size: 0.58rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.alchemy-transformation-instrument__steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.22rem;
+  margin: 0.28rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alchemy-transformation-instrument__step {
+  align-content: center;
+  gap: 0.08rem;
+  padding: 0.22rem 0.24rem;
+}
+
+.alchemy-transformation-instrument__step strong {
+  overflow: hidden;
+  color: currentColor;
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-weight: 850;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alchemy-transformation-instrument__readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@keyframes alchemy-bridge-breathe {
+  from {
+    opacity: 0.36;
+    transform: rotate(var(--alchemy-serpent-tilt)) scaleY(0.94);
+  }
+
+  to {
+    opacity: 0.78;
+    transform: rotate(var(--alchemy-serpent-tilt)) scaleY(1.04);
+  }
+}
+
+@media (max-width: 680px) {
+  .alchemy-transformation-instrument {
+    width: min(25.5rem, 100%);
+    padding: 0.36rem;
+  }
+
+  .alchemy-transformation-instrument__field {
+    min-height: 6.6rem;
+  }
+
+  .alchemy-transformation-instrument__steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .alchemy-transformation-instrument__step {
+    min-height: 1.76rem;
+  }
+
+  .alchemy-transformation-instrument__step strong {
+    font-size: 0.48rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .alchemy-transformation-instrument {
+    margin-top: 0.72rem;
+  }
+
+  .alchemy-transformation-instrument__header {
+    grid-template-columns: 1fr;
+  }
+
+  .alchemy-transformation-instrument__header em {
+    text-align: left;
+  }
+
+  .alchemy-transformation-instrument__label {
+    font-size: 0.46rem;
+  }
+
+  .alchemy-transformation-instrument__step {
+    padding-inline: 0.18rem;
+  }
+
+  .alchemy-transformation-instrument__step strong {
+    font-size: 0.43rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alchemy-transformation-instrument,
+  .alchemy-transformation-instrument *,
+  .alchemy-transformation-instrument *::before,
+  .alchemy-transformation-instrument *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .alchemy-transformation-instrument__rail-link:hover,
+  .alchemy-transformation-instrument__rail-link:focus-visible,
+  .alchemy-transformation-instrument__step:hover,
+  .alchemy-transformation-instrument__step:focus-visible {
+    transform: none;
+  }
+}
