@@ -23,9 +23,29 @@ const desktopViewport = { width: 1440, height: 1000 };
 const mobileViewport = { width: 390, height: 844 };
 const narrowMobileViewport = { width: 320, height: 568 };
 const debugSmoke = process.env.AION_SMOKE_DEBUG === 'true';
+const smokeShards = new Set(['all', 'foundation', 'chapter-routes', 'scene-controls', 'mobile']);
 const viteBin = process.platform === 'win32'
   ? resolve(repoRoot, 'node_modules/.bin/vite.cmd')
   : resolve(repoRoot, 'node_modules/.bin/vite');
+
+function getArgValue(name) {
+  const prefixed = `${name}=`;
+  const inline = process.argv.find((arg) => arg.startsWith(prefixed));
+  if (inline) return inline.slice(prefixed.length);
+
+  const index = process.argv.indexOf(name);
+  if (index !== -1) return process.argv[index + 1];
+
+  return undefined;
+}
+
+function getSmokeShard() {
+  const shard = getArgValue('--shard') || process.env.AION_SMOKE_SHARD || 'all';
+  if (!smokeShards.has(shard)) {
+    throw new Error(`Unknown app shell smoke shard "${shard}". Expected one of: ${[...smokeShards].join(', ')}`);
+  }
+  return shard;
+}
 
 function smokeLog(message) {
   if (debugSmoke) console.log(`[smoke] ${message}`);
@@ -116,6 +136,19 @@ function watchForRouteFailures(page) {
   });
 
   return { consoleErrors, notFound };
+}
+
+async function withWatchedPage(browser, failures, callback, { viewport = desktopViewport } = {}) {
+  const page = await browser.newPage({ viewport });
+  const routeFailures = watchForRouteFailures(page);
+
+  try {
+    await callback(page);
+  } finally {
+    failures.push(...routeFailures.notFound.map((url) => `404 response: ${url}`));
+    failures.push(...routeFailures.consoleErrors.map((message) => `console error: ${message}`));
+    await page.close();
+  }
 }
 
 async function gotoAppRoute(page, route) {
@@ -3687,19 +3720,10 @@ async function smokeMobile(page, failures) {
   }
 }
 
-async function runSmoke() {
-  const server = startPreviewServer();
-  const failures = [];
-  let browser;
+async function runFoundationShard(browser, failures) {
+  await smokeReducedMotion(browser, failures);
 
-  try {
-    await waitForServer(server);
-    browser = await chromium.launch({ headless: true });
-    await smokeReducedMotion(browser, failures);
-
-    let page = await browser.newPage({ viewport: desktopViewport });
-    const routeFailures = watchForRouteFailures(page);
-
+  await withWatchedPage(browser, failures, async (page) => {
     await smokeCanonicalRoutes(page, failures);
     await smokeHomeVisualDetail(page, failures);
     await smokeChaptersArcHub(page, failures);
@@ -3707,33 +3731,75 @@ async function runSmoke() {
     await smokeTimelineVisualField(page, failures);
     await smokeSymbolsVisualField(page, failures);
     await smokeAboutOrientation(page, failures);
-    await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
     await smokeLegacyRedirect(page, failures);
     await smokeChapterJump(page, failures);
-    await page.close();
+  });
+}
 
-    page = await browser.newPage({ viewport: desktopViewport });
-    const sceneRouteFailures = watchForRouteFailures(page);
+async function runChapterRoutesShard(browser, failures) {
+  await withWatchedPage(browser, failures, async (page) => {
+    await smokeChapterRoutes(page, failures);
+  });
+}
+
+async function runSceneControlsShard(browser, failures) {
+  await withWatchedPage(browser, failures, async (page) => {
     await smokeChapterSceneControls(page, failures);
-    failures.push(...sceneRouteFailures.notFound.map((url) => `404 response: ${url}`));
-    failures.push(...sceneRouteFailures.consoleErrors.map((message) => `console error: ${message}`));
-    await page.close();
+  });
+}
 
-    page = await browser.newPage({ viewport: desktopViewport });
-    const mobileRouteFailures = watchForRouteFailures(page);
+async function runMobileShard(browser, failures) {
+  await withWatchedPage(browser, failures, async (page) => {
     await smokeMobile(page, failures);
-    failures.push(...mobileRouteFailures.notFound.map((url) => `404 response: ${url}`));
-    failures.push(...mobileRouteFailures.consoleErrors.map((message) => `console error: ${message}`));
+  });
+}
 
-    failures.push(...routeFailures.notFound.map((url) => `404 response: ${url}`));
-    failures.push(...routeFailures.consoleErrors.map((message) => `console error: ${message}`));
+async function runSmokeShard(shard, browser, failures) {
+  switch (shard) {
+    case 'foundation':
+      await runFoundationShard(browser, failures);
+      break;
+    case 'chapter-routes':
+      await runChapterRoutesShard(browser, failures);
+      break;
+    case 'scene-controls':
+      await runSceneControlsShard(browser, failures);
+      break;
+    case 'mobile':
+      await runMobileShard(browser, failures);
+      break;
+    case 'all':
+      await runFoundationShard(browser, failures);
+      await runChapterRoutesShard(browser, failures);
+      await runSceneControlsShard(browser, failures);
+      await runMobileShard(browser, failures);
+      break;
+    default:
+      throw new Error(`Unhandled app shell smoke shard: ${shard}`);
+  }
+}
+
+async function runSmoke() {
+  const shard = getSmokeShard();
+  const server = startPreviewServer();
+  const failures = [];
+  let browser;
+
+  try {
+    await waitForServer(server);
+    browser = await chromium.launch({ headless: true });
+    await runSmokeShard(shard, browser, failures);
 
     if (failures.length > 0) {
       throw new Error(failures.join('\n'));
     }
 
-    console.log('Aion app shell smoke passed: 20 desktop routes, mobile shell checks, reduced motion, keyboard focus, and legacy redirect.');
+    if (shard === 'all') {
+      console.log('Aion app shell smoke passed: 20 desktop routes, mobile shell checks, reduced motion, keyboard focus, and legacy redirect.');
+    } else {
+      console.log(`Aion app shell smoke shard "${shard}" passed.`);
+    }
   } finally {
     if (browser) await browser.close();
     await stopPreviewServer(server);
