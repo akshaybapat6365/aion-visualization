@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import AlchemyTransformationInstrument from '../components/AlchemyTransformationInstrument';
 import Chapter14FinalSynthesisInstrument from '../components/Chapter14FinalSynthesisInstrument';
 import ChapterOneReferenceInstrument from '../components/ChapterOneReferenceInstrument';
+import ChapterSevenProphecyInstrument from '../components/ChapterSevenProphecyInstrument';
 import ChapterSigil from '../components/ChapterSigil';
 import PsycheArcInstrument from '../components/PsycheArcInstrument';
 import SceneHost from '../components/SceneHost';
@@ -22,7 +23,6 @@ const quaternityDirections = ['north', 'east', 'south', 'west'] as const;
 const mandalaBands = ['outer', 'middle', 'inner'] as const;
 const rootLines = ['left', 'center', 'right'] as const;
 const zodiacMarkers = ['AR', 'TA', 'GE', 'CN', 'LE', 'VI', 'LI', 'SC', 'SG', 'CP', 'AQ', 'PI'] as const;
-const prophecyTicks = ['0', '1000', '1555', '2000'] as const;
 const historicalStrataLayers = ['vision', 'carrier', 'healing', 'aeon', 'depth'] as const;
 const alchemicalOpusStages = ['nigredo', 'albedo', 'citrinitas', 'rubedo'] as const;
 const alchemicalTreeStages = ['black', 'white', 'gold', 'red'] as const;
@@ -74,7 +74,6 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
   const activePanel = experience.panels[activePanelIndex] || experience.panels[0];
   const christSymbolInstrumentLabel = `Christ symbol model: a luminous cross carries a powerful Self image, three bright points form a one-sided field, the excluded fourth remains dark but necessary, and roots descend toward the counter-pole. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const aeonFishInstrumentLabel = `Sign of the Fishes model: two Pisces fish swim in opposite directions inside a zodiac wheel, the spring point precesses through symbolic time, and Aquarius marks the slow threshold of a changing aeon. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
-  const prophecyFieldInstrumentLabel = `Prophecy field model: historical pressure gathers around a time axis, private fear projects into a shared symbolic image-field, and the threshold mirror shows the future looking backward into older archetypal forms. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const historicalStrataInstrumentLabel = `Historical strata model: five translucent layers accumulate around the fish motif, an early Christian carrier image gathers the symbol into a readable form, and older meanings keep speaking below later interpretation. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const ambivalentFishInstrumentLabel = `Ambivalent fish model: one fish-symbol carries blessing and threat across a split field, an ouroboric return shows opposition circling back into itself, and the shadow fish keeps the Antichrist counter-pole inside the total image. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
   const alchemicalVesselInstrumentLabel = `Alchemical vessel model: the fish-symbol enters a sealed vessel, prima materia gathers as unsettled particles, heat presses the image through four opus stages, and a lapis point appears as transformation takes form. Current emphasis: ${activePanel.kicker}: ${activePanel.title}. ${activePanel.insight}`;
@@ -193,37 +192,7 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
             </div>
           )}
           {chapter.id === 'ch7' && (
-            <div
-              className="prophecy-field-instrument"
-              data-active-panel={activePanelId}
-              role="img"
-              aria-label={prophecyFieldInstrumentLabel}
-            >
-              <span className="prophecy-field-instrument__field prophecy-field-instrument__field--past" aria-hidden="true" />
-              <span className="prophecy-field-instrument__field prophecy-field-instrument__field--future" aria-hidden="true" />
-              <span className="prophecy-field-instrument__axis" aria-hidden="true" />
-              {prophecyTicks.map((tick, index) => (
-                <span
-                  key={tick}
-                  className={`prophecy-field-instrument__tick prophecy-field-instrument__tick--${index + 1}`}
-                  aria-hidden="true"
-                >
-                  {tick}
-                </span>
-              ))}
-              <span className="prophecy-field-instrument__pressure" aria-hidden="true" />
-              <span className="prophecy-field-instrument__date" aria-hidden="true" />
-              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--one" aria-hidden="true" />
-              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--two" aria-hidden="true" />
-              <span className="prophecy-field-instrument__image prophecy-field-instrument__image--three" aria-hidden="true" />
-              <span className="prophecy-field-instrument__arc prophecy-field-instrument__arc--projection" aria-hidden="true" />
-              <span className="prophecy-field-instrument__arc prophecy-field-instrument__arc--return" aria-hidden="true" />
-              <span className="prophecy-field-instrument__threshold" aria-hidden="true" />
-              <span className="prophecy-field-instrument__mirror" aria-hidden="true" />
-              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--pressure" aria-hidden="true">pressure</span>
-              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--collective" aria-hidden="true">shared image</span>
-              <span className="prophecy-field-instrument__label prophecy-field-instrument__label--threshold" aria-hidden="true">threshold</span>
-            </div>
+            <ChapterSevenProphecyInstrument activePanel={activePanel} activePanelId={activePanelId} />
           )}
           {chapter.id === 'ch8' && (
             <div
