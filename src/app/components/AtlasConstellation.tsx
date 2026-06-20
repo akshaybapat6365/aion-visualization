@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 
 import type { ChapterRecord, ConceptRecord, RelationshipRecord, SymbolRecord } from '../types';
 
@@ -10,6 +10,7 @@ interface AtlasConstellationProps {
   linkedSymbols: SymbolRecord[];
   entityLabel: (id: string) => string;
   onSelectChapter: (id: ChapterRecord['id']) => void;
+  controls?: ReactNode;
 }
 
 interface FieldNode {
@@ -75,6 +76,7 @@ export default function AtlasConstellation({
   linkedSymbols,
   entityLabel,
   onSelectChapter,
+  controls,
 }: AtlasConstellationProps) {
   const conceptNodes = placeNodes(activeConcepts.slice(0, 6), 184, 'concept', -Math.PI / 2.18);
   const symbolNodes = placeNodes(linkedSymbols.slice(0, 5), 286, 'symbol', -Math.PI / 1.14);
@@ -178,6 +180,8 @@ export default function AtlasConstellation({
           <p id="atlas-field-desc">{fieldDescription}</p>
         </div>
       </div>
+
+      {controls}
 
       <div className="atlas-constellation__chapter-rail" role="radiogroup" aria-label={chapterResultText}>
         {filteredChapters.length > 0 ? (
