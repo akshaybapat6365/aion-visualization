@@ -163,6 +163,59 @@ async function checkTimelineArtifact(page, failures) {
   if (!fieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline artifact field label mismatch: ${fieldLabel}`);
 }
 
+async function checkSymbolsArtifact(page, failures) {
+  await checkShellRoute(page, '/symbols', failures);
+
+  const title = await page.locator('h1').first().textContent();
+  const orbitCount = await page.locator('.symbol-orbit__node').count();
+  const panelCount = await page.locator('.symbol-panel').count();
+  const markCount = await page.locator('.symbol-mark').count();
+  const specimenVisible = await page.locator('.symbol-field__specimen').isVisible();
+  const threadCount = await page.locator('.symbol-field__thread').count();
+  const fieldLabel = await page.getByRole('img', { name: /Fish symbol field/ }).getAttribute('aria-label');
+  const detailTitle = await page.locator('#symbol-selected-detail h2').textContent();
+  const detailSpecimen = await page.locator('.symbol-detail__specimen').textContent();
+  const chapterHrefs = await page.locator('.symbol-detail__chapter-links a').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+
+  if (!title?.includes('Lexicon of recurring images')) failures.push(`/symbols artifact title mismatch: ${title}`);
+  if (orbitCount !== 9) failures.push(`/symbols artifact orbit count mismatch: ${orbitCount}`);
+  if (panelCount !== 9) failures.push(`/symbols artifact panel count mismatch: ${panelCount}`);
+  if (markCount < 20) failures.push(`/symbols artifact mark count too low: ${markCount}`);
+  if (!specimenVisible) failures.push('/symbols artifact active specimen is not visible');
+  if (threadCount < 2) failures.push(`/symbols artifact chapter thread count too low: ${threadCount}`);
+  if (!fieldLabel?.includes('Piscean fish pair') || !fieldLabel?.includes('Chapter 6')) failures.push(`/symbols artifact field label mismatch: ${fieldLabel}`);
+  if (!detailTitle?.includes('Fish')) failures.push(`/symbols artifact initial detail mismatch: ${detailTitle}`);
+  if (!detailSpecimen?.includes('Aeon / shadow')) failures.push(`/symbols artifact specimen mismatch: ${detailSpecimen}`);
+  if (!chapterHrefs.length || chapterHrefs.some((href) => !href?.startsWith(`${basePath}/journey/chapter/ch`))) {
+    failures.push(`/symbols artifact chapter hrefs are not base-aware: ${chapterHrefs.join(', ')}`);
+  }
+
+  const sophia = page.getByRole('button', { name: /Select Sophia:/ });
+  await sophia.click();
+  await page.waitForTimeout(100);
+
+  const sophiaPressed = await sophia.getAttribute('aria-pressed');
+  const sophiaFieldLabel = await page.getByRole('img', { name: /Sophia symbol field/ }).getAttribute('aria-label');
+  const sophiaLink = await page.getByRole('link', { name: /03 · The Syzygy/ }).getAttribute('href');
+  const activeOrbitCount = await page.locator('.symbol-orbit__node[aria-pressed="true"]').count();
+
+  if (sophiaPressed !== 'true') failures.push(`/symbols artifact Sophia orbit did not become active: ${sophiaPressed}`);
+  if (!sophiaFieldLabel?.includes('Sophia / wisdom figure') || !sophiaFieldLabel?.includes('The Syzygy')) failures.push(`/symbols artifact Sophia field label mismatch: ${sophiaFieldLabel}`);
+  if (sophiaLink !== `${basePath}/journey/chapter/ch3`) failures.push(`/symbols artifact Sophia link mismatch: ${sophiaLink}`);
+  if (activeOrbitCount !== 1) failures.push(`/symbols artifact active orbit count mismatch: ${activeOrbitCount}`);
+
+  const lapis = page.getByRole('button', { name: /Focus Lapis in the symbol field/ });
+  await lapis.click();
+  await page.waitForTimeout(100);
+
+  const lapisPressed = await lapis.getAttribute('aria-pressed');
+  const lapisDetail = await page.locator('#symbol-selected-detail h2').textContent();
+  const activePanelCount = await page.locator('.symbol-panel__activate[aria-pressed="true"]').count();
+  if (lapisPressed !== 'true') failures.push(`/symbols artifact Lapis panel did not become active: ${lapisPressed}`);
+  if (!lapisDetail?.includes('Lapis')) failures.push(`/symbols artifact Lapis detail mismatch: ${lapisDetail}`);
+  if (activePanelCount !== 1) failures.push(`/symbols artifact active panel count mismatch: ${activePanelCount}`);
+}
+
 async function checkChaptersArtifact(page, failures) {
   await checkShellRoute(page, '/chapters', failures);
 
@@ -244,6 +297,7 @@ async function runSmoke() {
     await checkChaptersArtifact(desktop, failures);
     await checkAboutArtifact(desktop, failures);
     await checkTimelineArtifact(desktop, failures);
+    await checkSymbolsArtifact(desktop, failures);
 
     const legacyChapter = await desktop.goto(`${baseUrl}/chapters/chapter-7.html`, {
       waitUntil: 'domcontentloaded',
