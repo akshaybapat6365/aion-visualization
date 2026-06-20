@@ -5334,8 +5334,8 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .chapter-stage__intro h1 {
-  max-width: 13.75ch;
-  font-size: clamp(3.5rem, 5.7vw, 5.15rem);
+  max-width: 13.25ch;
+  font-size: clamp(3.55rem, 5.85vw, 5.35rem);
   line-height: 0.92;
 }
 
@@ -5367,11 +5367,11 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .chapter-stage__scrim {
   background:
-    linear-gradient(180deg, rgba(3, 3, 7, 0.75), rgba(3, 3, 7, 0.38) 48%, rgba(3, 3, 7, 0.82)),
-    linear-gradient(90deg, rgba(3, 3, 7, 0.96), rgba(3, 3, 7, 0.52) 58%, rgba(3, 3, 7, 0.28)),
-    radial-gradient(circle at 30% 51%, rgba(212, 175, 55, 0.16), transparent 32%),
-    radial-gradient(circle at 60% 60%, rgba(83, 216, 232, 0.12), transparent 38%),
-    radial-gradient(circle at 74% 72%, rgba(194, 55, 43, 0.1), transparent 33%);
+    linear-gradient(180deg, rgba(3, 3, 7, 0.72), rgba(3, 3, 7, 0.34) 45%, rgba(3, 3, 7, 0.86)),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.97), rgba(3, 3, 7, 0.5) 54%, rgba(3, 3, 7, 0.24)),
+    radial-gradient(circle at 31% 50%, rgba(212, 175, 55, 0.2), transparent 30%),
+    radial-gradient(circle at 58% 58%, rgba(83, 216, 232, 0.16), transparent 36%),
+    radial-gradient(circle at 75% 72%, rgba(194, 55, 43, 0.14), transparent 33%);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .chapter-stage__reference-node[data-panel-id="vessel"] .chapter-stage__reference-mark::before {
@@ -5442,21 +5442,21 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
   position: relative;
-  width: min(31rem, 100%);
-  min-height: clamp(7.75rem, 11.4vh, 8.85rem);
+  width: min(32.5rem, 100%);
+  min-height: clamp(8.15rem, 12.2vh, 9.35rem);
   overflow: hidden;
   margin-top: 0.78rem;
   border: 1px solid rgba(244, 240, 232, 0.12);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 26% 52%, rgba(83, 216, 232, 0.18), transparent 5.2rem),
-    radial-gradient(circle at 51% 53%, rgba(212, 175, 55, 0.24), transparent 5.6rem),
-    radial-gradient(circle at 74% 68%, rgba(194, 55, 43, 0.17), transparent 5.2rem),
-    linear-gradient(90deg, rgba(7, 9, 13, 0.9), rgba(12, 9, 10, 0.78) 46%, rgba(24, 8, 6, 0.68));
+    radial-gradient(circle at 24% 50%, rgba(83, 216, 232, 0.22), transparent 5.4rem),
+    radial-gradient(circle at 49% 55%, rgba(212, 175, 55, 0.3), transparent 5.9rem),
+    radial-gradient(circle at 75% 66%, rgba(194, 55, 43, 0.22), transparent 5.4rem),
+    linear-gradient(90deg, rgba(7, 12, 15, 0.92), rgba(13, 10, 10, 0.82) 45%, rgba(29, 9, 7, 0.72));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.24),
-    0 0 3.6rem rgba(212, 175, 55, 0.06);
+    0 1.45rem 4.2rem rgba(0, 0, 0, 0.28),
+    0 0 3.8rem rgba(212, 175, 55, 0.1);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before,
@@ -5468,17 +5468,20 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before {
   inset: 0.58rem;
-  border: 1px solid rgba(255, 227, 156, 0.08);
+  border: 1px solid rgba(255, 227, 156, 0.12);
   border-radius: calc(var(--radius) - 2px);
+  background:
+    linear-gradient(90deg, transparent 0 31%, rgba(143, 231, 237, 0.1) 32%, transparent 34% 64%, rgba(255, 173, 112, 0.1) 66%, transparent 68%),
+    radial-gradient(ellipse at 50% 57%, rgba(244, 240, 232, 0.08), transparent 55%);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::after {
   left: 50%;
   bottom: 1.16rem;
-  width: 64%;
+  width: 70%;
   height: 0.06rem;
-  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.28), transparent);
-  box-shadow: 0 0 1.2rem rgba(244, 240, 232, 0.1);
+  background: linear-gradient(90deg, transparent, rgba(83, 216, 232, 0.36), rgba(255, 227, 156, 0.46), rgba(194, 55, 43, 0.42), transparent);
+  box-shadow: 0 0 1.3rem rgba(244, 240, 232, 0.13);
   transform: translateX(-50%);
 }
 
@@ -5505,9 +5508,9 @@ h3 {
   inset: 0.62rem;
   border-radius: calc(var(--radius) - 4px);
   background:
-    linear-gradient(90deg, rgba(83, 216, 232, 0.08), transparent 48%, rgba(194, 55, 43, 0.09)),
-    radial-gradient(circle at 50% 68%, rgba(212, 175, 55, 0.1), transparent 52%);
-  opacity: 0.68;
+    linear-gradient(90deg, rgba(83, 216, 232, 0.12), transparent 44%, rgba(212, 175, 55, 0.08) 54%, rgba(194, 55, 43, 0.12)),
+    radial-gradient(circle at 50% 68%, rgba(212, 175, 55, 0.14), transparent 52%);
+  opacity: 0.76;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
@@ -5516,10 +5519,10 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura {
   left: 50%;
   top: 54%;
-  width: 11.6rem;
-  height: 5.8rem;
+  width: 12.45rem;
+  height: 6.15rem;
   border-radius: 50%;
-  opacity: 0.44;
+  opacity: 0.5;
   transform: translate(-50%, -50%) rotate(-8deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5545,20 +5548,20 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel {
   left: 50%;
   top: 50%;
-  width: 7.05rem;
-  height: 5.95rem;
-  border: 1px solid rgba(143, 231, 237, 0.46);
-  border-top-color: rgba(244, 240, 232, 0.26);
+  width: 7.45rem;
+  height: 6.28rem;
+  border: 1px solid rgba(143, 231, 237, 0.54);
+  border-top-color: rgba(244, 240, 232, 0.34);
   border-radius: 45% 45% 52% 52%;
   background:
     linear-gradient(90deg, transparent 45%, rgba(244, 240, 232, 0.22) 49%, transparent 53%),
     radial-gradient(ellipse at 50% 58%, rgba(83, 216, 232, 0.12), transparent 42%),
     radial-gradient(ellipse at 50% 66%, rgba(255, 227, 156, 0.18), transparent 72%);
   box-shadow:
-    inset 0 0 1.45rem rgba(143, 231, 237, 0.13),
-    0 0 2.1rem rgba(83, 216, 232, 0.18),
-    0 0 2.6rem rgba(212, 175, 55, 0.08);
-  opacity: 0.82;
+    inset 0 0 1.65rem rgba(143, 231, 237, 0.16),
+    0 0 2.25rem rgba(83, 216, 232, 0.22),
+    0 0 2.8rem rgba(212, 175, 55, 0.12);
+  opacity: 0.9;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5613,14 +5616,14 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__bath {
   left: 50%;
   top: 59%;
-  width: 5.4rem;
-  height: 1.28rem;
+  width: 5.7rem;
+  height: 1.38rem;
   border-radius: 50%;
   background:
     radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.34), transparent 68%),
     linear-gradient(90deg, rgba(83, 216, 232, 0.18), rgba(212, 175, 55, 0.14), rgba(194, 55, 43, 0.12));
   box-shadow: 0 0 1.55rem rgba(83, 216, 232, 0.18);
-  opacity: 0.72;
+  opacity: 0.8;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5629,10 +5632,10 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__fish {
-  left: 26%;
+  left: 24%;
   top: 51%;
-  width: 3.58rem;
-  height: 1.06rem;
+  width: 3.86rem;
+  height: 1.12rem;
   border-radius: 50%;
   border-top: 1px solid rgba(255, 227, 156, 0.58);
   border-bottom: 1px solid rgba(143, 231, 237, 0.34);
@@ -5640,7 +5643,7 @@ h3 {
     radial-gradient(circle at 31% 50%, rgba(255, 227, 156, 0.78) 0 0.14rem, transparent 0.16rem),
     radial-gradient(ellipse at 52% 50%, rgba(212, 175, 55, 0.18), rgba(83, 216, 232, 0.08) 64%, transparent 72%);
   box-shadow: 0 0 1.35rem rgba(212, 175, 55, 0.2);
-  opacity: 0.86;
+  opacity: 0.92;
   transform: translate(-50%, -50%) rotate(-7deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5662,9 +5665,9 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__magnet {
-  left: 64%;
-  top: 43%;
-  width: 1.05rem;
+  left: 63%;
+  top: 42%;
+  width: 1.18rem;
   aspect-ratio: 1;
   border: 1px solid rgba(181, 130, 255, 0.34);
   border-radius: 0.2rem;
@@ -5672,7 +5675,7 @@ h3 {
   box-shadow:
     0 0 0 0.48rem rgba(181, 130, 255, 0.04),
     0 0 1.35rem rgba(181, 130, 255, 0.18);
-  opacity: 0.62;
+  opacity: 0.72;
   transform: translate(-50%, -50%) rotate(45deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5681,9 +5684,9 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__lapis {
-  left: 72%;
+  left: 73%;
   top: 62%;
-  width: 1.1rem;
+  width: 1.22rem;
   aspect-ratio: 1;
   border: 1px solid rgba(255, 227, 156, 0.38);
   border-radius: 35%;
@@ -5692,7 +5695,7 @@ h3 {
   box-shadow:
     0 0 0 0.48rem rgba(212, 175, 55, 0.05),
     0 0 1.35rem rgba(212, 175, 55, 0.2);
-  opacity: 0.58;
+  opacity: 0.7;
   transform: translate(-50%, -50%) rotate(18deg) scale(0.86);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5702,14 +5705,14 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__heat {
   left: 50%;
-  bottom: 1.34rem;
-  width: 5.8rem;
-  height: 1.36rem;
+  bottom: 1.3rem;
+  width: 6.65rem;
+  height: 1.52rem;
   border-radius: 50%;
   background:
     radial-gradient(ellipse at 50% 70%, rgba(194, 55, 43, 0.46), rgba(212, 175, 55, 0.24) 46%, transparent 72%);
   filter: blur(0.08rem);
-  opacity: 0.66;
+  opacity: 0.76;
   transform: translateX(-50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5719,14 +5722,14 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame {
   left: 50%;
   bottom: 1.42rem;
-  width: 2.65rem;
-  height: 2.8rem;
+  width: 2.88rem;
+  height: 3.06rem;
   border-radius: 50% 50% 46% 46%;
   background:
     radial-gradient(ellipse at 50% 72%, rgba(255, 227, 156, 0.42), transparent 54%),
     radial-gradient(ellipse at 50% 35%, rgba(194, 55, 43, 0.34), transparent 68%);
   filter: blur(0.03rem);
-  opacity: 0.52;
+  opacity: 0.62;
   transform: translateX(-50%) scaleY(0.74);
   transform-origin: 50% 100%;
   transition:
@@ -5738,8 +5741,8 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread {
   left: 50%;
   top: 50%;
-  width: 9.2rem;
-  height: 3.4rem;
+  width: 9.95rem;
+  height: 3.7rem;
   border-radius: 50%;
   opacity: 0.38;
   transition:
@@ -5843,14 +5846,14 @@ h3 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.18rem;
-  width: 13.2rem;
-  max-width: 64%;
+  width: 14.2rem;
+  max-width: 68%;
   height: 0.54rem;
   padding: 0.08rem;
   border: 1px solid rgba(244, 240, 232, 0.12);
   border-radius: 999px;
   background: rgba(3, 3, 7, 0.48);
-  opacity: 0.72;
+  opacity: 0.84;
   transform: translateX(-50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -5860,7 +5863,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stage {
   min-width: 0;
   border-radius: 999px;
-  opacity: 0.66;
+  opacity: 0.82;
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stage--nigredo {
@@ -12198,16 +12201,16 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__intro h1 {
-	    max-width: 9.4ch;
-	    font-size: clamp(2.05rem, 10.5vw, 2.8rem);
-	    line-height: 0.92;
+	    max-width: 8.7ch;
+	    font-size: clamp(2rem, 10vw, 2.72rem);
+	    line-height: 0.91;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__intro p:not(.eyebrow) {
-	    margin-top: 0.68rem;
-	    max-width: 29ch;
-	    font-size: 0.9rem;
-	    line-height: 1.47;
+	    margin-top: 0.56rem;
+	    max-width: 28ch;
+	    font-size: 0.88rem;
+	    line-height: 1.42;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .scene-host__pause {
@@ -12227,8 +12230,8 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
-	    min-height: 7.1rem;
-	    margin-top: 0.66rem;
+	    min-height: 6.95rem;
+	    margin-top: 0.58rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before {
@@ -12236,18 +12239,18 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__vessel {
-	    width: 5.3rem;
-	    height: 4.55rem;
+	    width: 5.18rem;
+	    height: 4.42rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura {
-	    width: 8.3rem;
-	    height: 4.5rem;
+	    width: 8.05rem;
+	    height: 4.32rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__aura--coagula {
-	    width: 6.9rem;
-	    height: 3.85rem;
+	    width: 6.65rem;
+	    height: 3.62rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__retort {
@@ -12261,24 +12264,24 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__fish {
-	    left: 24%;
-	    width: 2.95rem;
+	    left: 23%;
+	    width: 3rem;
 	    height: 0.92rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__magnet {
-	    left: 65%;
-	    width: 0.88rem;
+	    left: 64%;
+	    width: 0.9rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__lapis {
 	    left: 74%;
-	    width: 0.92rem;
+	    width: 0.94rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__flame {
-	    width: 2rem;
-	    height: 2.12rem;
+	    width: 1.92rem;
+	    height: 2rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__plough {
@@ -12288,17 +12291,17 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__thread {
-	    width: 6.35rem;
-	    height: 2.9rem;
+	    width: 6.25rem;
+	    height: 2.72rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stages {
-	    width: 10.1rem;
-	    max-width: 62%;
+	    width: 9.75rem;
+	    max-width: 61%;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__label {
-	    font-size: 0.5rem;
+	    font-size: 0.48rem;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__label--fish {
@@ -12332,7 +12335,7 @@ h3 {
 
 	  .chapter-experience[data-chapter-id="ch10"][data-reduced-motion="true"] .chapter-stage__reference-map {
 	    margin-top: 0.75rem;
-	    transform: translateY(0.5rem);
+	    transform: translateY(1.35rem);
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
