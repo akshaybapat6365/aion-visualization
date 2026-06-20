@@ -46,10 +46,6 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run app shell smoke
-        timeout-minutes: 20
-        run: npm run test:e2e:app
-
       - name: Run app accessibility smoke
         timeout-minutes: 10
         run: npm run test:a11y:app
@@ -60,3 +56,57 @@ jobs:
       - name: Run Pages artifact smoke
         timeout-minutes: 10
         run: npm run test:pages:artifact
+
+  app-shell-smoke:
+    name: App shell smoke (${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: foundation
+            port: 4174
+          - shard: chapter-routes
+            port: 4175
+          - shard: scene-controls
+            port: 4176
+          - shard: mobile
+            port: 4177
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run app shell smoke shard
+        timeout-minutes: 15
+        env:
+          AION_SMOKE_PORT: ${{ matrix.port }}
+        run: node scripts/testing/app-shell-smoke.mjs --shard=${{ matrix.shard }}
+
+  app-shell-smoke-complete:
+    name: App shell smoke
+    runs-on: ubuntu-latest
+    needs: app-shell-smoke
+    if: ${{ always() }}
+    steps:
+      - name: Verify app shell smoke shards
+        run: |
+          if [ "${{ needs.app-shell-smoke.result }}" != "success" ]; then
+            echo "App shell smoke shards did not pass: ${{ needs.app-shell-smoke.result }}"
+            exit 1
+          fi
+          echo "All app shell smoke shards passed."
