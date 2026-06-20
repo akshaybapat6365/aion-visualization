@@ -491,20 +491,37 @@ async function smokeTimelineVisualField(page, failures) {
   const railItems = page.locator('.timeline-rail__item');
   const fieldNodes = page.locator('.timeline-field__node');
   const timelineField = page.getByRole('group', { name: /Timeline field:/ });
+  const categoryChips = page.locator('.timeline-controls__chip');
+  const phaseBands = page.locator('.timeline-field__phase');
+  const activePhaseBand = page.locator('.timeline-field__phase--active');
+  const selectedBeam = page.locator('.timeline-field__selected-beam');
+  const detailLens = page.locator('.timeline-detail__lens');
   const initialDetail = await page.locator('#timeline-selected-detail h2').textContent();
   const initialOrbitLabel = await page.locator('.timeline-orbit').getAttribute('aria-label');
   const initialFieldLabel = await timelineField.getAttribute('aria-label');
   const initialActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
   const initialActiveFieldCount = await page.locator('.timeline-field__node[aria-pressed="true"]').count();
+  const initialActiveChipText = await page.locator('.timeline-controls__chip--active').textContent();
+  const initialActivePhaseText = await activePhaseBand.textContent();
+  const initialLensText = await detailLens.textContent();
+  const selectedBeamVisible = await selectedBeam.isVisible();
 
   if (await orbitButtons.count() !== 12) failures.push(`timeline initial orbit button count mismatch: ${await orbitButtons.count()}`);
   if (await railItems.count() !== 22) failures.push(`timeline initial rail count mismatch: ${await railItems.count()}`);
   if (await fieldNodes.count() !== 22) failures.push(`timeline initial field node count mismatch: ${await fieldNodes.count()}`);
+  if (await categoryChips.count() !== 5) failures.push(`timeline category chip count mismatch: ${await categoryChips.count()}`);
+  if (await phaseBands.count() !== 4) failures.push(`timeline phase band count mismatch: ${await phaseBands.count()}`);
   if (!initialDetail?.includes('Born in Kesswil')) failures.push(`timeline initial detail mismatch: ${initialDetail}`);
   if (!initialOrbitLabel?.includes('12 events in view')) failures.push(`timeline initial orbit label mismatch: ${initialOrbitLabel}`);
   if (!initialFieldLabel?.includes('22 of 22 events visible')) failures.push(`timeline initial field label mismatch: ${initialFieldLabel}`);
   if (initialActiveRailCount !== 1) failures.push(`timeline initial active rail count mismatch: ${initialActiveRailCount}`);
   if (initialActiveFieldCount !== 1) failures.push(`timeline initial active field count mismatch: ${initialActiveFieldCount}`);
+  if (!initialActiveChipText?.includes('All')) failures.push(`timeline initial active chip mismatch: ${initialActiveChipText}`);
+  if (!initialActivePhaseText?.includes('Clinical roots')) failures.push(`timeline initial active phase mismatch: ${initialActivePhaseText}`);
+  if (!selectedBeamVisible) failures.push('timeline selected beam is not visible');
+  if (!initialLensText?.includes('1875') || !initialLensText?.includes('Personal') || !initialLensText?.includes('Clinical roots')) {
+    failures.push(`timeline initial lens mismatch: ${initialLensText}`);
+  }
 
   const freudRail = page.getByRole('button', { name: /1907 · Encounters First meeting with Sigmund Freud/ });
   await freudRail.click();
@@ -512,9 +529,11 @@ async function smokeTimelineVisualField(page, failures) {
   const freudPressed = await freudRail.getAttribute('aria-pressed');
   const freudDetail = await page.locator('#timeline-selected-detail h2').textContent();
   const freudOrbitCore = await page.locator('#timeline-selected-orbit-detail').textContent();
+  const freudLens = await detailLens.textContent();
   if (freudPressed !== 'true') failures.push(`timeline Freud rail did not become active: ${freudPressed}`);
   if (!freudDetail?.includes('First meeting with Sigmund Freud')) failures.push(`timeline Freud detail mismatch: ${freudDetail}`);
   if (!freudOrbitCore?.includes('1907') || !freudOrbitCore?.includes('First meeting with Sigmund Freud')) failures.push(`timeline Freud orbit core mismatch: ${freudOrbitCore}`);
+  if (!freudLens?.includes('Encounters') || !freudLens?.includes('Rupture / descent')) failures.push(`timeline Freud lens mismatch: ${freudLens}`);
 
   await search.fill('Aion');
   await page.waitForTimeout(100);
@@ -524,12 +543,16 @@ async function smokeTimelineVisualField(page, failures) {
   const aionDetail = await page.locator('#timeline-selected-detail h2').textContent();
   const aionResult = await page.locator('.timeline-controls__result').textContent();
   const aionFieldLabel = await timelineField.getAttribute('aria-label');
+  const aionActivePhase = await activePhaseBand.textContent();
+  const aionLens = await detailLens.textContent();
   if (aionRailCount !== 1) failures.push(`timeline Aion rail count mismatch: ${aionRailCount}`);
   if (aionOrbitCount !== 1) failures.push(`timeline Aion orbit count mismatch: ${aionOrbitCount}`);
   if (aionFieldCount !== 1) failures.push(`timeline Aion field count mismatch: ${aionFieldCount}`);
   if (!aionDetail?.includes('Publishes "Aion"')) failures.push(`timeline Aion detail mismatch: ${aionDetail}`);
   if (!aionResult?.includes('1 of 22 events visible')) failures.push(`timeline Aion result mismatch: ${aionResult}`);
   if (!aionFieldLabel?.includes('1 of 22 events visible')) failures.push(`timeline Aion field label mismatch: ${aionFieldLabel}`);
+  if (!aionActivePhase?.includes('Alchemy / Aion')) failures.push(`timeline Aion phase mismatch: ${aionActivePhase}`);
+  if (!aionLens?.includes('Publications') || !aionLens?.includes('Alchemy / Aion')) failures.push(`timeline Aion lens mismatch: ${aionLens}`);
 
   await search.fill('');
   await category.selectOption('concepts');
@@ -539,11 +562,25 @@ async function smokeTimelineVisualField(page, failures) {
   const conceptsFieldCount = await fieldNodes.count();
   const conceptsDetail = await page.locator('#timeline-selected-detail h2').textContent();
   const conceptsActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
+  const conceptsActiveChipText = await page.locator('.timeline-controls__chip--active').textContent();
   if (conceptsRailCount !== 4) failures.push(`timeline concepts rail count mismatch: ${conceptsRailCount}`);
   if (conceptsOrbitCount !== 4) failures.push(`timeline concepts orbit count mismatch: ${conceptsOrbitCount}`);
   if (conceptsFieldCount !== 4) failures.push(`timeline concepts field count mismatch: ${conceptsFieldCount}`);
   if (!conceptsDetail?.includes('Seven Sermons to the Dead')) failures.push(`timeline concepts detail mismatch: ${conceptsDetail}`);
   if (conceptsActiveRailCount !== 1) failures.push(`timeline concepts active rail count mismatch: ${conceptsActiveRailCount}`);
+  if (!conceptsActiveChipText?.includes('Concepts')) failures.push(`timeline concepts active chip mismatch: ${conceptsActiveChipText}`);
+
+  const encountersChip = page.getByRole('button', { name: 'Encounters' });
+  await encountersChip.click();
+  await page.waitForTimeout(100);
+  const encountersSelectValue = await category.inputValue();
+  const encountersResult = await page.locator('.timeline-controls__result').textContent();
+  const encountersActiveChipText = await page.locator('.timeline-controls__chip--active').textContent();
+  const encountersRailCount = await railItems.count();
+  if (encountersSelectValue !== 'encounters') failures.push(`timeline chip did not update select value: ${encountersSelectValue}`);
+  if (!encountersResult?.includes('4 of 22 events visible')) failures.push(`timeline encounters chip result mismatch: ${encountersResult}`);
+  if (!encountersActiveChipText?.includes('Encounters')) failures.push(`timeline encounters active chip mismatch: ${encountersActiveChipText}`);
+  if (encountersRailCount !== 4) failures.push(`timeline encounters rail count mismatch: ${encountersRailCount}`);
 
   await search.fill('not-a-real-term');
   await page.waitForTimeout(100);
@@ -554,6 +591,7 @@ async function smokeTimelineVisualField(page, failures) {
   const emptyMessageVisible = await page.locator('.timeline-field__empty').isVisible();
   const emptyResult = await page.locator('.timeline-controls__result').textContent();
   const emptyOrbitCore = await page.locator('#timeline-selected-orbit-detail').textContent();
+  const emptyBeamCount = await selectedBeam.count();
   if (emptyRailCount !== 0) failures.push(`timeline empty rail still rendered items: ${emptyRailCount}`);
   if (emptyOrbitCount !== 0) failures.push(`timeline empty orbit still rendered buttons: ${emptyOrbitCount}`);
   if (emptyFieldCount !== 0) failures.push(`timeline empty field still rendered nodes: ${emptyFieldCount}`);
@@ -561,6 +599,7 @@ async function smokeTimelineVisualField(page, failures) {
   if (!emptyMessageVisible) failures.push('timeline empty field message is not visible');
   if (!emptyResult?.includes('0 of 22 events visible')) failures.push(`timeline empty result mismatch: ${emptyResult}`);
   if (!emptyOrbitCore?.includes('No match') || !emptyOrbitCore?.includes('Adjust the field')) failures.push(`timeline empty orbit core mismatch: ${emptyOrbitCore}`);
+  if (emptyBeamCount !== 0) failures.push(`timeline empty state still rendered selected beam: ${emptyBeamCount}`);
 }
 
 async function smokeSymbolsVisualField(page, failures) {

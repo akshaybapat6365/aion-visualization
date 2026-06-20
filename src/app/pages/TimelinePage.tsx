@@ -31,6 +31,60 @@ function categoryTone(categoryId: string) {
   return tones[categoryId] || 'gold';
 }
 
+const CATEGORY_PROFILES: Record<string, { axis: string; force: string; movement: string }> = {
+  personal: {
+    axis: 'life root',
+    force: 'biography',
+    movement: 'experience becomes symbolic material',
+  },
+  publications: {
+    axis: 'text vessel',
+    force: 'publication',
+    movement: 'inner work crystallizes as argument',
+  },
+  encounters: {
+    axis: 'world contact',
+    force: 'encounter',
+    movement: 'outside relation changes the field',
+  },
+  concepts: {
+    axis: 'idea seed',
+    force: 'concept',
+    movement: 'terms gather into a psychic map',
+  },
+};
+
+const TIMELINE_PHASES = [
+  {
+    id: 'roots',
+    label: 'Clinical roots',
+    startYear: 1875,
+    endYear: 1906,
+  },
+  {
+    id: 'rupture',
+    label: 'Rupture / descent',
+    startYear: 1907,
+    endYear: 1919,
+  },
+  {
+    id: 'widening',
+    label: 'Comparative widening',
+    startYear: 1921,
+    endYear: 1938,
+  },
+  {
+    id: 'aeon',
+    label: 'Alchemy / Aion',
+    startYear: 1944,
+    endYear: 1961,
+  },
+];
+
+function phaseForYear(eventYear: number) {
+  return TIMELINE_PHASES.find((phase) => eventYear >= phase.startYear && eventYear <= phase.endYear) || null;
+}
+
 function buildOrbitEvents(events: TimelineEvent[], selectedId: string | null) {
   if (events.length <= 12) return events;
   const selectedIndex = events.findIndex((event) => event.id === selectedId);
@@ -62,6 +116,12 @@ export default function TimelinePage() {
   const selected = filtered.find((event) => event.id === selectedId) || filtered[0] || null;
   const orbitEvents = buildOrbitEvents(filtered, selected?.id || selectedId);
   const resultSummary = `${filtered.length} of ${events.length} events visible`;
+  const selectedYear = selected ? Number(year(selected.date)) : null;
+  const selectedTone = selected ? categoryTone(selected.category) : 'gold';
+  const selectedProfile = selected ? CATEGORY_PROFILES[selected.category] : null;
+  const selectedPhase = selectedYear ? phaseForYear(selectedYear) : null;
+  const selectedPhaseLabel = selectedPhase?.label || 'Transitional interval';
+  const selectedX = selectedYear == null ? 50 : 10 + ((selectedYear - firstYear) / Math.max(lastYear - firstYear, 1)) * 80;
 
   return (
     <div className="page">
@@ -76,12 +136,13 @@ export default function TimelinePage() {
             <span><strong>{lastYear - firstYear}</strong> year field</span>
           </div>
         </div>
-        <div className="timeline-orbit" aria-label={`Timeline orbit, ${orbitEvents.length} events in view`}>
+        <div className="timeline-orbit" data-selected-tone={selectedTone} aria-label={`Timeline orbit, ${orbitEvents.length} events in view`}>
           <div id="timeline-selected-orbit-detail" className="timeline-orbit__core" aria-live="polite">
             {selected ? (
               <>
                 <span>{year(selected.date)}</span>
                 <strong>{selected.title}</strong>
+                <em>{selectedProfile?.axis}</em>
               </>
             ) : (
               <>
@@ -125,18 +186,53 @@ export default function TimelinePage() {
           <output className="timeline-controls__result" htmlFor="timeline-search timeline-category" aria-live="polite">
             {resultSummary}
           </output>
+          <div className="timeline-controls__chips" role="group" aria-label="Timeline filter chips">
+            {categories.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={item.id === category ? 'timeline-controls__chip timeline-controls__chip--active' : 'timeline-controls__chip'}
+                data-tone={categoryTone(item.id)}
+                onClick={() => setCategory(item.id)}
+                aria-pressed={item.id === category}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="timeline-field-stack">
           <div
             id="timeline-field"
             className={filtered.length > 0 ? 'timeline-field' : 'timeline-field timeline-field--empty'}
+            data-selected-tone={selectedTone}
             role="group"
             aria-label={`Timeline field: ${resultSummary}. Years ${firstYear} to ${lastYear}.`}
+            style={{ ['--selected-x' as string]: `${selectedX}%` }}
           >
             <div className="timeline-field__axis" aria-hidden="true">
               <span>{firstYear}</span>
               <span>{lastYear}</span>
             </div>
+            {TIMELINE_PHASES.map((phase) => {
+              const left = 10 + ((phase.startYear - firstYear) / Math.max(lastYear - firstYear, 1)) * 80;
+              const right = 10 + ((phase.endYear - firstYear) / Math.max(lastYear - firstYear, 1)) * 80;
+              return (
+                <span
+                  key={phase.id}
+                  className={phase.id === selectedPhase?.id ? 'timeline-field__phase timeline-field__phase--active' : 'timeline-field__phase'}
+                  style={{
+                    ['--phase-left' as string]: `${left}%`,
+                    ['--phase-width' as string]: `${Math.max(right - left, 6)}%`,
+                  }}
+                  aria-hidden="true"
+                >
+                  <strong>{phase.label}</strong>
+                  <em>{phase.startYear}-{phase.endYear}</em>
+                </span>
+              );
+            })}
+            {selected ? <span className="timeline-field__selected-beam" aria-hidden="true" /> : null}
             {categoryRows.map((item, index) => (
               <div
                 key={item.id}
@@ -199,6 +295,20 @@ export default function TimelinePage() {
               <p className="eyebrow">{categoryLabels[selected.category] || selected.category}</p>
               <h2>{selected.title}</h2>
               <p>{selected.summary}</p>
+              <div className="timeline-detail__lens" data-tone={selectedTone} role="group" aria-label="Selected event interpretive lens">
+                <span>
+                  <strong>{year(selected.date)}</strong>
+                  <em>year</em>
+                </span>
+                <span>
+                  <strong>{categoryLabels[selected.category] || selected.category}</strong>
+                  <em>{selectedProfile?.force}</em>
+                </span>
+                <span>
+                  <strong>{selectedPhaseLabel}</strong>
+                  <em>{selectedProfile?.movement}</em>
+                </span>
+              </div>
             </>
           ) : (
             <>

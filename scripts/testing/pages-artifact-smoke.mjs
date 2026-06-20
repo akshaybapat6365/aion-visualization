@@ -153,13 +153,21 @@ async function checkTimelineArtifact(page, failures) {
   const title = await page.locator('h1').first().textContent();
   const railCount = await page.locator('.timeline-rail__item').count();
   const fieldNodeCount = await page.locator('.timeline-field__node').count();
+  const chipCount = await page.locator('.timeline-controls__chip').count();
+  const phaseCount = await page.locator('.timeline-field__phase').count();
+  const beamVisible = await page.locator('.timeline-field__selected-beam').isVisible();
   const detailVisible = await page.locator('#timeline-selected-detail').isVisible();
+  const lensText = await page.locator('.timeline-detail__lens').textContent();
   const fieldLabel = await page.getByRole('group', { name: /Timeline field:/ }).getAttribute('aria-label');
 
   if (!title?.includes('Jung in symbolic time')) failures.push(`/timeline artifact title mismatch: ${title}`);
   if (railCount !== 22) failures.push(`/timeline artifact rail count mismatch: ${railCount}`);
   if (fieldNodeCount !== 22) failures.push(`/timeline artifact field count mismatch: ${fieldNodeCount}`);
+  if (chipCount !== 5) failures.push(`/timeline artifact chip count mismatch: ${chipCount}`);
+  if (phaseCount !== 4) failures.push(`/timeline artifact phase count mismatch: ${phaseCount}`);
+  if (!beamVisible) failures.push('/timeline artifact selected beam is not visible');
   if (!detailVisible) failures.push('/timeline artifact detail is not visible');
+  if (!lensText?.includes('1875') || !lensText?.includes('Clinical roots')) failures.push(`/timeline artifact lens mismatch: ${lensText}`);
   if (!fieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline artifact field label mismatch: ${fieldLabel}`);
 }
 
