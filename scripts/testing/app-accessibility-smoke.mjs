@@ -184,6 +184,48 @@ async function checkRoute(page, route, failures) {
   }
 }
 
+async function checkChaptersDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/chapters`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+
+  const arcHub = page.getByLabel('Interactive chapter arc hub');
+  const orbit = page.getByLabel('Interactive chapter orbit');
+  const selectedDetail = page.locator('#chapters-selected-detail');
+  const arcButtons = page.locator('.chapters-arc-map__cluster');
+  const orbitButtons = page.locator('.chapters-orbit__node');
+  const selectedLink = page.locator('.chapters-selected-panel__link');
+  const chapterOneButton = page.getByRole('button', { name: /Preview chapter 1: The Ego/ });
+  const chapterFourteenButton = page.getByRole('button', { name: /Preview chapter 14: The Structure and Dynamics of the Self/ });
+
+  if (!await arcHub.isVisible()) failures.push('/chapters: arc hub is not exposed by label');
+  if (!await orbit.isVisible()) failures.push('/chapters: chapter orbit is not exposed by label');
+  if (await arcButtons.count() !== 7) failures.push(`/chapters: arc button count mismatch: ${await arcButtons.count()}`);
+  if (await orbitButtons.count() !== 14) failures.push(`/chapters: orbit button count mismatch: ${await orbitButtons.count()}`);
+  if (await page.locator('.chapters-orbit__node[aria-controls~="chapters-selected-detail"]').count() !== 14) {
+    failures.push('/chapters: orbit buttons do not all control selected detail');
+  }
+  if (await page.locator('.chapters-orbit__node[aria-pressed="true"]').count() !== 1) {
+    failures.push('/chapters: initial orbit pressed count is not one');
+  }
+
+  await chapterOneButton.focus();
+  await chapterOneButton.press('End');
+  await page.waitForTimeout(100);
+  const chapterFourteenPressed = await chapterFourteenButton.getAttribute('aria-pressed');
+  const detailChapter = await selectedDetail.getAttribute('data-selected-chapter');
+  const linkHref = await selectedLink.getAttribute('href');
+  if (chapterFourteenPressed !== 'true') failures.push(`/chapters: End key did not select chapter 14: ${chapterFourteenPressed}`);
+  if (detailChapter !== 'ch14') failures.push(`/chapters: selected detail did not announce chapter 14: ${detailChapter}`);
+  if (linkHref !== '/journey/chapter/ch14') failures.push(`/chapters: selected chapter link mismatch after keyboard selection: ${linkHref}`);
+
+  await chapterFourteenButton.press('Home');
+  await page.waitForTimeout(100);
+  const chapterOnePressed = await chapterOneButton.getAttribute('aria-pressed');
+  const resetChapter = await selectedDetail.getAttribute('data-selected-chapter');
+  if (chapterOnePressed !== 'true') failures.push(`/chapters: Home key did not return to chapter 1: ${chapterOnePressed}`);
+  if (resetChapter !== 'ch1') failures.push(`/chapters: selected detail did not return to chapter 1: ${resetChapter}`);
+}
+
 async function checkAtlasDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/atlas`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -676,6 +718,7 @@ async function runAccessibilitySmoke() {
     for (const route of [...canonicalRoutes, ...chapterRoutes]) {
       await checkRoute(desktop, route, failures);
     }
+    await checkChaptersDynamicAccessibility(desktop, failures);
     await checkAtlasDynamicAccessibility(desktop, failures);
     await checkTimelineDynamicAccessibility(desktop, failures);
     await checkSymbolsDynamicAccessibility(desktop, failures);
