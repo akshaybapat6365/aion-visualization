@@ -1,0 +1,204 @@
+.chapter-seven-prophecy {
+  --ch7-pressure: #d79a35;
+  --ch7-collective: #b995ff;
+  --ch7-threshold: #53d8e8;
+  position: relative;
+  width: min(31rem, 100%);
+  margin-top: 0.92rem;
+  padding: 0.34rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.13);
+  border-radius: calc(var(--radius) + 0.18rem);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(215, 154, 53, 0.14), transparent 7.2rem),
+    radial-gradient(circle at 64% 7%, rgba(185, 149, 255, 0.12), transparent 7.6rem),
+    radial-gradient(circle at 93% 13%, rgba(83, 216, 232, 0.12), transparent 6.4rem),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.055), rgba(244, 240, 232, 0.016));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.075), 0 1.6rem 4.6rem rgba(0, 0, 0, 0.24);
+}
+
+.chapter-seven-prophecy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.56;
+  background:
+    linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.07), transparent),
+    repeating-linear-gradient(90deg, transparent 0 2.7rem, rgba(244, 240, 232, 0.035) 2.74rem 2.78rem);
+  mask-image: linear-gradient(180deg, #000, transparent 78%);
+}
+
+.chapter-seven-prophecy__header,
+.chapter-seven-prophecy__legend {
+  position: relative;
+  z-index: 2;
+}
+
+.chapter-seven-prophecy__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.05rem 0.7rem;
+  align-items: end;
+  padding: 0.1rem 0.18rem 0.28rem;
+}
+
+.chapter-seven-prophecy__header span,
+.chapter-seven-prophecy__header em,
+.chapter-seven-prophecy__step span,
+.chapter-seven-prophecy__step em {
+  color: rgba(244, 240, 232, 0.52);
+  font-family: var(--font-ui);
+  font-size: 0.54rem;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.chapter-seven-prophecy__header strong {
+  color: rgba(244, 240, 232, 0.94);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 0.95;
+}
+
+.chapter-seven-prophecy__header em {
+  color: color-mix(in srgb, var(--ch7-pressure) 78%, rgba(244, 240, 232, 0.7));
+  text-align: right;
+}
+
+.chapter-seven-prophecy[data-active-panel="collective"] .chapter-seven-prophecy__header em {
+  color: color-mix(in srgb, var(--ch7-collective) 82%, rgba(244, 240, 232, 0.72));
+}
+
+.chapter-seven-prophecy[data-active-panel="threshold"] .chapter-seven-prophecy__header em {
+  color: color-mix(in srgb, var(--ch7-threshold) 84%, rgba(244, 240, 232, 0.72));
+}
+
+.chapter-seven-prophecy__legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.28rem;
+  margin: 0;
+  padding: 0.38rem 0 0;
+  list-style: none;
+}
+
+.chapter-seven-prophecy__step {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+  padding: 0.38rem 0.42rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(244, 240, 232, 0.032);
+  color: rgba(244, 240, 232, 0.62);
+}
+
+.chapter-seven-prophecy__step :is(span, em, strong) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chapter-seven-prophecy__step strong {
+  color: rgba(244, 240, 232, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  font-weight: 850;
+  line-height: 1.05;
+}
+
+.chapter-seven-prophecy__step--active {
+  border-color: rgba(212, 175, 55, 0.36);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.13), rgba(244, 240, 232, 0.035));
+  color: rgba(255, 227, 156, 0.86);
+  box-shadow: 0 0 1.25rem rgba(212, 175, 55, 0.12);
+}
+
+.chapter-seven-prophecy[data-active-panel="collective"] .chapter-seven-prophecy__step--active {
+  border-color: rgba(185, 149, 255, 0.4);
+  background: linear-gradient(180deg, rgba(185, 149, 255, 0.13), rgba(244, 240, 232, 0.035));
+  box-shadow: 0 0 1.25rem rgba(185, 149, 255, 0.12);
+}
+
+.chapter-seven-prophecy[data-active-panel="threshold"] .chapter-seven-prophecy__step--active {
+  border-color: rgba(83, 216, 232, 0.38);
+  background: linear-gradient(180deg, rgba(83, 216, 232, 0.12), rgba(244, 240, 232, 0.035));
+  box-shadow: 0 0 1.25rem rgba(83, 216, 232, 0.12);
+}
+
+.chapter-seven-prophecy__readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .chapter-seven-prophecy {
+    width: min(100%, 25rem);
+    margin-inline: auto;
+    padding: 0.28rem;
+  }
+
+  .chapter-seven-prophecy__header {
+    gap: 0.04rem 0.46rem;
+  }
+
+  .chapter-seven-prophecy__header strong {
+    font-size: 0.92rem;
+  }
+
+  .chapter-seven-prophecy__step {
+    padding: 0.34rem 0.36rem;
+  }
+
+  .chapter-seven-prophecy__step strong {
+    font-size: 0.6rem;
+  }
+
+  .chapter-seven-prophecy__step em {
+    font-size: 0.48rem;
+  }
+
+  .chapter-experience[data-chapter-id="ch7"][data-reduced-motion="true"] .chapter-stage .scene-host__fallback {
+    top: 22.65rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .chapter-seven-prophecy__header {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .chapter-seven-prophecy__header em {
+    text-align: left;
+  }
+
+  .chapter-seven-prophecy__step em {
+    display: none;
+  }
+
+  .chapter-seven-prophecy__step strong {
+    font-size: 0.58rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-seven-prophecy *,
+  .chapter-seven-prophecy *::before,
+  .chapter-seven-prophecy *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
