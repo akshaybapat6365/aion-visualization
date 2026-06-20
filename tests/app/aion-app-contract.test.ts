@@ -69,6 +69,30 @@ describe('Aion framework data contract', () => {
     }
   });
 
+  test('keeps Chapter 1 Ego panels tied to the reference calibration model', () => {
+    expect(CHAPTER_SCENES.ch1.panels.map((panel) => panel.id)).toEqual([
+      'ego-light',
+      'roots',
+      'self-depth',
+    ]);
+    expect(CHAPTER_SCENES.ch1.panels.map((panel) => panel.kicker)).toEqual([
+      'Orientation',
+      'Depth',
+      'Wholeness',
+    ]);
+    expect(CHAPTER_SCENES.ch1.motionGrammar).toBe('cyclical-return');
+    expect(CHAPTER_SCENES.ch1.visualTheme).toContain('Ego/Self depth field');
+    expect(CHAPTER_SCENES.ch1.sceneModule).toBe('../visualizations/chapters/ch1/ThreeEgoViz.js');
+    expect(CHAPTER_SCENES.ch1.fallbackSummary).toContain('small surface light');
+    expect(CHAPTER_SCENES.ch1.fallbackSummary).toContain('somatic and psychic roots');
+    expect(CHAPTER_SCENES.ch1.fallbackSummary).toContain('deeper Self');
+
+    expect(getConceptsForChapter('ch1').map((concept) => concept.id)).toEqual([
+      'ego',
+      'self',
+    ]);
+  });
+
   test('keeps Chapter 2 shadow panels in the canonical learning sequence', () => {
     expect(CHAPTER_SCENES.ch2.panels.map((panel) => panel.id)).toEqual([
       'mirror',
