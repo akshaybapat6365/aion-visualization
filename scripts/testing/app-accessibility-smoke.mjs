@@ -354,6 +354,52 @@ async function checkSymbolsDynamicAccessibility(page, failures) {
   if (!lapisDetail?.includes('Lapis')) failures.push(`/symbols: Lapis detail mismatch: ${lapisDetail}`);
 }
 
+async function checkAboutDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/about`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+
+  const orientation = page.getByRole('group', { name: /Aion orientation instrument/ });
+  const controls = page.getByRole('group', { name: /Learning orientation modes/ });
+  const detail = page.locator('#about-orientation-detail');
+  const field = page.getByRole('img', { name: /Aion learning orientation field/ });
+  const modeButtons = page.locator('.about-orientation-node');
+  const detailLive = await detail.getAttribute('aria-live');
+  const detailAtomic = await detail.getAttribute('aria-atomic');
+  const controlsCount = await modeButtons.count();
+  const controlsWithTargets = await page.locator('.about-orientation-node[aria-controls~="about-orientation-detail"][aria-controls~="about-orientation-field"]').count();
+  const initialPressed = await page.locator('.about-orientation-node[aria-pressed="true"]').count();
+
+  if (!await orientation.isVisible()) failures.push('/about: orientation group is missing an accessible name');
+  if (!await controls.isVisible()) failures.push('/about: orientation controls group is missing an accessible name');
+  if (!await field.isVisible()) failures.push('/about: orientation field image is missing an accessible name');
+  if (detailLive !== 'polite') failures.push(`/about: detail live region mismatch: ${detailLive}`);
+  if (detailAtomic !== 'true') failures.push(`/about: detail live region should be atomic: ${detailAtomic}`);
+  if (controlsCount !== 4) failures.push(`/about: orientation button count mismatch: ${controlsCount}`);
+  if (controlsWithTargets !== 4) failures.push(`/about: orientation buttons controls mismatch: ${controlsWithTargets}`);
+  if (initialPressed !== 1) failures.push(`/about: initial pressed count mismatch: ${initialPressed}`);
+
+  const map = page.getByRole('button', { name: /Map: See concepts as relations/ });
+  await map.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+  const mapPressed = await map.getAttribute('aria-pressed');
+  const mapDetail = await detail.textContent();
+  if (mapPressed !== 'true') failures.push(`/about: Map button did not become pressed: ${mapPressed}`);
+  if (!mapDetail?.includes('See concepts as relations') || !mapDetail?.includes('Concept graph')) failures.push(`/about: Map detail did not update: ${mapDetail}`);
+
+  const verify = page.getByRole('button', { name: /Verify: Keep the orientation honest/ });
+  await verify.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+  const verifyPressed = await verify.getAttribute('aria-pressed');
+  const verifyDetail = await detail.textContent();
+  if (verifyPressed !== 'true') failures.push(`/about: Verify button did not become pressed: ${verifyPressed}`);
+  if (!verifyDetail?.includes('Keep the orientation honest') || !verifyDetail?.includes('Quality gate')) failures.push(`/about: Verify detail did not update: ${verifyDetail}`);
+
+  const finalPressed = await page.locator('.about-orientation-node[aria-pressed="true"]').count();
+  if (finalPressed !== 1) failures.push(`/about: final pressed count mismatch: ${finalPressed}`);
+}
+
 async function checkChapterSixDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/journey/chapter/ch6`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -722,6 +768,7 @@ async function runAccessibilitySmoke() {
     await checkAtlasDynamicAccessibility(desktop, failures);
     await checkTimelineDynamicAccessibility(desktop, failures);
     await checkSymbolsDynamicAccessibility(desktop, failures);
+    await checkAboutDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
     await checkChapterEightDynamicAccessibility(desktop, failures);

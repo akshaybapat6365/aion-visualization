@@ -587,6 +587,77 @@ async function smokeSymbolsVisualField(page, failures) {
   if (!lapisFieldLabel?.includes('Lapis philosophorum') || !lapisFieldLabel?.toLowerCase().includes('individuation')) failures.push(`symbols Lapis field label mismatch: ${lapisFieldLabel}`);
 }
 
+async function smokeAboutOrientation(page, failures) {
+  await gotoAppRoute(page, '/about');
+
+  const title = await page.locator('h1').first().textContent();
+  const orientation = page.getByRole('group', { name: /Aion orientation instrument/ });
+  const field = page.getByRole('img', { name: /Aion learning orientation field/ });
+  const modeButtons = page.locator('.about-orientation-node');
+  const routeCards = page.locator('.about-route-card');
+  const detail = page.locator('#about-orientation-detail');
+  const routeCardHrefs = await routeCards.evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  const scrollYBeforeSelect = await page.evaluate(() => window.scrollY);
+
+  if (!title?.includes('Aion visual atlas')) failures.push(`/about title mismatch: ${title}`);
+  if (!await orientation.isVisible()) failures.push('/about orientation group is not visible');
+  if (!await field.isVisible()) failures.push('/about orientation field is missing an accessible image role');
+  if (await modeButtons.count() !== 4) failures.push(`/about mode button count mismatch: ${await modeButtons.count()}`);
+  if (await routeCards.count() !== 4) failures.push(`/about route card count mismatch: ${await routeCards.count()}`);
+  if (await detail.getAttribute('data-active-mode') !== 'study') failures.push(`/about initial detail mode mismatch: ${await detail.getAttribute('data-active-mode')}`);
+  if (await page.locator('.about-orientation-node[aria-pressed="true"]').count() !== 1) failures.push('/about initial pressed mode count is not one');
+  for (const expectedHref of ['/chapters', '/atlas', '/symbols', '/timeline']) {
+    if (!routeCardHrefs.includes(expectedHref)) failures.push(`/about route cards missing href: ${expectedHref}`);
+  }
+
+  const nodeHitTargets = await modeButtons.evaluateAll((buttons) => buttons.map((button) => {
+    const box = button.getBoundingClientRect();
+    const target = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    return {
+      name: button.getAttribute('aria-label') || button.textContent?.trim() || 'unknown',
+      hit: button === target || button.contains(target),
+    };
+  }));
+  for (const target of nodeHitTargets) {
+    if (!target.hit) failures.push(`/about orientation node center is obstructed: ${target.name}`);
+  }
+
+  const mapButton = page.getByRole('button', { name: /Map: See concepts as relations/ });
+  await mapButton.click();
+  await page.waitForTimeout(100);
+  const mapPressed = await mapButton.getAttribute('aria-pressed');
+  const mapDetailMode = await detail.getAttribute('data-active-mode');
+  const mapDetailTitle = await page.locator('#about-orientation-detail h2').textContent();
+  const mapLinkHref = await page.locator('.about-orientation__link').getAttribute('href');
+  if (mapPressed !== 'true') failures.push(`/about Map mode did not become pressed: ${mapPressed}`);
+  if (mapDetailMode !== 'map') failures.push(`/about Map detail mode mismatch: ${mapDetailMode}`);
+  if (!mapDetailTitle?.includes('See concepts as relations')) failures.push(`/about Map detail title mismatch: ${mapDetailTitle}`);
+  if (mapLinkHref !== '/atlas') failures.push(`/about Map link href mismatch: ${mapLinkHref}`);
+
+  const symbolizeButton = page.getByRole('button', { name: /Symbolize: Read images as carriers/ });
+  await symbolizeButton.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+  const symbolizePressed = await symbolizeButton.getAttribute('aria-pressed');
+  const symbolizeDetailMode = await detail.getAttribute('data-active-mode');
+  const symbolizeDetailTitle = await page.locator('#about-orientation-detail h2').textContent();
+  if (symbolizePressed !== 'true') failures.push(`/about Symbolize mode did not become pressed: ${symbolizePressed}`);
+  if (symbolizeDetailMode !== 'symbolize') failures.push(`/about Symbolize detail mode mismatch: ${symbolizeDetailMode}`);
+  if (!symbolizeDetailTitle?.includes('Read images as carriers')) failures.push(`/about Symbolize detail title mismatch: ${symbolizeDetailTitle}`);
+
+  const verifyButton = page.getByRole('button', { name: /Verify: Keep the orientation honest/ });
+  await verifyButton.focus();
+  await page.keyboard.press('Space');
+  await page.waitForTimeout(100);
+  const verifyPressed = await verifyButton.getAttribute('aria-pressed');
+  const verifyDetailText = await detail.textContent();
+  const scrollYAfterSelect = await page.evaluate(() => window.scrollY);
+  if (verifyPressed !== 'true') failures.push(`/about Verify mode did not become pressed: ${verifyPressed}`);
+  if (!verifyDetailText?.includes('Quality gate') || !verifyDetailText?.includes('Smoke, accessibility')) failures.push(`/about Verify evidence mismatch: ${verifyDetailText}`);
+  if (scrollYAfterSelect > scrollYBeforeSelect + 10) failures.push(`/about mode selection unexpectedly scrolled page: ${scrollYAfterSelect}`);
+  if (await page.locator('.about-orientation-node[aria-pressed="true"]').count() !== 1) failures.push('/about pressed mode count after interaction is not one');
+}
+
 async function smokeChapterRoutes(page, failures) {
   const browser = page.context().browser();
 
@@ -3380,6 +3451,7 @@ async function runSmoke() {
     await smokeAtlasVisualSearch(page, failures);
     await smokeTimelineVisualField(page, failures);
     await smokeSymbolsVisualField(page, failures);
+    await smokeAboutOrientation(page, failures);
     await smokeChapterRoutes(page, failures);
     await smokeKeyboard(page, failures);
     await smokeLegacyRedirect(page, failures);

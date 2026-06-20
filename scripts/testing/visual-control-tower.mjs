@@ -28,7 +28,7 @@ const supportRoutes = [
   { route: '/atlas', label: 'Atlas', kind: 'map' },
   { route: '/timeline', label: 'Timeline', kind: 'support' },
   { route: '/symbols', label: 'Symbols', kind: 'support' },
-  { route: '/about', label: 'About', kind: 'support' },
+  { route: '/about', label: 'About', kind: 'orientation' },
 ];
 
 const chapterRoutes = [...chaptersJson.chapters]

@@ -190,6 +190,38 @@ async function checkChaptersArtifact(page, failures) {
   if (pressedCount !== 1) failures.push(`/chapters artifact pressed orbit count mismatch: ${pressedCount}`);
 }
 
+async function checkAboutArtifact(page, failures) {
+  await checkShellRoute(page, '/about', failures);
+
+  const title = await page.locator('h1').first().textContent();
+  const fieldVisible = await page.getByRole('img', { name: /Aion learning orientation field/ }).isVisible();
+  const modeCount = await page.locator('.about-orientation-node').count();
+  const routeCardCount = await page.locator('.about-route-card').count();
+  const routeCardHrefs = await page.locator('.about-route-card').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  const initialMode = await page.locator('#about-orientation-detail').getAttribute('data-active-mode');
+
+  if (!title?.includes('Aion visual atlas')) failures.push(`/about artifact title mismatch: ${title}`);
+  if (!fieldVisible) failures.push('/about artifact orientation field is not visible');
+  if (modeCount !== 4) failures.push(`/about artifact mode count mismatch: ${modeCount}`);
+  if (routeCardCount !== 4) failures.push(`/about artifact route card count mismatch: ${routeCardCount}`);
+  if (initialMode !== 'study') failures.push(`/about artifact initial detail mode mismatch: ${initialMode}`);
+
+  for (const expectedHref of [`${basePath}/chapters`, `${basePath}/atlas`, `${basePath}/symbols`, `${basePath}/timeline`]) {
+    if (!routeCardHrefs.includes(expectedHref)) failures.push(`/about artifact route cards missing href: ${expectedHref}`);
+  }
+
+  await page.getByRole('button', { name: /Map: See concepts as relations/ }).click();
+  await page.waitForTimeout(100);
+  const selectedMode = await page.locator('#about-orientation-detail').getAttribute('data-active-mode');
+  const selectedTitle = await page.locator('#about-orientation-detail h2').textContent();
+  const selectedLink = await page.locator('.about-orientation__link').getAttribute('href');
+  const pressedCount = await page.locator('.about-orientation-node[aria-pressed="true"]').count();
+  if (selectedMode !== 'map') failures.push(`/about artifact selected mode mismatch: ${selectedMode}`);
+  if (!selectedTitle?.includes('See concepts as relations')) failures.push(`/about artifact selected detail mismatch: ${selectedTitle}`);
+  if (selectedLink !== `${basePath}/atlas`) failures.push(`/about artifact selected link mismatch: ${selectedLink}`);
+  if (pressedCount !== 1) failures.push(`/about artifact pressed mode count mismatch: ${pressedCount}`);
+}
+
 async function runSmoke() {
   const server = createArtifactServer();
   await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
@@ -210,6 +242,7 @@ async function runSmoke() {
       }
     }
     await checkChaptersArtifact(desktop, failures);
+    await checkAboutArtifact(desktop, failures);
     await checkTimelineArtifact(desktop, failures);
 
     const legacyChapter = await desktop.goto(`${baseUrl}/chapters/chapter-7.html`, {
