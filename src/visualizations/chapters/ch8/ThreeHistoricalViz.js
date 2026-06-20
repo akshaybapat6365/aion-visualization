@@ -32,6 +32,9 @@ const ARIES_RED = new THREE.Color('#ff4444');
 const PISCES_BLUE = new THREE.Color('#4a90d9');
 const WATER_DARK = new THREE.Color('#050505');
 const VOID = 0x000000;
+const STRATA_GOLD = new THREE.Color('#d4af37');
+const STRATA_GREEN = new THREE.Color('#5bd68f');
+const STRATA_CYAN = new THREE.Color('#53d8e8');
 
 /* ── Scene boundaries ── */
 const S1_END = 0.20;
@@ -106,6 +109,7 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._buildScene3_HealingFish();
         this._buildScene4_GreatTransition();
         this._buildScene5_PrimordialDeep();
+        this._buildHistoricalAtlas();
         this._buildLights();
         this._buildOverlay();
 
@@ -546,6 +550,175 @@ export default class ThreeHistoricalViz extends BaseViz {
         );
         this._deepFishGlow.position.copy(this._deepFish.position);
         this.scene.add(this._deepFishGlow);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PERSISTENT HISTORICAL ATLAS — strata, carrier path, afterlife
+       ═══════════════════════════════════════════════════════════════ */
+    _buildHistoricalAtlas() {
+        this._atlas = new THREE.Group();
+        this._atlas.position.set(0.6, 0.4, -4.8);
+        this._atlas.renderOrder = -1;
+        this._atlasBands = [];
+        this._atlasNodes = [];
+        this._atlasThreads = [];
+
+        const bandY = [3.1, 2.32, 1.54, 0.76, -0.02, -0.8, -1.58, -2.36];
+        bandY.forEach((y, index) => {
+            const width = 12.6 - index * 0.42;
+            const color = index < 3 ? STRATA_GOLD : index < 6 ? STRATA_GREEN : STRATA_CYAN;
+            const opacity = index < 3 ? 0.12 : index < 6 ? 0.1 : 0.09;
+
+            const line = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(-width / 2, y, 0),
+                    new THREE.Vector3(width / 2, y + Math.sin(index) * 0.08, 0),
+                ]),
+                new THREE.LineBasicMaterial({
+                    color,
+                    transparent: true,
+                    opacity,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            this._atlas.add(line);
+            this._atlasBands.push(line);
+
+            const pane = new THREE.Mesh(
+                new THREE.PlaneGeometry(width, 0.18),
+                new THREE.MeshBasicMaterial({
+                    color,
+                    transparent: true,
+                    opacity: opacity * 0.15,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
+                })
+            );
+            pane.position.set(0, y - 0.08, -0.02);
+            this._atlas.add(pane);
+            this._atlasBands.push(pane);
+        });
+
+        const nodes = [
+            { x: -4.9, y: 2.3, color: STRATA_GOLD, radius: 0.075 },
+            { x: -3.2, y: 1.34, color: STRATA_GREEN, radius: 0.07 },
+            { x: -1.3, y: 0.48, color: STRATA_GOLD, radius: 0.06 },
+            { x: 1.05, y: 0.0, color: STRATA_GREEN, radius: 0.07 },
+            { x: 3.5, y: -0.72, color: STRATA_CYAN, radius: 0.075 },
+            { x: 4.9, y: -1.72, color: STRATA_CYAN, radius: 0.06 },
+        ];
+
+        nodes.forEach((node) => {
+            const marker = new THREE.Mesh(
+                new THREE.SphereGeometry(node.radius, 12, 8),
+                new THREE.MeshBasicMaterial({
+                    color: node.color,
+                    transparent: true,
+                    opacity: 0.7,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                })
+            );
+            marker.position.set(node.x, node.y, 0.08);
+            this._atlas.add(marker);
+            this._atlasNodes.push(marker);
+        });
+
+        const pathPoints = [
+            new THREE.Vector3(-4.9, 2.3, 0.04),
+            new THREE.Vector3(-3.15, 1.38, 0.04),
+            new THREE.Vector3(-1.18, 0.52, 0.04),
+            new THREE.Vector3(1.05, 0.02, 0.04),
+            new THREE.Vector3(3.5, -0.72, 0.04),
+            new THREE.Vector3(4.9, -1.72, 0.04),
+        ];
+        const carrierCurve = new THREE.CatmullRomCurve3(pathPoints);
+        const carrierThread = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(carrierCurve.getPoints(120)),
+            new THREE.LineBasicMaterial({
+                color: STRATA_CYAN,
+                transparent: true,
+                opacity: 0.2,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this._atlas.add(carrierThread);
+        this._atlasThreads.push(carrierThread);
+
+        const descentCurve = new THREE.CatmullRomCurve3([
+            new THREE.Vector3(-2.2, 2.7, 0.02),
+            new THREE.Vector3(-0.2, 1.0, 0.02),
+            new THREE.Vector3(0.7, -0.95, 0.02),
+            new THREE.Vector3(1.8, -2.55, 0.02),
+        ]);
+        const descentThread = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(descentCurve.getPoints(96)),
+            new THREE.LineBasicMaterial({
+                color: STRATA_GOLD,
+                transparent: true,
+                opacity: 0.14,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this._atlas.add(descentThread);
+        this._atlasThreads.push(descentThread);
+
+        this._atlasFish = new THREE.Group();
+        const fishBody = new THREE.Mesh(
+            new THREE.SphereGeometry(0.38, 18, 12).scale(2.2, 0.62, 0.34),
+            new THREE.MeshBasicMaterial({
+                color: STRATA_CYAN,
+                transparent: true,
+                opacity: 0.16,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this._atlasFish.add(fishBody);
+
+        const fishTailGeo = new THREE.BufferGeometry();
+        fishTailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+            -0.84, 0, 0.02,
+            -1.36, 0.28, 0.02,
+            -1.36, -0.28, 0.02,
+        ]), 3));
+        fishTailGeo.setIndex([0, 1, 2]);
+        this._atlasFishTail = new THREE.Mesh(
+            fishTailGeo,
+            new THREE.MeshBasicMaterial({
+                color: STRATA_GOLD,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+            })
+        );
+        this._atlasFish.add(this._atlasFishTail);
+        this._atlasFish.position.set(0.2, 0.03, 0.18);
+        this._atlasFish.rotation.z = -0.16;
+        this._atlas.add(this._atlasFish);
+
+        this._afterlifeEcho = new THREE.Mesh(
+            new THREE.TorusGeometry(2.35, 0.018, 8, 96),
+            new THREE.MeshBasicMaterial({
+                color: STRATA_CYAN,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this._afterlifeEcho.scale.set(1.72, 0.6, 1);
+        this._afterlifeEcho.position.set(2.7, -1.55, -0.04);
+        this._afterlifeEcho.rotation.z = -0.18;
+        this._atlas.add(this._afterlifeEcho);
+
+        this.scene.add(this._atlas);
     }
 
     /* ─── Lights ── */
@@ -1007,6 +1180,59 @@ export default class ThreeHistoricalViz extends BaseViz {
             this._deepFish.material.opacity = 0;
             this._deepFishTail.material.opacity = 0;
             this._deepFishGlow.material.opacity = 0;
+        }
+
+        if (this._atlas) {
+            const panelId = this.panelState?.activePanelId || 'strata';
+            const strataWeight = panelId === 'strata' ? 1 : 0.55;
+            const carrierWeight = panelId === 'christian' ? 1 : 0.62;
+            const depthWeight = panelId === 'modern' ? 1 : 0.58;
+            const pulse = this.reducedMotion ? 0 : (Math.sin(t * 0.55) + 1) * 0.5;
+            const compactStage = this.width < 560;
+            const tabletStage = this.width >= 560 && this.width < 900;
+            const atlasBoost = compactStage ? 1.32 : tabletStage ? 1.16 : 1;
+            const atlasScale = compactStage ? 0.74 : tabletStage ? 0.86 : 1;
+
+            this._atlas.rotation.y = this.mouseSmooth.x * 0.08 + Math.sin(t * 0.04 * motionScale) * 0.025;
+            this._atlas.rotation.x = -0.08 + this.mouseSmooth.y * 0.035;
+            this._atlas.scale.setScalar(atlasScale);
+            this._atlas.position.x = compactStage ? 0.08 : tabletStage ? 0.24 : 0.6;
+            this._atlas.position.y = (compactStage ? 1.08 : tabletStage ? 0.72 : 0.25) - p * (compactStage ? 1.08 : 1.45);
+            this._atlas.position.z = (compactStage ? -4.45 : -5.2) + p * 1.4;
+
+            this._atlasBands.forEach((band, index) => {
+                const layerIndex = Math.floor(index / 2);
+                const base = index % 2 === 0 ? 0.11 : 0.018;
+                const historicalBias = layerIndex < 3 ? strataWeight : layerIndex < 6 ? carrierWeight : depthWeight;
+                band.material.opacity = clamp01(base * historicalBias * atlasBoost * (0.86 + pulse * 0.18));
+            });
+
+            this._atlasNodes.forEach((node, index) => {
+                const isEarly = index < 3;
+                const isLate = index > 3;
+                const weight = isEarly ? strataWeight : isLate ? depthWeight : carrierWeight;
+                node.material.opacity = clamp01((0.38 + weight * 0.38) * atlasBoost * (0.88 + pulse * 0.22));
+                node.scale.setScalar(1 + weight * 0.28 + pulse * 0.08);
+            });
+
+            if (this._atlasThreads[0]) {
+                this._atlasThreads[0].material.opacity = clamp01((0.16 + carrierWeight * 0.18) * atlasBoost * (0.9 + pulse * 0.18));
+            }
+            if (this._atlasThreads[1]) {
+                this._atlasThreads[1].material.opacity = clamp01((0.08 + depthWeight * 0.12) * atlasBoost * (0.9 + pulse * 0.16));
+            }
+            if (this._atlasFish) {
+                this._atlasFish.position.x = 0.2 + Math.sin(t * 0.1 * motionScale) * 0.2;
+                this._atlasFish.rotation.z = -0.16 + Math.sin(t * 0.13 * motionScale) * 0.05;
+                this._atlasFish.children.forEach((part) => {
+                    if (part.material) part.material.opacity = clamp01(((part === this._atlasFishTail ? 0.14 : 0.18) + carrierWeight * 0.12) * atlasBoost);
+                });
+            }
+            if (this._afterlifeEcho) {
+                this._afterlifeEcho.material.opacity = clamp01((0.05 + depthWeight * 0.11) * atlasBoost * (0.92 + pulse * 0.18));
+                this._afterlifeEcho.rotation.z = -0.18 + Math.sin(t * 0.05 * motionScale) * 0.06;
+                this._afterlifeEcho.scale.set(1.68 + depthWeight * 0.12, 0.55 + depthWeight * 0.1, 1);
+            }
         }
 
         /* ── Annotations: quotes ── */
