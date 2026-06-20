@@ -442,23 +442,37 @@ async function checkTimelineDynamicAccessibility(page, failures) {
   const search = page.getByLabel('Search');
   const category = page.getByLabel('Category');
   const timelineField = page.getByRole('group', { name: /Timeline field:/ });
+  const quickFilters = page.getByRole('group', { name: 'Timeline filter chips' });
+  const detailLens = page.getByRole('group', { name: 'Selected event interpretive lens' });
   const orbitLabel = await page.locator('.timeline-orbit').getAttribute('aria-label');
   const initialFieldLabel = await timelineField.getAttribute('aria-label');
   const searchVisible = await search.isVisible();
   const categoryVisible = await category.isVisible();
   const fieldVisible = await timelineField.isVisible();
+  const quickFiltersVisible = await quickFilters.isVisible();
+  const detailLensVisible = await detailLens.isVisible();
   const initialActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
   const initialActiveFieldCount = await page.locator('.timeline-field__node[aria-pressed="true"]').count();
+  const initialChipCount = await page.locator('.timeline-controls__chip').count();
+  const initialPressedChipCount = await page.locator('.timeline-controls__chip[aria-pressed="true"]').count();
+  const initialPhaseCount = await page.locator('.timeline-field__phase').count();
+  const initialLensText = await page.locator('.timeline-detail__lens').textContent();
   const firstOrbitControls = await page.locator('.timeline-orbit__node').first().getAttribute('aria-controls');
   const firstFieldControls = await page.locator('.timeline-field__node').first().getAttribute('aria-controls');
 
   if (!searchVisible) failures.push('/timeline: search input is not visible by label');
   if (!categoryVisible) failures.push('/timeline: category select is not visible by label');
   if (!fieldVisible) failures.push('/timeline: timeline field group is missing an accessible name');
+  if (!quickFiltersVisible) failures.push('/timeline: quick filter group is missing an accessible name');
+  if (!detailLensVisible) failures.push('/timeline: interpretive lens group is missing an accessible name');
   if (!orbitLabel?.includes('12 events in view')) failures.push(`/timeline: initial orbit label mismatch: ${orbitLabel}`);
   if (!initialFieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline: initial field label mismatch: ${initialFieldLabel}`);
   if (initialActiveRailCount !== 1) failures.push(`/timeline: initial active rail count mismatch: ${initialActiveRailCount}`);
   if (initialActiveFieldCount !== 1) failures.push(`/timeline: initial active field count mismatch: ${initialActiveFieldCount}`);
+  if (initialChipCount !== 5) failures.push(`/timeline: category chip count mismatch: ${initialChipCount}`);
+  if (initialPressedChipCount !== 1) failures.push(`/timeline: pressed category chip count mismatch: ${initialPressedChipCount}`);
+  if (initialPhaseCount !== 4) failures.push(`/timeline: phase count mismatch: ${initialPhaseCount}`);
+  if (!initialLensText?.includes('1875') || !initialLensText?.includes('Clinical roots')) failures.push(`/timeline: initial lens mismatch: ${initialLensText}`);
   if (!firstOrbitControls?.includes('timeline-selected-detail') || !firstOrbitControls?.includes('timeline-field')) failures.push(`/timeline: orbit controls mismatch: ${firstOrbitControls}`);
   if (!firstFieldControls?.includes('timeline-selected-detail') || !firstFieldControls?.includes('timeline-selected-orbit-detail')) failures.push(`/timeline: field controls mismatch: ${firstFieldControls}`);
 
@@ -470,9 +484,11 @@ async function checkTimelineDynamicAccessibility(page, failures) {
   const freudPressed = await freudRail.getAttribute('aria-pressed');
   const freudDetail = await page.locator('#timeline-selected-detail h2').textContent();
   const freudOrbit = await page.locator('#timeline-selected-orbit-detail').textContent();
+  const freudLens = await page.locator('.timeline-detail__lens').textContent();
   if (freudPressed !== 'true') failures.push(`/timeline: Freud rail did not become pressed: ${freudPressed}`);
   if (!freudDetail?.includes('First meeting with Sigmund Freud')) failures.push(`/timeline: Freud detail mismatch: ${freudDetail}`);
   if (!freudOrbit?.includes('1907') || !freudOrbit?.includes('First meeting with Sigmund Freud')) failures.push(`/timeline: Freud orbit mismatch: ${freudOrbit}`);
+  if (!freudLens?.includes('Encounters') || !freudLens?.includes('Rupture / descent')) failures.push(`/timeline: Freud lens mismatch: ${freudLens}`);
 
   await search.fill('not-a-real-term');
   await page.waitForTimeout(100);
