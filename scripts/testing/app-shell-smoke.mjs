@@ -770,6 +770,17 @@ async function smokeReducedMotion(browser, failures) {
   const chapterTwoCanvasCount = await page.locator('.scene-host canvas').count();
   const chapterTwoAnnotationCount = await page.locator('.ch2-annotations').count();
   const chapterTwoFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterTwoPsycheArcCount = await page.locator('.psyche-arc-instrument').count();
+  const chapterTwoPsycheArcMotion = await page.locator('.psyche-arc-instrument *').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      className: node.className,
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterTwoAnimatedParts = chapterTwoPsycheArcMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterTwoTransitioningParts = chapterTwoPsycheArcMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
 
   if (!chapterTwoFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 2 scene');
   if (chapterTwoReducedMotionAttribute !== 'true') failures.push('Chapter 2 did not record reduced-motion state');
@@ -777,6 +788,9 @@ async function smokeReducedMotion(browser, failures) {
   if (chapterTwoPauseControlCount !== 0) failures.push(`reduced-motion Chapter 2 rendered pause controls: ${chapterTwoPauseControlCount}`);
   if (chapterTwoCanvasCount !== 0) failures.push(`reduced-motion Chapter 2 rendered canvas: ${chapterTwoCanvasCount}`);
   if (chapterTwoAnnotationCount !== 0) failures.push(`reduced-motion Chapter 2 rendered annotation overlay: ${chapterTwoAnnotationCount}`);
+  if (chapterTwoPsycheArcCount !== 1) failures.push(`reduced-motion Chapter 2 psyche arc instrument count mismatch: ${chapterTwoPsycheArcCount}`);
+  if (chapterTwoAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 2 psyche arc still animates: ${JSON.stringify(chapterTwoAnimatedParts)}`);
+  if (chapterTwoTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 2 psyche arc still transitions: ${JSON.stringify(chapterTwoTransitioningParts)}`);
   if (!chapterTwoFallbackText?.includes('split mirror') || !chapterTwoFallbackText?.includes('projection arcs')) {
     failures.push('reduced-motion chapter fallback lost Chapter 2 shadow teaching summary');
   }
@@ -792,6 +806,17 @@ async function smokeReducedMotion(browser, failures) {
   const chapterThreeCanvasCount = await page.locator('.scene-host canvas').count();
   const chapterThreeAnnotationCount = await page.locator('.ch3-annotations').count();
   const chapterThreeFallbackText = await page.locator('.scene-host__fallback').textContent();
+  const chapterThreePsycheArcCount = await page.locator('.psyche-arc-instrument').count();
+  const chapterThreePsycheArcMotion = await page.locator('.psyche-arc-instrument *').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      className: node.className,
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
+  const chapterThreeAnimatedParts = chapterThreePsycheArcMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterThreeTransitioningParts = chapterThreePsycheArcMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
 
   if (!chapterThreeFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 3 scene');
   if (chapterThreeReducedMotionAttribute !== 'true') failures.push('Chapter 3 did not record reduced-motion state');
@@ -800,6 +825,9 @@ async function smokeReducedMotion(browser, failures) {
   if (chapterThreePauseControlCount !== 0) failures.push(`reduced-motion Chapter 3 rendered pause controls: ${chapterThreePauseControlCount}`);
   if (chapterThreeCanvasCount !== 0) failures.push(`reduced-motion Chapter 3 rendered canvas: ${chapterThreeCanvasCount}`);
   if (chapterThreeAnnotationCount !== 0) failures.push(`reduced-motion Chapter 3 rendered annotation overlay: ${chapterThreeAnnotationCount}`);
+  if (chapterThreePsycheArcCount !== 1) failures.push(`reduced-motion Chapter 3 psyche arc instrument count mismatch: ${chapterThreePsycheArcCount}`);
+  if (chapterThreeAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 3 psyche arc still animates: ${JSON.stringify(chapterThreeAnimatedParts)}`);
+  if (chapterThreeTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 3 psyche arc still transitions: ${JSON.stringify(chapterThreeTransitioningParts)}`);
   if (!chapterThreeFallbackText?.includes('projection makes the inner image appear outside') || !chapterThreeFallbackText?.includes('brief symbolic union')) {
     failures.push('reduced-motion chapter fallback lost Chapter 3 syzygy teaching summary');
   }
@@ -815,6 +843,15 @@ async function smokeReducedMotion(browser, failures) {
   const chapterFourCanvasCount = await page.locator('.scene-host canvas').count();
   const chapterFourFallbackText = await page.locator('.scene-host__fallback').textContent();
   const chapterFourInstrumentCount = await page.locator('.self-mandala-instrument').count();
+  const chapterFourPsycheArcCount = await page.locator('.psyche-arc-instrument').count();
+  const chapterFourPsycheArcMotion = await page.locator('.psyche-arc-instrument *').evaluateAll((nodes) => nodes.map((node) => {
+    const styles = window.getComputedStyle(node);
+    return {
+      className: node.className,
+      animationName: styles.animationName,
+      transitionDuration: styles.transitionDuration,
+    };
+  }));
   const chapterFourInstrumentMotion = await page.locator('.self-mandala-instrument__center').evaluate((node) => {
     const styles = window.getComputedStyle(node);
     return {
@@ -822,6 +859,8 @@ async function smokeReducedMotion(browser, failures) {
       transitionDuration: styles.transitionDuration,
     };
   });
+  const chapterFourAnimatedParts = chapterFourPsycheArcMotion.filter((motion) => motion.animationName !== 'none');
+  const chapterFourTransitioningParts = chapterFourPsycheArcMotion.filter((motion) => !motion.transitionDuration.split(',').every((duration) => duration.trim() === '0s'));
 
   if (!chapterFourFallbackVisible) failures.push('reduced-motion fallback is not visible for Chapter 4 scene');
   if (chapterFourReducedMotionAttribute !== 'true') failures.push('Chapter 4 did not record reduced-motion state');
@@ -830,8 +869,11 @@ async function smokeReducedMotion(browser, failures) {
   if (chapterFourPauseControlCount !== 0) failures.push(`reduced-motion Chapter 4 rendered pause controls: ${chapterFourPauseControlCount}`);
   if (chapterFourCanvasCount !== 0) failures.push(`reduced-motion Chapter 4 rendered canvas: ${chapterFourCanvasCount}`);
   if (chapterFourInstrumentCount !== 1) failures.push(`reduced-motion Chapter 4 Self mandala instrument count mismatch: ${chapterFourInstrumentCount}`);
+  if (chapterFourPsycheArcCount !== 1) failures.push(`reduced-motion Chapter 4 psyche arc instrument count mismatch: ${chapterFourPsycheArcCount}`);
   if (chapterFourInstrumentMotion.animationName !== 'none') failures.push(`reduced-motion Chapter 4 Self mandala center still animates: ${chapterFourInstrumentMotion.animationName}`);
   if (chapterFourInstrumentMotion.transitionDuration !== '0s') failures.push(`reduced-motion Chapter 4 Self mandala center still transitions: ${chapterFourInstrumentMotion.transitionDuration}`);
+  if (chapterFourAnimatedParts.length > 0) failures.push(`reduced-motion Chapter 4 psyche arc still animates: ${JSON.stringify(chapterFourAnimatedParts)}`);
+  if (chapterFourTransitioningParts.length > 0) failures.push(`reduced-motion Chapter 4 psyche arc still transitions: ${JSON.stringify(chapterFourTransitioningParts)}`);
   if (!chapterFourFallbackText?.includes('Concentric mandala rings') || !chapterFourFallbackText?.includes('fourfold ordering image')) {
     failures.push('reduced-motion chapter fallback lost Chapter 4 Self teaching summary');
   }
@@ -1457,6 +1499,36 @@ async function assertChapterOneInstrumentState(page, failures, expected) {
   }
 }
 
+async function assertPsycheArcInstrumentState(page, failures, expected) {
+  const instrumentGroup = page.getByRole('group', { name: new RegExp(`Psyche arc instrument for ${expected.arcLabel}`, 'i') });
+  const instrumentImage = page.getByRole('img', { name: new RegExp(`${expected.modelLabel}.*Current emphasis`, 'i') });
+  const readout = page.locator('.psyche-arc-instrument__readout');
+  const groupPanel = await instrumentGroup.getAttribute('data-active-panel');
+  const imagePanel = await instrumentImage.getAttribute('data-active-panel');
+  const imageLabel = await instrumentImage.getAttribute('aria-label');
+  const readoutText = await readout.textContent();
+  const activeStepCount = await page.locator('.psyche-arc-instrument__step--active').count();
+  const ariaCurrentStepCount = await page.locator('.psyche-arc-instrument__step[aria-current="step"]').count();
+  const arcCurrentLinkCount = await page.locator('.psyche-arc-instrument__rail-link[aria-current="page"]').count();
+  const arcRailLinkCount = await page.locator('.psyche-arc-instrument__rail-link').count();
+
+  if (groupPanel !== expected.panelId) failures.push(`${expected.chapterLabel} psyche arc group panel mismatch: ${groupPanel}`);
+  if (imagePanel !== expected.panelId) failures.push(`${expected.chapterLabel} psyche arc image panel mismatch: ${imagePanel}`);
+  if (activeStepCount !== 1) failures.push(`${expected.chapterLabel} psyche arc active step count mismatch: ${activeStepCount}`);
+  if (ariaCurrentStepCount !== 1) failures.push(`${expected.chapterLabel} psyche arc aria-current count mismatch: ${ariaCurrentStepCount}`);
+  if (arcCurrentLinkCount !== 1) failures.push(`${expected.chapterLabel} psyche arc current link count mismatch: ${arcCurrentLinkCount}`);
+  if (arcRailLinkCount !== 3) failures.push(`${expected.chapterLabel} psyche arc rail link count mismatch: ${arcRailLinkCount}`);
+  if (!imageLabel?.includes(`Current emphasis: ${expected.emphasis}`)) {
+    failures.push(`${expected.chapterLabel} psyche arc image label did not follow ${expected.emphasis}: ${imageLabel}`);
+  }
+  if (!imageLabel?.includes(expected.insight)) {
+    failures.push(`${expected.chapterLabel} psyche arc image label lost insight for ${expected.emphasis}: ${imageLabel}`);
+  }
+  if (!readoutText?.includes(expected.insight)) {
+    failures.push(`${expected.chapterLabel} psyche arc readout did not follow ${expected.emphasis}: ${readoutText}`);
+  }
+}
+
 async function smokeChapterSceneControls(page, failures) {
   await gotoAppRoute(page, '/journey/chapter/ch1');
   await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
@@ -1526,8 +1598,18 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterTwoReferenceNodes = page.locator('.chapter-stage__reference-node');
   const chapterTwoReferenceCount = await chapterTwoReferenceNodes.count();
   const chapterTwoPanelIds = await chapterTwoReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterTwoModelVisible = await page.getByRole('img', { name: /Shadow projection model/ }).isVisible();
   if (chapterTwoReferenceCount !== 3) failures.push(`chapter 2 reference node count mismatch: ${chapterTwoReferenceCount}`);
   if (chapterTwoPanelIds.join(',') !== 'mirror,projection,integration') failures.push(`chapter 2 reference nodes out of order: ${chapterTwoPanelIds.join(',')}`);
+  if (!chapterTwoModelVisible) failures.push('chapter 2 shadow projection model image is not visible');
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Shadow',
+    chapterLabel: 'chapter 2',
+    modelLabel: 'Shadow projection model',
+    panelId: 'mirror',
+    emphasis: 'Opposition',
+    insight: 'Recognition begins when the image becomes personal.',
+  });
 
   const chapterTwoPause = page.getByRole('button', { name: /Pause animation/ });
   await activateSceneButton(chapterTwoPause);
@@ -1547,6 +1629,14 @@ async function smokeChapterSceneControls(page, failures) {
   const projectionPanelAnnotationVisible = await page.locator('.ch2-a--projection.panel-vis').count();
   const chapterTwoScrollY = await page.evaluate(() => window.scrollY);
   const chapterTwoSceneDescription = await page.locator('#scene-host-description-ch2').textContent();
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Shadow',
+    chapterLabel: 'chapter 2',
+    modelLabel: 'Shadow projection model',
+    panelId: 'projection',
+    emphasis: 'Projection',
+    insight: 'Projection makes inner conflict look external.',
+  });
   if (projectionPressed !== 'true') failures.push(`chapter 2 scene control did not become active: ${projectionPressed}`);
   if (projectionPanelActive !== 1) failures.push(`chapter 2 projection panel did not become active: ${projectionPanelActive}`);
   if (projectionPanelAnnotationVisible !== 1) failures.push(`chapter 2 projection annotation did not follow selected panel: ${projectionPanelAnnotationVisible}`);
@@ -1558,6 +1648,14 @@ async function smokeChapterSceneControls(page, failures) {
   await page.waitForFunction(() => document.querySelector('.ch2-a--integration')?.classList.contains('vis'), null, { timeout: 2_000 }).catch(() => {});
   const integrationPressed = await integration.getAttribute('aria-pressed');
   const integrationAnnotationVisible = await page.locator('.ch2-a--integration.vis').count();
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Shadow',
+    chapterLabel: 'chapter 2',
+    modelLabel: 'Shadow projection model',
+    panelId: 'integration',
+    emphasis: 'Integration',
+    insight: 'The ego grows by admitting what it excludes.',
+  });
   if (integrationPressed !== 'true') failures.push(`chapter 2 integration reference did not become active: ${integrationPressed}`);
   if (integrationAnnotationVisible !== 1) failures.push(`chapter 2 integration annotation did not follow selected panel: ${integrationAnnotationVisible}`);
 
@@ -1585,8 +1683,18 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterThreeReferenceNodes = page.locator('.chapter-stage__reference-node');
   const chapterThreeReferenceCount = await chapterThreeReferenceNodes.count();
   const chapterThreePanelIds = await chapterThreeReferenceNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-panel-id')));
+  const chapterThreeModelVisible = await page.getByRole('img', { name: /Syzygy relation model/ }).isVisible();
   if (chapterThreeReferenceCount !== 3) failures.push(`chapter 3 reference node count mismatch: ${chapterThreeReferenceCount}`);
   if (chapterThreePanelIds.join(',') !== 'pair,orbit,union') failures.push(`chapter 3 reference nodes out of order: ${chapterThreePanelIds.join(',')}`);
+  if (!chapterThreeModelVisible) failures.push('chapter 3 syzygy relation model image is not visible');
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Syzygy',
+    chapterLabel: 'chapter 3',
+    modelLabel: 'Syzygy relation model',
+    panelId: 'pair',
+    emphasis: 'Syzygy',
+    insight: 'The psyche thinks in living opposites.',
+  });
 
   const chapterThreePause = page.getByRole('button', { name: /Pause animation/ });
   await activateSceneButton(chapterThreePause);
@@ -1607,6 +1715,14 @@ async function smokeChapterSceneControls(page, failures) {
   const orbitAnnotationDisplay = await page.locator('.ch3-panel-note--orbit.panel-vis').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
   const chapterThreeOrbitScrollY = await page.evaluate(() => window.scrollY);
   const chapterThreeOrbitDescription = await page.locator('#scene-host-description-ch3').textContent();
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Syzygy',
+    chapterLabel: 'chapter 3',
+    modelLabel: 'Syzygy relation model',
+    panelId: 'orbit',
+    emphasis: 'Relation',
+    insight: 'Wholeness needs tension, not sameness.',
+  });
   if (orbitPressed !== 'true') failures.push(`chapter 3 orbit reference did not become active: ${orbitPressed}`);
   if (orbitPanelActive !== 1) failures.push(`chapter 3 orbit panel did not become active: ${orbitPanelActive}`);
   if (orbitPanelAnnotationVisible !== 1) failures.push(`chapter 3 orbit annotation did not follow selected panel: ${orbitPanelAnnotationVisible}`);
@@ -1633,6 +1749,14 @@ async function smokeChapterSceneControls(page, failures) {
   });
   const chapterThreeUnionScrollY = await page.evaluate(() => window.scrollY);
   const chapterThreeUnionDescription = await page.locator('#scene-host-description-ch3').textContent();
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Syzygy',
+    chapterLabel: 'chapter 3',
+    modelLabel: 'Syzygy relation model',
+    panelId: 'union',
+    emphasis: 'Conjunction',
+    insight: 'Integration is rhythmic, not static.',
+  });
   if (conjunctionPressed !== 'true') failures.push(`chapter 3 union reference did not become active: ${conjunctionPressed}`);
   if (conjunctionPanelActive !== 1) failures.push(`chapter 3 union panel did not become active: ${conjunctionPanelActive}`);
   if (!conjunctionAnnotationState.visible) failures.push('chapter 3 conjunction annotation did not follow selected panel');
@@ -1695,6 +1819,14 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterFourInstrumentCount !== 1) failures.push(`chapter 4 Self mandala instrument count mismatch: ${chapterFourInstrumentCount}`);
   if (!chapterFourInstrumentLabel?.includes('Self mandala model')) failures.push(`chapter 4 Self mandala instrument label missing teaching text: ${chapterFourInstrumentLabel}`);
   if (chapterFourInstrumentPanel !== 'seed') failures.push(`chapter 4 Self mandala instrument did not start on seed panel: ${chapterFourInstrumentPanel}`);
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Self',
+    chapterLabel: 'chapter 4',
+    modelLabel: 'Self mandala model',
+    panelId: 'seed',
+    emphasis: 'Center',
+    insight: 'The deepest center is not the loudest form.',
+  });
   if (!chapterFourInstrumentMarksVisible) failures.push('chapter 4 Self mandala instrument marks are not visibly rendered');
   if (!chapterFourQuaternityGlyphsVisible) failures.push('chapter 4 reference quaternity glyphs are not visibly rendered');
   if (!chapterFourPanelGlyphsVisible) failures.push('chapter 4 panel quaternity/mandala glyphs are not visibly rendered');
@@ -1707,6 +1839,14 @@ async function smokeChapterSceneControls(page, failures) {
   const quaternityPanelActive = await page.locator('.chapter-panel.chapter-panel--active[data-panel-id="quaternity"]').count();
   const chapterFourQuaternityDescription = await page.locator('#scene-host-description-ch4').textContent();
   const chapterFourInstrumentQuaternityPanel = await chapterFourInstrument.getAttribute('data-active-panel');
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Self',
+    chapterLabel: 'chapter 4',
+    modelLabel: 'Self mandala model',
+    panelId: 'quaternity',
+    emphasis: 'Fourfold',
+    insight: 'A totality image must include more than perfection.',
+  });
   if (quaternityPressed !== 'true') failures.push(`chapter 4 quaternity reference did not become active: ${quaternityPressed}`);
   if (quaternityPanelActive !== 1) failures.push(`chapter 4 quaternity panel did not become active: ${quaternityPanelActive}`);
   if (chapterFourInstrumentQuaternityPanel !== 'quaternity') failures.push(`chapter 4 Self mandala instrument did not follow quaternity panel: ${chapterFourInstrumentQuaternityPanel}`);
@@ -1723,6 +1863,14 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterFourMandalaDescription = await page.locator('#scene-host-description-ch4').textContent();
   const chapterFourScrollY = await page.evaluate(() => window.scrollY);
   const chapterFourInstrumentMandalaPanel = await chapterFourInstrument.getAttribute('data-active-panel');
+  await assertPsycheArcInstrumentState(page, failures, {
+    arcLabel: 'Self',
+    chapterLabel: 'chapter 4',
+    modelLabel: 'Self mandala model',
+    panelId: 'mandala',
+    emphasis: 'Mandala',
+    insight: 'The Self orders by holding difference.',
+  });
   if (mandalaPressed !== 'true') failures.push(`chapter 4 scene control did not become active: ${mandalaPressed}`);
   if (mandalaPanelActive !== 1) failures.push(`chapter 4 mandala panel did not become active: ${mandalaPanelActive}`);
   if (chapterFourInstrumentMandalaPanel !== 'mandala') failures.push(`chapter 4 Self mandala instrument did not follow mandala panel: ${chapterFourInstrumentMandalaPanel}`);
@@ -2953,6 +3101,7 @@ async function smokeMobile(page, failures) {
     const chapterTwoReferenceCount = await page.locator('.chapter-stage__reference-node').count();
     const chapterTwoAnnotationDisplay = await page.locator('.ch2-annotations').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
     const chapterTwoScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const chapterTwoInstrumentBox = await page.locator('.psyche-arc-instrument').boundingBox();
     if (!chapterTwoNavBox || !chapterTwoHeadingBox) {
       failures.push(`mobile chapter 2 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -2965,6 +3114,10 @@ async function smokeMobile(page, failures) {
     if (chapterTwoReferenceCount !== 3) failures.push(`mobile chapter 2 reference node count mismatch at ${viewport.width}x${viewport.height}: ${chapterTwoReferenceCount}`);
     if (chapterTwoAnnotationDisplay !== 'none') failures.push(`mobile chapter 2 annotation overlay remains visible at ${viewport.width}x${viewport.height}: ${chapterTwoAnnotationDisplay}`);
     if (chapterTwoScrollWidth > viewport.width + 2) failures.push(`mobile chapter 2 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterTwoScrollWidth}`);
+    if (!chapterTwoInstrumentBox) failures.push(`mobile chapter 2 psyche arc instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterTwoInstrumentBox && chapterTwoInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 2 psyche arc instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterTwoInstrumentBox.width)}`);
+    }
 
     await gotoAppRoute(page, '/journey/chapter/ch3');
     await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
@@ -2976,6 +3129,7 @@ async function smokeMobile(page, failures) {
     const chapterThreeAnnotationDisplay = await page.locator('.ch3-annotations').evaluate((node) => window.getComputedStyle(node).display).catch(() => 'missing');
     const chapterThreeScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const chapterThreeReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
+    const chapterThreeInstrumentBox = await page.locator('.psyche-arc-instrument').boundingBox();
     if (!chapterThreeNavBox || !chapterThreeHeadingBox) {
       failures.push(`mobile chapter 3 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -2991,6 +3145,10 @@ async function smokeMobile(page, failures) {
     if (chapterThreeScrollWidth > viewport.width + 2) failures.push(`mobile chapter 3 horizontal overflow at ${viewport.width}x${viewport.height}: ${chapterThreeScrollWidth}`);
     if (chapterThreeReferenceMapBox && chapterThreeReferenceMapBox.width > viewport.width + 2) {
       failures.push(`mobile chapter 3 reference map exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterThreeReferenceMapBox.width)}`);
+    }
+    if (!chapterThreeInstrumentBox) failures.push(`mobile chapter 3 psyche arc instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterThreeInstrumentBox && chapterThreeInstrumentBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 3 psyche arc instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterThreeInstrumentBox.width)}`);
     }
 
     if (viewport.width === mobileViewport.width) {
@@ -3012,6 +3170,7 @@ async function smokeMobile(page, failures) {
     const chapterFourScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const chapterFourReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
     const chapterFourInstrumentBox = await page.locator('.self-mandala-instrument').boundingBox();
+    const chapterFourPsycheArcBox = await page.locator('.psyche-arc-instrument').boundingBox();
     if (!chapterFourNavBox || !chapterFourHeadingBox) {
       failures.push(`mobile chapter 4 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -3030,6 +3189,10 @@ async function smokeMobile(page, failures) {
     if (!chapterFourInstrumentBox) failures.push(`mobile chapter 4 Self mandala instrument missing at ${viewport.width}x${viewport.height}`);
     if (chapterFourInstrumentBox && chapterFourInstrumentBox.width > viewport.width + 2) {
       failures.push(`mobile chapter 4 Self mandala instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFourInstrumentBox.width)}`);
+    }
+    if (!chapterFourPsycheArcBox) failures.push(`mobile chapter 4 psyche arc instrument missing at ${viewport.width}x${viewport.height}`);
+    if (chapterFourPsycheArcBox && chapterFourPsycheArcBox.width > viewport.width + 2) {
+      failures.push(`mobile chapter 4 psyche arc instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterFourPsycheArcBox.width)}`);
     }
 
     await gotoAppRoute(page, '/journey/chapter/ch5');

@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import Chapter14FinalSynthesisInstrument from '../components/Chapter14FinalSynthesisInstrument';
 import ChapterOneReferenceInstrument from '../components/ChapterOneReferenceInstrument';
 import ChapterSigil from '../components/ChapterSigil';
+import PsycheArcInstrument from '../components/PsycheArcInstrument';
 import SceneHost from '../components/SceneHost';
 import {
   getAdjacentChapters,
@@ -124,71 +125,12 @@ function ChapterPageContent({ chapter }: { chapter: ChapterRecord }) {
           <p className="eyebrow">Chapter {chapter.order} · {chapter.cluster}</p>
           <h1>{chapter.title}</h1>
           <p>{chapter.summary}</p>
-          {chapter.id === 'ch2' && (
-            <div
-              className="shadow-projection-instrument"
-              data-active-panel={activePanelId}
-              role="img"
-              aria-label="Shadow projection model: the ego stands before a mirror, casts refused material outward as a shadow, and begins returning it through integration."
-            >
-              <span className="shadow-projection-instrument__vessel" aria-hidden="true" />
-              <span className="shadow-projection-instrument__mirror" aria-hidden="true" />
-              <span className="shadow-projection-instrument__ego" aria-hidden="true" />
-              <span className="shadow-projection-instrument__shadow" aria-hidden="true" />
-              <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--projection" aria-hidden="true" />
-              <span className="shadow-projection-instrument__arc shadow-projection-instrument__arc--return" aria-hidden="true" />
-              <span className="shadow-projection-instrument__bridge" aria-hidden="true" />
-              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--ego" aria-hidden="true">ego</span>
-              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--mirror" aria-hidden="true">mirror</span>
-              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--shadow" aria-hidden="true">shadow</span>
-              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--projection" aria-hidden="true">projection</span>
-              <span className="shadow-projection-instrument__label shadow-projection-instrument__label--return" aria-hidden="true">return</span>
-            </div>
-          )}
-          {chapter.id === 'ch3' && (
-            <div
-              className="syzygy-relation-instrument"
-              data-active-panel={activePanelId}
-              role="img"
-              aria-label="Syzygy relation model: anima and animus appear as symbolic poles, projection arcs outward and returns into orbit, and conjunction forms a brief shared field without erasing the pair."
-            >
-              <span className="syzygy-relation-instrument__axis" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__orbit syzygy-relation-instrument__orbit--outer" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__orbit syzygy-relation-instrument__orbit--inner" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__field syzygy-relation-instrument__field--upper" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__field syzygy-relation-instrument__field--lower" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__projection syzygy-relation-instrument__projection--outward" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__projection syzygy-relation-instrument__projection--return" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__mandorla" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__conjunction-core" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__pole syzygy-relation-instrument__pole--anima" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__pole syzygy-relation-instrument__pole--animus" aria-hidden="true" />
-              <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--anima" aria-hidden="true">anima</span>
-              <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--animus" aria-hidden="true">animus</span>
-              <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--orbit" aria-hidden="true">orbit</span>
-              <span className="syzygy-relation-instrument__label syzygy-relation-instrument__label--conjunction" aria-hidden="true">conjunction</span>
-            </div>
-          )}
-          {chapter.id === 'ch4' && (
-            <div
-              className="self-mandala-instrument"
-              data-active-panel={activePanelId}
-              role="img"
-              aria-label="Self mandala model: a small center opens into a wider totality, four directions make wholeness readable, and concentric mandala rings order conflict without flattening difference."
-            >
-              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--outer" aria-hidden="true" />
-              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--middle" aria-hidden="true" />
-              <span className="self-mandala-instrument__ring self-mandala-instrument__ring--inner" aria-hidden="true" />
-              <span className="self-mandala-instrument__axis self-mandala-instrument__axis--vertical" aria-hidden="true" />
-              <span className="self-mandala-instrument__axis self-mandala-instrument__axis--horizontal" aria-hidden="true" />
-              {quaternityDirections.map((direction) => (
-                <span key={direction} className={`self-mandala-instrument__point self-mandala-instrument__point--${direction}`} aria-hidden="true" />
-              ))}
-              <span className="self-mandala-instrument__center" aria-hidden="true" />
-              <span className="self-mandala-instrument__label self-mandala-instrument__label--center" aria-hidden="true">center</span>
-              <span className="self-mandala-instrument__label self-mandala-instrument__label--fourfold" aria-hidden="true">fourfold</span>
-              <span className="self-mandala-instrument__label self-mandala-instrument__label--mandala" aria-hidden="true">mandala</span>
-            </div>
+          {(chapter.id === 'ch2' || chapter.id === 'ch3' || chapter.id === 'ch4') && (
+            <PsycheArcInstrument
+              activePanel={activePanel}
+              activePanelId={activePanelId}
+              chapterId={chapter.id}
+            />
           )}
           {chapter.id === 'ch5' && (
             <div

@@ -2370,6 +2370,11 @@ h3 {
   font-size: clamp(1rem, 1.35vw, 1.08rem);
 }
 
+.chapter-experience[data-chapter-id="ch3"] .scene-host__controls {
+  top: 7.25rem;
+  bottom: auto;
+}
+
 .chapter-experience[data-chapter-id="ch3"] .chapter-stage__thesis-map {
   max-width: 28rem;
   margin-top: 1.25rem;
@@ -11167,6 +11172,11 @@ h3 {
     max-width: 26ch;
     font-size: 0.98rem;
     line-height: 1.56;
+  }
+
+  .chapter-experience[data-chapter-id="ch3"] .scene-host__controls {
+    top: 7.25rem;
+    bottom: auto;
   }
 
   .syzygy-relation-instrument {

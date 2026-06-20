@@ -1,0 +1,255 @@
+.psyche-arc-instrument {
+  --psyche-accent: var(--gold-soft);
+  --psyche-secondary: var(--cyan);
+  --psyche-shadow: rgba(0, 0, 0, 0.2);
+  position: relative;
+  width: min(30rem, 100%);
+  margin-top: 0.5rem;
+  padding: 0.28rem;
+  overflow: hidden;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: calc(var(--radius) + 0.18rem);
+  background:
+    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--psyche-secondary) 18%, transparent), transparent 5.8rem),
+    radial-gradient(circle at 92% 20%, color-mix(in srgb, var(--psyche-accent) 16%, transparent), transparent 6rem),
+    linear-gradient(180deg, rgba(244, 240, 232, 0.055), rgba(244, 240, 232, 0.018));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1.8rem 4rem var(--psyche-shadow);
+}
+
+.psyche-arc-instrument--ch2 {
+  --psyche-accent: #c4a6f6;
+  --psyche-secondary: #d4af37;
+}
+
+.psyche-arc-instrument--ch3 {
+  --psyche-accent: #ffd060;
+  --psyche-secondary: #53d8e8;
+}
+
+.psyche-arc-instrument--ch4 {
+  --psyche-accent: #d4af37;
+  --psyche-secondary: #53d8e8;
+}
+
+.psyche-arc-instrument__header,
+.psyche-arc-instrument__rail,
+.psyche-arc-instrument__scale {
+  position: relative;
+  z-index: 2;
+}
+
+.psyche-arc-instrument__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.03rem 0.6rem;
+  padding: 0.08rem 0.18rem 0.18rem;
+  text-align: left;
+}
+
+.psyche-arc-instrument__header span,
+.psyche-arc-instrument__header em,
+.psyche-arc-instrument__step em {
+  color: rgba(244, 240, 232, 0.52);
+  font-family: var(--font-ui);
+  font-size: 0.55rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.psyche-arc-instrument__header strong {
+  color: rgba(244, 240, 232, 0.94);
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+.psyche-arc-instrument__header em {
+  align-self: end;
+  color: color-mix(in srgb, var(--psyche-accent) 88%, rgba(244, 240, 232, 0.82));
+  text-align: right;
+}
+
+.psyche-arc-instrument .psyche-arc-instrument__field {
+  width: 100%;
+  min-height: clamp(5.9rem, 10vh, 7.2rem);
+  margin-top: 0;
+  border-radius: calc(var(--radius) - 0.05rem);
+}
+
+.psyche-arc-instrument--ch3 .psyche-arc-instrument__field,
+.psyche-arc-instrument--ch4 .psyche-arc-instrument__field {
+  min-height: clamp(4.45rem, 7vh, 5.1rem);
+}
+
+.psyche-arc-instrument__rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.24rem;
+  margin-top: 0.2rem;
+}
+
+.psyche-arc-instrument__rail-link {
+  display: grid;
+  min-height: 1.55rem;
+  padding: 0.15rem 0.22rem;
+  color: rgba(244, 240, 232, 0.54);
+  text-decoration: none;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 0.58rem;
+  background: rgba(3, 3, 7, 0.35);
+  transition:
+    color 0.42s var(--motion-spring),
+    border-color 0.42s var(--motion-spring),
+    background 0.42s var(--motion-spring),
+    transform 0.42s var(--motion-spring);
+}
+
+.psyche-arc-instrument__rail-link:hover,
+.psyche-arc-instrument__rail-link:focus-visible {
+  color: rgba(244, 240, 232, 0.88);
+  border-color: rgba(244, 240, 232, 0.18);
+  background: rgba(244, 240, 232, 0.06);
+  transform: translateY(-1px);
+}
+
+.psyche-arc-instrument__rail-link--active {
+  color: rgba(244, 240, 232, 0.95);
+  border-color: color-mix(in srgb, var(--psyche-accent) 44%, transparent);
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--psyche-accent) 20%, transparent), transparent 2rem),
+    rgba(244, 240, 232, 0.07);
+}
+
+.psyche-arc-instrument__rail-link span {
+  color: color-mix(in srgb, var(--psyche-accent) 84%, rgba(244, 240, 232, 0.72));
+  font-family: var(--font-ui);
+  font-size: 0.44rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.psyche-arc-instrument__rail-link strong {
+  margin-top: 0.03rem;
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.psyche-arc-instrument__scale {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  list-style: none;
+  white-space: nowrap;
+}
+
+.psyche-arc-instrument__step {
+  display: grid;
+  gap: 0.12rem;
+  min-height: 2.55rem;
+  padding: 0.32rem 0.36rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 0.62rem;
+  background: rgba(3, 3, 7, 0.36);
+}
+
+.psyche-arc-instrument__step--active {
+  border-color: color-mix(in srgb, var(--psyche-accent) 40%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--psyche-accent) 12%, transparent), transparent),
+    rgba(3, 3, 7, 0.42);
+}
+
+.psyche-arc-instrument__step span {
+  color: color-mix(in srgb, var(--psyche-accent) 88%, rgba(244, 240, 232, 0.84));
+  font-family: var(--font-ui);
+  font-size: 0.52rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.psyche-arc-instrument__step strong {
+  color: rgba(244, 240, 232, 0.88);
+  font-family: var(--font-ui);
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.psyche-arc-instrument__step em {
+  overflow: hidden;
+  font-size: 0.5rem;
+  letter-spacing: 0.02em;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.psyche-arc-instrument__readout {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .psyche-arc-instrument,
+  .psyche-arc-instrument *,
+  .psyche-arc-instrument *::before,
+  .psyche-arc-instrument *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .psyche-arc-instrument {
+    width: min(25.5rem, 100%);
+    padding: 0.36rem;
+  }
+
+  .psyche-arc-instrument .psyche-arc-instrument__field,
+  .psyche-arc-instrument--ch3 .psyche-arc-instrument__field,
+  .psyche-arc-instrument--ch4 .psyche-arc-instrument__field {
+    min-height: 6.65rem;
+  }
+
+  .psyche-arc-instrument__rail-link {
+    min-height: 1.84rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .psyche-arc-instrument {
+    margin-top: 0.72rem;
+  }
+
+  .psyche-arc-instrument__scale {
+    gap: 0.2rem;
+  }
+
+  .psyche-arc-instrument__step {
+    padding: 0.3rem 0.26rem;
+  }
+
+  .psyche-arc-instrument__step em {
+    display: none;
+  }
+}
