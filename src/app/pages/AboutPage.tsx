@@ -91,6 +91,7 @@ export default function AboutPage() {
           <p className="lede">
             A visual learning instrument for reading Aion through chapters, concepts, symbols, and disciplined verification.
           </p>
+          <p className="about-hero__cue">Pick a path in the field: study, map, symbolize, or verify.</p>
           <div className="about-hero__metrics" aria-label="Aion atlas data model">
             <span>
               <strong>{chapters.length}</strong>

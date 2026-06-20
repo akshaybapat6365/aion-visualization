@@ -42,6 +42,18 @@
   max-width: 35rem;
 }
 
+.about-hero__cue {
+  width: fit-content;
+  max-width: 28rem;
+  margin: 1.15rem 0 0;
+  border-left: 1px solid rgba(212, 175, 55, 0.46);
+  color: rgba(255, 227, 156, 0.82);
+  font: 700 0.76rem/1.45 var(--font-ui);
+  letter-spacing: 0.1em;
+  padding-left: 0.9rem;
+  text-transform: uppercase;
+}
+
 .about-mode-controls {
   display: flex;
   flex-wrap: wrap;
@@ -395,19 +407,35 @@
 @media (max-width: 720px) {
   .about-hero {
     min-height: auto;
-    padding-top: 9.6rem;
+    align-items: start;
+    gap: 1.35rem;
+    padding-top: 9.35rem;
   }
 
   .about-hero::before {
     inset: 9.2rem 1rem 1rem;
   }
 
+  .about-hero__copy {
+    order: -1;
+  }
+
   .about-hero__copy h1 {
-    font-size: 3.45rem;
+    max-width: 8.5ch;
+    font-size: 3.35rem;
+    line-height: 0.9;
   }
 
   .about-hero__copy .lede {
+    max-width: 28rem;
     font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .about-hero__cue {
+    margin-top: 0.9rem;
+    font-size: 0.68rem;
+    line-height: 1.35;
   }
 
   .about-mode-controls {
@@ -420,17 +448,17 @@
   }
 
   .about-orientation {
-    order: -1;
-    margin-top: 1.2rem;
+    order: 0;
+    margin-top: 0;
   }
 
   .about-north-star-field {
-    width: min(100%, 24rem);
+    width: min(100%, 22.75rem);
   }
 
   .about-orientation__detail {
     width: 100%;
-    margin-top: -2.6rem;
+    margin-top: -2.25rem;
   }
 
   .about-orientation__detail h2 {
@@ -456,11 +484,15 @@
 
 @media (max-width: 360px) {
   .about-hero__copy h1 {
-    font-size: 3rem;
+    font-size: 2.82rem;
   }
 
   .about-hero__copy .lede {
     font-size: 0.95rem;
+  }
+
+  .about-hero__cue {
+    font-size: 0.62rem;
   }
 
   .about-mode-controls__button {

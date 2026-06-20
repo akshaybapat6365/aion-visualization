@@ -273,10 +273,23 @@
 @media (max-width: 720px) {
   .about-hero__metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin-top: 1rem;
+  }
+
+  .about-hero__metrics span {
+    min-width: 0;
+    padding: 0.58rem 0.52rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .about-hero__metrics strong {
+    font-size: 1.58rem;
   }
 
   .about-orientation__stage {
-    width: min(100%, 22.25rem);
+    width: min(100%, 21.75rem);
   }
 
   .about-orientation-node {
@@ -320,7 +333,17 @@
 
 @media (max-width: 360px) {
   .about-hero__metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.38rem;
+  }
+
+  .about-hero__metrics span {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.52rem;
+  }
+
+  .about-hero__metrics strong {
+    font-size: 1.38rem;
   }
 
   .about-orientation__stage {
