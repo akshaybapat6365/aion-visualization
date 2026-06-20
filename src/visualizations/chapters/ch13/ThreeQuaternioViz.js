@@ -8,10 +8,15 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
+import { createPleromaCrown, createQuaternioSeal, createReturnArc } from './gnosticScenePrimitives.js';
 
 const QUAD_COLORS = [new THREE.Color('#e63946'), new THREE.Color('#457b9d'), new THREE.Color('#2a9d8f'), new THREE.Color('#ff9800')];
 const AXIS_CLR = new THREE.Color('#ff9800');
 const CENTER = new THREE.Color('#ffd700');
+const PLEROMA = new THREE.Color('#ffe39c');
+const SOPHIA = new THREE.Color('#ffad70');
+const RUPTURE = new THREE.Color('#cc6d86');
+const AION_BLUE = new THREE.Color('#53d8e8');
 
 export default class ThreeQuaternioViz extends BaseViz {
     constructor(c, o = {}) {
@@ -95,8 +100,10 @@ export default class ThreeQuaternioViz extends BaseViz {
         }));
         this.quaternioGroup.add(this.centerGlow);
 
+        createPleromaCrown(this, { pleroma: PLEROMA, aionBlue: AION_BLUE });
         this._createEmanationField();
         this._createSophiaFigure();
+        createQuaternioSeal(this, { pleroma: PLEROMA, aionBlue: AION_BLUE, quadColors: QUAD_COLORS });
         this._createParadoxField();
 
         this.scene.add(new THREE.AmbientLight(0x0a0a10, 0.2));
@@ -135,7 +142,7 @@ export default class ThreeQuaternioViz extends BaseViz {
         this.sophiaBody = new THREE.Mesh(
             new THREE.OctahedronGeometry(0.36, 0),
             new THREE.MeshBasicMaterial({
-                color: 0xffe39c,
+                color: SOPHIA,
                 transparent: true,
                 opacity: 0.62,
                 blending: THREE.AdditiveBlending,
@@ -149,13 +156,25 @@ export default class ThreeQuaternioViz extends BaseViz {
         this.sophiaTrail = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints(trailPts),
             new THREE.LineBasicMaterial({
-                color: 0xffe39c,
+                color: SOPHIA,
                 transparent: true,
                 opacity: 0.24,
                 blending: THREE.AdditiveBlending,
             })
         );
         this.sophiaGroup.add(this.sophiaTrail);
+        this.sophiaHalo = new THREE.Mesh(
+            new THREE.TorusGeometry(0.76, 0.008, 8, 72),
+            new THREE.MeshBasicMaterial({
+                color: SOPHIA,
+                transparent: true,
+                opacity: 0.12,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.sophiaHalo.rotation.x = Math.PI / 2;
+        this.sophiaGroup.add(this.sophiaHalo);
         this.sophiaGroup.position.set(0.8, 4.8, 0.8);
         this.quaternioGroup.add(this.sophiaGroup);
     }
@@ -163,7 +182,7 @@ export default class ThreeQuaternioViz extends BaseViz {
     _createParadoxField() {
         this.paradoxGroup = new THREE.Group();
         this.paradoxShards = [];
-        const shardColors = [0xff5f6d, 0x53d8e8, 0xffd37a, 0x9b5cff];
+        const shardColors = [RUPTURE, AION_BLUE, PLEROMA, 0x9b5cff];
         for (let i = 0; i < 10; i++) {
             const angle = (i / 10) * Math.PI * 2;
             const shard = new THREE.Mesh(
@@ -189,7 +208,7 @@ export default class ThreeQuaternioViz extends BaseViz {
                 new THREE.Vector3(3.2, 2.8, -0.1),
             ]),
             new THREE.LineBasicMaterial({
-                color: 0xff5f6d,
+                color: RUPTURE,
                 transparent: true,
                 opacity: 0.18,
                 blending: THREE.AdditiveBlending,
@@ -197,12 +216,13 @@ export default class ThreeQuaternioViz extends BaseViz {
         );
         this.paradoxRupture = rupture;
         this.paradoxGroup.add(rupture);
+        createReturnArc(this, { pleroma: PLEROMA, aionBlue: AION_BLUE });
         this.quaternioGroup.add(this.paradoxGroup);
     }
 
     update(dt) {
         if (!this.scene) return;
-        const t = this.time;
+        const t = this.time || 0;
         const panelId = this.panelState?.activePanelId || 'gnosis';
         const dampRate = this.reducedMotion ? 9 : 3.4;
         const motionScale = this.reducedMotion ? 0.12 : 1;
@@ -241,12 +261,39 @@ export default class ThreeQuaternioViz extends BaseViz {
             axis.material.opacity = 0.035 + this.quaternioFocus * 0.18 + this.paradoxFocus * (index % 2 === 0 ? 0.08 : 0.14);
         });
 
+        this.pleromaRings?.forEach((ring, index) => {
+            const drift = this.reducedMotion ? 0 : t * (0.018 + index * 0.006) * (index % 2 ? -1 : 1);
+            const pulse = this.reducedMotion ? 0 : Math.sin(t * 0.18 + index) * 0.015;
+            ring.rotation.z = index * Math.PI / 9 + drift;
+            ring.scale.setScalar(1 + this.gnosisFocus * 0.08 + pulse);
+            ring.material.opacity = 0.025 + this.gnosisFocus * (0.055 + index * 0.007) + this.paradoxFocus * 0.015;
+        });
+        if (this.pleromaSource) {
+            this.pleromaSource.rotation.y = this.reducedMotion ? 0 : t * 0.18;
+            this.pleromaSource.scale.setScalar(0.9 + this.gnosisFocus * 0.5 + this.quaternioFocus * 0.12);
+            this.pleromaSource.material.opacity = 0.26 + this.gnosisFocus * 0.58 + this.quaternioFocus * 0.12;
+        }
+        this.pleromaSpokes?.forEach((spoke, index) => {
+            spoke.material.opacity = 0.018 + this.gnosisFocus * 0.075 + (index % 2 ? this.quaternioFocus * 0.018 : 0);
+        });
+        this.aeonChains?.forEach((chain, index) => {
+            chain.material.opacity = 0.018 + this.gnosisFocus * 0.07 + this.quaternioFocus * 0.035 + this.paradoxFocus * (index === 3 ? 0.06 : 0.018);
+        });
+
         // Center pulse — stronger when all quadrants balanced (mouse near center)
         const centerDist = Math.sqrt(this.mouseSmooth.x ** 2 + this.mouseSmooth.y ** 2);
         const balance = Math.max(0, 1 - centerDist);
         this.center.material.opacity = 0.36 + balance * 0.28 + this.quaternioFocus * 0.22 + this.paradoxFocus * 0.12;
         this.center.scale.setScalar(0.9 + balance * 0.32 + this.quaternioFocus * 0.22 + this.paradoxFocus * 0.1);
         this.centerGlow.material.opacity = 0.025 + balance * 0.08 + this.quaternioFocus * 0.08 + this.paradoxFocus * 0.08;
+
+        this.quaternioSealGroup.rotation.z = (this.reducedMotion ? 0 : t * 0.018) - this.paradoxFocus * 0.08;
+        this.quaternioDiamonds?.forEach((diamond, index) => {
+            diamond.material.opacity = 0.035 + this.quaternioFocus * (0.17 - index * 0.04) + this.paradoxFocus * 0.035;
+        });
+        this.quaternioPetals?.forEach((petal, index) => {
+            petal.material.opacity = 0.035 + this.quaternioFocus * 0.16 + (index === dominantQ ? 0.055 : 0) + this.paradoxFocus * 0.025;
+        });
 
         this.emanationRings.forEach((ring, index) => {
             ring.rotation.z = t * (0.02 + index * 0.004) * motionScale;
@@ -259,6 +306,8 @@ export default class ThreeQuaternioViz extends BaseViz {
         this.sophiaBody.rotation.y = t * 0.22 * motionScale;
         this.sophiaBody.material.opacity = 0.16 + this.gnosisFocus * 0.55 + this.paradoxFocus * 0.16;
         this.sophiaTrail.material.opacity = 0.05 + this.gnosisFocus * 0.3 + this.paradoxFocus * 0.12;
+        this.sophiaHalo.rotation.z = this.reducedMotion ? 0 : t * 0.12;
+        this.sophiaHalo.material.opacity = 0.04 + this.gnosisFocus * 0.18 + this.paradoxFocus * 0.12;
 
         this.paradoxGroup.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.08;
         this.paradoxShards.forEach(({ shard, angle }, index) => {
@@ -269,6 +318,17 @@ export default class ThreeQuaternioViz extends BaseViz {
             shard.material.opacity = 0.05 + this.paradoxFocus * 0.5;
         });
         this.paradoxRupture.material.opacity = 0.04 + this.paradoxFocus * 0.42;
+        this.returnArc.material.opacity = 0.035 + this.paradoxFocus * 0.34 + this.gnosisFocus * 0.035;
+        this.returnSparks?.forEach((spark, index) => {
+            const phase = this.reducedMotion ? index / this.returnSparks.length : (t * 0.06 + index / this.returnSparks.length) % 1;
+            const pointIndex = Math.min(this.returnCurvePoints.length - 1, Math.floor(phase * (this.returnCurvePoints.length - 1)));
+            const curvePoint = this.returnCurvePoints[pointIndex] || this.returnCurvePoints[0];
+            if (curvePoint) spark.position.copy(curvePoint);
+            spark.rotation.y = (this.reducedMotion ? 0 : t * 0.26) + index;
+            spark.material.opacity = 0.04 + this.paradoxFocus * 0.34 + (phase > 0.72 ? this.gnosisFocus * 0.1 : 0);
+            const sparkPulse = this.reducedMotion ? 0 : Math.sin(t * 0.4 + index) * 0.08;
+            spark.scale.setScalar(0.75 + this.paradoxFocus * 1.15 + sparkPulse);
+        });
 
         // Camera
         const targetCam = new THREE.Vector3(

@@ -11193,7 +11193,7 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .chapter-stage__reference-map {
     margin-top: 1.18rem;
-    transform: translateY(8.5rem);
+    transform: translateY(12.4rem);
   }
 
   .chapter-experience[data-chapter-id="ch13"][data-reduced-motion="true"] .scene-host__fallback .eyebrow {
@@ -13028,6 +13028,23 @@ h3 {
 		    -webkit-box-orient: vertical;
 		    overflow: hidden;
 		  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__intro h1 {
+    max-width: 9.4ch;
+    font-size: clamp(2.55rem, 13.4vw, 3.25rem);
+    line-height: 0.9;
+  }
+
+  .chapter-experience[data-chapter-id="ch13"] .chapter-stage__intro p:not(.eyebrow) {
+    max-width: 20.5rem;
+    margin-top: 0.7rem;
+    color: rgba(244, 240, 232, 0.86);
+    font-size: 0.9rem;
+    line-height: 1.42;
+    text-shadow:
+      0 0.35rem 0.9rem rgba(3, 3, 7, 0.95),
+      0 0 1.8rem rgba(3, 3, 7, 0.9);
+  }
 
 		  .home-hero {
 		    padding-top: 12.4rem;
