@@ -61,10 +61,10 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(VOID, 0.012);
+        this.scene.fog = new THREE.FogExp2(VOID, 0.01);
 
         this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 200);
-        this.camera.position.set(0, 3, 14);
+        this.camera.position.set(0, 2.8, 14.5);
 
         this.mouse = new THREE.Vector2(0, 0);
         this.mouseSmooth = new THREE.Vector2(0, 0);
@@ -83,7 +83,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.35, 0.48, 0.32
+            new THREE.Vector2(this.width, this.height), 1.42, 0.5, 0.28
         );
         this.composer.addPass(this.bloomPass);
     }
@@ -113,7 +113,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.echeneisBody = new THREE.Mesh(bodyGeo, bodyMat);
         this.echeneisGroup.add(this.echeneisBody);
 
-        // Aura of stopping power
         const auraGeo = new THREE.SphereGeometry(0.5, 12, 12);
         this.echeneisAura = new THREE.Mesh(auraGeo, new THREE.MeshBasicMaterial({
             color: ECHENEIS_CYAN, transparent: true, opacity: 0.09,
@@ -187,7 +186,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         }));
         this.scene.add(this.magnetField);
 
-        // Magnet core
         const magnetGeo = new THREE.OctahedronGeometry(0.3, 0);
         this.magnetCore = new THREE.Mesh(magnetGeo, new THREE.MeshStandardMaterial({
             color: MAGNET_PURPLE, emissive: MAGNET_PURPLE, emissiveIntensity: 0.9,
@@ -370,6 +368,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         if (!this.scene) return;
         const t = this.time;
         const panelId = this.panelState?.activePanelId || 'vessel';
+        const isMobile = this.width < 720;
         const dampRate = this.reducedMotion ? 9 : 3.5;
         const motionScale = this.reducedMotion ? 0.12 : 1;
         this.vesselFocus = THREE.MathUtils.damp(this.vesselFocus, panelId === 'vessel' ? 1 : 0.22, dampRate, dt);
@@ -378,18 +377,18 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // Echeneis hovering near ship
-        this.echeneisGroup.position.x = -3 + Math.sin(t * 0.08 * motionScale) * 0.3;
-        this.echeneisGroup.position.y = 2 + Math.sin(t * 0.15 * motionScale) * 0.2;
-        this.echeneisGroup.scale.setScalar(0.88 + this.vesselFocus * 0.28);
-        this.echeneisBody.material.opacity = 0.42 + this.vesselFocus * 0.5;
-        this.echeneisAura.material.opacity = (0.06 + Math.sin(t * 0.6 * motionScale) * 0.02) + this.vesselFocus * 0.15;
+        this.echeneisGroup.position.x = -3.25 + Math.sin(t * 0.08 * motionScale) * 0.28 - this.vesselFocus * 0.16;
+        this.echeneisGroup.position.y = 2.05 + Math.sin(t * 0.15 * motionScale) * 0.18;
+        this.echeneisGroup.scale.setScalar(0.9 + this.vesselFocus * 0.34);
+        this.echeneisBody.material.opacity = 0.48 + this.vesselFocus * 0.5;
+        this.echeneisAura.material.opacity = (0.07 + Math.sin(t * 0.6 * motionScale) * 0.018) + this.vesselFocus * 0.18;
 
         // Ship halted — only rocking
         this.shipGroup.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.03;
         this.shipGroup.position.y = 2 + Math.sin(t * 0.08 * motionScale) * 0.05;
         this.shipGroup.scale.setScalar(0.94 + this.vesselFocus * 0.08);
         this.shipParts?.forEach((part) => {
-            part.material.opacity = (part === this.shipParts[2] ? 0.1 : 0.14) + this.vesselFocus * (part === this.shipParts[2] ? 0.16 : 0.18);
+            part.material.opacity = (part === this.shipParts[2] ? 0.13 : 0.18) + this.vesselFocus * (part === this.shipParts[2] ? 0.2 : 0.22);
         });
 
         // Magnet drawing particles upward
@@ -413,21 +412,22 @@ export default class ThreeAlchemyViz extends BaseViz {
             }
         }
         this.magnetField.geometry.attributes.position.needsUpdate = true;
-        this.magnetField.material.opacity = 0.2 + this.primaFocus * 0.58;
+        this.magnetField.material.opacity = 0.24 + this.primaFocus * 0.62;
+        this.magnetField.material.size = 0.085 + this.primaFocus * 0.045;
         this.magnetCore.rotation.y = t * 0.1 * motionScale;
-        this.magnetCore.scale.setScalar(0.72 + this.primaFocus * 0.5);
-        this.magnetCore.material.opacity = 0.32 + this.primaFocus * 0.58;
+        this.magnetCore.scale.setScalar(0.76 + this.primaFocus * 0.58);
+        this.magnetCore.material.opacity = 0.38 + this.primaFocus * 0.58;
 
         // Lapis heartbeat — systole/diastole
         const heartbeat = Math.sin(t * 2 * motionScale); // Fast pulse
         const pulse = heartbeat > 0.7 ? 1 : 0; // Sharp beat
         this.lapisStone.scale.setScalar(0.82 + this.primaFocus * 0.16 + this.opusFocus * 0.22 + pulse * 0.15);
-        this.lapisStone.material.opacity = 0.44 + this.primaFocus * 0.2 + this.opusFocus * 0.34;
-        this.lapisStone.material.emissiveIntensity = 0.38 + this.opusFocus * 0.46 + pulse * 0.5;
-        this.heartAura.material.opacity = pulse * (0.06 + this.opusFocus * 0.1);
-        this.heartAura.scale.setScalar(1 + pulse * 0.5 + this.opusFocus * 0.2);
+        this.lapisStone.material.opacity = 0.46 + this.primaFocus * 0.22 + this.opusFocus * 0.38;
+        this.lapisStone.material.emissiveIntensity = 0.42 + this.opusFocus * 0.54 + pulse * 0.5;
+        this.heartAura.material.opacity = pulse * (0.07 + this.opusFocus * 0.13);
+        this.heartAura.scale.setScalar(1 + pulse * 0.55 + this.opusFocus * 0.24);
         this.lapisStone.rotation.y = t * 0.05 * motionScale;
-        this.vesselGlass.material.opacity = 0.04 + this.vesselFocus * 0.055 + this.primaFocus * 0.045 + this.opusFocus * 0.055;
+        this.vesselGlass.material.opacity = 0.035 + this.vesselFocus * 0.05 + this.primaFocus * 0.034 + this.opusFocus * 0.045;
         this.vesselGlass.rotation.y = -t * 0.025 * motionScale;
 
         if (this.labField) {
@@ -447,10 +447,10 @@ export default class ThreeAlchemyViz extends BaseViz {
         }
         if (this.alembicFlame) {
             this.alembicFlame.scale.set(1 + this.opusFocus * 0.1, 0.74 + this.opusFocus * 0.44 + Math.sin(t * 1.3 * motionScale) * 0.04, 1);
-            this.alembicFlame.material.opacity = 0.12 + this.opusFocus * 0.22;
+            this.alembicFlame.material.opacity = 0.13 + this.opusFocus * 0.32;
         }
         if (this.labThreads) {
-            this.labThreads.material.opacity = 0.18 + this.vesselFocus * 0.08 + this.opusFocus * 0.16;
+            this.labThreads.material.opacity = 0.18 + this.vesselFocus * 0.1 + this.opusFocus * 0.2;
         }
         this.labStageStones?.forEach((stage, index) => {
             const stageLift = index / Math.max(this.labStageStones.length - 1, 1);
@@ -466,20 +466,20 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.yokeGroup.position.y = -3.5 + Math.sin(t * 0.3 * motionScale) * 0.1;
         this.yokeGroup.scale.setScalar(0.78 + this.opusFocus * 0.36);
         this.yokedFishParts?.forEach((part) => {
-            part.material.opacity = 0.22 + this.opusFocus * 0.5;
+            part.material.opacity = 0.24 + this.opusFocus * 0.58;
         });
         this.groundStrips?.forEach((strip, index) => {
-            strip.material.opacity = 0.035 + this.opusFocus * (0.07 + index * 0.015);
+            strip.material.opacity = 0.04 + this.opusFocus * (0.085 + index * 0.018);
         });
 
         // Camera
         const camAngle = t * 0.015 * motionScale + this.mouseSmooth.x * 0.3;
-        const camH = 1.65 + this.mouseSmooth.y * 2.4 - this.opusFocus * 0.45;
-        const camRadius = 12.3 - this.vesselFocus * 0.95 - this.primaFocus * 0.46 + this.opusFocus * 0.7;
+        const camH = 1.75 + this.mouseSmooth.y * 2.25 - this.opusFocus * 0.42 + (isMobile ? 0.55 : 0);
+        const camRadius = 12.9 - this.vesselFocus * 0.45 - this.primaFocus * 0.22 + this.opusFocus * 0.58 + (isMobile ? 2.35 : 0);
         this.camera.position.set(Math.sin(camAngle) * camRadius, camH, Math.cos(camAngle) * camRadius);
-        this.camera.lookAt(this.primaFocus * 0.74 - this.vesselFocus * 0.34, -0.86 - this.opusFocus * 0.58, 0.2);
+        this.camera.lookAt(this.primaFocus * 0.7 - this.vesselFocus * 0.28, -0.78 - this.opusFocus * 0.54, 0.2);
 
-        if (this.bloomPass) this.bloomPass.strength = 1.08 + Math.sin(t * 0.1 * motionScale) * 0.18 + this.vesselFocus * 0.18 + this.opusFocus * 0.24;
+        if (this.bloomPass) this.bloomPass.strength = 1.08 + Math.sin(t * 0.1 * motionScale) * 0.16 + this.vesselFocus * 0.18 + this.opusFocus * 0.28;
     }
 
     render() { this.composer?.render(); }
