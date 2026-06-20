@@ -147,6 +147,22 @@ async function checkChapterCanvas(page, route, failures) {
   if (pixels <= 8) failures.push(`blank or near-blank chapter canvas: ${route} (${pixels} sampled pixels)`);
 }
 
+async function checkTimelineArtifact(page, failures) {
+  await checkShellRoute(page, '/timeline', failures);
+
+  const title = await page.locator('h1').first().textContent();
+  const railCount = await page.locator('.timeline-rail__item').count();
+  const fieldNodeCount = await page.locator('.timeline-field__node').count();
+  const detailVisible = await page.locator('#timeline-selected-detail').isVisible();
+  const fieldLabel = await page.getByRole('group', { name: /Timeline field:/ }).getAttribute('aria-label');
+
+  if (!title?.includes('Jung in symbolic time')) failures.push(`/timeline artifact title mismatch: ${title}`);
+  if (railCount !== 22) failures.push(`/timeline artifact rail count mismatch: ${railCount}`);
+  if (fieldNodeCount !== 22) failures.push(`/timeline artifact field count mismatch: ${fieldNodeCount}`);
+  if (!detailVisible) failures.push('/timeline artifact detail is not visible');
+  if (!fieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline artifact field label mismatch: ${fieldLabel}`);
+}
+
 async function runSmoke() {
   const server = createArtifactServer();
   await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
@@ -166,6 +182,7 @@ async function runSmoke() {
         await checkChapterCanvas(desktop, route, failures);
       }
     }
+    await checkTimelineArtifact(desktop, failures);
 
     const legacyChapter = await desktop.goto(`${baseUrl}/chapters/chapter-7.html`, {
       waitUntil: 'domcontentloaded',

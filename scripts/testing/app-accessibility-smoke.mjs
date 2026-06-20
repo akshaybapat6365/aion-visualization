@@ -223,6 +223,57 @@ async function checkAtlasDynamicAccessibility(page, failures) {
   if (!emptyFieldVisible) failures.push('/atlas: empty constellation field is missing an accessible name');
 }
 
+async function checkTimelineDynamicAccessibility(page, failures) {
+  await page.goto(`${baseUrl}/timeline`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+  await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+
+  const search = page.getByLabel('Search');
+  const category = page.getByLabel('Category');
+  const timelineField = page.getByRole('group', { name: /Timeline field:/ });
+  const orbitLabel = await page.locator('.timeline-orbit').getAttribute('aria-label');
+  const initialFieldLabel = await timelineField.getAttribute('aria-label');
+  const searchVisible = await search.isVisible();
+  const categoryVisible = await category.isVisible();
+  const fieldVisible = await timelineField.isVisible();
+  const initialActiveRailCount = await page.locator('.timeline-rail__item[aria-pressed="true"]').count();
+  const initialActiveFieldCount = await page.locator('.timeline-field__node[aria-pressed="true"]').count();
+  const firstOrbitControls = await page.locator('.timeline-orbit__node').first().getAttribute('aria-controls');
+  const firstFieldControls = await page.locator('.timeline-field__node').first().getAttribute('aria-controls');
+
+  if (!searchVisible) failures.push('/timeline: search input is not visible by label');
+  if (!categoryVisible) failures.push('/timeline: category select is not visible by label');
+  if (!fieldVisible) failures.push('/timeline: timeline field group is missing an accessible name');
+  if (!orbitLabel?.includes('12 events in view')) failures.push(`/timeline: initial orbit label mismatch: ${orbitLabel}`);
+  if (!initialFieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline: initial field label mismatch: ${initialFieldLabel}`);
+  if (initialActiveRailCount !== 1) failures.push(`/timeline: initial active rail count mismatch: ${initialActiveRailCount}`);
+  if (initialActiveFieldCount !== 1) failures.push(`/timeline: initial active field count mismatch: ${initialActiveFieldCount}`);
+  if (!firstOrbitControls?.includes('timeline-selected-detail') || !firstOrbitControls?.includes('timeline-field')) failures.push(`/timeline: orbit controls mismatch: ${firstOrbitControls}`);
+  if (!firstFieldControls?.includes('timeline-selected-detail') || !firstFieldControls?.includes('timeline-selected-orbit-detail')) failures.push(`/timeline: field controls mismatch: ${firstFieldControls}`);
+
+  const freudRail = page.getByRole('button', { name: /1907 · Encounters First meeting with Sigmund Freud/ });
+  await freudRail.focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(100);
+
+  const freudPressed = await freudRail.getAttribute('aria-pressed');
+  const freudDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const freudOrbit = await page.locator('#timeline-selected-orbit-detail').textContent();
+  if (freudPressed !== 'true') failures.push(`/timeline: Freud rail did not become pressed: ${freudPressed}`);
+  if (!freudDetail?.includes('First meeting with Sigmund Freud')) failures.push(`/timeline: Freud detail mismatch: ${freudDetail}`);
+  if (!freudOrbit?.includes('1907') || !freudOrbit?.includes('First meeting with Sigmund Freud')) failures.push(`/timeline: Freud orbit mismatch: ${freudOrbit}`);
+
+  await search.fill('not-a-real-term');
+  await page.waitForTimeout(100);
+  const emptyDetail = await page.locator('#timeline-selected-detail h2').textContent();
+  const emptyStatus = await page.locator('.timeline-field__empty').textContent();
+  const emptyFieldLabel = await timelineField.getAttribute('aria-label');
+  const emptyPressedCount = await page.locator('.timeline-rail__item[aria-pressed="true"], .timeline-field__node[aria-pressed="true"], .timeline-orbit__node[aria-pressed="true"]').count();
+  if (!emptyDetail?.includes('Adjust the field')) failures.push(`/timeline: empty detail mismatch: ${emptyDetail}`);
+  if (!emptyStatus?.includes('No matching events')) failures.push(`/timeline: empty status mismatch: ${emptyStatus}`);
+  if (!emptyFieldLabel?.includes('0 of 22 events visible')) failures.push(`/timeline: empty field label mismatch: ${emptyFieldLabel}`);
+  if (emptyPressedCount !== 0) failures.push(`/timeline: empty state still has pressed controls: ${emptyPressedCount}`);
+}
+
 async function checkSymbolsDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/symbols`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -626,6 +677,7 @@ async function runAccessibilitySmoke() {
       await checkRoute(desktop, route, failures);
     }
     await checkAtlasDynamicAccessibility(desktop, failures);
+    await checkTimelineDynamicAccessibility(desktop, failures);
     await checkSymbolsDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
