@@ -54,6 +54,11 @@ export default function ChapterOneReferenceInstrument({
       >
         <span className="ego-depth-instrument__axis" aria-hidden="true" />
         <span className="ego-depth-instrument__surface" aria-hidden="true" />
+        <span className="ego-depth-instrument__relation-bridge" aria-hidden="true" />
+        <span className="ego-depth-instrument__orbit ego-depth-instrument__orbit--ego" aria-hidden="true" />
+        <span className="ego-depth-instrument__orbit ego-depth-instrument__orbit--self" aria-hidden="true" />
+        <span className="ego-depth-instrument__root-aura ego-depth-instrument__root-aura--somatic" aria-hidden="true" />
+        <span className="ego-depth-instrument__root-aura ego-depth-instrument__root-aura--psychic" aria-hidden="true" />
         <span className="ego-depth-instrument__ego" aria-hidden="true" />
         <span className="ego-depth-instrument__root ego-depth-instrument__root--somatic" aria-hidden="true" />
         <span className="ego-depth-instrument__root ego-depth-instrument__root--psychic" aria-hidden="true" />

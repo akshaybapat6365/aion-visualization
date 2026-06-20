@@ -2700,7 +2700,7 @@ h3 {
   transform: translate(-50%, -50%);
 }
 
-.chapter-stage__reference-node[data-panel-id="roots"] .chapter-stage__reference-mark::before {
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="roots"] .chapter-stage__reference-mark::before {
   width: 2.4rem;
   height: 1.8rem;
   border-radius: 0;
@@ -2710,14 +2710,14 @@ h3 {
   box-shadow: 0 0 1.2rem rgba(83, 216, 232, 0.2);
 }
 
-.chapter-stage__reference-node[data-panel-id="roots"] .chapter-stage__reference-mark::after {
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="roots"] .chapter-stage__reference-mark::after {
   height: 2.3rem;
   background:
     linear-gradient(180deg, rgba(244, 240, 232, 0.22), rgba(83, 216, 232, 0.1) 46%, transparent),
     linear-gradient(90deg, rgba(204, 109, 134, 0.35), transparent 42%, transparent 58%, rgba(83, 216, 232, 0.35));
 }
 
-.chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::before {
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::before {
   top: 2.15rem;
   width: 1.05rem;
   height: 1.05rem;
@@ -2727,7 +2727,7 @@ h3 {
     0 0 3.8rem rgba(83, 216, 232, 0.15);
 }
 
-.chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::after {
+.chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::after {
   top: 0.8rem;
   height: 2.1rem;
   background: linear-gradient(180deg, rgba(244, 240, 232, 0.22), rgba(212, 175, 55, 0.44), transparent);
@@ -10571,11 +10571,11 @@ h3 {
 	    background: linear-gradient(90deg, rgba(244, 240, 232, 0.3), rgba(212, 175, 55, 0.1), transparent);
 	  }
 
-	  .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::before {
+	  .chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::before {
 	    top: 50%;
 	  }
 
-	  .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::after {
+	  .chapter-experience[data-chapter-id="ch1"] .chapter-stage__reference-node[data-panel-id="self-depth"] .chapter-stage__reference-mark::after {
 	    top: 50%;
 	    height: 1px;
 	    width: 1.45rem;

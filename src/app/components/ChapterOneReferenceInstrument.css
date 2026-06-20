@@ -1,31 +1,47 @@
 .chapter-one-reference {
+  isolation: isolate;
   position: relative;
   width: min(30rem, 100%);
   margin-top: 0.95rem;
   overflow: hidden;
-  border: 1px solid rgba(244, 240, 232, 0.13);
+  border: 1px solid rgba(255, 227, 156, 0.16);
   border-radius: var(--radius);
   background:
-    linear-gradient(145deg, rgba(244, 240, 232, 0.08), transparent 28%),
-    radial-gradient(circle at 50% 18%, rgba(244, 240, 232, 0.16), transparent 5.6rem),
-    radial-gradient(circle at 24% 74%, rgba(204, 109, 134, 0.12), transparent 6.2rem),
-    radial-gradient(circle at 76% 74%, rgba(83, 216, 232, 0.13), transparent 6.2rem),
-    rgba(3, 3, 7, 0.48);
+    linear-gradient(145deg, rgba(244, 240, 232, 0.1), transparent 25%),
+    radial-gradient(circle at 50% 18%, rgba(255, 227, 156, 0.16), transparent 5.7rem),
+    radial-gradient(circle at 23% 75%, rgba(204, 109, 134, 0.14), transparent 6.4rem),
+    radial-gradient(circle at 77% 75%, rgba(83, 216, 232, 0.15), transparent 6.4rem),
+    linear-gradient(180deg, rgba(13, 13, 22, 0.76), rgba(3, 3, 7, 0.54));
   box-shadow:
     var(--shadow-inset),
-    0 1.6rem 4.2rem rgba(0, 0, 0, 0.28);
+    0 1.55rem 4.4rem rgba(0, 0, 0, 0.34),
+    0 0 3.4rem rgba(83, 216, 232, 0.055);
+}
+
+.chapter-one-reference::before,
+.chapter-one-reference::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
 }
 
 .chapter-one-reference::before {
-  content: '';
-  position: absolute;
   inset: 0;
-  pointer-events: none;
   background:
-    linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.09), transparent),
+    linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.12), transparent),
     repeating-linear-gradient(90deg, transparent 0 3.2rem, rgba(244, 240, 232, 0.035) 3.22rem 3.26rem);
-  opacity: 0.62;
+  opacity: 0.68;
   mask-image: linear-gradient(180deg, #000, transparent 78%);
+}
+
+.chapter-one-reference::after {
+  inset: 0.36rem;
+  z-index: 1;
+  border: 1px solid rgba(244, 240, 232, 0.055);
+  border-radius: calc(var(--radius) - 2px);
+  background:
+    linear-gradient(90deg, transparent 0 32%, rgba(83, 216, 232, 0.045) 32.3%, transparent 32.8% 67%, rgba(255, 227, 156, 0.052) 67.3%, transparent 67.8%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 24%);
 }
 
 .chapter-one-reference__header {
@@ -35,7 +51,10 @@
   grid-template-columns: auto 1fr auto;
   gap: 0.65rem;
   align-items: center;
-  padding: 0.52rem 0.72rem 0.28rem;
+  min-height: 2.1rem;
+  border-bottom: 1px solid rgba(244, 240, 232, 0.075);
+  background: linear-gradient(90deg, rgba(3, 3, 7, 0.24), rgba(255, 227, 156, 0.03), rgba(3, 3, 7, 0.18));
+  padding: 0.5rem 0.72rem 0.32rem;
   color: rgba(244, 240, 232, 0.7);
   font-family: var(--font-ui);
   font-size: 0.68rem;
@@ -52,25 +71,27 @@
 .chapter-one-reference__header strong {
   color: rgba(255, 227, 156, 0.92);
   text-align: center;
+  text-shadow: 0 0 1.2rem rgba(212, 175, 55, 0.22);
 }
 
 .chapter-one-reference .chapter-one-reference__field {
+  z-index: 2;
   width: 100%;
-  min-height: clamp(5.8rem, 10vh, 6.6rem);
+  min-height: clamp(6.1rem, 10.4vh, 7.05rem);
   margin: 0;
   border: 0;
   border-radius: 0;
   background:
-    radial-gradient(circle at 50% 24%, rgba(244, 240, 232, 0.15), transparent 3.5rem),
-    radial-gradient(circle at 36% 72%, rgba(204, 109, 134, 0.12), transparent 5.6rem),
-    radial-gradient(circle at 64% 72%, rgba(83, 216, 232, 0.14), transparent 5.6rem),
+    radial-gradient(circle at 50% 24%, rgba(244, 240, 232, 0.18), transparent 3.6rem),
+    radial-gradient(circle at 35% 74%, rgba(204, 109, 134, 0.14), transparent 5.7rem),
+    radial-gradient(circle at 65% 74%, rgba(83, 216, 232, 0.16), transparent 5.7rem),
     linear-gradient(180deg, rgba(3, 3, 7, 0.32), rgba(3, 3, 7, 0.1));
   box-shadow: none;
 }
 
 .chapter-one-reference .chapter-one-reference__field::before {
   inset: 0.62rem 0.82rem;
-  border-color: rgba(212, 175, 55, 0.11);
+  border-color: rgba(255, 227, 156, 0.12);
 }
 
 .chapter-one-reference .chapter-one-reference__field::after {
@@ -78,6 +99,102 @@
   background:
     linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.07), transparent),
     repeating-linear-gradient(180deg, transparent 0 2.2rem, rgba(244, 240, 232, 0.052) 2.24rem, transparent 2.3rem);
+}
+
+.chapter-one-reference .ego-depth-instrument__axis,
+.chapter-one-reference .ego-depth-instrument__surface,
+.chapter-one-reference .ego-depth-instrument__ego,
+.chapter-one-reference .ego-depth-instrument__root,
+.chapter-one-reference .ego-depth-instrument__wake,
+.chapter-one-reference .ego-depth-instrument__self,
+.chapter-one-reference .ego-depth-instrument__label,
+.chapter-one-reference .ego-depth-instrument__relation-bridge,
+.chapter-one-reference .ego-depth-instrument__orbit,
+.chapter-one-reference .ego-depth-instrument__root-aura {
+  z-index: 2;
+}
+
+.chapter-one-reference .ego-depth-instrument__axis {
+  opacity: 0.78;
+  background: linear-gradient(180deg, rgba(244, 240, 232, 0.52), rgba(255, 227, 156, 0.34) 48%, rgba(83, 216, 232, 0.18), transparent);
+}
+
+.chapter-one-reference .ego-depth-instrument__relation-bridge,
+.chapter-one-reference .ego-depth-instrument__orbit,
+.chapter-one-reference .ego-depth-instrument__root-aura {
+  position: absolute;
+  pointer-events: none;
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
+    border-color 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring);
+}
+
+.chapter-one-reference .ego-depth-instrument__relation-bridge {
+  left: 50%;
+  top: 27%;
+  width: 0.18rem;
+  height: 49%;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(244, 240, 232, 0.28), rgba(255, 227, 156, 0.24) 45%, rgba(83, 216, 232, 0.18) 72%, transparent),
+    linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.38), transparent);
+  box-shadow:
+    0 0 0.9rem rgba(255, 227, 156, 0.1),
+    0 0 1.6rem rgba(83, 216, 232, 0.06);
+  opacity: 0.54;
+  transform: translateX(-50%) scaleY(0.92);
+  transform-origin: top;
+}
+
+.chapter-one-reference .ego-depth-instrument__orbit {
+  left: 50%;
+  border: 1px solid rgba(244, 240, 232, 0.12);
+  border-radius: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.chapter-one-reference .ego-depth-instrument__orbit--ego {
+  top: 27%;
+  width: 5.2rem;
+  height: 1.55rem;
+  border-color: rgba(244, 240, 232, 0.22);
+  box-shadow:
+    inset 0 0 1rem rgba(244, 240, 232, 0.045),
+    0 0 1.3rem rgba(244, 240, 232, 0.08);
+}
+
+.chapter-one-reference .ego-depth-instrument__orbit--self {
+  top: 76%;
+  width: min(12.4rem, 62%);
+  height: 2.8rem;
+  border-color: rgba(255, 227, 156, 0.18);
+  box-shadow:
+    inset 0 0 1.2rem rgba(255, 227, 156, 0.045),
+    0 0 1.7rem rgba(83, 216, 232, 0.07);
+}
+
+.chapter-one-reference .ego-depth-instrument__root-aura {
+  top: 50%;
+  width: 5.8rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  opacity: 0.28;
+  filter: blur(0.2px);
+}
+
+.chapter-one-reference .ego-depth-instrument__root-aura--somatic {
+  left: 34%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(204, 109, 134, 0.2), transparent 72%);
+  transform: translate(-50%, -50%) rotate(25deg);
+}
+
+.chapter-one-reference .ego-depth-instrument__root-aura--psychic {
+  left: 66%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.2), transparent 72%);
+  transform: translate(-50%, -50%) rotate(-25deg);
 }
 
 .chapter-one-reference__calibration-line {
@@ -92,7 +209,7 @@
   transform: translateX(-50%);
   transition:
     opacity 0.55s var(--motion-spring),
-    top 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring),
     width 0.55s var(--motion-spring);
 }
 
@@ -109,8 +226,54 @@
 }
 
 .chapter-one-reference[data-active-panel="roots"] .chapter-one-reference__calibration-line--depth {
-  top: 57%;
+  transform: translate(-50%, -1.08rem);
   opacity: 0.78;
+}
+
+.chapter-one-reference[data-active-panel="ego-light"] .ego-depth-instrument__orbit--ego {
+  border-color: rgba(244, 240, 232, 0.36);
+  box-shadow:
+    inset 0 0 1.1rem rgba(244, 240, 232, 0.07),
+    0 0 1.85rem rgba(244, 240, 232, 0.18);
+  opacity: 0.92;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.chapter-one-reference[data-active-panel="ego-light"] .ego-depth-instrument__relation-bridge {
+  opacity: 0.46;
+  transform: translateX(-50%) scaleY(0.78);
+}
+
+.chapter-one-reference[data-active-panel="roots"] .ego-depth-instrument__root-aura {
+  opacity: 0.78;
+}
+
+.chapter-one-reference[data-active-panel="roots"] .ego-depth-instrument__root-aura--somatic {
+  transform: translate(-50%, -50%) rotate(31deg) scale(1.08);
+}
+
+.chapter-one-reference[data-active-panel="roots"] .ego-depth-instrument__root-aura--psychic {
+  transform: translate(-50%, -50%) rotate(-31deg) scale(1.08);
+}
+
+.chapter-one-reference[data-active-panel="roots"] .ego-depth-instrument__relation-bridge {
+  opacity: 0.72;
+  transform: translateX(-50%) scaleY(1.04);
+}
+
+.chapter-one-reference[data-active-panel="self-depth"] .ego-depth-instrument__orbit--self {
+  border-color: rgba(255, 227, 156, 0.42);
+  box-shadow:
+    inset 0 0 1.4rem rgba(255, 227, 156, 0.09),
+    0 0 2.2rem rgba(255, 227, 156, 0.18),
+    0 0 3rem rgba(83, 216, 232, 0.08);
+  opacity: 0.96;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.chapter-one-reference[data-active-panel="self-depth"] .ego-depth-instrument__relation-bridge {
+  opacity: 0.9;
+  transform: translateX(-50%) scaleY(1.14);
 }
 
 .chapter-one-reference__scale {
@@ -129,11 +292,13 @@
   gap: 0.08rem;
   min-width: 0;
   padding: 0.34rem 0.42rem;
-  border: 1px solid rgba(244, 240, 232, 0.08);
+  border: 1px solid rgba(244, 240, 232, 0.075);
   border-radius: calc(var(--radius) - 2px);
-  background: rgba(244, 240, 232, 0.035);
+  background:
+    linear-gradient(180deg, rgba(244, 240, 232, 0.042), rgba(3, 3, 7, 0.18));
   color: rgba(244, 240, 232, 0.5);
   font-family: var(--font-ui);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .chapter-one-reference__step span,
@@ -158,9 +323,12 @@
 .chapter-one-reference__step--active {
   border-color: rgba(212, 175, 55, 0.38);
   background:
-    linear-gradient(180deg, rgba(212, 175, 55, 0.14), rgba(244, 240, 232, 0.035));
+    radial-gradient(circle at 26% 18%, rgba(255, 227, 156, 0.16), transparent 2.7rem),
+    linear-gradient(180deg, rgba(212, 175, 55, 0.15), rgba(244, 240, 232, 0.04));
   color: rgba(255, 227, 156, 0.86);
-  box-shadow: 0 0 1.35rem rgba(212, 175, 55, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 1.35rem rgba(212, 175, 55, 0.14);
 }
 
 .chapter-one-reference__readout {
@@ -182,7 +350,7 @@
   }
 
   .chapter-one-reference .chapter-one-reference__field {
-    min-height: 5.8rem;
+    min-height: 5.9rem;
   }
 
   .chapter-one-reference__scale {
@@ -192,6 +360,14 @@
 
   .chapter-one-reference__step {
     padding-inline: 0.38rem;
+  }
+
+  .chapter-one-reference .ego-depth-instrument__orbit--ego {
+    width: 4.6rem;
+  }
+
+  .chapter-one-reference .ego-depth-instrument__root-aura {
+    width: 4.9rem;
   }
 }
 
