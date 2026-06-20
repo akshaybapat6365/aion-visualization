@@ -22,6 +22,7 @@ import BaseViz from '../../../features/viz-platform/BaseViz.js';
 const GNOSIS_GOLD = new THREE.Color('#ffd700');
 const FAITH_BLUE = new THREE.Color('#4a90d9');
 const KNOWLEDGE_GREEN = new THREE.Color('#2ecc71');
+const ROOT_IVORY = new THREE.Color('#f4f0e8');
 const SNAKE_OLD = new THREE.Color('#4a4a3a');
 const SNAKE_NEW = new THREE.Color('#ffd700');
 const WITHER_GREY = new THREE.Color('#3a3a3a');
@@ -216,6 +217,46 @@ export default class ThreeUnusViz extends BaseViz {
         }));
         this.scene.add(this.rootBeads);
 
+        this.rootBraids = [];
+        const braidSpecs = [
+            { y: 0.58, z: 0.26, color: FAITH_BLUE, target: faith },
+            { y: 0, z: 0.1, color: GNOSIS_GOLD, target: new THREE.Vector3(6.4, 0, 0.1) },
+            { y: -0.58, z: 0.26, color: KNOWLEDGE_GREEN, target: knowledge },
+        ];
+        braidSpecs.forEach((spec, index) => {
+            const curve = new THREE.CatmullRomCurve3([
+                source.clone().add(new THREE.Vector3(0.02, spec.y * 0.15, spec.z)),
+                new THREE.Vector3(1.2, spec.y * 0.7, spec.z + 0.42),
+                new THREE.Vector3(3.5, spec.y * 1.2, spec.z + 0.34),
+                spec.target.clone().add(new THREE.Vector3(-0.14, spec.y * 0.2, spec.z)),
+            ]);
+            const tube = new THREE.TubeGeometry(curve, 92, index === 1 ? 0.016 : 0.014, 8, false);
+            const material = new THREE.MeshBasicMaterial({
+                color: spec.color,
+                transparent: true,
+                opacity: 0.08,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+            const braid = new THREE.Mesh(tube, material);
+            this.scene.add(braid);
+            this.rootBraids.push({ mesh: braid, material, phase: index * 0.9 });
+        });
+
+        this.sourceHalo = new THREE.Mesh(
+            new THREE.TorusGeometry(0.62, 0.012, 8, 72),
+            new THREE.MeshBasicMaterial({
+                color: ROOT_IVORY,
+                transparent: true,
+                opacity: 0.18,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.sourceHalo.position.copy(source);
+        this.sourceHalo.rotation.y = Math.PI / 2;
+        this.scene.add(this.sourceHalo);
+
         this.sourceStone = new THREE.Mesh(
             new THREE.IcosahedronGeometry(0.36, 0),
             new THREE.MeshStandardMaterial({
@@ -236,6 +277,38 @@ export default class ThreeUnusViz extends BaseViz {
         this.lensGroup = new THREE.Group();
         this.lensGroup.position.set(1.2, 0, 1.1);
         this.lensRings = [];
+        this.lensGlass = new THREE.Mesh(
+            new THREE.CircleGeometry(1.48, 80),
+            new THREE.MeshBasicMaterial({
+                color: ROOT_IVORY,
+                transparent: true,
+                opacity: 0.08,
+                side: THREE.DoubleSide,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            })
+        );
+        this.lensGlass.rotation.y = Math.PI / 2;
+        this.lensGroup.add(this.lensGlass);
+
+        const spokePositions = [];
+        for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2;
+            spokePositions.push(
+                0, 0, 0,
+                0, Math.cos(angle) * 1.18, Math.sin(angle) * 1.18
+            );
+        }
+        const spokeGeo = new THREE.BufferGeometry();
+        spokeGeo.setAttribute('position', new THREE.Float32BufferAttribute(spokePositions, 3));
+        this.lensSpokes = new THREE.LineSegments(spokeGeo, new THREE.LineBasicMaterial({
+            color: ROOT_IVORY,
+            transparent: true,
+            opacity: 0.13,
+            blending: THREE.AdditiveBlending,
+        }));
+        this.lensGroup.add(this.lensSpokes);
+
         for (let i = 0; i < 4; i++) {
             const ring = new THREE.Mesh(
                 new THREE.TorusGeometry(0.72 + i * 0.28, 0.01, 8, 90),
@@ -371,6 +444,34 @@ export default class ThreeUnusViz extends BaseViz {
 
         this.fishGroup.position.set(-6, 0, 2);
         this.scene.add(this.fishGroup);
+
+        this.bridgeArcGroup = new THREE.Group();
+        this.bridgeArcs = [];
+        [
+            { y: 0.48, z: 0.12, color: FISH_CYAN },
+            { y: 0, z: 0.38, color: GNOSIS_GOLD },
+            { y: -0.48, z: 0.12, color: ROOT_IVORY },
+        ].forEach((spec, index) => {
+            const curve = new THREE.CatmullRomCurve3([
+                new THREE.Vector3(-5.2, spec.y, spec.z),
+                new THREE.Vector3(-1.8, spec.y * 1.6, spec.z + 0.8),
+                new THREE.Vector3(1.9, -spec.y * 0.5, spec.z + 0.86),
+                new THREE.Vector3(5.8, -spec.y * 0.2, spec.z),
+            ]);
+            const tube = new THREE.TubeGeometry(curve, 96, index === 1 ? 0.018 : 0.014, 8, false);
+            const material = new THREE.MeshBasicMaterial({
+                color: spec.color,
+                transparent: true,
+                opacity: 0.06,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+            });
+            const arc = new THREE.Mesh(tube, material);
+            this.bridgeArcGroup.add(arc);
+            this.bridgeArcs.push({ mesh: arc, material, phase: index * 0.7 });
+        });
+        this.bridgeArcGroup.position.set(0.8, 0.1, 0.7);
+        this.scene.add(this.bridgeArcGroup);
     }
 
     _createAmbientParticles() {
@@ -448,6 +549,16 @@ export default class ThreeUnusViz extends BaseViz {
         this.rootBeads.material.opacity = 0.06 + this.rootsFocus * 0.44 + this.bridgeFocus * 0.14;
         this.rootBeads.rotation.copy(this.rootLattice.rotation);
         this.rootBeads.scale.copy(this.rootLattice.scale);
+        this.rootBraids?.forEach((braid, index) => {
+            braid.material.opacity = 0.05 + this.rootsFocus * (0.34 + index * 0.06) + this.bridgeFocus * 0.08;
+            braid.mesh.scale.setScalar((isMobile ? 0.86 : 1) + this.rootsFocus * 0.07);
+            braid.mesh.rotation.y = Math.sin(t * 0.1 * motionScale + braid.phase) * 0.045;
+        });
+        if (this.sourceHalo) {
+            this.sourceHalo.rotation.z = t * 0.08 * motionScale;
+            this.sourceHalo.scale.setScalar(0.82 + this.rootsFocus * 0.36 + this.backgroundFocus * 0.1);
+            this.sourceHalo.material.opacity = 0.08 + this.rootsFocus * 0.32 + this.backgroundFocus * 0.14;
+        }
         this.sourceStone.rotation.y = t * 0.14 * motionScale;
         this.sourceStone.scale.setScalar(0.76 + this.rootsFocus * 0.3 + this.backgroundFocus * 0.12);
         this.sourceStone.material.opacity = 0.26 + this.rootsFocus * 0.32 + this.backgroundFocus * 0.18;
@@ -460,6 +571,9 @@ export default class ThreeUnusViz extends BaseViz {
         this.lensRings.forEach((ring, index) => {
             ring.rotation.z = t * (0.045 + index * 0.016) * motionScale;
         });
+        if (this.lensSpokes) {
+            this.lensSpokes.rotation.x = t * 0.025 * motionScale;
+        }
 
         // ─── Snake skin shedding cycle (every 20s) ───
         const shedCycle = (t * 0.05 * motionScale) % 1;
@@ -497,6 +611,14 @@ export default class ThreeUnusViz extends BaseViz {
         this.fishTail.material.opacity = 0.2 + this.bridgeFocus * 0.46;
         this.fishTail.material.emissiveIntensity = 0.22 + this.bridgeFocus * 0.48;
         this.fishTrail.material.opacity = 0.12 + this.bridgeFocus * 0.42;
+        if (this.bridgeArcGroup) {
+            this.bridgeArcGroup.rotation.y = Math.sin(t * 0.07 * motionScale) * 0.08;
+            this.bridgeArcGroup.scale.setScalar((isMobile ? 0.82 : 1) + this.bridgeFocus * 0.08);
+            this.bridgeArcs?.forEach((arc, index) => {
+                arc.material.opacity = 0.04 + this.bridgeFocus * (0.26 + index * 0.035) + this.rootsFocus * 0.05;
+                arc.mesh.rotation.z = Math.sin(t * 0.12 * motionScale + arc.phase) * 0.028;
+            });
+        }
 
         // ─── Camera ───
         const camAngle = t * 0.012 * motionScale + this.mouseSmooth.x * 0.22;
