@@ -1,0 +1,187 @@
+@media (max-width: 1080px) {
+  .page--chapters .chapters-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .chapters-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chapters-arc-map {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .page--chapters .chapters-hero {
+    padding-top: 10rem;
+  }
+
+  .page--chapters .chapters-hero__copy h1 {
+    max-width: 100%;
+    font-size: clamp(3rem, 13vw, 4rem);
+  }
+
+  .page--chapters .chapters-hero__copy .lede {
+    font-size: 1.02rem;
+    line-height: 1.5;
+  }
+
+  .chapters-hero__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .chapters-hero__metrics span + span {
+    border-left: 1px solid rgba(212, 175, 55, 0.13);
+    border-top: 0;
+    padding-left: 0.55rem;
+  }
+
+  .chapters-hero__metrics span {
+    padding-block: 0.52rem;
+  }
+
+  .chapters-hero__metrics strong {
+    font-size: clamp(1.45rem, 8vw, 2rem);
+  }
+
+  .chapters-arc-map {
+    display: flex;
+    overflow-x: auto;
+    scroll-padding-inline: 0.5rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .chapters-arc-map__cluster {
+    min-width: 8.2rem;
+    scroll-snap-align: start;
+  }
+
+  .page--chapters .chapters-orbit {
+    --orbit-radius: min(34vw, 8.5rem);
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.42rem 0.28rem;
+    align-content: center;
+    place-items: center;
+    height: auto;
+    min-height: 26rem;
+    padding: 1rem 0.72rem 0.86rem;
+  }
+
+  .page--chapters .chapters-orbit__center {
+    position: relative;
+    left: auto;
+    top: auto;
+    grid-column: 1 / -1;
+    width: min(16rem, 100%);
+    transform: none;
+    z-index: 1;
+  }
+
+  .page--chapters .chapters-orbit__center strong {
+    font-size: clamp(1.75rem, 8vw, 2.4rem);
+  }
+
+  .page--chapters .chapters-orbit__node {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 2.3rem;
+    height: 2.3rem;
+    font-size: 0.68rem;
+    transform: none;
+  }
+
+  .page--chapters .chapters-orbit__node--active {
+    transform: none;
+  }
+
+  .page--chapters .chapters-orbit__concepts {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .chapters-selected-panel h2 {
+    font-size: clamp(2rem, 10vw, 2.75rem);
+  }
+
+  .chapter-sequence__intro,
+  .chapter-sequence__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page--chapters .chapter-card {
+    min-height: 0;
+  }
+
+  .chapters-progress {
+    grid-template-columns: 1fr;
+    gap: 0.42rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .page--chapters .chapters-orbit {
+    --orbit-radius: min(34vw, 7.4rem);
+    min-height: 24rem;
+    gap: 0.38rem 0.2rem;
+    padding-inline: 0.52rem;
+  }
+
+  .page--chapters .chapters-orbit__node {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.62rem;
+  }
+
+  .page--chapters .chapters-orbit__concepts span {
+    padding-inline: 0.48rem;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .page--chapters .chapters-hero__copy > .eyebrow {
+    display: none;
+  }
+
+  .page--chapters .chapters-hero__copy h1 {
+    font-size: clamp(2.2rem, 10.5vw, 3rem);
+  }
+
+  .page--chapters .chapters-hero__copy .lede {
+    display: none;
+  }
+
+  .chapters-hero__metrics {
+    display: none;
+  }
+
+  .page--chapters .hero-actions .button--ghost {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapters-action__puck,
+  .chapters-arc-map__cluster,
+  .chapters-selected-panel__link,
+  .page--chapters .chapters-orbit__node {
+    transition: none;
+  }
+
+  .chapters-action:hover .chapters-action__puck,
+  .chapters-action:focus-visible .chapters-action__puck,
+  .chapters-arc-map__cluster:hover,
+  .chapters-arc-map__cluster:focus-visible,
+  .chapters-selected-panel__link:hover,
+  .chapters-selected-panel__link:focus-visible {
+    transform: none;
+  }
+}

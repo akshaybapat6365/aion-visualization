@@ -249,6 +249,116 @@ async function smokeHomeVisualDetail(page, failures) {
   }
 }
 
+async function smokeChaptersArcHub(page, failures) {
+  await gotoAppRoute(page, '/chapters');
+
+  const orbitNodes = page.locator('.chapters-orbit__node');
+  const arcControls = page.locator('.chapters-arc-map__cluster');
+  const chapterCards = page.locator('.chapter-card');
+  const selectedDetail = page.locator('#chapters-selected-detail');
+  const selectedChapterLink = page.locator('.chapters-selected-panel__link');
+  const heroCta = page.locator('.chapters-action');
+  const initialSelectedChapter = await selectedDetail.getAttribute('data-selected-chapter');
+  const initialSelectedTitle = await selectedDetail.locator('h2').textContent();
+  const initialPressedCount = await page.locator('.chapters-orbit__node[aria-pressed="true"]').count();
+  const initialConceptCount = await page.locator('.chapters-orbit__concepts span').count();
+  const initialArcCount = await arcControls.count();
+
+  if (await orbitNodes.count() !== 14) failures.push(`chapters orbit node count mismatch: ${await orbitNodes.count()}`);
+  if (initialArcCount !== 7) failures.push(`chapters arc control count mismatch: ${initialArcCount}`);
+  if (await chapterCards.count() !== 14) failures.push(`chapters card count mismatch: ${await chapterCards.count()}`);
+  if (initialSelectedChapter !== 'ch1') failures.push(`chapters initial selected chapter mismatch: ${initialSelectedChapter}`);
+  if (!initialSelectedTitle?.includes('The Ego')) failures.push(`chapters initial selected title mismatch: ${initialSelectedTitle}`);
+  if (initialPressedCount !== 1) failures.push(`chapters initial pressed orbit count mismatch: ${initialPressedCount}`);
+  if (initialConceptCount < 2) failures.push(`chapters initial concept chips missing: ${initialConceptCount}`);
+
+  const synthesisArc = page.getByRole('button', { name: /Synthesis\s+14–14/ });
+  await synthesisArc.click();
+  await page.waitForTimeout(100);
+
+  const chapterFourteenPressed = await page.getByRole('button', { name: /Preview chapter 14: The Structure and Dynamics of the Self/ }).getAttribute('aria-pressed');
+  const chapterFourteenTitle = await selectedDetail.locator('h2').textContent();
+  const chapterFourteenMotion = await selectedDetail.getAttribute('data-motion-grammar');
+  const chapterFourteenHref = await selectedChapterLink.getAttribute('href');
+  const chapterFourteenHeroHref = await heroCta.getAttribute('href');
+  const chapterFourteenActiveCardCount = await page.locator('.chapter-card--active[data-chapter-id="ch14"]').count();
+  const scrollYAfterArcSelect = await page.evaluate(() => window.scrollY);
+
+  if (chapterFourteenPressed !== 'true') failures.push(`chapters chapter 14 orbit did not become pressed: ${chapterFourteenPressed}`);
+  if (!chapterFourteenTitle?.includes('The Structure and Dynamics of the Self')) failures.push(`chapters detail did not update to chapter 14: ${chapterFourteenTitle}`);
+  if (chapterFourteenMotion !== 'integration') failures.push(`chapters chapter 14 motion grammar mismatch: ${chapterFourteenMotion}`);
+  if (chapterFourteenHref !== '/journey/chapter/ch14') failures.push(`chapters selected panel link mismatch: ${chapterFourteenHref}`);
+  if (chapterFourteenHeroHref !== '/journey/chapter/ch14') failures.push(`chapters hero CTA link mismatch: ${chapterFourteenHeroHref}`);
+  if (chapterFourteenActiveCardCount !== 1) failures.push(`chapters active chapter 14 card count mismatch: ${chapterFourteenActiveCardCount}`);
+  if (scrollYAfterArcSelect > 10) failures.push(`chapters arc selection unexpectedly scrolled page: ${scrollYAfterArcSelect}`);
+
+  const chapterFourteenButton = page.getByRole('button', { name: /Preview chapter 14:/ });
+  await chapterFourteenButton.press('ArrowRight');
+  await page.waitForTimeout(100);
+  const wrappedTitle = await selectedDetail.locator('h2').textContent();
+  const chapterOnePressed = await page.getByRole('button', { name: /Preview chapter 1: The Ego/ }).getAttribute('aria-pressed');
+  if (!wrappedTitle?.includes('The Ego')) failures.push(`chapters arrow navigation did not wrap to chapter 1: ${wrappedTitle}`);
+  if (chapterOnePressed !== 'true') failures.push(`chapters arrow navigation did not press chapter 1: ${chapterOnePressed}`);
+}
+
+async function smokeChaptersMobileLayout(page, failures, viewport) {
+  await gotoAppRoute(page, '/chapters');
+
+  const layout = await page.evaluate(() => {
+    const rect = (element) => {
+      if (!element) return null;
+      const box = element.getBoundingClientRect();
+      return {
+        left: box.left,
+        right: box.right,
+        top: box.top,
+        bottom: box.bottom,
+        width: box.width,
+        height: box.height,
+      };
+    };
+    const intersects = (a, b) => !!a && !!b
+      && a.right > b.left
+      && b.right > a.left
+      && a.bottom > b.top
+      && b.bottom > a.top;
+    const center = rect(document.querySelector('.chapters-orbit__center'));
+    const nodeOverlaps = [...document.querySelectorAll('.chapters-orbit__node')]
+      .map((node) => ({ label: node.textContent?.trim(), box: rect(node) }))
+      .filter((node) => intersects(node.box, center))
+      .map((node) => node.label);
+    const stage = rect(document.querySelector('.chapters-stage'));
+    const orbit = rect(document.querySelector('.chapters-orbit'));
+    const action = document.querySelector('.chapters-action');
+
+    return {
+      arcCount: document.querySelectorAll('.chapters-arc-map__cluster').length,
+      orbitCount: document.querySelectorAll('.chapters-orbit__node').length,
+      cardCount: document.querySelectorAll('.chapter-card').length,
+      pressedCount: document.querySelectorAll('.chapters-orbit__node[aria-pressed="true"]').length,
+      liveRegions: document.querySelectorAll('[aria-live]').length,
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      stageTop: stage?.top,
+      orbitTop: orbit?.top,
+      nodeOverlaps,
+      actionAfterContent: action ? getComputedStyle(action, '::after').content : null,
+    };
+  });
+
+  const label = `${viewport.width}x${viewport.height}`;
+  if (layout.arcCount !== 7) failures.push(`mobile chapters arc count mismatch at ${label}: ${layout.arcCount}`);
+  if (layout.orbitCount !== 14) failures.push(`mobile chapters orbit count mismatch at ${label}: ${layout.orbitCount}`);
+  if (layout.cardCount !== 14) failures.push(`mobile chapters card count mismatch at ${label}: ${layout.cardCount}`);
+  if (layout.pressedCount !== 1) failures.push(`mobile chapters pressed count mismatch at ${label}: ${layout.pressedCount}`);
+  if (layout.liveRegions !== 1) failures.push(`mobile chapters live region count mismatch at ${label}: ${layout.liveRegions}`);
+  if (layout.scrollWidth > layout.viewportWidth + 2) failures.push(`mobile chapters horizontal overflow at ${label}: ${layout.scrollWidth}`);
+  if (layout.orbitTop === undefined || layout.orbitTop > layout.viewportHeight) failures.push(`mobile chapters visual orbit misses first viewport at ${label}: ${Math.round(layout.orbitTop ?? -1)}`);
+  if (layout.nodeOverlaps.length > 0) failures.push(`mobile chapters orbit nodes overlap center at ${label}: ${layout.nodeOverlaps.join(', ')}`);
+  if (layout.actionAfterContent !== 'none') failures.push(`mobile chapters primary CTA has duplicate pseudo arrow at ${label}: ${layout.actionAfterContent}`);
+}
+
 async function smokeAtlasVisualSearch(page, failures) {
   await gotoAppRoute(page, '/atlas');
 
@@ -2668,6 +2778,8 @@ async function smokeMobile(page, failures) {
       failures.push(`mobile nav overlaps home hero copy at ${viewport.width}x${viewport.height}: nav bottom ${Math.round(navBottom)}, copy top ${Math.round(heroCopyBox.y)}`);
     }
 
+    await smokeChaptersMobileLayout(page, failures, viewport);
+
     await gotoAppRoute(page, '/journey/chapter/ch1');
     const chapterNavBox = await page.locator('.app-nav').boundingBox();
     const chapterHeadingBox = await page.locator('.chapter-stage__intro h1').boundingBox();
@@ -3264,6 +3376,7 @@ async function runSmoke() {
 
     await smokeCanonicalRoutes(page, failures);
     await smokeHomeVisualDetail(page, failures);
+    await smokeChaptersArcHub(page, failures);
     await smokeAtlasVisualSearch(page, failures);
     await smokeTimelineVisualField(page, failures);
     await smokeSymbolsVisualField(page, failures);

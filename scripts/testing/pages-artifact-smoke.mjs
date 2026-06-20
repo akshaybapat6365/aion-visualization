@@ -163,6 +163,33 @@ async function checkTimelineArtifact(page, failures) {
   if (!fieldLabel?.includes('22 of 22 events visible')) failures.push(`/timeline artifact field label mismatch: ${fieldLabel}`);
 }
 
+async function checkChaptersArtifact(page, failures) {
+  await checkShellRoute(page, '/chapters', failures);
+
+  const title = await page.locator('h1').first().textContent();
+  const arcCount = await page.locator('.chapters-arc-map__cluster').count();
+  const orbitCount = await page.locator('.chapters-orbit__node').count();
+  const cardCount = await page.locator('.chapter-card').count();
+  const selectedDetail = page.locator('#chapters-selected-detail');
+  const initialChapter = await selectedDetail.getAttribute('data-selected-chapter');
+
+  if (!title?.includes('Fourteen chapters as one psyche arc')) failures.push(`/chapters artifact title mismatch: ${title}`);
+  if (arcCount !== 7) failures.push(`/chapters artifact arc count mismatch: ${arcCount}`);
+  if (orbitCount !== 14) failures.push(`/chapters artifact orbit count mismatch: ${orbitCount}`);
+  if (cardCount !== 14) failures.push(`/chapters artifact card count mismatch: ${cardCount}`);
+  if (initialChapter !== 'ch1') failures.push(`/chapters artifact initial selected chapter mismatch: ${initialChapter}`);
+
+  await page.getByRole('button', { name: /Synthesis\s+14–14/ }).click();
+  await page.waitForTimeout(100);
+  const selectedChapter = await selectedDetail.getAttribute('data-selected-chapter');
+  const selectedLink = await page.locator('.chapters-selected-panel__link').getAttribute('href');
+  const pressedCount = await page.locator('.chapters-orbit__node[aria-pressed="true"]').count();
+
+  if (selectedChapter !== 'ch14') failures.push(`/chapters artifact selected chapter did not update: ${selectedChapter}`);
+  if (selectedLink !== `${basePath}/journey/chapter/ch14`) failures.push(`/chapters artifact selected link mismatch: ${selectedLink}`);
+  if (pressedCount !== 1) failures.push(`/chapters artifact pressed orbit count mismatch: ${pressedCount}`);
+}
+
 async function runSmoke() {
   const server = createArtifactServer();
   await new Promise((resolve) => server.listen(port, '127.0.0.1', resolve));
@@ -182,6 +209,7 @@ async function runSmoke() {
         await checkChapterCanvas(desktop, route, failures);
       }
     }
+    await checkChaptersArtifact(desktop, failures);
     await checkTimelineArtifact(desktop, failures);
 
     const legacyChapter = await desktop.goto(`${baseUrl}/chapters/chapter-7.html`, {
