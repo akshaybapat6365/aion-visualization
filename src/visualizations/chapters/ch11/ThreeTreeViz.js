@@ -66,13 +66,13 @@ export default class ThreeTreeViz extends BaseViz {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(VOID);
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.18;
+        this.renderer.toneMappingExposure = 1.12;
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(VOID, 0.01);
+        this.scene.fog = new THREE.FogExp2(VOID, 0.012);
 
         this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 200);
-        this.camera.position.set(0, 2, 12);
+        this.camera.position.set(0, 2.2, 13.2);
 
         this.mouse = new THREE.Vector2(0, 0);
         this.mouseSmooth = new THREE.Vector2(0, 0);
@@ -93,7 +93,7 @@ export default class ThreeTreeViz extends BaseViz {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.35, 0.68, 0.34
+            new THREE.Vector2(this.width, this.height), 1.18, 0.72, 0.36
         );
         this.composer.addPass(this.bloomPass);
     }
@@ -223,14 +223,14 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createOpusWheel() {
         this.opusWheel = new THREE.Group();
-        this.opusWheel.position.set(2.35, -0.05, 1.2);
+        this.opusWheel.position.set(2.75, -0.05, 1.2);
         this.opusNodes = [];
         this.opusArcs = [];
 
         const ringMat = new THREE.MeshBasicMaterial({
             color: LAPIS_GOLD,
             transparent: true,
-            opacity: 0.2,
+            opacity: 0.26,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
         });
@@ -247,7 +247,7 @@ export default class ThreeTreeViz extends BaseViz {
                     emissive: stage.color,
                     emissiveIntensity: index === 0 ? 0.15 : 0.45,
                     transparent: true,
-                    opacity: 0.66,
+                    opacity: 0.74,
                     metalness: 0.4,
                     roughness: 0.3,
                 })
@@ -261,7 +261,7 @@ export default class ThreeTreeViz extends BaseViz {
                 new THREE.LineBasicMaterial({
                     color: index === 0 ? 0x443a46 : stage.color,
                     transparent: true,
-                    opacity: 0.22,
+                    opacity: 0.3,
                     blending: THREE.AdditiveBlending,
                 })
             );
@@ -285,7 +285,7 @@ export default class ThreeTreeViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         this.waterPts = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: WATER_GLOW, size: 0.08, transparent: true, opacity: 0.5,
+            color: WATER_GLOW, size: 0.072, transparent: true, opacity: 0.42,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.waterPts);
@@ -294,7 +294,7 @@ export default class ThreeTreeViz extends BaseViz {
     _createMirrorSurface() {
         const mirrorGeo = new THREE.PlaneGeometry(12, 8);
         const mirrorMat = new THREE.MeshBasicMaterial({
-            color: MIRROR_CYAN, transparent: true, opacity: 0.02,
+            color: MIRROR_CYAN, transparent: true, opacity: 0.028,
             side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
         });
         this.mirror = new THREE.Mesh(mirrorGeo, mirrorMat);
@@ -345,15 +345,15 @@ export default class ThreeTreeViz extends BaseViz {
         this.reflectionLapis.position.y = -6.6;
         this.reflectionGroup.add(this.reflectionLapis);
 
-        this.figureGroup.position.x = 4;
-        this.reflectionGroup.position.x = 4;
+        this.figureGroup.position.x = 4.35;
+        this.reflectionGroup.position.x = 4.35;
         this.scene.add(this.figureGroup);
         this.scene.add(this.reflectionGroup);
     }
 
     _createLapisMandala() {
         this.lapisMandala = new THREE.Group();
-        this.lapisMandala.position.set(2.85, -2.15, 1.3);
+        this.lapisMandala.position.set(3.35, -1.95, 1.3);
         this.lapisMandalaParts = [];
 
         this.lapisStone = new THREE.Mesh(
@@ -365,7 +365,7 @@ export default class ThreeTreeViz extends BaseViz {
                 metalness: 0.74,
                 roughness: 0.22,
                 transparent: true,
-                opacity: 0.45,
+                opacity: 0.56,
             })
         );
         this.lapisMandala.add(this.lapisStone);
@@ -377,7 +377,7 @@ export default class ThreeTreeViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color: i === 1 ? MIRROR_CYAN : LAPIS_GOLD,
                     transparent: true,
-                    opacity: 0.12,
+                    opacity: 0.16,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                 })
@@ -395,7 +395,7 @@ export default class ThreeTreeViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color: i % 2 === 0 ? MIRROR_CYAN : LAPIS_GOLD,
                     transparent: true,
-                    opacity: 0.38,
+                    opacity: 0.46,
                     blending: THREE.AdditiveBlending,
                 })
             );
@@ -409,7 +409,7 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createOpusTreeField() {
         this.opusTreeField = new THREE.Group();
-        this.opusTreeField.position.set(1.35, 0, 0.62);
+        this.opusTreeField.position.set(1.85, 0, 0.62);
         this.opusFieldRings = [];
         this.opusFieldSeeds = [];
         this.opusFieldThreads = [];
@@ -419,7 +419,7 @@ export default class ThreeTreeViz extends BaseViz {
             new THREE.MeshBasicMaterial({
                 color: 0xf4f0e8,
                 transparent: true,
-                opacity: 0.28,
+                opacity: 0.22,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -444,22 +444,22 @@ export default class ThreeTreeViz extends BaseViz {
             return ring;
         };
 
-        makeRing(1.75, 2.2, LAPIS_GOLD, 0.18, 0.34);
-        makeRing(2.18, 0, 0xf4f0e8, 0.13, 0.56);
-        makeRing(1.72, -2.25, MIRROR_CYAN, 0.17, 0.36);
+        makeRing(1.75, 2.2, LAPIS_GOLD, 0.16, 0.34);
+        makeRing(2.18, 0, 0xf4f0e8, 0.11, 0.56);
+        makeRing(1.72, -2.25, MIRROR_CYAN, 0.15, 0.36);
 
         const threadMaterials = [
             new THREE.MeshBasicMaterial({
                 color: LAPIS_GOLD,
                 transparent: true,
-                opacity: 0.18,
+                opacity: 0.14,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             }),
             new THREE.MeshBasicMaterial({
                 color: MIRROR_CYAN,
                 transparent: true,
-                opacity: 0.16,
+                opacity: 0.13,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             }),
@@ -494,7 +494,7 @@ export default class ThreeTreeViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color: stage.color,
                     transparent: true,
-                    opacity: index === 0 ? 0.34 : 0.5,
+                    opacity: index === 0 ? 0.42 : 0.6,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                 })
@@ -516,7 +516,7 @@ export default class ThreeTreeViz extends BaseViz {
                     emissive: color,
                     emissiveIntensity: 0.55,
                     transparent: true,
-                    opacity: 0.72,
+                    opacity: 0.78,
                     metalness: 0.28,
                     roughness: 0.22,
                 })
@@ -532,7 +532,7 @@ export default class ThreeTreeViz extends BaseViz {
             new THREE.MeshBasicMaterial({
                 color: MIRROR_CYAN,
                 transparent: true,
-                opacity: 0.12,
+                opacity: 0.14,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -577,7 +577,7 @@ export default class ThreeTreeViz extends BaseViz {
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         this.cosmicPts = new THREE.Points(geo, new THREE.PointsMaterial({
-            vertexColors: true, size: 0.05, transparent: true, opacity: 0.3,
+            vertexColors: true, size: 0.045, transparent: true, opacity: 0.24,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.cosmicPts);
@@ -611,35 +611,35 @@ export default class ThreeTreeViz extends BaseViz {
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // Tree gentle sway
-        this.treeGroup.position.x = THREE.MathUtils.damp(this.treeGroup.position.x, isMobile ? 2.8 : 1.35, 4, dt);
-        this.treeGroup.position.y = THREE.MathUtils.damp(this.treeGroup.position.y, isMobile ? -0.45 : 0, 4, dt);
+        this.treeGroup.position.x = THREE.MathUtils.damp(this.treeGroup.position.x, isMobile ? 3.75 : 1.95, 4, dt);
+        this.treeGroup.position.y = THREE.MathUtils.damp(this.treeGroup.position.y, isMobile ? -0.32 : -0.08, 4, dt);
         this.treeGroup.rotation.z = Math.sin(t * 0.05 * motionScale) * 0.03;
         this.treeGroup.rotation.y = t * 0.005 * motionScale;
-        this.treeGroup.scale.setScalar(0.9 + this.mercuriusFocus * 0.08 + this.opusFocus * 0.05 + this.lapisFocus * 0.03);
-        this.trunkMesh.material.emissiveIntensity = 0.16 + this.mercuriusFocus * 0.18 + this.opusFocus * 0.22;
+        this.treeGroup.scale.setScalar((isMobile ? 0.72 : 0.78) + this.mercuriusFocus * 0.07 + this.opusFocus * 0.05 + this.lapisFocus * 0.03);
+        this.trunkMesh.material.emissiveIntensity = 0.12 + this.mercuriusFocus * 0.18 + this.opusFocus * 0.2;
         this.rootMeshes?.forEach((root, index) => {
-            root.material.opacity = 0.22 + this.mercuriusFocus * 0.34 + Math.sin(t * 0.16 * motionScale + index) * 0.04;
-            root.material.emissiveIntensity = 0.18 + this.mercuriusFocus * 0.28;
+            root.material.opacity = 0.16 + this.mercuriusFocus * 0.3 + Math.sin(t * 0.16 * motionScale + index) * 0.03;
+            root.material.emissiveIntensity = 0.14 + this.mercuriusFocus * 0.26;
         });
         this.branchMeshes?.forEach((branch, index) => {
-            branch.material.opacity = 0.18 + this.opusFocus * 0.38 + this.lapisFocus * 0.18 + Math.sin(t * 0.2 * motionScale + index) * 0.03;
-            branch.material.emissiveIntensity = 0.18 + this.opusFocus * 0.36 + this.lapisFocus * 0.18;
+            branch.material.opacity = 0.12 + this.opusFocus * 0.34 + this.lapisFocus * 0.18 + Math.sin(t * 0.2 * motionScale + index) * 0.025;
+            branch.material.emissiveIntensity = 0.14 + this.opusFocus * 0.34 + this.lapisFocus * 0.18;
         });
 
-        this.mercuriusGroup.position.x = THREE.MathUtils.damp(this.mercuriusGroup.position.x, isMobile ? 3.05 : 1.35, 4, dt);
-        this.mercuriusGroup.position.y = THREE.MathUtils.damp(this.mercuriusGroup.position.y, isMobile ? 0.55 : 0.15, 4, dt);
+        this.mercuriusGroup.position.x = THREE.MathUtils.damp(this.mercuriusGroup.position.x, isMobile ? 3.85 : 1.95, 4, dt);
+        this.mercuriusGroup.position.y = THREE.MathUtils.damp(this.mercuriusGroup.position.y, isMobile ? 0.42 : 0.08, 4, dt);
         this.mercuriusGroup.rotation.y = Math.sin(t * 0.12 * motionScale) * 0.35;
-        this.mercuriusGroup.scale.setScalar((isMobile ? 0.74 : 0.9) + this.mercuriusFocus * (isMobile ? 0.2 : 0.28));
-        this._setGroupOpacity(this.mercuriusGroup, 0.15 + this.mercuriusFocus * 0.78);
+        this.mercuriusGroup.scale.setScalar((isMobile ? 0.62 : 0.78) + this.mercuriusFocus * (isMobile ? 0.18 : 0.26));
+        this._setGroupOpacity(this.mercuriusGroup, 0.12 + this.mercuriusFocus * 0.8);
         this.mercuriusCore.rotation.y = t * 0.18 * motionScale;
         this.mercuriusCore.rotation.x = Math.sin(t * 0.12 * motionScale) * 0.4;
         this.mercuriusCore.material.emissiveIntensity = 0.35 + this.mercuriusFocus * 0.72;
 
-        this.opusWheel.position.x = THREE.MathUtils.damp(this.opusWheel.position.x, isMobile ? 2.8 : 2.35, 4, dt);
-        this.opusWheel.position.y = THREE.MathUtils.damp(this.opusWheel.position.y, isMobile ? 0.72 : -0.05, 4, dt);
+        this.opusWheel.position.x = THREE.MathUtils.damp(this.opusWheel.position.x, isMobile ? 4.2 : 3.05, 4, dt);
+        this.opusWheel.position.y = THREE.MathUtils.damp(this.opusWheel.position.y, isMobile ? 0.58 : -0.02, 4, dt);
         this.opusWheel.rotation.z = -t * 0.045 * motionScale;
-        this.opusWheel.scale.setScalar((isMobile ? 0.62 : 0.82) + this.opusFocus * (isMobile ? 0.18 : 0.28));
-        this._setGroupOpacity(this.opusWheel, 0.1 + this.opusFocus * 0.88);
+        this.opusWheel.scale.setScalar((isMobile ? 0.66 : 0.9) + this.opusFocus * (isMobile ? 0.22 : 0.34));
+        this._setGroupOpacity(this.opusWheel, 0.12 + this.opusFocus * 0.9);
         this.opusNodes?.forEach((node, index) => {
             const pulse = 0.5 + Math.sin(t * 1.2 * motionScale + index * 1.6) * 0.5;
             node.scale.setScalar(0.85 + this.opusFocus * 0.5 + pulse * 0.14 * this.opusFocus);
@@ -648,11 +648,11 @@ export default class ThreeTreeViz extends BaseViz {
 
         if (this.opusTreeField) {
             const fieldFocus = Math.max(this.mercuriusFocus * 0.86, this.opusFocus, this.lapisFocus * 0.94);
-            this.opusTreeField.position.x = THREE.MathUtils.damp(this.opusTreeField.position.x, isMobile ? 2.9 : 1.35, 4, dt);
+            this.opusTreeField.position.x = THREE.MathUtils.damp(this.opusTreeField.position.x, isMobile ? 3.9 : 1.95, 4, dt);
             this.opusTreeField.position.y = THREE.MathUtils.damp(this.opusTreeField.position.y, isMobile ? 0.02 : 0, 4, dt);
-            this.opusTreeField.scale.setScalar((isMobile ? 0.68 : 0.92) + fieldFocus * (isMobile ? 0.12 : 0.16));
+            this.opusTreeField.scale.setScalar((isMobile ? 0.56 : 0.78) + fieldFocus * (isMobile ? 0.1 : 0.14));
             this.opusTreeField.rotation.z = Math.sin(t * 0.06 * motionScale) * 0.035;
-            this._setGroupOpacity(this.opusTreeField, 0.42 + fieldFocus * 0.58);
+            this._setGroupOpacity(this.opusTreeField, (0.32 + fieldFocus * 0.54) * (isMobile ? 0.82 : 1));
         }
         this.opusFieldRings?.forEach((ring, index) => {
             ring.rotation.z += dt * (index % 2 === 0 ? 0.034 : -0.026) * motionScale;
@@ -662,7 +662,7 @@ export default class ThreeTreeViz extends BaseViz {
         this.opusFieldThreads?.forEach((thread, index) => {
             const material = thread.material;
             if (!material) return;
-            material.opacity = 0.08 + this.mercuriusFocus * 0.08 + this.opusFocus * 0.16 + Math.sin(t * 0.42 * motionScale + index) * 0.025;
+            material.opacity = 0.055 + this.mercuriusFocus * 0.06 + this.opusFocus * 0.15 + Math.sin(t * 0.42 * motionScale + index) * 0.02;
         });
         this.opusFieldSeeds?.forEach((seed, index) => {
             const targetFocus = seed.userData.focus === 'matter' ? this.lapisFocus : Math.max(this.mercuriusFocus, this.opusFocus * 0.6);
@@ -684,7 +684,7 @@ export default class ThreeTreeViz extends BaseViz {
 
         // Name particles twinkle
         for (const np of this.nameParticles) {
-            np.material.opacity = 0.16 + this.opusFocus * 0.34 + this.lapisFocus * 0.24 + Math.sin(t * 0.5 * motionScale + np.position.x * 2) * 0.18;
+            np.material.opacity = 0.1 + this.opusFocus * 0.3 + this.lapisFocus * 0.22 + Math.sin(t * 0.5 * motionScale + np.position.x * 2) * 0.14;
         }
 
         // Water rising
@@ -699,10 +699,10 @@ export default class ThreeTreeViz extends BaseViz {
             }
         }
         this.waterPts.geometry.attributes.position.needsUpdate = true;
-        this.waterPts.material.opacity = 0.2 + this.mercuriusFocus * 0.18 + this.lapisFocus * 0.22;
+        this.waterPts.material.opacity = 0.15 + this.mercuriusFocus * 0.16 + this.lapisFocus * 0.2;
 
         // Mirror shimmer
-        this.mirror.material.opacity = 0.01 + this.lapisFocus * 0.035 + Math.sin(t * 0.15 * motionScale) * 0.006;
+        this.mirror.material.opacity = 0.014 + this.lapisFocus * 0.046 + Math.sin(t * 0.15 * motionScale) * 0.006;
 
         // Lapis in reflection fading in
         const lapisProgress = Math.max(this.lapisFocus, Math.min(1, t / 60) * 0.25);
@@ -712,9 +712,9 @@ export default class ThreeTreeViz extends BaseViz {
         this.reflectionGroup.scale.setScalar(0.95 + this.lapisFocus * 0.16);
         this.figureGroup.scale.setScalar(0.9 + this.lapisFocus * 0.12);
 
-        this.lapisMandala.position.x = THREE.MathUtils.damp(this.lapisMandala.position.x, isMobile ? 4.2 : 3.45, 4, dt);
-        this.lapisMandala.position.y = THREE.MathUtils.damp(this.lapisMandala.position.y, isMobile ? -1.35 : -2.15, 4, dt);
-        this.lapisMandala.scale.setScalar((isMobile ? 0.44 : 0.7) + this.lapisFocus * (isMobile ? 0.26 : 0.46));
+        this.lapisMandala.position.x = THREE.MathUtils.damp(this.lapisMandala.position.x, isMobile ? 4.45 : 3.75, 4, dt);
+        this.lapisMandala.position.y = THREE.MathUtils.damp(this.lapisMandala.position.y, isMobile ? -1.1 : -1.92, 4, dt);
+        this.lapisMandala.scale.setScalar((isMobile ? 0.5 : 0.78) + this.lapisFocus * (isMobile ? 0.3 : 0.5));
         this.lapisMandala.rotation.y = t * 0.04 * motionScale;
         this.lapisStone.rotation.y = t * 0.16 * motionScale;
         this.lapisStone.rotation.x = Math.sin(t * 0.1 * motionScale) * 0.35;
@@ -730,24 +730,24 @@ export default class ThreeTreeViz extends BaseViz {
 
         // Cosmic particles slow rotation
         this.cosmicPts.rotation.y += dt * 0.002 * motionScale;
-        this.cosmicPts.material.opacity = 0.16 + this.mercuriusFocus * 0.08 + this.lapisFocus * 0.18;
+        this.cosmicPts.material.opacity = 0.1 + this.mercuriusFocus * 0.07 + this.lapisFocus * 0.16;
 
         // Camera
         const camAngle = t * 0.012 * motionScale + this.mouseSmooth.x * 0.22;
-        const baseRadius = 11.2 - this.opusFocus * 0.8 - this.lapisFocus * 1.2;
+        const baseRadius = (isMobile ? 13.8 : 12.6) - this.opusFocus * 0.72 - this.lapisFocus * 1.05;
         const targetCam = new THREE.Vector3(
-            Math.sin(camAngle) * baseRadius + this.opusFocus * 0.9 + this.lapisFocus * 1.6 + (isMobile ? 2.05 : 0.65),
-            1.4 + this.mouseSmooth.y * 2.2 - this.opusFocus * 0.6 - this.lapisFocus * 1.8,
+            Math.sin(camAngle) * baseRadius + this.opusFocus * 0.8 + this.lapisFocus * 1.35 + (isMobile ? 2.55 : 0.9),
+            1.55 + this.mouseSmooth.y * 2 - this.opusFocus * 0.46 - this.lapisFocus * 1.45,
             Math.cos(camAngle) * baseRadius
         );
         this.camera.position.lerp(targetCam, this.reducedMotion ? 1 : Math.min(1, dt * 1.8));
         this.camera.lookAt(
-            this.opusFocus * 1.8 + this.lapisFocus * 1.8 + (isMobile ? 1.45 : 0.55),
-            -0.9 - this.opusFocus * 0.35 - this.lapisFocus * 1.1,
+            this.opusFocus * 1.5 + this.lapisFocus * 1.55 + (isMobile ? 0.98 : 0.48),
+            -0.82 - this.opusFocus * 0.3 - this.lapisFocus * 0.96,
             0.5
         );
 
-        if (this.bloomPass) this.bloomPass.strength = 0.92 + Math.sin(t * 0.1 * motionScale) * 0.16 + this.mercuriusFocus * 0.2 + this.lapisFocus * 0.22;
+        if (this.bloomPass) this.bloomPass.strength = 0.76 + Math.sin(t * 0.1 * motionScale) * 0.12 + this.mercuriusFocus * 0.18 + this.lapisFocus * 0.2;
     }
 
     render() { this.composer?.render(); }
