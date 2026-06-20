@@ -795,7 +795,7 @@ async function checkChapterElevenDynamicAccessibility(page, failures) {
   const initialDescription = await page.locator('#scene-host-description-ch11').textContent();
 
   if (!instrumentVisible) failures.push('/journey/chapter/ch11: philosophical tree instrument is missing an accessible image role');
-  if (!initialInstrumentLabel?.includes('Current emphasis: Mediator') || !initialInstrumentLabel?.includes('Mercurius holds the middle')) failures.push(`/journey/chapter/ch11: initial instrument label mismatch: ${initialInstrumentLabel}`);
+  if (!initialInstrumentLabel?.includes('Current emphasis: Mediator') || !initialInstrumentLabel?.includes('Mercurius holds the middle') || !initialInstrumentLabel?.includes('mirror returns the image')) failures.push(`/journey/chapter/ch11: initial instrument label mismatch: ${initialInstrumentLabel}`);
   if (!initialDescription?.includes('Mediator: The slippery middle')) failures.push(`/journey/chapter/ch11: initial scene description mismatch: ${initialDescription}`);
 
   const opus = page.getByRole('button', { name: /02\s+Opus/ });
