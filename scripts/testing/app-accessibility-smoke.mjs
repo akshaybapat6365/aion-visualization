@@ -245,6 +245,115 @@ async function checkChapterOneDynamicAccessibility(page, failures) {
   if (ariaCurrentStepCount !== 1) failures.push(`/journey/chapter/ch1: aria-current calibration step count mismatch: ${ariaCurrentStepCount}`);
 }
 
+async function checkPsycheArcDynamicAccessibility(page, failures) {
+  const configs = [
+    {
+      route: '/journey/chapter/ch2',
+      arc: 'Shadow',
+      model: 'Shadow projection model',
+      steps: [
+        { panelId: 'mirror', kicker: 'Opposition', title: 'The refused likeness', insight: 'Recognition begins when the image becomes personal.' },
+        { panelId: 'projection', kicker: 'Projection', title: 'Thrown outward', insight: 'Projection makes inner conflict look external.' },
+        { panelId: 'integration', kicker: 'Integration', title: 'Return without collapse', insight: 'The ego grows by admitting what it excludes.' },
+      ],
+    },
+    {
+      route: '/journey/chapter/ch3',
+      arc: 'Syzygy',
+      model: 'Syzygy relation model',
+      steps: [
+        { panelId: 'pair', kicker: 'Syzygy', title: 'Two poles, one psyche', insight: 'The psyche thinks in living opposites.' },
+        { panelId: 'orbit', kicker: 'Relation', title: 'Projection becomes orbit', insight: 'Wholeness needs tension, not sameness.' },
+        { panelId: 'union', kicker: 'Conjunction', title: 'Union flashes, then moves', insight: 'Integration is rhythmic, not static.' },
+      ],
+    },
+    {
+      route: '/journey/chapter/ch4',
+      arc: 'Self',
+      model: 'Self mandala model',
+      steps: [
+        { panelId: 'seed', kicker: 'Center', title: 'The small center opens', insight: 'The deepest center is not the loudest form.' },
+        { panelId: 'quaternity', kicker: 'Fourfold', title: 'Wholeness takes four directions', insight: 'A totality image must include more than perfection.' },
+        { panelId: 'mandala', kicker: 'Mandala', title: 'Chaos receives a form', insight: 'The Self orders by holding difference.' },
+      ],
+    },
+  ];
+
+  for (const config of configs) {
+    await page.goto(`${baseUrl}${config.route}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+    await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
+    await page.locator('.scene-host__mount[data-state="ready"], .scene-host__fallback').first().waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+
+    const group = page.getByRole('group', { name: new RegExp(`Psyche arc instrument for ${config.arc}`, 'i') });
+    const image = page.getByRole('img', { name: new RegExp(config.model, 'i') });
+    const readout = page.locator('.psyche-arc-instrument__readout');
+    const referenceControls = page.locator('.chapter-stage__reference-node');
+    const initial = config.steps[0];
+
+    const groupVisible = await group.isVisible();
+    const imageVisible = await image.isVisible();
+    const initialGroupPanel = await group.getAttribute('data-active-panel');
+    const initialImagePanel = await image.getAttribute('data-active-panel');
+    const initialLabel = await image.getAttribute('aria-label');
+    const readoutLive = await readout.getAttribute('aria-live');
+    const readoutAtomic = await readout.getAttribute('aria-atomic');
+    const referenceCount = await referenceControls.count();
+    const railLinkCount = await page.locator('.psyche-arc-instrument__rail-link').count();
+    const currentRailLinkCount = await page.locator('.psyche-arc-instrument__rail-link[aria-current="page"]').count();
+    const stepCount = await page.locator('.psyche-arc-instrument__step').count();
+    const currentStepCount = await page.locator('.psyche-arc-instrument__step[aria-current="step"]').count();
+    const initialDescription = await page.locator(`#scene-host-description-${config.route.split('/').at(-1)}`).textContent();
+
+    if (!groupVisible) failures.push(`${config.route}: psyche arc group is not visible`);
+    if (!imageVisible) failures.push(`${config.route}: ${config.model} is missing an accessible image role`);
+    if (initialGroupPanel !== initial.panelId) failures.push(`${config.route}: initial psyche arc group panel mismatch: ${initialGroupPanel}`);
+    if (initialImagePanel !== initial.panelId) failures.push(`${config.route}: initial psyche arc image panel mismatch: ${initialImagePanel}`);
+    if (!initialLabel?.includes(`Current emphasis: ${initial.kicker}`) || !initialLabel?.includes(initial.insight)) failures.push(`${config.route}: initial psyche arc label mismatch: ${initialLabel}`);
+    if (!initialDescription?.includes(`${initial.kicker}: ${initial.title}`)) failures.push(`${config.route}: initial scene description mismatch: ${initialDescription}`);
+    if (readoutLive !== 'polite') failures.push(`${config.route}: psyche arc readout aria-live mismatch: ${readoutLive}`);
+    if (readoutAtomic !== 'true') failures.push(`${config.route}: psyche arc readout aria-atomic mismatch: ${readoutAtomic}`);
+    if (referenceCount !== 3) failures.push(`${config.route}: reference control count mismatch: ${referenceCount}`);
+    if (railLinkCount !== 3) failures.push(`${config.route}: psyche arc rail link count mismatch: ${railLinkCount}`);
+    if (currentRailLinkCount !== 1) failures.push(`${config.route}: current psyche arc rail count mismatch: ${currentRailLinkCount}`);
+    if (stepCount !== 3) failures.push(`${config.route}: psyche arc step count mismatch: ${stepCount}`);
+    if (currentStepCount !== 1) failures.push(`${config.route}: initial psyche arc current step count mismatch: ${currentStepCount}`);
+
+    const second = config.steps[1];
+    const secondControl = page.locator(`.chapter-stage__reference-node[data-panel-id="${second.panelId}"]`);
+    await secondControl.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(100);
+
+    const secondPressed = await secondControl.getAttribute('aria-pressed');
+    const secondGroupPanel = await group.getAttribute('data-active-panel');
+    const secondImageLabel = await image.getAttribute('aria-label');
+    const secondDescription = await page.locator(`#scene-host-description-${config.route.split('/').at(-1)}`).textContent();
+    if (secondPressed !== 'true') failures.push(`${config.route}: second psyche arc control did not become pressed: ${secondPressed}`);
+    if (secondGroupPanel !== second.panelId) failures.push(`${config.route}: second psyche arc panel mismatch: ${secondGroupPanel}`);
+    if (!secondImageLabel?.includes(`Current emphasis: ${second.kicker}`) || !secondImageLabel?.includes(second.insight)) failures.push(`${config.route}: second psyche arc label mismatch: ${secondImageLabel}`);
+    if (!secondDescription?.includes(`${second.kicker}: ${second.title}`)) failures.push(`${config.route}: second scene description mismatch: ${secondDescription}`);
+
+    const third = config.steps[2];
+    const thirdControl = page.locator(`.chapter-stage__reference-node[data-panel-id="${third.panelId}"]`);
+    await thirdControl.focus();
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(100);
+
+    const thirdPressed = await thirdControl.getAttribute('aria-pressed');
+    const thirdGroupPanel = await group.getAttribute('data-active-panel');
+    const thirdImageLabel = await image.getAttribute('aria-label');
+    const thirdDescription = await page.locator(`#scene-host-description-${config.route.split('/').at(-1)}`).textContent();
+    const pressedReferenceCount = await page.locator('.chapter-stage__reference-node[aria-pressed="true"]').count();
+    const finalCurrentStepCount = await page.locator('.psyche-arc-instrument__step[aria-current="step"]').count();
+    if (thirdPressed !== 'true') failures.push(`${config.route}: third psyche arc control did not become pressed: ${thirdPressed}`);
+    if (thirdGroupPanel !== third.panelId) failures.push(`${config.route}: third psyche arc panel mismatch: ${thirdGroupPanel}`);
+    if (!thirdImageLabel?.includes(`Current emphasis: ${third.kicker}`) || !thirdImageLabel?.includes(third.insight)) failures.push(`${config.route}: third psyche arc label mismatch: ${thirdImageLabel}`);
+    if (!thirdDescription?.includes(`${third.kicker}: ${third.title}`)) failures.push(`${config.route}: third scene description mismatch: ${thirdDescription}`);
+    if (pressedReferenceCount !== 1) failures.push(`${config.route}: pressed reference control count mismatch: ${pressedReferenceCount}`);
+    if (finalCurrentStepCount !== 1) failures.push(`${config.route}: final psyche arc current step count mismatch: ${finalCurrentStepCount}`);
+  }
+}
+
 async function checkChaptersDynamicAccessibility(page, failures) {
   await page.goto(`${baseUrl}/chapters`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
   await page.locator('main#main-content').waitFor({ state: 'visible', timeout: 10_000 });
@@ -831,6 +940,7 @@ async function runAccessibilitySmoke() {
     await checkSymbolsDynamicAccessibility(desktop, failures);
     await checkAboutDynamicAccessibility(desktop, failures);
     await checkChapterOneDynamicAccessibility(desktop, failures);
+    await checkPsycheArcDynamicAccessibility(desktop, failures);
     await checkChapterSixDynamicAccessibility(desktop, failures);
     await checkChapterSevenDynamicAccessibility(desktop, failures);
     await checkChapterEightDynamicAccessibility(desktop, failures);
