@@ -9,7 +9,8 @@ import {
   getLegacyChapterRedirect,
 } from '../../src/app/data/aionData';
 import { APP_ROUTES, resolveRoute } from '../../src/app/routes';
-import { CHAPTER_SCENES } from '../../src/app/visualization/chapterScenes';
+import { CHAPTER_SCENES, SCENE_LOADERS } from '../../src/app/visualization/chapterScenes';
+import { VIZ_MANIFEST } from '../../src/features/viz-platform/viz-manifest-v3';
 
 describe('Aion framework data contract', () => {
   test('exposes all 14 canonical chapters in reading order', () => {
@@ -66,6 +67,20 @@ describe('Aion framework data contract', () => {
       });
       expect(CHAPTER_SCENES[chapter.id].sceneModule).toMatch(/Three.*Viz\.js$/);
       expect(CHAPTER_SCENES[chapter.id].fallbackSummary.length).toBeGreaterThan(20);
+    }
+  });
+
+  test('keeps legacy immersive manifest aligned with the React scene registry', () => {
+    const sceneModuleToManifestPath = (sceneModule: string) =>
+      sceneModule.replace('../visualizations', '/src/visualizations');
+
+    for (const chapter of getChapters()) {
+      const chapterId = chapter.id as keyof typeof VIZ_MANIFEST;
+      const sceneModule = CHAPTER_SCENES[chapter.id].sceneModule;
+      const manifestPath = sceneModuleToManifestPath(sceneModule);
+
+      expect(VIZ_MANIFEST[chapterId]).toBe(manifestPath);
+      expect(String(SCENE_LOADERS[chapter.id])).toContain(manifestPath);
     }
   });
 

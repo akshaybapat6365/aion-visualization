@@ -14,11 +14,11 @@ export const VIZ_MANIFEST = {
     'ch7': '/src/visualizations/chapters/ch7/ThreeProphecyViz.js',
     'ch8': '/src/visualizations/chapters/ch8/ThreeHistoricalViz.js',
     'ch9': '/src/visualizations/chapters/ch9/ThreeOuroborosViz.js',
-    'ch10': '/src/visualizations/chapters/ch10/ThreeGnosticViz.js',
-    'ch11': '/src/visualizations/chapters/ch11/ThreeUnusMundusViz.js',
-    'ch12': '/src/visualizations/chapters/ch12/ThreeSacredMarriageViz.js',
+    'ch10': '/src/visualizations/chapters/ch10/ThreeAlchemyViz.js',
+    'ch11': '/src/visualizations/chapters/ch11/ThreeTreeViz.js',
+    'ch12': '/src/visualizations/chapters/ch12/ThreeUnusViz.js',
     'ch13': '/src/visualizations/chapters/ch13/ThreeQuaternioViz.js',
-    'ch14': '/src/visualizations/chapters/ch14/ThreeAeonViz.js',
+    'ch14': '/src/visualizations/chapters/ch14/ThreeAeonFinalViz.js',
 };
 
 export const getVizPath = (chapterId) => VIZ_MANIFEST[chapterId] || null;

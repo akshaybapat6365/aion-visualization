@@ -683,7 +683,10 @@ export default class ThreeUnusViz extends BaseViz {
 
     dispose() {
         window.removeEventListener('mousemove', this._onMouseMove);
-        if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
+        this.stop();
+        this.resizeObserver?.disconnect();
+        this.bloomPass?.dispose?.();
+        this.composer?.dispose?.();
         this.scene?.traverse(obj => {
             if (obj.geometry) obj.geometry.dispose();
             if (obj.material) {
@@ -691,7 +694,8 @@ export default class ThreeUnusViz extends BaseViz {
                 else obj.material.dispose();
             }
         });
-        this.composer = null; this.scene = null; this.camera = null; this.renderer = null;
+        if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
+        this.bloomPass = null; this.composer = null; this.scene = null; this.camera = null; this.renderer = null;
         super.dispose();
     }
 }

@@ -19,6 +19,7 @@ export function createFinalSynthesisField(viz, { gold, cyan, green, red, white }
     viz.finalSynthesisGroup = new THREE.Group();
     viz.temenosRings = [];
     viz.synthesisPetals = [];
+    viz.memoryBridgeLines = [];
     viz.axisBridgeLines = [];
     viz.pathSparks = [];
     viz.individuationPathPoints = [];
@@ -66,6 +67,35 @@ export function createFinalSynthesisField(viz, { gold, cyan, green, red, white }
         petal.userData.index = i;
         viz.finalSynthesisGroup.add(petal);
         viz.synthesisPetals.push(petal);
+    }
+
+    const memoryColors = [white, cyan, red, gold, green, cyan];
+    for (let i = 0; i < 6; i++) {
+        const phase = i / 6;
+        const angle = phase * Math.PI * 2 - Math.PI / 2;
+        const y = THREE.MathUtils.lerp(-5.8, 5.8, phase);
+        const outer = new THREE.Vector3(
+            Math.cos(angle) * 6.35,
+            y,
+            Math.sin(angle) * 3.9
+        );
+        const mid = new THREE.Vector3(
+            Math.cos(angle + 0.38) * 2.15,
+            y * 0.34,
+            Math.sin(angle + 0.38) * 1.5
+        );
+        const curve = new THREE.CatmullRomCurve3([
+            outer,
+            mid,
+            new THREE.Vector3(0, 0, 0),
+        ]);
+        const line = new THREE.Line(
+            pointsToGeometry(curve.getPoints(44)),
+            lineMaterial(memoryColors[i], 0.05)
+        );
+        line.userData.index = i;
+        viz.finalSynthesisGroup.add(line);
+        viz.memoryBridgeLines.push(line);
     }
 
     [
@@ -137,6 +167,56 @@ export function createFinalSynthesisField(viz, { gold, cyan, green, red, white }
     viz.finalSynthesisGroup.add(viz.selfLens);
 
     viz.mainGroup.add(viz.finalSynthesisGroup);
+}
+
+export function updateFinalSynthesisField(viz, {
+    t,
+    motionScale,
+    reducedMotion,
+    gatherFocus,
+    axisFocus,
+    aeonFocus,
+}) {
+    viz.finalSynthesisGroup.rotation.y = -t * 0.009 * motionScale + aeonFocus * 0.1;
+    viz.finalSynthesisGroup.rotation.z = Math.sin(t * 0.035 * motionScale) * 0.025;
+    viz.temenosRings?.forEach((ring, index) => {
+        const drift = reducedMotion ? 0 : t * (0.01 + index * 0.003) * (index % 2 ? -1 : 1);
+        ring.rotation.copy(ring.userData.baseRotation);
+        ring.rotation.z += drift + axisFocus * 0.08;
+        ring.scale.copy(ring.userData.baseScale);
+        ring.scale.multiplyScalar(1 + gatherFocus * 0.025 + axisFocus * 0.035 + aeonFocus * 0.02);
+        ring.material.opacity = 0.02 + gatherFocus * 0.045 + axisFocus * 0.035 + aeonFocus * 0.04;
+    });
+    viz.synthesisPetals?.forEach((petal, index) => {
+        petal.material.opacity = 0.025 + gatherFocus * 0.07 + axisFocus * 0.045 + (index % 2 ? aeonFocus * 0.018 : 0);
+    });
+    viz.memoryBridgeLines?.forEach((line, index) => {
+        const phaseDrift = reducedMotion ? 0 : Math.sin(t * 0.035 * motionScale + index) * 0.012;
+        line.rotation.z = phaseDrift;
+        line.material.opacity = 0.028 + gatherFocus * 0.15 + axisFocus * 0.045 + aeonFocus * 0.04;
+    });
+    viz.axisBridgeLines?.forEach((line, index) => {
+        line.material.opacity = 0.03 + axisFocus * 0.23 + gatherFocus * 0.024 + (index === 3 ? aeonFocus * 0.07 : 0);
+    });
+    if (viz.individuationPath) {
+        viz.individuationPath.material.opacity = 0.055 + aeonFocus * 0.4 + gatherFocus * 0.04;
+    }
+    viz.pathSparks?.forEach((spark, index) => {
+        const phase = reducedMotion ? index / Math.max(1, viz.pathSparks.length - 1) : (t * 0.035 + index / viz.pathSparks.length) % 1;
+        const pointIndex = Math.min(viz.individuationPathPoints.length - 1, Math.floor(phase * (viz.individuationPathPoints.length - 1)));
+        const pathPoint = viz.individuationPathPoints[pointIndex] || viz.individuationPathPoints[0];
+        if (pathPoint) spark.position.copy(pathPoint);
+        spark.rotation.y = (reducedMotion ? 0 : t * 0.22) + index;
+        spark.material.opacity = 0.04 + aeonFocus * 0.36 + (phase > 0.72 ? gatherFocus * 0.08 : 0);
+        const sparkPulse = reducedMotion ? 0 : Math.sin(t * 0.38 + index) * 0.08;
+        spark.scale.setScalar(0.78 + aeonFocus * 0.82 + sparkPulse);
+    });
+    if (viz.selfLens) {
+        viz.selfLens.rotation.y = reducedMotion ? 0 : t * 0.18;
+        viz.selfLens.rotation.x = reducedMotion ? 0 : t * 0.11;
+        viz.selfLens.material.opacity = 0.14 + gatherFocus * 0.05 + axisFocus * 0.34 + aeonFocus * 0.16;
+        viz.selfLens.scale.setScalar(0.85 + axisFocus * 0.42 + aeonFocus * 0.18);
+    }
 }
 
 function pointsToGeometry(points) {
