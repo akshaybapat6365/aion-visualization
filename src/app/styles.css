@@ -6666,21 +6666,22 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument {
   position: relative;
-  width: min(31rem, 100%);
-  min-height: clamp(7.4rem, 11vh, 8.5rem);
+  width: min(34rem, 100%);
+  min-height: clamp(8.6rem, 13.6vh, 10.4rem);
   overflow: hidden;
-  margin-top: 0.78rem;
-  border: 1px solid rgba(244, 240, 232, 0.12);
+  isolation: isolate;
+  margin-top: 0.92rem;
+  border: 1px solid rgba(244, 240, 232, 0.16);
   border-radius: var(--radius);
   background:
-    linear-gradient(90deg, transparent 0 49.6%, rgba(255, 227, 156, 0.12) 49.8% 50.2%, transparent 50.4%),
-    radial-gradient(circle at 24% 46%, rgba(83, 216, 232, 0.11), transparent 4.9rem),
-    radial-gradient(circle at 50% 42%, rgba(255, 227, 156, 0.16), transparent 4.7rem),
-    radial-gradient(circle at 77% 55%, rgba(132, 201, 155, 0.12), transparent 4.8rem),
-    linear-gradient(90deg, rgba(5, 7, 12, 0.88), rgba(11, 9, 12, 0.72) 49%, rgba(5, 14, 11, 0.64));
+    linear-gradient(90deg, transparent 0 49.55%, rgba(255, 227, 156, 0.17) 49.78% 50.22%, transparent 50.45%),
+    radial-gradient(circle at 19% 50%, rgba(83, 216, 232, 0.16), transparent 5.4rem),
+    radial-gradient(circle at 50% 42%, rgba(255, 227, 156, 0.22), transparent 5.25rem),
+    radial-gradient(circle at 80% 56%, rgba(132, 201, 155, 0.16), transparent 5.35rem),
+    linear-gradient(90deg, rgba(5, 7, 12, 0.93), rgba(11, 9, 12, 0.8) 49%, rgba(5, 14, 11, 0.72));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.24);
+    0 1.5rem 4.2rem rgba(0, 0, 0, 0.28);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument::before,
@@ -6691,21 +6692,23 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument::before {
-  inset: 0.58rem;
-  border: 1px solid rgba(255, 227, 156, 0.08);
+  inset: 0.62rem;
+  z-index: 0;
+  border: 1px solid rgba(255, 227, 156, 0.12);
   border-radius: calc(var(--radius) - 2px);
   background:
-    radial-gradient(circle at 50% 78%, rgba(255, 227, 156, 0.08), transparent 2.2rem),
-    linear-gradient(120deg, transparent 0 24%, rgba(83, 216, 232, 0.08) 25% 25.4%, transparent 26% 74%, rgba(132, 201, 155, 0.08) 74.6% 75%, transparent 76%);
+    radial-gradient(circle at 50% 78%, rgba(255, 227, 156, 0.12), transparent 2.7rem),
+    linear-gradient(120deg, transparent 0 23%, rgba(83, 216, 232, 0.13) 24% 24.36%, transparent 25.5% 74.5%, rgba(132, 201, 155, 0.12) 75.2% 75.58%, transparent 77%),
+    repeating-linear-gradient(90deg, transparent 0 2.3rem, rgba(244, 240, 232, 0.035) 2.34rem 2.38rem, transparent 2.42rem 4.7rem);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument::after {
   left: 50%;
   top: 52%;
-  width: 76%;
+  width: 82%;
   height: 0.06rem;
-  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.24), transparent);
-  box-shadow: 0 0 1.3rem rgba(244, 240, 232, 0.1);
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.34), transparent);
+  box-shadow: 0 0 1.45rem rgba(244, 240, 232, 0.14);
   transform: translate(-50%, -50%);
 }
 
@@ -6721,34 +6724,35 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__ring,
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__label {
   position: absolute;
+  z-index: 1;
   pointer-events: none;
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__field {
-  top: 20%;
-  width: 29%;
-  height: 58%;
+  top: 18%;
+  width: 31%;
+  height: 62%;
   border-radius: 50%;
-  opacity: 0.42;
+  opacity: 0.56;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__field--faith {
-  left: 7%;
-  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.14), transparent 72%);
+  left: 5.5%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.2), transparent 73%);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__field--alchemy {
-  right: 7%;
-  background: radial-gradient(ellipse at 50% 50%, rgba(132, 201, 155, 0.15), transparent 72%);
+  right: 5.5%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(132, 201, 155, 0.2), transparent 73%);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__source {
   left: 50%;
-  bottom: 1.02rem;
-  width: 1.16rem;
+  bottom: 1.12rem;
+  width: 1.28rem;
   aspect-ratio: 1;
   border: 1px solid rgba(255, 227, 156, 0.4);
   border-radius: 38%;
@@ -6756,9 +6760,9 @@ h3 {
     linear-gradient(45deg, transparent 47%, rgba(244, 240, 232, 0.44) 49%, transparent 52%),
     radial-gradient(circle at 44% 38%, rgba(255, 227, 156, 0.94), rgba(212, 175, 55, 0.34) 58%, rgba(83, 216, 232, 0.12));
   box-shadow:
-    0 0 0 0.46rem rgba(212, 175, 55, 0.05),
-    0 0 1.3rem rgba(212, 175, 55, 0.22);
-  opacity: 0.74;
+    0 0 0 0.5rem rgba(212, 175, 55, 0.07),
+    0 0 1.5rem rgba(212, 175, 55, 0.28);
+  opacity: 0.86;
   transform: translateX(-50%) rotate(45deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -6768,13 +6772,13 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root {
   left: 50%;
-  bottom: 1.65rem;
-  width: 11.2rem;
-  height: 2.3rem;
-  border-bottom: 1px solid rgba(255, 227, 156, 0.23);
+  bottom: 1.78rem;
+  width: 12.8rem;
+  height: 2.65rem;
+  border-bottom: 1px solid rgba(255, 227, 156, 0.32);
   border-radius: 50%;
-  filter: drop-shadow(0 0 0.36rem rgba(212, 175, 55, 0.12));
-  opacity: 0.5;
+  filter: drop-shadow(0 0 0.42rem rgba(212, 175, 55, 0.16));
+  opacity: 0.62;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -6783,29 +6787,29 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root--faith {
-  border-color: rgba(83, 216, 232, 0.25);
+  border-color: rgba(83, 216, 232, 0.34);
   transform: translateX(-70%) rotate(-15deg);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root--source {
-  width: 7.2rem;
-  border-color: rgba(255, 227, 156, 0.28);
+  width: 8.35rem;
+  border-color: rgba(255, 227, 156, 0.4);
   transform: translateX(-50%) rotate(0deg);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root--alchemy {
-  border-color: rgba(132, 201, 155, 0.25);
+  border-color: rgba(132, 201, 155, 0.34);
   transform: translateX(-30%) rotate(15deg);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__split {
   left: 50%;
-  top: 52%;
-  width: 12rem;
-  height: 3rem;
+  top: 51%;
+  width: 13.4rem;
+  height: 3.34rem;
   border-radius: 50%;
-  filter: drop-shadow(0 0 0.28rem rgba(244, 240, 232, 0.08));
-  opacity: 0.42;
+  filter: drop-shadow(0 0 0.34rem rgba(244, 240, 232, 0.12));
+  opacity: 0.58;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -6814,21 +6818,21 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__split--faith {
-  border-top: 1px solid rgba(83, 216, 232, 0.25);
+  border-top: 1px solid rgba(83, 216, 232, 0.36);
   transform: translate(-86%, -50%) rotate(14deg);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__split--alchemy {
-  border-top: 1px solid rgba(132, 201, 155, 0.25);
+  border-top: 1px solid rgba(132, 201, 155, 0.36);
   transform: translate(-14%, -50%) rotate(-14deg);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__image {
   top: 43%;
-  width: 1.34rem;
-  height: 2.25rem;
-  border: 1px solid rgba(244, 240, 232, 0.14);
-  opacity: 0.56;
+  width: 1.48rem;
+  height: 2.42rem;
+  border: 1px solid rgba(244, 240, 232, 0.22);
+  opacity: 0.7;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -6859,11 +6863,11 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__projection {
   left: 50%;
   top: 53%;
-  width: 17rem;
-  height: 3.95rem;
-  border-top: 1px dashed rgba(255, 227, 156, 0.22);
+  width: 18.4rem;
+  height: 4.28rem;
+  border-top: 1px dashed rgba(255, 227, 156, 0.34);
   border-radius: 50%;
-  opacity: 0.35;
+  opacity: 0.48;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -6874,13 +6878,15 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__fish {
   left: 50%;
   top: 49%;
-  width: 2.9rem;
-  height: 0.86rem;
-  border-top: 1px solid rgba(143, 231, 237, 0.55);
-  border-bottom: 1px solid rgba(255, 227, 156, 0.32);
+  width: 3.25rem;
+  height: 0.96rem;
+  border-top: 1px solid rgba(143, 231, 237, 0.72);
+  border-bottom: 1px solid rgba(255, 227, 156, 0.46);
   border-radius: 50%;
-  box-shadow: 0 0 1.2rem rgba(83, 216, 232, 0.16);
-  opacity: 0.56;
+  box-shadow:
+    0 0 1.35rem rgba(83, 216, 232, 0.22),
+    inset 0 0 0.62rem rgba(255, 227, 156, 0.06);
+  opacity: 0.68;
   transform: translate(-50%, -50%) rotate(-9deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -6891,11 +6897,12 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__bridge {
   left: 50%;
   top: 61%;
-  width: 16.8rem;
-  height: 2.1rem;
-  border-bottom: 1px solid rgba(143, 231, 237, 0.24);
+  width: 18.2rem;
+  height: 2.34rem;
+  border-bottom: 1px solid rgba(143, 231, 237, 0.38);
   border-radius: 50%;
-  opacity: 0.34;
+  filter: drop-shadow(0 0 0.35rem rgba(83, 216, 232, 0.08));
+  opacity: 0.48;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -6907,17 +6914,19 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__lens {
   left: 50%;
   top: 43%;
-  width: 5.3rem;
+  z-index: 2;
+  width: 5.86rem;
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 227, 156, 0.26);
+  border: 1px solid rgba(255, 227, 156, 0.38);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.08), transparent 42%),
-    radial-gradient(circle, transparent 0 54%, rgba(83, 216, 232, 0.08) 55%, transparent 58%);
+    radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.14), transparent 42%),
+    radial-gradient(circle, transparent 0 54%, rgba(83, 216, 232, 0.13) 55%, transparent 58%),
+    radial-gradient(circle, transparent 0 70%, rgba(244, 240, 232, 0.06) 71%, transparent 74%);
   box-shadow:
-    inset 0 0 1rem rgba(83, 216, 232, 0.06),
-    0 0 1.55rem rgba(212, 175, 55, 0.14);
-  opacity: 0.76;
+    inset 0 0 1.25rem rgba(83, 216, 232, 0.1),
+    0 0 1.8rem rgba(212, 175, 55, 0.22);
+  opacity: 0.9;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -6951,9 +6960,9 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__ring {
   left: 50%;
   top: 50%;
-  border: 1px solid rgba(244, 240, 232, 0.18);
+  border: 1px solid rgba(244, 240, 232, 0.28);
   border-radius: 50%;
-  opacity: 0.72;
+  opacity: 0.86;
   transform: translate(-50%, -50%);
 }
 
@@ -6965,16 +6974,17 @@ h3 {
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__ring--middle {
   width: 58%;
   height: 58%;
-  border-color: rgba(255, 227, 156, 0.22);
+  border-color: rgba(255, 227, 156, 0.34);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__ring--inner {
   width: 31%;
   height: 31%;
-  border-color: rgba(83, 216, 232, 0.24);
+  border-color: rgba(83, 216, 232, 0.36);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__label {
+  z-index: 3;
   color: rgba(244, 240, 232, 0.82);
   font-family: var(--font-ui);
   font-size: 0.58rem;
@@ -7008,13 +7018,14 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument[data-active-panel="background"] .amplification-lens-instrument__lens {
   box-shadow:
-    inset 0 0 1.2rem rgba(83, 216, 232, 0.08),
-    0 0 1.9rem rgba(212, 175, 55, 0.28);
-  transform: translate(-50%, -50%) scale(1.08);
+    inset 0 0 1.4rem rgba(83, 216, 232, 0.14),
+    0 0 2.25rem rgba(212, 175, 55, 0.38);
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument[data-active-panel="background"] .amplification-lens-instrument__projection {
-  border-color: rgba(255, 227, 156, 0.42);
+  border-color: rgba(255, 227, 156, 0.62);
+  filter: drop-shadow(0 0 0.56rem rgba(212, 175, 55, 0.18));
   transform: translate(-50%, -50%) scaleX(0.92);
 }
 
@@ -7094,13 +7105,16 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument[data-active-panel="bridge"] .amplification-lens-instrument__fish {
-  box-shadow: 0 0 1.7rem rgba(83, 216, 232, 0.32);
-  transform: translate(-50%, -50%) rotate(-9deg) scale(1.16);
+  box-shadow:
+    0 0 2rem rgba(83, 216, 232, 0.38),
+    0 0 1.2rem rgba(255, 227, 156, 0.16),
+    inset 0 0 0.72rem rgba(255, 227, 156, 0.1);
+  transform: translate(-50%, -50%) rotate(-9deg) scale(1.18);
 }
 
 .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument[data-active-panel="bridge"] .amplification-lens-instrument__bridge {
-  border-color: rgba(143, 231, 237, 0.46);
-  filter: drop-shadow(0 0 0.64rem rgba(83, 216, 232, 0.2));
+  border-color: rgba(143, 231, 237, 0.68);
+  filter: drop-shadow(0 0 0.76rem rgba(83, 216, 232, 0.28));
   transform: translate(-50%, -50%) scaleX(1.08);
 }
 
@@ -10281,15 +10295,16 @@ h3 {
 
   .chapter-jump {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    width: 100%;
+    grid-template-columns: auto minmax(0, min(100%, 17rem));
+    justify-content: start;
+    width: min(100%, calc(100vw - 2rem));
   }
 
   .chapter-jump select {
     flex: 1;
     min-height: 2rem;
     min-width: 0;
-    max-width: none;
+    max-width: min(17rem, calc(100vw - 6.8rem));
     padding-block: 0.28rem;
     width: 100%;
   }
@@ -12608,7 +12623,7 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument {
-		    min-height: 6.65rem;
+		    min-height: 7.08rem;
 		    margin-top: 0.64rem;
 		  }
 
@@ -12617,9 +12632,9 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__field {
-		    top: 22%;
-		    width: 26%;
-		    height: 54%;
+		    top: 21%;
+		    width: 27%;
+		    height: 56%;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__field--faith {
@@ -12631,26 +12646,26 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__lens {
-		    width: 3.95rem;
+		    width: 4.18rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root {
-		    width: 6.7rem;
-		    height: 1.86rem;
+		    width: 7.15rem;
+		    height: 1.95rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__root--source {
-		    width: 4.8rem;
+		    width: 5.06rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__split {
-		    width: 6.9rem;
-		    height: 2.38rem;
+		    width: 7.25rem;
+		    height: 2.48rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__image {
-		    width: 1.02rem;
-		    height: 1.78rem;
+		    width: 1.08rem;
+		    height: 1.84rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__image--faith {
@@ -12663,16 +12678,16 @@ h3 {
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__projection,
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__bridge {
-		    width: 8.4rem;
+		    width: 8.9rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__fish {
-		    width: 2.18rem;
-		    height: 0.68rem;
+		    width: 2.34rem;
+		    height: 0.72rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__source {
-		    width: 0.95rem;
+		    width: 1rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch12"] .amplification-lens-instrument__label {
