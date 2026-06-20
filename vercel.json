@@ -1,59 +1,17 @@
 {
-  "buildCommand": null,
-  "outputDirectory": ".",
-  "framework": null,
-  "installCommand": null,
-  "devCommand": null,
-  "public": true,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "github": {
     "enabled": true,
     "silent": true
   },
-  "trailingSlash": false,
-  "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/journey/chapter-:n(\\d+)",
-      "destination": "/journey/chapter/index.html"
-    },
-    {
-      "source": "/journey/chapter/:id",
-      "destination": "/journey/chapter/index.html?id=:id"
-    },
-    {
-      "source": "/journey/chapter",
-      "destination": "/journey/chapter/index.html"
-    },
-    {
-      "source": "/journey/:path*",
-      "destination": "/chapters/:path*"
-    },
-    {
-      "source": "/atlas",
-      "destination": "/src/atlas/index.html"
-    },
-    {
-      "source": "/atlas/:path*",
-      "destination": "/src/atlas/:path*"
-    }
-  ],
-  "headers": [
-    {
       "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        }
-      ]
+      "destination": "/index.html"
     }
   ]
 }
