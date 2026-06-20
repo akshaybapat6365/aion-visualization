@@ -1111,7 +1111,7 @@ async function smokeReducedMotion(browser, failures) {
   const chapterNineCanvasCount = await page.locator('.scene-host canvas').count();
   const chapterNineFallbackText = await page.locator('.scene-host__fallback').textContent();
   const chapterNineInstrumentCount = await page.locator('.ambivalent-fish-instrument').count();
-  const chapterNineInstrumentMotion = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core').evaluateAll((nodes) => nodes.map((node) => {
+  const chapterNineInstrumentMotion = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__axis, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core, .ambivalent-fish-instrument__charge').evaluateAll((nodes) => nodes.map((node) => {
     const styles = window.getComputedStyle(node);
     return {
       animationName: styles.animationName,
@@ -2455,14 +2455,16 @@ async function smokeChapterSceneControls(page, failures) {
   const chapterNineInstrumentLabel = await chapterNineInstrument.getAttribute('aria-label');
   const chapterNineInstrumentPanel = await chapterNineInstrument.getAttribute('data-active-panel');
   const chapterNineInstrumentFieldCount = await page.locator('.ambivalent-fish-instrument__field').count();
+  const chapterNineInstrumentAxisCount = await page.locator('.ambivalent-fish-instrument__axis').count();
   const chapterNineInstrumentMirrorCount = await page.locator('.ambivalent-fish-instrument__mirror').count();
   const chapterNineInstrumentRingCount = await page.locator('.ambivalent-fish-instrument__ring').count();
   const chapterNineInstrumentFishCount = await page.locator('.ambivalent-fish-instrument__fish').count();
   const chapterNineInstrumentJunctionCount = await page.locator('.ambivalent-fish-instrument__junction').count();
   const chapterNineInstrumentShadowCoreCount = await page.locator('.ambivalent-fish-instrument__shadow-core').count();
+  const chapterNineInstrumentChargeCount = await page.locator('.ambivalent-fish-instrument__charge').count();
   const chapterNineInstrumentLabelCount = await page.locator('.ambivalent-fish-instrument__label').count();
   const chapterNineInitialDescription = await page.locator('#scene-host-description-ch9').textContent();
-  const chapterNineInstrumentMarksVisible = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core').evaluateAll((nodes) => nodes.length >= 10 && nodes.every((node) => {
+  const chapterNineInstrumentMarksVisible = await page.locator('.ambivalent-fish-instrument__field, .ambivalent-fish-instrument__axis, .ambivalent-fish-instrument__mirror, .ambivalent-fish-instrument__ring, .ambivalent-fish-instrument__thread, .ambivalent-fish-instrument__fish, .ambivalent-fish-instrument__junction, .ambivalent-fish-instrument__shadow-core, .ambivalent-fish-instrument__charge').evaluateAll((nodes) => nodes.length >= 14 && nodes.every((node) => {
     const styles = window.getComputedStyle(node);
     const box = node.getBoundingClientRect();
     return styles.display !== 'none' && Number(styles.opacity) > 0 && box.width > 0 && box.height > 0;
@@ -2477,11 +2479,13 @@ async function smokeChapterSceneControls(page, failures) {
   if (chapterNinePanelIds.join(',') !== 'ambivalence,ouroboros,shadow-fish') failures.push(`chapter 9 reference nodes out of order: ${chapterNinePanelIds.join(',')}`);
   if (chapterNineInstrumentCount !== 1) failures.push(`chapter 9 ambivalent fish instrument count mismatch: ${chapterNineInstrumentCount}`);
   if (chapterNineInstrumentFieldCount !== 2) failures.push(`chapter 9 ambivalent fish instrument field count mismatch: ${chapterNineInstrumentFieldCount}`);
+  if (chapterNineInstrumentAxisCount !== 2) failures.push(`chapter 9 ambivalent fish instrument axis count mismatch: ${chapterNineInstrumentAxisCount}`);
   if (chapterNineInstrumentMirrorCount !== 1) failures.push(`chapter 9 ambivalent fish instrument mirror count mismatch: ${chapterNineInstrumentMirrorCount}`);
   if (chapterNineInstrumentRingCount !== 2) failures.push(`chapter 9 ambivalent fish instrument ring count mismatch: ${chapterNineInstrumentRingCount}`);
   if (chapterNineInstrumentFishCount !== 2) failures.push(`chapter 9 ambivalent fish instrument fish count mismatch: ${chapterNineInstrumentFishCount}`);
   if (chapterNineInstrumentJunctionCount !== 1) failures.push(`chapter 9 ambivalent fish instrument junction count mismatch: ${chapterNineInstrumentJunctionCount}`);
   if (chapterNineInstrumentShadowCoreCount !== 1) failures.push(`chapter 9 ambivalent fish instrument shadow core count mismatch: ${chapterNineInstrumentShadowCoreCount}`);
+  if (chapterNineInstrumentChargeCount !== 2) failures.push(`chapter 9 ambivalent fish instrument charge count mismatch: ${chapterNineInstrumentChargeCount}`);
   if (chapterNineInstrumentLabelCount !== 3) failures.push(`chapter 9 ambivalent fish instrument label count mismatch: ${chapterNineInstrumentLabelCount}`);
   if (chapterNineInstrumentRole !== 'img') failures.push(`chapter 9 ambivalent fish instrument role mismatch: ${chapterNineInstrumentRole}`);
   if (!chapterNineInstrumentLabel?.includes('Ambivalent fish model') || !chapterNineInstrumentLabel?.includes('blessing and threat') || !chapterNineInstrumentLabel?.includes('Current emphasis: Paradox')) {
@@ -3442,6 +3446,25 @@ async function smokeMobile(page, failures) {
     const chapterNineScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const chapterNineReferenceMapBox = await page.locator('.chapter-stage__reference-map').boundingBox();
     const chapterNineInstrumentBox = await page.locator('.ambivalent-fish-instrument').boundingBox();
+    const chapterNineAxisCount = await page.locator('.ambivalent-fish-instrument__axis').count();
+    const chapterNineChargeCount = await page.locator('.ambivalent-fish-instrument__charge').count();
+    const chapterNineChargeLayout = await page.locator('.ambivalent-fish-instrument__charge').evaluateAll((nodes) => {
+      const instrument = document.querySelector('.ambivalent-fish-instrument');
+      const instrumentBox = instrument?.getBoundingClientRect();
+      return nodes.map((node) => {
+        const box = node.getBoundingClientRect();
+        return {
+          text: node.textContent?.trim() || '',
+          inside: Boolean(instrumentBox)
+            && box.left >= instrumentBox.left - 1
+            && box.right <= instrumentBox.right + 1
+            && box.top >= instrumentBox.top - 1
+            && box.bottom <= instrumentBox.bottom + 1,
+          width: box.width,
+          height: box.height,
+        };
+      });
+    });
     if (!chapterNineNavBox || !chapterNineHeadingBox) {
       failures.push(`mobile chapter 9 geometry missing at ${viewport.width}x${viewport.height}`);
       continue;
@@ -3460,6 +3483,13 @@ async function smokeMobile(page, failures) {
     if (!chapterNineInstrumentBox) failures.push(`mobile chapter 9 ambivalent fish instrument missing at ${viewport.width}x${viewport.height}`);
     if (chapterNineInstrumentBox && chapterNineInstrumentBox.width > viewport.width + 2) {
       failures.push(`mobile chapter 9 ambivalent fish instrument exceeds viewport at ${viewport.width}x${viewport.height}: ${Math.round(chapterNineInstrumentBox.width)}`);
+    }
+    if (chapterNineAxisCount !== 2) failures.push(`mobile chapter 9 ambivalent fish axis count mismatch at ${viewport.width}x${viewport.height}: ${chapterNineAxisCount}`);
+    if (chapterNineChargeCount !== 2) failures.push(`mobile chapter 9 ambivalent fish charge count mismatch at ${viewport.width}x${viewport.height}: ${chapterNineChargeCount}`);
+    for (const charge of chapterNineChargeLayout) {
+      if (!charge.inside || charge.width <= 0 || charge.height <= 0) {
+        failures.push(`mobile chapter 9 charge label escapes instrument at ${viewport.width}x${viewport.height}: ${charge.text}`);
+      }
     }
 
     if (viewport.width === mobileViewport.width) {
