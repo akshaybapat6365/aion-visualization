@@ -313,6 +313,25 @@ describe('Aion framework data contract', () => {
     ]);
   });
 
+  test('keeps Chapter 11 tree scene helpers mobile-aware', async () => {
+    const {
+      getTreeBloomStrength,
+      getTreeCosmicParticleCount,
+      getTreePixelRatioCap,
+      getTreeWaterParticleCount,
+      isTreeMobile,
+      TREE_MOBILE_BREAKPOINT,
+    } = await import('../../src/visualizations/chapters/ch11/treeSceneConfig.js');
+
+    expect(TREE_MOBILE_BREAKPOINT).toBe(720);
+    expect(isTreeMobile(390)).toBe(true);
+    expect(isTreeMobile(1440)).toBe(false);
+    expect(getTreePixelRatioCap(390)).toBeLessThan(getTreePixelRatioCap(1440));
+    expect(getTreeWaterParticleCount(390)).toBeLessThan(getTreeWaterParticleCount(1440));
+    expect(getTreeCosmicParticleCount(390)).toBeLessThan(getTreeCosmicParticleCount(1440));
+    expect(getTreeBloomStrength(390)).toBeLessThan(getTreeBloomStrength(1440));
+  });
+
   test('keeps Chapter 12 amplification lens panels tied to symbolic interpretation', () => {
     expect(CHAPTER_SCENES.ch12.panels.map((panel) => panel.id)).toEqual([
       'background',

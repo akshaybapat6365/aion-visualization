@@ -6862,7 +6862,7 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch11"] .chapter-stage__intro h1 {
   max-width: 13.2ch;
-  font-size: clamp(3.25rem, 5.55vw, 5.35rem);
+  font-size: clamp(3.35rem, 5.75vw, 5.58rem);
   line-height: 0.93;
 }
 
@@ -6894,11 +6894,11 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch11"] .chapter-stage__scrim {
   background:
-    linear-gradient(180deg, rgba(3, 3, 7, 0.86), rgba(3, 3, 7, 0.46) 48%, rgba(3, 3, 7, 0.84)),
-    linear-gradient(90deg, rgba(3, 3, 7, 0.98), rgba(3, 3, 7, 0.72) 56%, rgba(3, 3, 7, 0.32)),
-    radial-gradient(circle at 31% 51%, rgba(212, 175, 55, 0.17), transparent 31%),
-    radial-gradient(circle at 58% 48%, rgba(83, 216, 232, 0.11), transparent 34%),
-    radial-gradient(circle at 74% 66%, rgba(181, 130, 255, 0.08), transparent 32%);
+    linear-gradient(180deg, rgba(3, 3, 7, 0.82), rgba(3, 3, 7, 0.34) 48%, rgba(3, 3, 7, 0.8)),
+    linear-gradient(90deg, rgba(3, 3, 7, 0.98), rgba(3, 3, 7, 0.66) 54%, rgba(3, 3, 7, 0.18)),
+    radial-gradient(circle at 31% 51%, rgba(212, 175, 55, 0.19), transparent 31%),
+    radial-gradient(circle at 58% 48%, rgba(83, 216, 232, 0.14), transparent 34%),
+    radial-gradient(circle at 75% 65%, rgba(194, 55, 43, 0.07), transparent 32%);
 }
 
 .chapter-experience[data-chapter-id="ch11"] .chapter-stage__reference-node[data-panel-id="mercurius"] .chapter-stage__reference-mark::before {
@@ -6974,23 +6974,26 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument {
+  isolation: isolate;
   position: relative;
   width: min(35.5rem, 100%);
-  min-height: clamp(9.45rem, 15vh, 10.85rem);
+  min-height: clamp(10.15rem, 16vh, 11.4rem);
   overflow: hidden;
   margin-top: 0.7rem;
-  border: 1px solid rgba(244, 240, 232, 0.16);
+  border: 1px solid rgba(255, 227, 156, 0.24);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 22% 68%, rgba(83, 216, 232, 0.22), transparent 6.2rem),
-    radial-gradient(circle at 50% 46%, rgba(212, 175, 55, 0.25), transparent 6.3rem),
-    radial-gradient(circle at 78% 50%, rgba(255, 111, 82, 0.16), transparent 5.9rem),
-    radial-gradient(circle at 72% 68%, rgba(181, 130, 255, 0.11), transparent 5.2rem),
-    linear-gradient(90deg, rgba(6, 8, 13, 0.94), rgba(11, 9, 12, 0.83) 46%, rgba(18, 8, 16, 0.76));
+    repeating-linear-gradient(0deg, rgba(255, 227, 156, 0.035) 0 1px, transparent 1px 0.72rem),
+    repeating-linear-gradient(90deg, rgba(83, 216, 232, 0.025) 0 1px, transparent 1px 2.1rem),
+    radial-gradient(circle at 22% 68%, rgba(83, 216, 232, 0.3), transparent 6.35rem),
+    radial-gradient(circle at 50% 46%, rgba(212, 175, 55, 0.32), transparent 6.55rem),
+    radial-gradient(circle at 78% 50%, rgba(255, 111, 82, 0.2), transparent 5.95rem),
+    linear-gradient(90deg, rgba(6, 8, 13, 0.96), rgba(11, 9, 12, 0.86) 46%, rgba(21, 10, 11, 0.8));
   box-shadow:
     var(--shadow-inset),
     0 1.6rem 4.9rem rgba(0, 0, 0, 0.34),
-    0 0 3.2rem rgba(212, 175, 55, 0.09);
+    0 0 3.2rem rgba(212, 175, 55, 0.12),
+    0 0 4.2rem rgba(83, 216, 232, 0.06);
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument::before,
@@ -7002,7 +7005,8 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument::before {
   inset: 0.58rem;
-  border: 1px solid rgba(255, 227, 156, 0.08);
+  z-index: 0;
+  border: 1px solid rgba(255, 227, 156, 0.12);
   border-radius: calc(var(--radius) - 2px);
   background:
     linear-gradient(90deg, transparent 30%, rgba(255, 227, 156, 0.1) 30.2%, transparent 30.8%),
@@ -7011,6 +7015,7 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument::after {
+  z-index: 0;
   left: 50%;
   top: 50%;
   width: 74%;
@@ -7035,6 +7040,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__reflection,
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__label {
   position: absolute;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -7067,7 +7073,7 @@ h3 {
   height: 8.25rem;
   border: 1px solid rgba(255, 227, 156, 0.2);
   border-radius: 50%;
-  opacity: 0.62;
+  opacity: 0.7;
   box-shadow:
     inset 0 0 2rem rgba(255, 227, 156, 0.06),
     0 0 2.4rem rgba(83, 216, 232, 0.08);
@@ -7081,7 +7087,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__trunk {
   left: 50%;
   top: 11%;
-  width: 0.24rem;
+  width: 0.28rem;
   height: 76%;
   border-radius: 999px;
   background:
@@ -7090,7 +7096,7 @@ h3 {
   box-shadow:
     0 0 1.35rem rgba(83, 216, 232, 0.24),
     0 0 1.05rem rgba(212, 175, 55, 0.18);
-  opacity: 0.82;
+  opacity: 0.9;
   transform: translateX(-50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7104,7 +7110,7 @@ h3 {
   height: 2.95rem;
   border-top: 1px solid rgba(83, 216, 232, 0.4);
   border-radius: 50%;
-  opacity: 0.64;
+  opacity: 0.76;
   filter: drop-shadow(0 0 0.82rem rgba(83, 216, 232, 0.18));
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7133,7 +7139,7 @@ h3 {
   height: 3.32rem;
   border-bottom: 1px solid rgba(255, 227, 156, 0.4);
   border-radius: 50%;
-  opacity: 0.64;
+  opacity: 0.76;
   filter: drop-shadow(0 0 0.82rem rgba(212, 175, 55, 0.18));
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7154,7 +7160,7 @@ h3 {
   width: 16rem;
   height: 5.8rem;
   border-radius: 50%;
-  opacity: 0.58;
+  opacity: 0.68;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -7223,7 +7229,7 @@ h3 {
   top: 50%;
   width: 6.5rem;
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 227, 156, 0.36);
+  border: 1px solid rgba(255, 227, 156, 0.48);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(3, 3, 7, 0.96) 0 34%, transparent 36%),
@@ -7231,7 +7237,7 @@ h3 {
   box-shadow:
     inset 0 0 1rem rgba(3, 3, 7, 0.7),
     0 0 1.85rem rgba(212, 175, 55, 0.2);
-  opacity: 0.82;
+  opacity: 0.9;
   transform: translateY(-50%);
   animation: alchemical-tree-wheel 18s linear infinite;
   transition:
@@ -7307,7 +7313,7 @@ h3 {
   box-shadow:
     0 0 0 0.5rem rgba(212, 175, 55, 0.05),
     0 0 1.35rem rgba(212, 175, 55, 0.2);
-  opacity: 0.78;
+  opacity: 0.88;
   transform: translate(-50%, -50%) rotate(45deg) scale(0.9);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -7354,11 +7360,16 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__label {
-  color: rgba(244, 240, 232, 0.82);
+  color: rgba(244, 240, 232, 0.88);
   font-family: var(--font-ui);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0;
+  padding: 0.12rem 0.28rem;
+  border: 1px solid rgba(244, 240, 232, 0.08);
+  border-radius: 999px;
+  background: rgba(3, 3, 7, 0.42);
+  box-shadow: var(--shadow-inset);
 }
 
 .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__label--mercurius {
@@ -9674,6 +9685,32 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .scene-host__status span {
   color: rgba(255, 227, 156, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chapter-experience[data-chapter-id="ch11"] .scene-host__status {
+  left: clamp(1rem, 3vw, 2rem);
+  top: auto;
+  bottom: clamp(1rem, 3vh, 2rem);
+  width: min(18rem, calc(100% - 2rem));
+  transform: none;
+  padding: 0.72rem 0.82rem;
+  border-color: rgba(255, 227, 156, 0.2);
+  background:
+    linear-gradient(135deg, rgba(8, 7, 10, 0.76), rgba(4, 18, 24, 0.58)),
+    radial-gradient(circle at 18% 30%, rgba(255, 227, 156, 0.13), transparent 3rem),
+    radial-gradient(circle at 82% 70%, rgba(83, 216, 232, 0.12), transparent 3rem);
+  text-align: left;
+  box-shadow:
+    var(--shadow-inset),
+    0 1.2rem 3rem rgba(0, 0, 0, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch11"] .scene-host__status span {
+  color: rgba(143, 231, 237, 0.82);
   font-family: var(--font-ui);
   font-size: 0.66rem;
   letter-spacing: 0.08em;
@@ -14040,7 +14077,14 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .chapter-sigil {
-		    display: none;
+		    display: block;
+		    position: absolute;
+		    right: 0;
+		    top: 10.78rem;
+		    width: 2.82rem;
+		    height: 2.82rem;
+		    opacity: 0.72;
+		    filter: drop-shadow(0 0 1rem rgba(83, 216, 232, 0.14));
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .chapter-stage__intro h1 {
@@ -14058,10 +14102,10 @@ h3 {
 
 		  .chapter-experience[data-chapter-id="ch11"] .chapter-stage__scrim {
 		    background:
-		      linear-gradient(180deg, rgba(3, 3, 7, 0.92), rgba(3, 3, 7, 0.64) 48%, rgba(3, 3, 7, 0.88)),
-		      linear-gradient(90deg, rgba(3, 3, 7, 0.98), rgba(3, 3, 7, 0.82) 62%, rgba(3, 3, 7, 0.46)),
-		      radial-gradient(circle at 30% 48%, rgba(212, 175, 55, 0.13), transparent 28%),
-		      radial-gradient(circle at 66% 50%, rgba(83, 216, 232, 0.08), transparent 34%);
+		      linear-gradient(180deg, rgba(3, 3, 7, 0.9), rgba(3, 3, 7, 0.58) 48%, rgba(3, 3, 7, 0.86)),
+		      linear-gradient(90deg, rgba(3, 3, 7, 0.98), rgba(3, 3, 7, 0.74) 62%, rgba(3, 3, 7, 0.34)),
+		      radial-gradient(circle at 30% 48%, rgba(212, 175, 55, 0.15), transparent 28%),
+		      radial-gradient(circle at 66% 50%, rgba(83, 216, 232, 0.11), transparent 34%);
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .scene-host__pause {
@@ -14081,7 +14125,7 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument {
-		    min-height: 7.65rem;
+		    min-height: 7.95rem;
 		    margin-top: 0.58rem;
 		  }
 
@@ -14183,7 +14227,8 @@ h3 {
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__label {
-		    font-size: 0.51rem;
+		    font-size: 0.5rem;
+		    padding: 0.08rem 0.2rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"] .alchemical-tree-instrument__label--mercurius {
@@ -14201,6 +14246,26 @@ h3 {
 		    right: auto;
 		    left: 5%;
 		    top: 12%;
+		  }
+
+		  .chapter-experience[data-chapter-id="ch11"] .scene-host__status {
+		    left: 0.78rem;
+		    bottom: 0.78rem;
+		    width: min(12.5rem, calc(100% - 1.56rem));
+		    padding: 0.54rem 0.62rem;
+		    opacity: 0.88;
+		  }
+
+		  .chapter-experience[data-chapter-id="ch11"] .scene-host__status strong {
+		    display: block;
+		    overflow: hidden;
+		    max-width: 100%;
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		  }
+
+		  .chapter-experience[data-chapter-id="ch11"] .scene-host__status span {
+		    font-size: 0.58rem;
 		  }
 
 		  .chapter-experience[data-chapter-id="ch11"][data-reduced-motion="true"] .scene-host__fallback {
