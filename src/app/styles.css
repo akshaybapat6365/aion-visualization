@@ -266,14 +266,87 @@ summary:focus-visible {
   transform: translateY(-1px);
 }
 
+.chapter-jump__select {
+  position: relative;
+  width: min(100%, 11.5rem);
+  max-width: 11.5rem;
+  min-width: 0;
+}
+
+.chapter-jump__select::after {
+  content: '';
+  position: absolute;
+  right: 0.86rem;
+  top: 50%;
+  width: 0.44rem;
+  height: 0.44rem;
+  pointer-events: none;
+  border-right: 2px solid rgba(255, 227, 156, 0.82);
+  border-bottom: 2px solid rgba(255, 227, 156, 0.82);
+  transform: translateY(-62%) rotate(45deg);
+}
+
 .chapter-jump select {
+  width: 100%;
   max-width: 11.5rem;
   min-height: 2.2rem;
   border: 1px solid rgba(212, 175, 55, 0.18);
   border-radius: 999px;
   background: rgba(3, 3, 7, 0.72);
+  color: transparent;
+  appearance: none;
+  padding: 0.35rem 2.35rem 0.35rem 0.8rem;
+}
+
+.chapter-jump select option {
+  background: #f4f0e8;
+  color: #080805;
+}
+
+.chapter-jump__current {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.44rem;
+  min-width: 0;
+  padding: 0.35rem 2.35rem 0.35rem 0.8rem;
   color: var(--text);
-  padding: 0.35rem 0.8rem;
+  font-family: var(--font-ui);
+  font-size: 0.84rem;
+  font-weight: 650;
+  line-height: 1.05;
+  pointer-events: none;
+}
+
+.chapter-jump__current-index {
+  flex: 0 0 auto;
+  color: var(--gold-soft);
+}
+
+.chapter-jump__current-index::after {
+  content: '·';
+  margin-left: 0.38rem;
+  color: rgba(212, 175, 55, 0.66);
+}
+
+.chapter-jump__current-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .chapter-jump__select::after,
+  .chapter-jump__current {
+    display: none;
+  }
+
+  .chapter-jump select {
+    appearance: auto;
+    color: CanvasText;
+  }
 }
 
 .app-main {
@@ -11663,18 +11736,38 @@ h3 {
 
   .chapter-jump {
     display: grid;
-    grid-template-columns: auto minmax(0, min(100%, 17rem));
+    grid-template-columns: auto minmax(0, 1fr);
     justify-content: start;
     width: min(100%, calc(100vw - 2rem));
   }
 
+  .chapter-jump__select {
+    width: 100%;
+    max-width: none;
+  }
+
   .chapter-jump select {
     flex: 1;
-    min-height: 2rem;
+    min-height: 3.05rem;
     min-width: 0;
-    max-width: min(17rem, calc(100vw - 6.8rem));
+    max-width: none;
     padding-block: 0.28rem;
     width: 100%;
+  }
+
+  .chapter-jump__current {
+    align-items: center;
+    min-height: 3.05rem;
+    padding-block: 0.38rem;
+  }
+
+  .chapter-jump__current-title {
+    display: -webkit-box;
+    overflow: hidden;
+    line-height: 1.08;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .chapter-jump__sequence a,
@@ -11695,7 +11788,7 @@ h3 {
 
   .home-hero {
     min-height: auto;
-    padding-top: 11rem;
+    padding-top: 11.65rem;
     padding-bottom: 2.5rem;
   }
 
@@ -11747,12 +11840,12 @@ h3 {
 
   .page-header--visual {
     min-height: auto;
-    padding-top: 10rem;
+    padding-top: 11.35rem;
   }
 
   .chapters-hero {
     min-height: auto;
-    padding-top: 10rem;
+    padding-top: 11.35rem;
   }
 
   .chapters-hero__copy h1 {
@@ -11780,7 +11873,7 @@ h3 {
     display: grid;
     gap: 0.72rem;
     min-height: auto;
-    padding-top: 9.85rem;
+    padding-top: 11.25rem;
   }
 
   .atlas-layout--hero {
@@ -12656,7 +12749,7 @@ h3 {
   }
 
   .chapter-experience[data-chapter-id="ch12"] .chapter-stage__intro {
-    padding-top: 1.3rem;
+    padding-top: 1.85rem;
   }
 
   .chapter-experience[data-chapter-id="ch12"] .chapter-stage__scrim {
@@ -12925,7 +13018,7 @@ h3 {
   }
 
   .atlas-hero {
-    padding-top: 9.65rem;
+    padding-top: 11.25rem;
   }
 
   .atlas-hero__copy > .eyebrow {
@@ -13252,7 +13345,7 @@ h3 {
   .chapter-experience[data-chapter-id="ch14"] .chapter-stage__intro {
     justify-content: flex-start;
     width: min(22.5rem, calc(100% - 2rem));
-    padding-top: 10.2rem;
+    padding-top: 11.05rem;
     padding-bottom: 1.4rem;
   }
 
@@ -13408,7 +13501,7 @@ h3 {
 
   .chapter-experience[data-chapter-id="ch8"] .chapter-stage__intro {
     justify-content: flex-start;
-    padding-top: 10.2rem;
+    padding-top: 11.05rem;
   }
 
   .chapter-experience[data-chapter-id="ch8"] .chapter-sigil {

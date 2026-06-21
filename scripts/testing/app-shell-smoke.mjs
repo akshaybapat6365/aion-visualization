@@ -408,6 +408,42 @@ async function smokeChaptersMobileLayout(page, failures, viewport) {
   if (layout.actionAfterContent !== 'none') failures.push(`mobile chapters primary CTA has duplicate pseudo arrow at ${label}: ${layout.actionAfterContent}`);
 }
 
+async function smokeChapterJumpForcedColors(page, failures, viewport) {
+  await page.setViewportSize(viewport);
+  await page.emulateMedia({ forcedColors: 'active' });
+  await gotoAppRoute(page, '/journey/chapter/ch12');
+
+  const forcedColorsState = await page.locator('#chapter-jump-select').evaluate((select) => {
+    const selectStyles = window.getComputedStyle(select);
+    const overlay = document.querySelector('.chapter-jump__current');
+    const selectShell = document.querySelector('.chapter-jump__select');
+    const overlayStyles = overlay ? window.getComputedStyle(overlay) : null;
+    const arrowStyles = selectShell ? window.getComputedStyle(selectShell, '::after') : null;
+
+    return {
+      value: select.value,
+      color: selectStyles.color,
+      appearance: selectStyles.appearance || selectStyles.webkitAppearance,
+      overlayDisplay: overlayStyles?.display || 'missing',
+      arrowDisplay: arrowStyles?.display || 'missing',
+      disabled: select.disabled,
+      optionCount: select.querySelectorAll('option').length,
+    };
+  });
+
+  const label = `${viewport.width}x${viewport.height}`;
+  if (forcedColorsState.value !== 'ch12') failures.push(`forced-colors chapter jump selected value mismatch at ${label}: ${forcedColorsState.value}`);
+  if (forcedColorsState.color === 'rgba(0, 0, 0, 0)' || forcedColorsState.color === 'transparent') {
+    failures.push(`forced-colors chapter jump native text remains transparent at ${label}: ${forcedColorsState.color}`);
+  }
+  if (forcedColorsState.overlayDisplay !== 'none') failures.push(`forced-colors chapter jump overlay remains visible at ${label}: ${forcedColorsState.overlayDisplay}`);
+  if (forcedColorsState.arrowDisplay !== 'none') failures.push(`forced-colors chapter jump decorative arrow remains visible at ${label}: ${forcedColorsState.arrowDisplay}`);
+  if (forcedColorsState.disabled) failures.push(`forced-colors chapter jump is disabled at ${label}`);
+  if (forcedColorsState.optionCount !== 15) failures.push(`forced-colors chapter jump option count mismatch at ${label}: ${forcedColorsState.optionCount}`);
+
+  await page.emulateMedia({ forcedColors: 'none' });
+}
+
 async function smokeAtlasVisualSearch(page, failures) {
   await gotoAppRoute(page, '/atlas');
 
@@ -3182,6 +3218,7 @@ async function smokeMobile(page, failures) {
     }
 
     await smokeChaptersMobileLayout(page, failures, viewport);
+    await smokeChapterJumpForcedColors(page, failures, viewport);
 
     await gotoAppRoute(page, '/journey/chapter/ch1');
     const chapterNavBox = await page.locator('.app-nav').boundingBox();
