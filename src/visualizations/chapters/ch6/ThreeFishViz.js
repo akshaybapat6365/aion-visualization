@@ -23,18 +23,18 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ─── Palette ─── */
-const ZODIAC_GOLD = new THREE.Color('#c8a820');
-const FISH_SILVER = new THREE.Color('#b0c4de');
-const FISH_DARK = new THREE.Color('#2a3a5a');
-const COMMISSURE = new THREE.Color('#ffd700');
-const SATURN_BLACK = new THREE.Color('#1a1a28');
-const SATURN_RING_C = new THREE.Color('#4a4a5a');
-const JUPITER_AMBER = new THREE.Color('#d4a030');
-const CONJUNCTION_C = new THREE.Color('#ffffff');
-const SPRING_PT = new THREE.Color('#ff6600');
+const ZODIAC_GOLD = new THREE.Color('#d4af37');
+const FISH_SILVER = new THREE.Color('#f7f1df');
+const FISH_DARK = new THREE.Color('#25304f');
+const COMMISSURE = new THREE.Color('#ffe39c');
+const SATURN_BLACK = new THREE.Color('#070814');
+const SATURN_RING_C = new THREE.Color('#64708f');
+const JUPITER_AMBER = new THREE.Color('#d4af37');
+const CONJUNCTION_C = new THREE.Color('#f7f1df');
+const SPRING_PT = new THREE.Color('#cc6d86');
 const LION_RED = new THREE.Color('#c0392b');
 const SERPENT_GREEN = new THREE.Color('#2ecc71');
-const VOID = 0x030310;
+const VOID = 0x02030a;
 
 const ZODIAC_R = 5;
 
@@ -67,13 +67,13 @@ export default class ThreeFishViz extends BaseViz {
             canvas: this.canvas, antialias: true, alpha: false,
             powerPreference: 'high-performance',
         });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2));
+        R.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2));
         R.setSize(this.width, this.height);
         R.setClearColor(VOID);
         R.toneMapping = THREE.ACESFilmicToneMapping;
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(VOID, 0.008);
+        this.scene.fog = new THREE.FogExp2(VOID, 0.006);
 
         this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 200);
         this.camera.position.set(0, 5, 14);
@@ -81,10 +81,16 @@ export default class ThreeFishViz extends BaseViz {
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
         this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+            const bounds = this._inputTarget?.getBoundingClientRect?.();
+            const width = bounds?.width || globalThis.innerWidth || 1;
+            const height = bounds?.height || globalThis.innerHeight || 1;
+            const left = bounds?.left || 0;
+            const top = bounds?.top || 0;
+            this.mouse.x = ((e.clientX - left) / width) * 2 - 1;
+            this.mouse.y = -(((e.clientY - top) / height) * 2 - 1);
         };
-        addEventListener('mousemove', this._onMM);
+        this._inputTarget = this.container || this.canvas || globalThis;
+        this._inputTarget.addEventListener('mousemove', this._onMM, { passive: true });
 
         /* Scratch vectors for projection (reuse to avoid GC) */
         this._projVec = new THREE.Vector3();
@@ -167,7 +173,7 @@ export default class ThreeFishViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.starfield = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0x8585c8, size: 0.05, transparent: true, opacity: 0.38,
+            color: 0x9aa7d8, size: 0.055, transparent: true, opacity: 0.44,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.starfield);
@@ -182,9 +188,9 @@ export default class ThreeFishViz extends BaseViz {
         this.spokes = [];
 
         /* Main ring */
-        const ringGeo = new THREE.TorusGeometry(ZODIAC_R, 0.03, 8, 128);
+        const ringGeo = new THREE.TorusGeometry(ZODIAC_R, 0.035, 8, 128);
         const mainRingMat = new THREE.MeshBasicMaterial({
-            color: ZODIAC_GOLD, transparent: true, opacity: 0.25,
+            color: ZODIAC_GOLD, transparent: true, opacity: 0.32,
             blending: THREE.AdditiveBlending,
         });
         this.wheelGroup.add(new THREE.Mesh(ringGeo, mainRingMat));
@@ -193,7 +199,7 @@ export default class ThreeFishViz extends BaseViz {
         /* Inner ring — fainter, smaller */
         const innerGeo = new THREE.TorusGeometry(ZODIAC_R * 0.85, 0.015, 8, 128);
         const innerRingMat = new THREE.MeshBasicMaterial({
-            color: ZODIAC_GOLD, transparent: true, opacity: 0.08,
+            color: ZODIAC_GOLD, transparent: true, opacity: 0.12,
             blending: THREE.AdditiveBlending,
         });
         this.wheelGroup.add(new THREE.Mesh(innerGeo, innerRingMat));
@@ -208,11 +214,11 @@ export default class ThreeFishViz extends BaseViz {
             const isAquarius = i === 10;
 
             /* Marker dot */
-            const dotGeo = new THREE.SphereGeometry(isPisces ? 0.09 : 0.05, 8, 8);
+            const dotGeo = new THREE.SphereGeometry(isPisces ? 0.11 : (isAquarius ? 0.085 : 0.052), 8, 8);
             const dot = new THREE.Mesh(dotGeo, new THREE.MeshBasicMaterial({
                 color: isPisces ? COMMISSURE : (isAquarius ? 0x22d3ee : ZODIAC_GOLD),
                 transparent: true,
-                opacity: isPisces ? 0.7 : (isAquarius ? 0.5 : 0.3),
+                opacity: isPisces ? 0.82 : (isAquarius ? 0.62 : 0.34),
             }));
             dot.position.set(Math.cos(angle) * ZODIAC_R, 0, Math.sin(angle) * ZODIAC_R);
             this.wheelGroup.add(dot);
@@ -255,7 +261,7 @@ export default class ThreeFishViz extends BaseViz {
                 }
                 const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
                 this._piscesArc = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
-                    color: COMMISSURE, transparent: true, opacity: 0.35,
+                    color: COMMISSURE, transparent: true, opacity: 0.42,
                     blending: THREE.AdditiveBlending,
                 }));
                 this.wheelGroup.add(this._piscesArc);
@@ -273,7 +279,7 @@ export default class ThreeFishViz extends BaseViz {
                 }
                 const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
                 this._aquariusArc = new THREE.Line(arcGeo, new THREE.LineBasicMaterial({
-                    color: 0x22d3ee, transparent: true, opacity: 0.15,
+                    color: 0x53d8e8, transparent: true, opacity: 0.22,
                     blending: THREE.AdditiveBlending,
                 }));
                 this.wheelGroup.add(this._aquariusArc);
@@ -284,7 +290,7 @@ export default class ThreeFishViz extends BaseViz {
         this.springPoint = new THREE.Mesh(
             new THREE.OctahedronGeometry(0.15, 0),
             new THREE.MeshStandardMaterial({
-                color: SPRING_PT, emissive: SPRING_PT, emissiveIntensity: 0.6,
+                color: SPRING_PT, emissive: SPRING_PT, emissiveIntensity: 0.82,
             })
         );
         this.wheelGroup.add(this.springPoint);
@@ -305,19 +311,19 @@ export default class ThreeFishViz extends BaseViz {
             const color = isLight ? FISH_SILVER : FISH_DARK;
 
             /* Body — elongated sphere */
-            const bodyGeo = new THREE.SphereGeometry(0.22, 12, 10);
-            bodyGeo.scale(2.2, 0.6, 0.45);
+            const bodyGeo = new THREE.SphereGeometry(0.24, 16, 12);
+            bodyGeo.scale(2.45, 0.72, 0.5);
             const bodyMat = new THREE.MeshStandardMaterial({
                 color, emissive: color,
-                emissiveIntensity: isLight ? 0.5 : 0.2,
-                transparent: true, opacity: isLight ? 0.75 : 0.5,
-                metalness: 0.4, roughness: 0.3,
+                emissiveIntensity: isLight ? 0.72 : 0.34,
+                transparent: true, opacity: isLight ? 0.84 : 0.58,
+                metalness: 0.45, roughness: 0.24,
             });
             const body = new THREE.Mesh(bodyGeo, bodyMat);
             group.add(body);
 
             /* Tail fin */
-            const tailGeo = new THREE.ConeGeometry(0.12, 0.3, 4);
+            const tailGeo = new THREE.ConeGeometry(0.14, 0.34, 4);
             const tailMat = bodyMat.clone();
             tailMat.opacity = isLight ? 0.55 : 0.35;
             const tail = new THREE.Mesh(tailGeo, tailMat);
@@ -355,8 +361,8 @@ export default class ThreeFishViz extends BaseViz {
             /* Glow sphere — used for visual emphasis during label reveal */
             const glowGeo = new THREE.SphereGeometry(isLight ? 0.9 : 0.7, 12, 12);
             const glowMat = new THREE.MeshBasicMaterial({
-                color: isLight ? 0x4488bb : 0x1a2244,
-                transparent: true, opacity: isLight ? 0.06 : 0.03,
+                color: isLight ? 0xd4af37 : 0x53d8e8,
+                transparent: true, opacity: isLight ? 0.08 : 0.045,
                 blending: THREE.AdditiveBlending,
             });
             const glow = new THREE.Mesh(glowGeo, glowMat);
@@ -380,7 +386,7 @@ export default class ThreeFishViz extends BaseViz {
         }
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
         this.commissure = new THREE.Line(geo, new THREE.LineBasicMaterial({
-            color: COMMISSURE, transparent: true, opacity: 0.35,
+            color: COMMISSURE, transparent: true, opacity: 0.42,
             blending: THREE.AdditiveBlending,
         }));
         this.scene.add(this.commissure);
@@ -392,7 +398,7 @@ export default class ThreeFishViz extends BaseViz {
         const glowGeo = new THREE.BufferGeometry();
         glowGeo.setAttribute('position', new THREE.BufferAttribute(glowPos, 3));
         this.commissureGlow = new THREE.Points(glowGeo, new THREE.PointsMaterial({
-            color: COMMISSURE, size: 0.07, transparent: true, opacity: 0.4,
+            color: COMMISSURE, size: 0.085, transparent: true, opacity: 0.48,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.commissureGlow);
@@ -416,7 +422,7 @@ export default class ThreeFishViz extends BaseViz {
         /* Saturn ring */
         const sRingGeo = new THREE.TorusGeometry(0.9, 0.04, 4, 64);
         const sRing = new THREE.Mesh(sRingGeo, new THREE.MeshBasicMaterial({
-            color: SATURN_RING_C, transparent: true, opacity: 0.3,
+            color: SATURN_RING_C, transparent: true, opacity: 0.38,
         }));
         sRing.rotation.x = Math.PI / 3;
         this.saturnGroup.add(sRing);
@@ -516,11 +522,11 @@ export default class ThreeFishViz extends BaseViz {
 
     /* ═══ Lights ═══ */
     _createLights() {
-        this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        const p1 = new THREE.PointLight(0xc8a820, 0.5, 20);
+        this.scene.add(new THREE.AmbientLight(0x0a0a18, 0.38));
+        const p1 = new THREE.PointLight(0xd4af37, 0.72, 22);
         p1.position.set(0, 3, 5);
         this.scene.add(p1);
-        const p2 = new THREE.PointLight(0x4a4a7a, 0.3, 25);
+        const p2 = new THREE.PointLight(0x53d8e8, 0.44, 26);
         p2.position.set(-4, 4, -4);
         this.scene.add(p2);
     }
@@ -543,8 +549,8 @@ export default class ThreeFishViz extends BaseViz {
             /* ─── Phase system ─── */
             .ch6-overlay [data-phase] {
                 opacity: 0;
-                transition: opacity 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                            transform 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                transition: opacity 1.8s cubic-bezier(0.32, 0.72, 0, 1),
+                            transform 1.8s cubic-bezier(0.32, 0.72, 0, 1);
                 transform: translateY(8px);
             }
             .ch6-overlay [data-phase].vis {
@@ -565,7 +571,9 @@ export default class ThreeFishViz extends BaseViz {
             /* ─── Tracked labels (positioned by JS) ─── */
             .ch6-tracked {
                 position: absolute;
-                transition: left 0.18s ease-out, top 0.18s ease-out;
+                transition:
+                    left 0.18s cubic-bezier(0.32, 0.72, 0, 1),
+                    top 0.18s cubic-bezier(0.32, 0.72, 0, 1);
                 will-change: left, top;
             }
 
@@ -624,11 +632,11 @@ export default class ThreeFishViz extends BaseViz {
                 white-space: nowrap;
             }
             .ch6-fish--light {
-                color: rgba(176, 196, 222, 0.65);
+                color: rgba(247, 241, 223, 0.7);
                 text-align: right;
             }
             .ch6-fish--dark {
-                color: rgba(60, 80, 120, 0.7);
+                color: rgba(83, 216, 232, 0.62);
             }
             .ch6-fish-explain {
                 display: block;
@@ -643,10 +651,10 @@ export default class ThreeFishViz extends BaseViz {
                 white-space: normal;
             }
             .ch6-fish--light .ch6-fish-explain {
-                color: rgba(176, 196, 222, 0.38);
+                color: rgba(247, 241, 223, 0.42);
             }
             .ch6-fish--dark .ch6-fish-explain {
-                color: rgba(80, 100, 140, 0.45);
+                color: rgba(83, 216, 232, 0.42);
             }
 
             /* Commissure label (tracked to thread midpoint) */
@@ -655,10 +663,10 @@ export default class ThreeFishViz extends BaseViz {
                 font-style: italic;
                 font-size: 10px;
                 letter-spacing: 1px;
-                color: rgba(255, 215, 0, 0.4);
+                color: rgba(255, 227, 156, 0.46);
                 text-align: center;
                 white-space: nowrap;
-                text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+                text-shadow: 0 0 12px rgba(255, 227, 156, 0.18);
             }
 
             /* ═══ PHASE 4 — Zodiac context ═══ */
@@ -686,12 +694,12 @@ export default class ThreeFishViz extends BaseViz {
                 pointer-events: none;
             }
             .ch6-sign-name.ch6-sign--pisces {
-                color: rgba(255, 215, 0, 0.45);
+                color: rgba(255, 227, 156, 0.52);
                 font-size: 8px;
                 letter-spacing: 3px;
             }
             .ch6-sign-name.ch6-sign--aquarius {
-                color: rgba(34, 211, 238, 0.35);
+                color: rgba(83, 216, 232, 0.44);
                 font-size: 8px;
                 letter-spacing: 3px;
             }
@@ -704,7 +712,7 @@ export default class ThreeFishViz extends BaseViz {
                 font-family: 'Cormorant Garamond', serif;
                 font-size: 9px;
                 letter-spacing: 2px;
-                color: rgba(255, 102, 0, 0.5);
+                color: rgba(204, 109, 134, 0.62);
                 text-align: center;
                 white-space: nowrap;
             }
@@ -714,7 +722,7 @@ export default class ThreeFishViz extends BaseViz {
                 font-size: 9.5px;
                 letter-spacing: 0;
                 margin-top: 3px;
-                color: rgba(255, 102, 0, 0.28);
+                color: rgba(204, 109, 134, 0.36);
                 max-width: 160px;
                 white-space: normal;
             }
@@ -841,12 +849,12 @@ export default class ThreeFishViz extends BaseViz {
             this._leaderSvg.appendChild(line);
             this._leaders[id] = line;
         };
-        makeLeader('fish-light', 'rgba(176,196,222,0.25)', 0.3);
-        makeLeader('fish-dark', 'rgba(60,80,120,0.25)', 0.3);
+        makeLeader('fish-light', 'rgba(247,241,223,0.28)', 0.34);
+        makeLeader('fish-dark', 'rgba(83,216,232,0.24)', 0.32);
         makeLeader('saturn', 'rgba(100,100,130,0.2)', 0.25);
         makeLeader('jupiter', 'rgba(212,160,48,0.2)', 0.25);
-        makeLeader('spring', 'rgba(255,102,0,0.2)', 0.25);
-        makeLeader('commissure', 'rgba(255,215,0,0.15)', 0.2);
+        makeLeader('spring', 'rgba(204,109,134,0.24)', 0.28);
+        makeLeader('commissure', 'rgba(255,227,156,0.18)', 0.22);
 
         /* ─── HTML elements ─── */
         ov.insertAdjacentHTML('beforeend', `
@@ -855,48 +863,45 @@ export default class ThreeFishViz extends BaseViz {
 
             <!-- Phase 2: Framing sentence -->
             <div class="ch6-framing" data-phase="2">
-                The birth of Christ coincided with the dawn
-                of the <em>Age of Pisces</em> — two fish,
-                swimming in opposite directions,
+                Aion reads the <em>Age of Pisces</em> as a symbolic weather system:
+                two fish, swimming in opposite directions,
                 bound by a single golden thread.<br><br>
-                <em>One fish is light. The other is shadow.</em><br>
-                Jung saw in this the eternal tension
-                between Christ and Antichrist — the
-                hostile brothers of the psyche.
+                <em>One current carries the received image. The other carries the counter-current.</em><br>
+                The chapter asks how an age can hold opposition without splitting its meaning.
             </div>
 
             <!-- Phase 3: Fish labels (tracked by JS) + commissure -->
             <div class="ch6-tracked ch6-fish-label ch6-fish--light" data-phase="3" data-track="fish-light">
-                Christ-Fish
-                <span class="ch6-fish-explain">the luminous half — what the age chose to worship</span>
+                Bright Fish
+                <span class="ch6-fish-explain">the received current of the Piscean image</span>
             </div>
             <div class="ch6-tracked ch6-fish-label ch6-fish--dark" data-phase="3" data-track="fish-dark">
-                Shadow-Fish
-                <span class="ch6-fish-explain">the dark twin — the Antichrist, denied but never absent</span>
+                Counter-Fish
+                <span class="ch6-fish-explain">the contrary current that keeps the symbol tense</span>
             </div>
             <div class="ch6-tracked ch6-commissure-label" data-phase="3" data-track="commissure">
-                the commissure — what binds the opposites
+                the commissure: what binds the opposites
             </div>
 
             <!-- Phase 4: Zodiac context -->
             <div class="ch6-zodiac-label" data-phase="4">the great year</div>
             <div class="ch6-tracked ch6-spring-label" data-phase="4" data-track="spring">
                 ◆ Spring Point
-                <span class="ch6-spring-explain">slowly precessing from Pisces toward Aquarius — marking the turn of the aeon</span>
+                <span class="ch6-spring-explain">slowly precessing from Pisces toward Aquarius: the symbolic threshold of the aeon</span>
             </div>
 
             <!-- Phase 5: Saturn + Jupiter (tracked) + lion/serpent -->
             <div class="ch6-tracked ch6-saturn-label" data-phase="5" data-track="saturn">
                 Saturn
-                <span class="ch6-saturn-explain">the "black star" — malefic father of time, orbited by lion and serpent</span>
+                <span class="ch6-saturn-explain">the dark time-marker in the chapter's astrological image field</span>
             </div>
             <div class="ch6-tracked ch6-jupiter-label" data-phase="5" data-track="jupiter">
                 Jupiter
-                <span class="ch6-jupiter-explain">life and justice — the benefic counterpart</span>
+                <span class="ch6-jupiter-explain">a bright counterpart that charges the historical sign</span>
             </div>
             <div class="ch6-tracked ch6-conjunction-label" data-phase="5" data-track="conjunction">
                 Great Conjunction
-                <span class="ch6-conjunction-explain">Saturn meets Jupiter in Pisces, ~7 BC — the Star of Bethlehem</span>
+                <span class="ch6-conjunction-explain">a charged meeting inside Pisces: history seen through symbol</span>
             </div>
             <div class="ch6-tracked ch6-orbiter-label ch6-orbiter--lion" data-phase="5" data-track="lion">
                 lion
@@ -1304,8 +1309,10 @@ export default class ThreeFishViz extends BaseViz {
 
     /* ═══ Dispose ═══ */
     dispose() {
-        removeEventListener('mousemove', this._onMM);
+        this._inputTarget?.removeEventListener?.('mousemove', this._onMM);
         if (this._overlay) this._overlay.remove();
+        this.bloom?.dispose?.();
+        this.composer?.dispose?.();
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
         this.scene?.traverse(o => {
             o.geometry?.dispose();
