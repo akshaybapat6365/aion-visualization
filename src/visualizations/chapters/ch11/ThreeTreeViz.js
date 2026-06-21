@@ -19,26 +19,30 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
+import {
+    createTreeSceneRandom,
+    getTreeBloomStrength,
+    getTreeCosmicParticleCount,
+    getTreePixelRatioCap,
+    getTreeWaterParticleCount,
+    isTreeMobile,
+    OPUS_STAGES,
+    THOUSAND_NAMES,
+    TREE_COLORS,
+    VOID,
+} from './treeSceneConfig.js';
 
-const ROOT_DARK = new THREE.Color('#4b1a74');
-const TRUNK_BROWN = new THREE.Color('#9b6a3c');
-const BRANCH_GOLD = new THREE.Color('#f0c85e');
-const WATER_BLUE = new THREE.Color('#235d9a');
-const WATER_GLOW = new THREE.Color('#66e5ff');
-const LAPIS_GOLD = new THREE.Color('#ffd76a');
-const FIGURE_WHITE = new THREE.Color('#f2eee3');
-const MIRROR_CYAN = new THREE.Color('#53d8e8');
-const COSMOS_PURPLE = new THREE.Color('#5f3fa8');
-const VOID = 0x030308;
-
-const WATER_PARTICLES = 320;
-const THOUSAND_NAMES = 72;
-const OPUS_STAGES = [
-    { color: '#050506', y: 1.35, x: 0, scale: 1.08 },
-    { color: '#e8e8f0', y: 0, x: 1.35, scale: 0.86 },
-    { color: '#ffd76a', y: -1.35, x: 0, scale: 0.96 },
-    { color: '#c0392b', y: 0, x: -1.35, scale: 1.02 },
-];
+const {
+    ROOT_DARK,
+    TRUNK_BROWN,
+    BRANCH_GOLD,
+    WATER_GLOW,
+    LAPIS_GOLD,
+    FIGURE_WHITE,
+    MIRROR_CYAN,
+    RUBEDO,
+    COSMOS_BLUE,
+} = TREE_COLORS;
 
 export default class ThreeTreeViz extends BaseViz {
     constructor(container, opts = {}) {
@@ -59,14 +63,15 @@ export default class ThreeTreeViz extends BaseViz {
     }
 
     async init() {
+        this.random = createTreeSceneRandom();
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas, antialias: true, alpha: false, powerPreference: 'high-performance',
         });
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, getTreePixelRatioCap(this.width)));
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(VOID);
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.12;
+        this.renderer.toneMappingExposure = 1.24;
 
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(VOID, 0.012);
@@ -76,8 +81,10 @@ export default class ThreeTreeViz extends BaseViz {
 
         this.mouse = new THREE.Vector2(0, 0);
         this.mouseSmooth = new THREE.Vector2(0, 0);
+        this.particleBucket = isTreeMobile(this.width) ? 'mobile' : 'desktop';
         this._onMouseMove = this._onMouseMove.bind(this);
-        window.addEventListener('mousemove', this._onMouseMove);
+        this.pointerTarget = this.container || window;
+        this.pointerTarget.addEventListener('mousemove', this._onMouseMove);
 
         this._createPhilosophicalTree();
         this._createMercuriusMediator();
@@ -93,7 +100,7 @@ export default class ThreeTreeViz extends BaseViz {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.18, 0.72, 0.36
+            new THREE.Vector2(this.width, this.height), getTreeBloomStrength(this.width), 0.72, 0.32
         );
         this.composer.addPass(this.bloomPass);
     }
@@ -116,11 +123,11 @@ export default class ThreeTreeViz extends BaseViz {
         // Roots (above — unconscious, reaching into sky)
         for (let i = 0; i < 6; i++) {
             const angle = (i / 6) * Math.PI * 2;
-            const len = 1 + Math.random() * 1.5;
+            const len = 1.05 + this.random() * 1.45;
             const rootGeo = new THREE.CylinderGeometry(0.02, 0.04, len, 4);
             const root = new THREE.Mesh(rootGeo, new THREE.MeshStandardMaterial({
                 color: ROOT_DARK, emissive: ROOT_DARK, emissiveIntensity: 0.3,
-                transparent: true, opacity: 0.6,
+                transparent: true, opacity: 0.68,
             }));
             root.position.set(Math.cos(angle) * 0.3, 3 + len * 0.4, Math.sin(angle) * 0.3);
             root.rotation.z = angle * 0.4 - Math.PI * 0.1;
@@ -133,18 +140,18 @@ export default class ThreeTreeViz extends BaseViz {
         this.nameParticles = [];
         for (let i = 0; i < THOUSAND_NAMES; i++) {
             const angle = (i / THOUSAND_NAMES) * Math.PI * 2;
-            const branchLen = 1.5 + Math.random() * 2;
+            const branchLen = 1.55 + this.random() * 2.05;
             const branchGeo = new THREE.CylinderGeometry(0.01, 0.02, branchLen, 3);
             const branch = new THREE.Mesh(branchGeo, new THREE.MeshStandardMaterial({
                 color: BRANCH_GOLD, emissive: BRANCH_GOLD, emissiveIntensity: 0.3,
-                transparent: true, opacity: 0.4,
+                transparent: true, opacity: 0.48,
             }));
             branch.position.set(
-                Math.cos(angle) * (0.5 + Math.random() * 0.5),
+                Math.cos(angle) * (0.5 + this.random() * 0.5),
                 -3 - branchLen * 0.3,
-                Math.sin(angle) * (0.5 + Math.random() * 0.5)
+                Math.sin(angle) * (0.5 + this.random() * 0.5)
             );
-            branch.rotation.z = (Math.random() - 0.5) * 0.5;
+            branch.rotation.z = (this.random() - 0.5) * 0.5;
             this.treeGroup.add(branch);
             this.branchMeshes.push(branch);
             this.treeMaterials.push(branch.material);
@@ -206,13 +213,13 @@ export default class ThreeTreeViz extends BaseViz {
         }
 
         this.mercuriusCore = new THREE.Mesh(
-            new THREE.OctahedronGeometry(0.32, 0),
+            new THREE.OctahedronGeometry(0.36, 0),
             new THREE.MeshStandardMaterial({
                 color: MIRROR_CYAN,
                 emissive: MIRROR_CYAN,
-                emissiveIntensity: 0.72,
+                emissiveIntensity: 0.82,
                 transparent: true,
-                opacity: 0.68,
+                opacity: 0.76,
                 metalness: 0.4,
                 roughness: 0.28,
             })
@@ -273,19 +280,19 @@ export default class ThreeTreeViz extends BaseViz {
     }
 
     _createAquaDoctrinae() {
-        const count = WATER_PARTICLES;
+        const count = getTreeWaterParticleCount(this.width);
         const positions = new Float32Array(count * 3);
         this.waterPhases = new Float32Array(count);
         for (let i = 0; i < count; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 3;
-            positions[i * 3 + 1] = -6 + Math.random() * 2;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
-            this.waterPhases[i] = Math.random() * Math.PI * 2;
+            positions[i * 3] = (this.random() - 0.5) * 3;
+            positions[i * 3 + 1] = -6 + this.random() * 2;
+            positions[i * 3 + 2] = (this.random() - 0.5) * 3;
+            this.waterPhases[i] = this.random() * Math.PI * 2;
         }
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         this.waterPts = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: WATER_GLOW, size: 0.072, transparent: true, opacity: 0.42,
+            color: WATER_GLOW, size: 0.078, transparent: true, opacity: 0.5,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.waterPts);
@@ -546,38 +553,38 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createCosmicSubstance() {
         // Arcane substance particles — both near figure AND in distant cosmos
-        const count = 400;
+        const count = getTreeCosmicParticleCount(this.width);
         const positions = new Float32Array(count * 3);
         const colors = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
             if (i < count / 2) {
                 // Near figure
-                const r = 0.5 + Math.random() * 1.5;
-                const theta = Math.random() * Math.PI * 2;
+                const r = 0.5 + this.random() * 1.5;
+                const theta = this.random() * Math.PI * 2;
                 positions[i * 3] = 4 + Math.cos(theta) * r;
-                positions[i * 3 + 1] = -4 + (Math.random() - 0.5) * 2;
+                positions[i * 3 + 1] = -4 + (this.random() - 0.5) * 2;
                 positions[i * 3 + 2] = Math.sin(theta) * r;
                 colors[i * 3] = LAPIS_GOLD.r * 0.5;
                 colors[i * 3 + 1] = LAPIS_GOLD.g * 0.5;
                 colors[i * 3 + 2] = LAPIS_GOLD.b * 0.5;
             } else {
                 // In distant cosmos
-                const r = 8 + Math.random() * 15;
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 8 + this.random() * 15;
+                const theta = this.random() * Math.PI * 2;
+                const phi = Math.acos(2 * this.random() - 1);
                 positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
                 positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
                 positions[i * 3 + 2] = r * Math.cos(phi);
-                colors[i * 3] = COSMOS_PURPLE.r;
-                colors[i * 3 + 1] = COSMOS_PURPLE.g;
-                colors[i * 3 + 2] = COSMOS_PURPLE.b;
+                colors[i * 3] = COSMOS_BLUE.r;
+                colors[i * 3 + 1] = COSMOS_BLUE.g;
+                colors[i * 3 + 2] = COSMOS_BLUE.b;
             }
         }
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         this.cosmicPts = new THREE.Points(geo, new THREE.PointsMaterial({
-            vertexColors: true, size: 0.045, transparent: true, opacity: 0.24,
+            vertexColors: true, size: 0.052, transparent: true, opacity: 0.28,
             blending: THREE.AdditiveBlending, depthWrite: false,
         }));
         this.scene.add(this.cosmicPts);
@@ -585,17 +592,21 @@ export default class ThreeTreeViz extends BaseViz {
 
     _createLights() {
         this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        const rootLight = new THREE.PointLight(0x2a0845, 0.5, 15);
+        const rootLight = new THREE.PointLight(0x1f5262, 0.54, 15);
         rootLight.position.set(0, 5, 3);
         this.scene.add(rootLight);
 
-        const branchLight = new THREE.PointLight(0xc8a820, 0.5, 15);
+        const branchLight = new THREE.PointLight(0xc8a820, 0.62, 15);
         branchLight.position.set(0, -4, 3);
         this.scene.add(branchLight);
 
-        const waterLight = new THREE.PointLight(0x4a8aca, 0.3, 10);
+        const waterLight = new THREE.PointLight(0x4a8aca, 0.42, 10);
         waterLight.position.set(4, -5, 2);
         this.scene.add(waterLight);
+
+        const rubedoLight = new THREE.PointLight(RUBEDO, 0.32, 9);
+        rubedoLight.position.set(3.6, 0.2, 2.2);
+        this.scene.add(rubedoLight);
     }
 
     update(dt) {
@@ -604,30 +615,30 @@ export default class ThreeTreeViz extends BaseViz {
         const panelId = this.panelState?.activePanelId || 'mercurius';
         const dampRate = this.reducedMotion ? 9 : 3.2;
         const motionScale = this.reducedMotion ? 0.12 : 1;
-        const isMobile = this.width < 680;
+        const isMobile = isTreeMobile(this.width);
         this.mercuriusFocus = THREE.MathUtils.damp(this.mercuriusFocus, panelId === 'mercurius' ? 1 : 0.18, dampRate, dt);
         this.opusFocus = THREE.MathUtils.damp(this.opusFocus, panelId === 'opus-wheel' ? 1 : 0.16, dampRate, dt);
         this.lapisFocus = THREE.MathUtils.damp(this.lapisFocus, panelId === 'lapis' ? 1 : 0.16, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
         // Tree gentle sway
-        this.treeGroup.position.x = THREE.MathUtils.damp(this.treeGroup.position.x, isMobile ? 3.75 : 1.95, 4, dt);
-        this.treeGroup.position.y = THREE.MathUtils.damp(this.treeGroup.position.y, isMobile ? -0.32 : -0.08, 4, dt);
+        this.treeGroup.position.x = THREE.MathUtils.damp(this.treeGroup.position.x, isMobile ? 3.25 : 1.72, 4, dt);
+        this.treeGroup.position.y = THREE.MathUtils.damp(this.treeGroup.position.y, isMobile ? -0.18 : -0.02, 4, dt);
         this.treeGroup.rotation.z = Math.sin(t * 0.05 * motionScale) * 0.03;
         this.treeGroup.rotation.y = t * 0.005 * motionScale;
-        this.treeGroup.scale.setScalar((isMobile ? 0.72 : 0.78) + this.mercuriusFocus * 0.07 + this.opusFocus * 0.05 + this.lapisFocus * 0.03);
-        this.trunkMesh.material.emissiveIntensity = 0.12 + this.mercuriusFocus * 0.18 + this.opusFocus * 0.2;
+        this.treeGroup.scale.setScalar((isMobile ? 0.76 : 0.84) + this.mercuriusFocus * 0.08 + this.opusFocus * 0.06 + this.lapisFocus * 0.04);
+        this.trunkMesh.material.emissiveIntensity = 0.18 + this.mercuriusFocus * 0.26 + this.opusFocus * 0.24;
         this.rootMeshes?.forEach((root, index) => {
-            root.material.opacity = 0.16 + this.mercuriusFocus * 0.3 + Math.sin(t * 0.16 * motionScale + index) * 0.03;
-            root.material.emissiveIntensity = 0.14 + this.mercuriusFocus * 0.26;
+            root.material.opacity = 0.22 + this.mercuriusFocus * 0.34 + Math.sin(t * 0.16 * motionScale + index) * 0.03;
+            root.material.emissiveIntensity = 0.2 + this.mercuriusFocus * 0.34;
         });
         this.branchMeshes?.forEach((branch, index) => {
-            branch.material.opacity = 0.12 + this.opusFocus * 0.34 + this.lapisFocus * 0.18 + Math.sin(t * 0.2 * motionScale + index) * 0.025;
-            branch.material.emissiveIntensity = 0.14 + this.opusFocus * 0.34 + this.lapisFocus * 0.18;
+            branch.material.opacity = 0.18 + this.opusFocus * 0.38 + this.lapisFocus * 0.22 + Math.sin(t * 0.2 * motionScale + index) * 0.025;
+            branch.material.emissiveIntensity = 0.2 + this.opusFocus * 0.4 + this.lapisFocus * 0.22;
         });
 
-        this.mercuriusGroup.position.x = THREE.MathUtils.damp(this.mercuriusGroup.position.x, isMobile ? 3.85 : 1.95, 4, dt);
-        this.mercuriusGroup.position.y = THREE.MathUtils.damp(this.mercuriusGroup.position.y, isMobile ? 0.42 : 0.08, 4, dt);
+        this.mercuriusGroup.position.x = THREE.MathUtils.damp(this.mercuriusGroup.position.x, isMobile ? 3.2 : 1.72, 4, dt);
+        this.mercuriusGroup.position.y = THREE.MathUtils.damp(this.mercuriusGroup.position.y, isMobile ? 0.56 : 0.14, 4, dt);
         this.mercuriusGroup.rotation.y = Math.sin(t * 0.12 * motionScale) * 0.35;
         this.mercuriusGroup.scale.setScalar((isMobile ? 0.62 : 0.78) + this.mercuriusFocus * (isMobile ? 0.18 : 0.26));
         this._setGroupOpacity(this.mercuriusGroup, 0.12 + this.mercuriusFocus * 0.8);
@@ -635,8 +646,8 @@ export default class ThreeTreeViz extends BaseViz {
         this.mercuriusCore.rotation.x = Math.sin(t * 0.12 * motionScale) * 0.4;
         this.mercuriusCore.material.emissiveIntensity = 0.35 + this.mercuriusFocus * 0.72;
 
-        this.opusWheel.position.x = THREE.MathUtils.damp(this.opusWheel.position.x, isMobile ? 4.2 : 3.05, 4, dt);
-        this.opusWheel.position.y = THREE.MathUtils.damp(this.opusWheel.position.y, isMobile ? 0.58 : -0.02, 4, dt);
+        this.opusWheel.position.x = THREE.MathUtils.damp(this.opusWheel.position.x, isMobile ? 3.68 : 2.88, 4, dt);
+        this.opusWheel.position.y = THREE.MathUtils.damp(this.opusWheel.position.y, isMobile ? 0.68 : 0.04, 4, dt);
         this.opusWheel.rotation.z = -t * 0.045 * motionScale;
         this.opusWheel.scale.setScalar((isMobile ? 0.66 : 0.9) + this.opusFocus * (isMobile ? 0.22 : 0.34));
         this._setGroupOpacity(this.opusWheel, 0.12 + this.opusFocus * 0.9);
@@ -648,9 +659,9 @@ export default class ThreeTreeViz extends BaseViz {
 
         if (this.opusTreeField) {
             const fieldFocus = Math.max(this.mercuriusFocus * 0.86, this.opusFocus, this.lapisFocus * 0.94);
-            this.opusTreeField.position.x = THREE.MathUtils.damp(this.opusTreeField.position.x, isMobile ? 3.9 : 1.95, 4, dt);
-            this.opusTreeField.position.y = THREE.MathUtils.damp(this.opusTreeField.position.y, isMobile ? 0.02 : 0, 4, dt);
-            this.opusTreeField.scale.setScalar((isMobile ? 0.56 : 0.78) + fieldFocus * (isMobile ? 0.1 : 0.14));
+            this.opusTreeField.position.x = THREE.MathUtils.damp(this.opusTreeField.position.x, isMobile ? 3.28 : 1.72, 4, dt);
+            this.opusTreeField.position.y = THREE.MathUtils.damp(this.opusTreeField.position.y, isMobile ? 0.12 : 0.05, 4, dt);
+            this.opusTreeField.scale.setScalar((isMobile ? 0.62 : 0.86) + fieldFocus * (isMobile ? 0.12 : 0.16));
             this.opusTreeField.rotation.z = Math.sin(t * 0.06 * motionScale) * 0.035;
             this._setGroupOpacity(this.opusTreeField, (0.32 + fieldFocus * 0.54) * (isMobile ? 0.82 : 1));
         }
@@ -690,12 +701,12 @@ export default class ThreeTreeViz extends BaseViz {
         // Water rising
         const waterPos = this.waterPts.geometry.attributes.position.array;
         const waterSpeed = (0.08 + this.mercuriusFocus * 0.14 + this.lapisFocus * 0.18) * motionScale;
-        for (let i = 0; i < WATER_PARTICLES; i++) {
+        for (let i = 0; i < this.waterPhases.length; i++) {
             waterPos[i * 3 + 1] += dt * waterSpeed;
             waterPos[i * 3] += Math.sin(t * 0.2 * motionScale + this.waterPhases[i]) * dt * 0.05;
             if (waterPos[i * 3 + 1] > 0) {
                 waterPos[i * 3 + 1] = -6;
-                waterPos[i * 3] = (Math.random() - 0.5) * 3;
+                waterPos[i * 3] = (this.random() - 0.5) * 3;
             }
         }
         this.waterPts.geometry.attributes.position.needsUpdate = true;
@@ -712,8 +723,8 @@ export default class ThreeTreeViz extends BaseViz {
         this.reflectionGroup.scale.setScalar(0.95 + this.lapisFocus * 0.16);
         this.figureGroup.scale.setScalar(0.9 + this.lapisFocus * 0.12);
 
-        this.lapisMandala.position.x = THREE.MathUtils.damp(this.lapisMandala.position.x, isMobile ? 4.45 : 3.75, 4, dt);
-        this.lapisMandala.position.y = THREE.MathUtils.damp(this.lapisMandala.position.y, isMobile ? -1.1 : -1.92, 4, dt);
+        this.lapisMandala.position.x = THREE.MathUtils.damp(this.lapisMandala.position.x, isMobile ? 3.9 : 3.56, 4, dt);
+        this.lapisMandala.position.y = THREE.MathUtils.damp(this.lapisMandala.position.y, isMobile ? -0.98 : -1.8, 4, dt);
         this.lapisMandala.scale.setScalar((isMobile ? 0.5 : 0.78) + this.lapisFocus * (isMobile ? 0.3 : 0.5));
         this.lapisMandala.rotation.y = t * 0.04 * motionScale;
         this.lapisStone.rotation.y = t * 0.16 * motionScale;
@@ -734,29 +745,48 @@ export default class ThreeTreeViz extends BaseViz {
 
         // Camera
         const camAngle = t * 0.012 * motionScale + this.mouseSmooth.x * 0.22;
-        const baseRadius = (isMobile ? 13.8 : 12.6) - this.opusFocus * 0.72 - this.lapisFocus * 1.05;
+        const baseRadius = (isMobile ? 12.9 : 12.0) - this.opusFocus * 0.72 - this.lapisFocus * 1.05;
         const targetCam = new THREE.Vector3(
-            Math.sin(camAngle) * baseRadius + this.opusFocus * 0.8 + this.lapisFocus * 1.35 + (isMobile ? 2.55 : 0.9),
-            1.55 + this.mouseSmooth.y * 2 - this.opusFocus * 0.46 - this.lapisFocus * 1.45,
+            Math.sin(camAngle) * baseRadius + this.opusFocus * 0.7 + this.lapisFocus * 1.22 + (isMobile ? 1.85 : 0.62),
+            1.7 + this.mouseSmooth.y * 1.7 - this.opusFocus * 0.42 - this.lapisFocus * 1.32,
             Math.cos(camAngle) * baseRadius
         );
         this.camera.position.lerp(targetCam, this.reducedMotion ? 1 : Math.min(1, dt * 1.8));
         this.camera.lookAt(
-            this.opusFocus * 1.5 + this.lapisFocus * 1.55 + (isMobile ? 0.98 : 0.48),
+            this.opusFocus * 1.42 + this.lapisFocus * 1.48 + (isMobile ? 0.72 : 0.36),
             -0.82 - this.opusFocus * 0.3 - this.lapisFocus * 0.96,
             0.5
         );
 
-        if (this.bloomPass) this.bloomPass.strength = 0.76 + Math.sin(t * 0.1 * motionScale) * 0.12 + this.mercuriusFocus * 0.18 + this.lapisFocus * 0.2;
+        if (this.bloomPass) this.bloomPass.strength = getTreeBloomStrength(this.width) + Math.sin(t * 0.1 * motionScale) * 0.1 + this.mercuriusFocus * 0.12 + this.lapisFocus * 0.15;
     }
 
     render() { this.composer?.render(); }
     onResize(w, h) {
         if (!this.renderer || !this.camera) return;
         this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, getTreePixelRatioCap(w)));
         this.renderer.setSize(w, h); this.composer?.setSize(w, h); this.bloomPass?.setSize(w, h);
+        if (this.bloomPass) this.bloomPass.strength = getTreeBloomStrength(w);
+
+        const nextBucket = isTreeMobile(w) ? 'mobile' : 'desktop';
+        if (nextBucket !== this.particleBucket && this.scene) {
+            this.particleBucket = nextBucket;
+            this._rebuildResponsiveParticles();
+        }
     }
-    _onMouseMove(e) { this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; }
+    _onMouseMove(e) {
+        const bounds = this.container?.getBoundingClientRect?.();
+        if (!bounds || bounds.width <= 0 || bounds.height <= 0) {
+            this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            return;
+        }
+        const x = (e.clientX - bounds.left) / bounds.width;
+        const y = (e.clientY - bounds.top) / bounds.height;
+        this.mouse.x = THREE.MathUtils.clamp(x * 2 - 1, -1, 1);
+        this.mouse.y = THREE.MathUtils.clamp(-(y * 2 - 1), -1, 1);
+    }
     _setGroupOpacity(group, opacity) {
         group?.traverse((obj) => {
             const materials = obj.material ? (Array.isArray(obj.material) ? obj.material : [obj.material]) : [];
@@ -768,8 +798,23 @@ export default class ThreeTreeViz extends BaseViz {
             });
         });
     }
+    _rebuildResponsiveParticles() {
+        this._disposeSceneObject(this.waterPts);
+        this._disposeSceneObject(this.cosmicPts);
+        this.waterPts = null;
+        this.cosmicPts = null;
+        this._createAquaDoctrinae();
+        this._createCosmicSubstance();
+    }
+    _disposeSceneObject(object) {
+        if (!object) return;
+        object.parent?.remove(object);
+        object.geometry?.dispose?.();
+        const materials = object.material ? (Array.isArray(object.material) ? object.material : [object.material]) : [];
+        materials.forEach((material) => material.dispose?.());
+    }
     dispose() {
-        window.removeEventListener('mousemove', this._onMouseMove);
+        this.pointerTarget?.removeEventListener?.('mousemove', this._onMouseMove);
         this.stop();
         this.resizeObserver?.disconnect();
         this.bloomPass?.dispose?.();
