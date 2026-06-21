@@ -1,32 +1,37 @@
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument {
   width: 100%;
-  min-height: clamp(8rem, 14vh, 9.7rem);
+  min-height: clamp(9.15rem, 15.2vh, 11.2rem);
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(244, 240, 232, 0.095);
-  border-radius: calc(var(--radius) - 0.04rem);
+  border: 1px solid rgba(244, 240, 232, 0.13);
+  border-radius: calc(var(--radius) + 0.02rem);
   background:
-    radial-gradient(circle at 28% 55%, rgba(215, 154, 53, 0.28), transparent 5.7rem),
-    radial-gradient(circle at 57% 48%, rgba(185, 149, 255, 0.25), transparent 6.2rem),
-    radial-gradient(circle at 86% 50%, rgba(83, 216, 232, 0.19), transparent 5.8rem),
-    linear-gradient(90deg, rgba(17, 8, 11, 0.86), rgba(13, 8, 25, 0.62) 50%, rgba(4, 18, 22, 0.58));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(244, 240, 232, 0.035);
+    radial-gradient(circle at 26% 55%, rgba(237, 189, 104, 0.36), transparent 6.4rem),
+    radial-gradient(circle at 58% 47%, rgba(189, 164, 255, 0.28), transparent 7.2rem),
+    radial-gradient(circle at 86% 51%, rgba(110, 231, 242, 0.24), transparent 6.6rem),
+    linear-gradient(90deg, rgba(18, 8, 10, 0.92), rgba(13, 9, 26, 0.72) 50%, rgba(3, 20, 24, 0.66));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(244, 240, 232, 0.045),
+    inset 0 0 3rem rgba(0, 0, 0, 0.18);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument::before {
   inset: 0.58rem;
-  border-color: rgba(244, 240, 232, 0.12);
+  border-color: rgba(244, 240, 232, 0.15);
   background:
-    linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.08), transparent),
-    repeating-linear-gradient(0deg, transparent 0 0.88rem, rgba(244, 240, 232, 0.032) 0.9rem 0.94rem);
+    linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.11), transparent),
+    repeating-linear-gradient(0deg, transparent 0 0.88rem, rgba(244, 240, 232, 0.04) 0.9rem 0.94rem);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument::after {
   left: 53%;
-  width: 12.4rem;
-  height: 6.4rem;
-  border-color: rgba(244, 240, 232, 0.1);
-  box-shadow: inset 0 0 1.8rem rgba(185, 149, 255, 0.12), 0 0 2.4rem rgba(215, 154, 53, 0.08);
+  width: 13.6rem;
+  height: 7.2rem;
+  border-color: rgba(244, 240, 232, 0.13);
+  box-shadow:
+    inset 0 0 2.2rem rgba(189, 164, 255, 0.14),
+    0 0 2.8rem rgba(237, 189, 104, 0.09);
 }
 
 .chapter-seven-prophecy__field > span {
@@ -37,7 +42,7 @@
 .chapter-seven-prophecy__grain {
   inset: 0;
   z-index: 1;
-  opacity: 0.42;
+  opacity: 0.52;
   background:
     radial-gradient(circle at 18% 32%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1.5px),
     radial-gradient(circle at 62% 62%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1.5px),
@@ -47,25 +52,25 @@
 }
 
 .chapter-seven-prophecy__chamber {
-  left: 14%;
-  right: 9%;
-  top: 22%;
-  height: 58%;
+  left: 12%;
+  right: 8%;
+  top: 18%;
+  height: 65%;
   z-index: 1;
-  border: 1px solid rgba(244, 240, 232, 0.07);
+  border: 1px solid rgba(244, 240, 232, 0.1);
   border-radius: 50%;
   transform: rotate(-4deg);
 }
 
 .chapter-seven-prophecy__wave {
-  left: 17%;
-  top: 28%;
+  left: 15%;
+  top: 25%;
   z-index: 1;
   width: 33%;
   height: 45%;
   border: 1px solid transparent;
-  border-left-color: rgba(215, 154, 53, 0.32);
-  border-top-color: rgba(215, 154, 53, 0.16);
+  border-left-color: rgba(237, 189, 104, 0.4);
+  border-top-color: rgba(237, 189, 104, 0.2);
   border-radius: 50%;
   opacity: 0.72;
   transform: rotate(-10deg);
@@ -73,12 +78,12 @@
 }
 
 .chapter-seven-prophecy__wave--two {
-  left: 39%;
+  left: 40%;
   top: 18%;
   width: 34%;
   height: 60%;
-  border-left-color: rgba(185, 149, 255, 0.25);
-  border-right-color: rgba(83, 216, 232, 0.18);
+  border-left-color: rgba(189, 164, 255, 0.32);
+  border-right-color: rgba(110, 231, 242, 0.22);
   transform: rotate(13deg);
   animation-direction: alternate-reverse;
 }
@@ -89,17 +94,17 @@
   z-index: 1;
   width: 1px;
   opacity: 0.56;
-  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.3), transparent);
+  background: linear-gradient(180deg, transparent, rgba(244, 240, 232, 0.38), transparent);
 }
 
 .chapter-seven-prophecy__signal--past {
   left: 28%;
-  box-shadow: 0 0 1.6rem rgba(215, 154, 53, 0.25);
+  box-shadow: 0 0 1.8rem rgba(237, 189, 104, 0.32);
 }
 
 .chapter-seven-prophecy__signal--future {
   right: 19%;
-  box-shadow: 0 0 1.6rem rgba(83, 216, 232, 0.22);
+  box-shadow: 0 0 1.8rem rgba(110, 231, 242, 0.28);
 }
 
 .chapter-seven-prophecy__constellation {
@@ -108,13 +113,13 @@
   z-index: 1;
   width: 27%;
   height: 48%;
-  opacity: 0.66;
+  opacity: 0.74;
   background:
     radial-gradient(circle at 20% 22%, rgba(244, 240, 232, 0.9) 0 0.08rem, transparent 0.1rem),
-    radial-gradient(circle at 58% 16%, rgba(185, 149, 255, 0.85) 0 0.1rem, transparent 0.12rem),
+    radial-gradient(circle at 58% 16%, rgba(189, 164, 255, 0.88) 0 0.1rem, transparent 0.12rem),
     radial-gradient(circle at 82% 50%, rgba(244, 240, 232, 0.75) 0 0.08rem, transparent 0.1rem),
-    radial-gradient(circle at 38% 80%, rgba(185, 149, 255, 0.9) 0 0.1rem, transparent 0.12rem);
-  filter: drop-shadow(0 0 0.6rem rgba(185, 149, 255, 0.2));
+    radial-gradient(circle at 38% 80%, rgba(189, 164, 255, 0.92) 0 0.1rem, transparent 0.12rem);
+  filter: drop-shadow(0 0 0.72rem rgba(189, 164, 255, 0.26));
 }
 
 .chapter-seven-prophecy__lens {
@@ -123,26 +128,26 @@
   z-index: 1;
   width: 17%;
   height: 34%;
-  opacity: 0.52;
-  border: 1px solid rgba(83, 216, 232, 0.22);
+  opacity: 0.62;
+  border: 1px solid rgba(110, 231, 242, 0.3);
   border-radius: 50%;
   background:
-    linear-gradient(122deg, transparent 47%, rgba(83, 216, 232, 0.2) 49%, transparent 51%),
-    radial-gradient(circle at 38% 48%, rgba(83, 216, 232, 0.16), transparent 70%);
+    linear-gradient(122deg, transparent 47%, rgba(110, 231, 242, 0.25) 49%, transparent 51%),
+    radial-gradient(circle at 38% 48%, rgba(110, 231, 242, 0.2), transparent 70%);
   transform: rotate(-13deg);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__field {
   z-index: 0;
-  opacity: 0.64;
+  opacity: 0.72;
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__field--past {
-  background: radial-gradient(circle at 38% 54%, rgba(215, 154, 53, 0.2), transparent 4.9rem), linear-gradient(90deg, rgba(215, 154, 53, 0.1), transparent);
+  background: radial-gradient(circle at 38% 54%, rgba(237, 189, 104, 0.24), transparent 5.4rem), linear-gradient(90deg, rgba(237, 189, 104, 0.14), transparent);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__field--future {
-  background: radial-gradient(circle at 64% 50%, rgba(83, 216, 232, 0.18), transparent 5rem), linear-gradient(270deg, rgba(83, 216, 232, 0.1), transparent);
+  background: radial-gradient(circle at 64% 50%, rgba(110, 231, 242, 0.22), transparent 5.5rem), linear-gradient(270deg, rgba(110, 231, 242, 0.12), transparent);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__axis {
@@ -150,13 +155,14 @@
   right: 7%;
   top: 62%;
   z-index: 3;
-  background: linear-gradient(90deg, rgba(215, 154, 53, 0.12), rgba(244, 240, 232, 0.58), rgba(83, 216, 232, 0.16));
+  background: linear-gradient(90deg, rgba(237, 189, 104, 0.18), rgba(244, 240, 232, 0.68), rgba(110, 231, 242, 0.22));
+  box-shadow: 0 0 1rem rgba(244, 240, 232, 0.12);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__tick {
   top: 67%;
   z-index: 4;
-  color: rgba(244, 240, 232, 0.68);
+  color: rgba(244, 240, 232, 0.78);
   font-size: 0.52rem;
   letter-spacing: 0.05em;
 }
@@ -164,20 +170,22 @@
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__tick::before {
   bottom: 1.25rem;
   height: 0.78rem;
-  background: rgba(244, 240, 232, 0.25);
+  background: rgba(244, 240, 232, 0.34);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__pressure {
   left: 27%;
   top: 52%;
   z-index: 4;
-  width: 7.4rem;
-  height: 3.08rem;
-  border-color: rgba(215, 154, 53, 0.4);
+  width: 8.25rem;
+  height: 3.45rem;
+  border-color: rgba(237, 189, 104, 0.48);
   background:
-    radial-gradient(circle at 52% 52%, rgba(255, 227, 156, 0.36), rgba(215, 154, 53, 0.1) 44%, transparent 72%),
-    radial-gradient(ellipse, rgba(215, 154, 53, 0.2), transparent 72%);
-  box-shadow: inset 0 0 1.5rem rgba(215, 154, 53, 0.13), 0 0 1.8rem rgba(215, 154, 53, 0.2);
+    radial-gradient(circle at 52% 52%, rgba(255, 227, 156, 0.44), rgba(237, 189, 104, 0.14) 44%, transparent 72%),
+    radial-gradient(ellipse, rgba(237, 189, 104, 0.24), transparent 72%);
+  box-shadow:
+    inset 0 0 1.75rem rgba(237, 189, 104, 0.16),
+    0 0 2.05rem rgba(237, 189, 104, 0.26);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__date {
@@ -185,16 +193,18 @@
   top: 62%;
   z-index: 6;
   width: 0.78rem;
-  background: rgba(255, 227, 156, 0.96);
-  box-shadow: 0 0 0 0.42rem rgba(215, 154, 53, 0.13), 0 0 1.55rem rgba(215, 154, 53, 0.42);
+  background: rgba(255, 232, 177, 0.98);
+  box-shadow:
+    0 0 0 0.48rem rgba(237, 189, 104, 0.15),
+    0 0 1.75rem rgba(237, 189, 104, 0.5);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__image {
   z-index: 5;
   width: 0.8rem;
-  background: rgba(185, 149, 255, 0.76);
+  background: rgba(201, 181, 255, 0.82);
   border-color: rgba(244, 240, 232, 0.22);
-  box-shadow: 0 0 0 0.28rem rgba(185, 149, 255, 0.08), 0 0 1rem rgba(185, 149, 255, 0.26);
+  box-shadow: 0 0 0 0.3rem rgba(189, 164, 255, 0.1), 0 0 1.18rem rgba(189, 164, 255, 0.32);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__image--one {
@@ -221,13 +231,13 @@
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__arc--projection {
-  border-top-color: rgba(185, 149, 255, 0.42);
-  border-left-color: rgba(185, 149, 255, 0.28);
+  border-top-color: rgba(201, 181, 255, 0.5);
+  border-left-color: rgba(201, 181, 255, 0.32);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__arc--return {
-  border-bottom-color: rgba(83, 216, 232, 0.34);
-  border-right-color: rgba(83, 216, 232, 0.24);
+  border-bottom-color: rgba(110, 231, 242, 0.42);
+  border-right-color: rgba(110, 231, 242, 0.3);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__threshold {
@@ -236,7 +246,8 @@
   bottom: 14%;
   z-index: 6;
   width: 2px;
-  background: linear-gradient(180deg, transparent, rgba(83, 216, 232, 0.72), rgba(215, 154, 53, 0.28), transparent);
+  background: linear-gradient(180deg, transparent, rgba(110, 231, 242, 0.86), rgba(237, 189, 104, 0.34), transparent);
+  box-shadow: 0 0 1.2rem rgba(110, 231, 242, 0.24);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__mirror {
@@ -245,10 +256,13 @@
   z-index: 5;
   width: 3.85rem;
   height: 2.55rem;
-  border-color: rgba(83, 216, 232, 0.32);
+  border-color: rgba(110, 231, 242, 0.42);
   background:
-    linear-gradient(128deg, transparent 48%, rgba(83, 216, 232, 0.32) 49%, transparent 51%),
-    radial-gradient(circle at 42% 48%, rgba(83, 216, 232, 0.18), transparent 70%);
+    linear-gradient(128deg, transparent 48%, rgba(110, 231, 242, 0.42) 49%, transparent 51%),
+    radial-gradient(circle at 42% 48%, rgba(110, 231, 242, 0.24), transparent 70%);
+  box-shadow:
+    inset 0 0 1.3rem rgba(110, 231, 242, 0.12),
+    0 0 1.6rem rgba(110, 231, 242, 0.16);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument__label {
@@ -302,15 +316,15 @@
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__image {
-  background: rgba(216, 196, 255, 0.92);
-  box-shadow: 0 0 0 0.34rem rgba(185, 149, 255, 0.12), 0 0 1.4rem rgba(185, 149, 255, 0.42);
+  background: rgba(226, 210, 255, 0.96);
+  box-shadow: 0 0 0 0.4rem rgba(189, 164, 255, 0.14), 0 0 1.7rem rgba(189, 164, 255, 0.5);
   opacity: 1;
   transform: scale(1.24);
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument[data-active-panel="collective"] .prophecy-field-instrument__arc {
-  border-color: rgba(216, 196, 255, 0.5);
-  opacity: 0.95;
+  border-color: rgba(226, 210, 255, 0.58);
+  opacity: 1;
 }
 
 .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument[data-active-panel="collective"] :is(.prophecy-field-instrument__pressure, .prophecy-field-instrument__date) {
@@ -355,7 +369,7 @@
 
 @media (max-width: 760px) {
   .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument {
-    min-height: 7.55rem;
+    min-height: 8.1rem;
   }
 
   .chapter-experience[data-chapter-id="ch7"] .chapter-seven-prophecy .prophecy-field-instrument::after {
