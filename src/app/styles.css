@@ -3985,20 +3985,23 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument {
   position: relative;
-  width: min(29rem, 100%);
-  min-height: clamp(5.8rem, 9vh, 6.15rem);
+  width: min(33.5rem, 100%);
+  min-height: clamp(7.15rem, 13vh, 8.55rem);
   overflow: hidden;
   margin-top: 0.95rem;
   border: 1px solid rgba(244, 240, 232, 0.11);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 50% 50%, rgba(244, 240, 232, 0.13), transparent 1.25rem),
-    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.12), transparent 4.8rem),
-    conic-gradient(from 45deg, rgba(83, 216, 232, 0.12), rgba(212, 175, 55, 0.13), rgba(204, 109, 134, 0.12), rgba(132, 201, 155, 0.12), rgba(83, 216, 232, 0.12)),
-    linear-gradient(180deg, rgba(4, 5, 10, 0.74), rgba(8, 8, 16, 0.46));
+    radial-gradient(circle at 50% 50%, rgba(244, 240, 232, 0.18), transparent 1.55rem),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.16), transparent 5.7rem),
+    radial-gradient(circle at 27% 50%, rgba(83, 216, 232, 0.13), transparent 5.8rem),
+    radial-gradient(circle at 73% 50%, rgba(255, 227, 156, 0.13), transparent 6rem),
+    conic-gradient(from 45deg, rgba(83, 216, 232, 0.12), rgba(212, 175, 55, 0.15), rgba(204, 109, 134, 0.115), rgba(132, 201, 155, 0.105), rgba(83, 216, 232, 0.12)),
+    linear-gradient(180deg, rgba(4, 5, 10, 0.78), rgba(8, 8, 16, 0.5));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.2);
+    inset 0 0 0 1px rgba(255, 227, 156, 0.028),
+    0 1.4rem 4rem rgba(0, 0, 0, 0.24);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::before,
@@ -4010,27 +4013,55 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::before {
   inset: 0.66rem;
-  border: 1px solid rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(244, 240, 232, 0.082);
   border-radius: calc(var(--radius) - 2px);
+  box-shadow:
+    inset 0 0 2.2rem rgba(255, 227, 156, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument::after {
   inset: 0;
   background:
-    linear-gradient(90deg, transparent 0 23%, rgba(244, 240, 232, 0.08) 49%, transparent 77%),
-    linear-gradient(0deg, transparent 0 24%, rgba(244, 240, 232, 0.07) 50%, transparent 76%),
-    repeating-radial-gradient(circle at 50% 50%, transparent 0 1.15rem, rgba(244, 240, 232, 0.03) 1.18rem 1.2rem, transparent 1.24rem 2.18rem);
-  opacity: 0.86;
-  mask-image: radial-gradient(circle at 50% 50%, #000 0 58%, transparent 80%);
+    linear-gradient(90deg, transparent 0 20%, rgba(244, 240, 232, 0.09) 49%, transparent 80%),
+    linear-gradient(0deg, transparent 0 22%, rgba(244, 240, 232, 0.085) 50%, transparent 78%),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 1.15rem, rgba(244, 240, 232, 0.035) 1.18rem 1.2rem, transparent 1.24rem 2.18rem);
+  opacity: 0.9;
+  mask-image: radial-gradient(circle at 50% 50%, #000 0 64%, transparent 84%);
 }
 
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__field-glow,
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring,
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__thread,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__quaternity-square,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__inner-diamond,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal,
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__seed-halo,
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center,
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__label {
   position: absolute;
   pointer-events: none;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__field-glow {
+  inset: 13% 18%;
+  border-radius: 50%;
+  opacity: 0.42;
+  filter: blur(0.1rem);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__field-glow--gold {
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 227, 156, 0.15), transparent 70%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__field-glow--cyan {
+  background: radial-gradient(ellipse at 46% 50%, rgba(83, 216, 232, 0.11), transparent 68%);
+  transform: rotate(90deg);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring {
@@ -4043,6 +4074,36 @@ h3 {
   transition:
     border-color 0.55s var(--motion-spring),
     box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__quaternity-square {
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  height: 54%;
+  border: 1px solid rgba(255, 227, 156, 0.16);
+  border-radius: 0.44rem;
+  opacity: 0.36;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    box-shadow 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__inner-diamond {
+  left: 50%;
+  top: 50%;
+  width: 20%;
+  height: 26%;
+  border: 1px solid rgba(244, 240, 232, 0.16);
+  border-radius: 0.36rem;
+  opacity: 0.42;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
 }
@@ -4090,6 +4151,58 @@ h3 {
   height: 1px;
 }
 
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__thread {
+  left: 50%;
+  top: 50%;
+  width: 62%;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(244, 240, 232, 0.12), rgba(255, 227, 156, 0.22), rgba(244, 240, 232, 0.12), transparent);
+  opacity: 0.34;
+  transform: translate(-50%, -50%) rotate(22deg);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__thread--descending {
+  transform: translate(-50%, -50%) rotate(-22deg);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal {
+  left: 50%;
+  top: 50%;
+  width: 18%;
+  height: 35%;
+  border-radius: 50%;
+  opacity: 0.24;
+  transform: translate(-50%, -50%);
+  filter: blur(0.02rem);
+  transition:
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal--north {
+  background: radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.18), transparent 72%);
+  transform: translate(-50%, -78%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal--east {
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 227, 156, 0.18), transparent 72%);
+  transform: translate(-8%, -50%) rotate(90deg);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal--south {
+  background: radial-gradient(ellipse at 50% 50%, rgba(204, 109, 134, 0.14), transparent 72%);
+  transform: translate(-50%, -22%);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal--west {
+  background: radial-gradient(ellipse at 50% 50%, rgba(132, 201, 155, 0.14), transparent 72%);
+  transform: translate(-92%, -50%) rotate(90deg);
+}
+
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point {
   width: 0.62rem;
   height: 0.62rem;
@@ -4128,6 +4241,21 @@ h3 {
   top: 50%;
   background: var(--green);
   box-shadow: 0 0 1.45rem rgba(132, 201, 155, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__seed-halo {
+  left: 50%;
+  top: 50%;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(255, 227, 156, 0.16);
+  border-radius: 50%;
+  opacity: 0.44;
+  transform: translate(-50%, -50%) scale(0.78);
+  transition:
+    border-color 0.55s var(--motion-spring),
+    opacity 0.55s var(--motion-spring),
+    transform 0.55s var(--motion-spring);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
@@ -4182,19 +4310,54 @@ h3 {
   transform: translate(-50%, -50%) scale(1.34);
 }
 
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__seed-halo {
+  border-color: rgba(255, 227, 156, 0.32);
+  opacity: 0.72;
+  transform: translate(-50%, -50%) scale(1.16);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__inner-diamond {
+  opacity: 0.62;
+  transform: translate(-50%, -50%) rotate(45deg) scale(0.82);
+}
+
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__ring,
-.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__point {
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__point,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__petal,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="seed"] .self-mandala-instrument__quaternity-square {
   opacity: 0.4;
 }
 
-.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__axis {
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__axis,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__thread {
   opacity: 0.9;
   transform: translate(-50%, -50%) scale(1.06);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__thread--ascending {
+  transform: translate(-50%, -50%) rotate(22deg) scaleX(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__thread--descending {
+  transform: translate(-50%, -50%) rotate(-22deg) scaleX(1.08);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__point {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.24);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__petal {
+  opacity: 0.62;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__quaternity-square {
+  border-color: rgba(255, 227, 156, 0.34);
+  box-shadow:
+    0 0 2rem rgba(212, 175, 55, 0.12),
+    inset 0 0 1.8rem rgba(83, 216, 232, 0.055);
+  opacity: 0.88;
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.04);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="quaternity"] .self-mandala-instrument__ring--middle {
@@ -4217,6 +4380,27 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__ring--middle {
   transform: translate(-50%, -50%) rotate(45deg) scale(1.08);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__field-glow,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__petal {
+  opacity: 0.72;
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__quaternity-square,
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__inner-diamond {
+  opacity: 0.72;
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__thread--ascending {
+  opacity: 0.68;
+  transform: translate(-50%, -50%) rotate(22deg) scaleX(1.16);
+}
+
+.chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__thread--descending {
+  opacity: 0.68;
+  transform: translate(-50%, -50%) rotate(-22deg) scaleX(1.16);
 }
 
 .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument[data-active-panel="mandala"] .self-mandala-instrument__center,
@@ -10477,9 +10661,15 @@ h3 {
 	  .syzygy-relation-instrument__return-seed,
 	  .syzygy-relation-instrument__pole,
 	  .syzygy-relation-instrument__quaternio,
+	  .self-mandala-instrument__field-glow,
 	  .self-mandala-instrument__ring,
 	  .self-mandala-instrument__axis,
+	  .self-mandala-instrument__thread,
+	  .self-mandala-instrument__quaternity-square,
+	  .self-mandala-instrument__inner-diamond,
+	  .self-mandala-instrument__petal,
 	  .self-mandala-instrument__point,
+	  .self-mandala-instrument__seed-halo,
 	  .self-mandala-instrument__center,
 	  .christ-symbol-instrument__field,
 	  .christ-symbol-instrument__ring,
@@ -10599,9 +10789,15 @@ h3 {
     animation: none;
   }
 
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__field-glow,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__ring,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__axis,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__thread,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__quaternity-square,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__inner-diamond,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__petal,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__point,
+  .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__seed-halo,
   .chapter-experience[data-chapter-id="ch4"] .self-mandala-instrument__center {
     transition: none;
   }
