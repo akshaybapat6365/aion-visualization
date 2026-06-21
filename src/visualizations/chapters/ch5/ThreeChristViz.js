@@ -30,29 +30,28 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ── Palette ── */
-const LIGHT_CLR = new THREE.Color('#f0f0ff');
-const GOLD = new THREE.Color('#ffd700');
-const GOLD_DIM = new THREE.Color('#a08520');
-const SHADOW_CLR = new THREE.Color('#2a0808');
-const SHADOW_GLOW = new THREE.Color('#551010');
+const LIGHT_CLR = new THREE.Color('#f7f1df');
+const GOLD = new THREE.Color('#ffe39c');
+const GOLD_DIM = new THREE.Color('#d4af37');
+const SHADOW_GLOW = new THREE.Color('#cc6d86');
 
 /* Quadrant gem colors — theologically meaningful */
 const GEM_COLORS = [
-    new THREE.Color('#e8c547'),  // Q0: Gold  — Lion/Mark  (sovereignty)
-    new THREE.Color('#4a90d9'),  // Q1: Blue  — Eagle/John (spirit)
-    new THREE.Color('#d4665a'),  // Q2: Red   — Man/Matthew (sacrifice)
-    new THREE.Color('#3a1212'),  // Q3: Dark  — THE EXCLUDED FOURTH (Bull/Luke)
+    new THREE.Color('#ffe39c'),  // Q0: Gold  — Lion/Mark  (sovereignty)
+    new THREE.Color('#53d8e8'),  // Q1: Cyan  — Eagle/John (spirit)
+    new THREE.Color('#cc6d86'),  // Q2: Rose  — Man/Matthew (sacrifice)
+    new THREE.Color('#2b080d'),  // Q3: Dark  — THE EXCLUDED FOURTH (Bull/Luke)
 ];
 
 /* Connecting-line colors */
-const CONN_LIGHT = new THREE.Color('#c0c0e0');
-const CONN_DARK = new THREE.Color('#601818');
+const CONN_LIGHT = new THREE.Color('#f4f0e8');
+const CONN_DARK = new THREE.Color('#cc6d86');
 
 /* Tetramorph ring */
-const TETRA_CLR = new THREE.Color('#2a2a50');
+const TETRA_CLR = new THREE.Color('#26314f');
 
 /* Trinity ring */
-const TRINITY_CLR = new THREE.Color('#c8a82a');
+const TRINITY_CLR = new THREE.Color('#ffe39c');
 
 export default class ThreeChristViz extends BaseViz {
     constructor(c, o = {}) {
@@ -79,28 +78,33 @@ export default class ThreeChristViz extends BaseViz {
         const R = this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas, antialias: true, alpha: false
         });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2));
+        R.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
         R.setSize(this.width, this.height);
-        R.setClearColor(0x020208);
+        R.setClearColor(0x020207);
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x020208, 0.008);
+        this.scene.fog = new THREE.FogExp2(0x020207, 0.0075);
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 150);
         this.camera.position.set(0, 1.5, 16);
 
         /* Mouse & zoom */
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
+        this._inputTarget = this.container || this.canvas;
         this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+            const bounds = this._inputTarget?.getBoundingClientRect?.() || this.canvas.getBoundingClientRect();
+            const width = bounds.width || innerWidth;
+            const height = bounds.height || innerHeight;
+            this.mouse.x = ((e.clientX - bounds.left) / width) * 2 - 1;
+            this.mouse.y = -(((e.clientY - bounds.top) / height) * 2 - 1);
         };
-        addEventListener('mousemove', this._onMM);
+        this._inputTarget.addEventListener('mousemove', this._onMM);
         this.zoomTarget = 16;
         this._onWheel = e => {
+            if (this._inputTarget && !this._inputTarget.contains(e.target)) return;
             this.zoomTarget = Math.max(6, Math.min(28, this.zoomTarget + e.deltaY * 0.01));
         };
-        addEventListener('wheel', this._onWheel, { passive: true });
+        this._inputTarget.addEventListener('wheel', this._onWheel, { passive: true });
         this.introT = 0;
 
         /* ── Build scene ── */
@@ -117,16 +121,19 @@ export default class ThreeChristViz extends BaseViz {
         this._buildAnnotations();
 
         /* Lighting */
-        this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.15));
-        const crossLight = new THREE.PointLight(0xf0f0ff, 0.6, 25);
+        this.scene.add(new THREE.AmbientLight(0x090910, 0.2));
+        const crossLight = new THREE.PointLight(0xfff1c7, 0.82, 27);
         crossLight.position.set(0, 2, 2);
         this.scene.add(crossLight);
+        const shadowLight = new THREE.PointLight(0xcc6d86, 0.32, 16);
+        shadowLight.position.set(4, -1.6, 3);
+        this.scene.add(shadowLight);
 
         /* Post-processing */
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.5, 0.45, 0.3
+            new THREE.Vector2(this.width, this.height), 1.42, 0.44, 0.28
         );
         this.composer.addPass(this.bloom);
     }
@@ -155,7 +162,7 @@ export default class ThreeChristViz extends BaseViz {
         this.crossGlow = new THREE.Mesh(
             new THREE.SphereGeometry(1.2, 16, 16),
             new THREE.MeshBasicMaterial({
-                color: GOLD, transparent: true, opacity: 0.04,
+                color: GOLD, transparent: true, opacity: 0.055,
                 blending: THREE.AdditiveBlending
             })
         );
@@ -166,7 +173,7 @@ export default class ThreeChristViz extends BaseViz {
         this.crossHalo = new THREE.Mesh(
             new THREE.SphereGeometry(2.5, 16, 16),
             new THREE.MeshBasicMaterial({
-                color: LIGHT_CLR, transparent: true, opacity: 0.015,
+                color: LIGHT_CLR, transparent: true, opacity: 0.022,
                 blending: THREE.AdditiveBlending
             })
         );
@@ -195,25 +202,25 @@ export default class ThreeChristViz extends BaseViz {
         const lightHalf = new THREE.Mesh(
             new THREE.PlaneGeometry(22, 24),
             new THREE.MeshBasicMaterial({
-                color: 0x0c0c1e, transparent: true, opacity: 0.4,
+                color: 0x0d1020, transparent: true, opacity: 0.34,
                 side: THREE.DoubleSide, depthWrite: false
             })
         );
         lightHalf.position.set(-6, 0, -4);
         this.scene.add(lightHalf);
-        this.splitPlanes.push({ mesh: lightHalf, baseOpacity: 0.4, side: 'light' });
+        this.splitPlanes.push({ mesh: lightHalf, baseOpacity: 0.34, side: 'light' });
 
         /* Dark half (right) — the shadow that follows */
         const darkHalf = new THREE.Mesh(
             new THREE.PlaneGeometry(22, 24),
             new THREE.MeshBasicMaterial({
-                color: 0x000002, transparent: true, opacity: 0.3,
+                color: 0x090104, transparent: true, opacity: 0.4,
                 side: THREE.DoubleSide, depthWrite: false
             })
         );
         darkHalf.position.set(6, 0, -4);
         this.scene.add(darkHalf);
-        this.splitPlanes.push({ mesh: darkHalf, baseOpacity: 0.3, side: 'shadow' });
+        this.splitPlanes.push({ mesh: darkHalf, baseOpacity: 0.4, side: 'shadow' });
 
         /* Faint vertical divider at the cross — the cross IS the border */
         const dividerPts = [
@@ -222,7 +229,7 @@ export default class ThreeChristViz extends BaseViz {
         ];
         const divGeo = new THREE.BufferGeometry().setFromPoints(dividerPts);
         this.divider = new THREE.Line(divGeo, new THREE.LineBasicMaterial({
-            color: 0x202040, transparent: true, opacity: 0.08
+            color: 0x36405f, transparent: true, opacity: 0.11
         }));
         this.scene.add(this.divider);
     }
@@ -248,7 +255,7 @@ export default class ThreeChristViz extends BaseViz {
             const mat = new THREE.MeshBasicMaterial({
                 color: GEM_COLORS[i],
                 transparent: true,
-                opacity: isExcluded ? 0.3 : 0.6,       // [A] was 0.08
+                opacity: isExcluded ? 0.42 : 0.72,
                 blending: THREE.AdditiveBlending
             });
             const mesh = new THREE.Mesh(geo, mat);
@@ -261,7 +268,7 @@ export default class ThreeChristViz extends BaseViz {
                     new THREE.SphereGeometry(0.65, 12, 12),
                     new THREE.MeshBasicMaterial({
                         color: GEM_COLORS[i], transparent: true,
-                        opacity: 0.06, blending: THREE.AdditiveBlending
+                        opacity: 0.085, blending: THREE.AdditiveBlending
                     })
                 );
                 glow.position.copy(mesh.position);
@@ -287,7 +294,7 @@ export default class ThreeChristViz extends BaseViz {
                     const sg = new THREE.BufferGeometry().setFromPoints(pts);
                     const sl = new THREE.Line(sg, new THREE.LineBasicMaterial({
                         color: SHADOW_GLOW, transparent: true,
-                        opacity: 0.3, blending: THREE.AdditiveBlending
+                        opacity: 0.4, blending: THREE.AdditiveBlending
                     }));
                     this.scene.add(sl);
                     this.brokenHaloParts.push(sl);
@@ -298,7 +305,7 @@ export default class ThreeChristViz extends BaseViz {
                     new THREE.SphereGeometry(1.1, 12, 12),
                     new THREE.MeshBasicMaterial({
                         color: SHADOW_GLOW, transparent: true,
-                        opacity: 0.08, blending: THREE.AdditiveBlending
+                        opacity: 0.12, blending: THREE.AdditiveBlending
                     })
                 );
                 void_sphere.position.copy(mesh.position);
@@ -329,10 +336,10 @@ export default class ThreeChristViz extends BaseViz {
                 const geo = new THREE.BufferGeometry().setFromPoints(pts);
                 const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
                     color: CONN_LIGHT, transparent: true,
-                    opacity: 0.06
+                    opacity: 0.08
                 }));
                 this.scene.add(line);
-                this.connLines.push({ line, isExcluded: false, baseOpacity: 0.06 });
+                this.connLines.push({ line, isExcluded: false, baseOpacity: 0.08 });
             } else {
                 /* Dashed / broken line — the rejected connection */
                 const segCount = 8;
@@ -345,10 +352,10 @@ export default class ThreeChristViz extends BaseViz {
                     const sg = new THREE.BufferGeometry().setFromPoints([p1, p2]);
                     const sl = new THREE.Line(sg, new THREE.LineBasicMaterial({
                         color: CONN_DARK, transparent: true,
-                        opacity: 0.12
+                        opacity: 0.18
                     }));
                     this.scene.add(sl);
-                    this.connLines.push({ line: sl, isExcluded: true, baseOpacity: 0.12 });
+                    this.connLines.push({ line: sl, isExcluded: true, baseOpacity: 0.18 });
                 }
             }
         }
@@ -411,7 +418,7 @@ export default class ThreeChristViz extends BaseViz {
                 new THREE.SphereGeometry(0.08, 6, 6),
                 new THREE.MeshBasicMaterial({
                     color: TRINITY_CLR, transparent: true,
-                    opacity: 0.3, blending: THREE.AdditiveBlending
+                    opacity: 0.38, blending: THREE.AdditiveBlending
                 })
             );
             dot.position.set(
@@ -429,7 +436,7 @@ export default class ThreeChristViz extends BaseViz {
             new THREE.SphereGeometry(0.1, 6, 6),
             new THREE.MeshBasicMaterial({
                 color: SHADOW_GLOW, transparent: true,
-                opacity: 0.15, blending: THREE.AdditiveBlending
+                opacity: 0.2, blending: THREE.AdditiveBlending
             })
         );
         gapMark.position.set(
@@ -458,7 +465,7 @@ export default class ThreeChristViz extends BaseViz {
         }
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
         this.tetramorphRing = new THREE.Line(geo, new THREE.LineBasicMaterial({
-            color: TETRA_CLR, transparent: true, opacity: 0.2,  // [H] was 0.12
+            color: TETRA_CLR, transparent: true, opacity: 0.24,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.tetramorphRing);
@@ -477,7 +484,7 @@ export default class ThreeChristViz extends BaseViz {
         }
         const geo2 = new THREE.BufferGeometry().setFromPoints(pts2);
         this.tetramorphInner = new THREE.Line(geo2, new THREE.LineBasicMaterial({
-            color: GOLD_DIM, transparent: true, opacity: 0.08,
+            color: GOLD_DIM, transparent: true, opacity: 0.11,
             blending: THREE.AdditiveBlending
         }));
         this.scene.add(this.tetramorphInner);
@@ -492,7 +499,7 @@ export default class ThreeChristViz extends BaseViz {
                 new THREE.SphereGeometry(0.06, 6, 6),
                 new THREE.MeshBasicMaterial({
                     color: GEM_COLORS[i], transparent: true,
-                    opacity: i === 3 ? 0.15 : 0.3,
+                    opacity: i === 3 ? 0.2 : 0.38,
                     blending: THREE.AdditiveBlending
                 })
             );
@@ -525,10 +532,10 @@ export default class ThreeChristViz extends BaseViz {
             const geo = new THREE.BufferGeometry().setFromPoints(pts);
             const line = new THREE.Line(geo, new THREE.LineBasicMaterial({
                 color: SHADOW_GLOW, transparent: true,
-                opacity: 0.06 + i * 0.012
+                opacity: 0.08 + i * 0.014
             }));
             this.scene.add(line);
-            this.roots.push({ line, baseOpacity: 0.06 + i * 0.012 });
+            this.roots.push({ line, baseOpacity: 0.08 + i * 0.014 });
         }
     }
 
@@ -550,8 +557,8 @@ export default class ThreeChristViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.excludedSparks = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0x881818, size: 0.04, transparent: true,
-            opacity: 0.3, blending: THREE.AdditiveBlending, depthWrite: false
+            color: 0xcc6d86, size: 0.04, transparent: true,
+            opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false
         }));
         this.scene.add(this.excludedSparks);
     }
@@ -575,7 +582,7 @@ export default class ThreeChristViz extends BaseViz {
         geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         this.specPts = new THREE.Points(geo, new THREE.PointsMaterial({
             vertexColors: true, size: 0.035, transparent: true,
-            opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false
+            opacity: 0.34, blending: THREE.AdditiveBlending, depthWrite: false
         }));
         this.scene.add(this.specPts);
     }
@@ -592,7 +599,7 @@ export default class ThreeChristViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.stars = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0x1a1a40, size: 0.04, transparent: true, opacity: 0.25,
+            color: 0x25304f, size: 0.04, transparent: true, opacity: 0.28,
             depthWrite: false
         }));
         this.scene.add(this.stars);
@@ -1002,14 +1009,14 @@ export default class ThreeChristViz extends BaseViz {
 
             <!-- Phase 2: [F] Framing sentence — the "WHY" -->
             <div class="ch5-framing" data-phase="2">
-                Jung argued that Christ — the supreme image of
-                goodness — is only <em>half</em> of the whole Self.
-                The other half was banished.<br><br>
-                <em>This scene shows what that looks like.</em>
+                Jung reads the Christ image as a supreme symbol
+                of spiritual wholeness — powerful, but not the
+                whole psychological totality.<br><br>
+                <em>This scene shows the pressure around that limit.</em>
                 <br><br>
-                Three bright gems represent what was kept.
-                One dark gem represents what was cast out.
-                The cross holds them together — barely.
+                Three bright gems form the accepted pattern.
+                One dark gem marks the missing fourth.
+                The cross holds the tension in view.
             </div>
 
             <!-- Phase 3: Cross annotation + leader -->
@@ -1049,7 +1056,7 @@ export default class ThreeChristViz extends BaseViz {
             <div class="ch5-gem-label ch5-gem--bull" data-phase="4">
                 Bull
                 <span class="ch5-gem-desc">St Luke · earth · excluded</span>
-                <span class="ch5-gem-explain">the part they hid — matter, appetite, shadow</span>
+                <span class="ch5-gem-explain">the grounded counter-pole: matter, appetite, shadow</span>
             </div>
             <div class="ch5-tetra-label" data-phase="4">
                 the tetramorph — four faces of the whole
@@ -1068,17 +1075,16 @@ export default class ThreeChristViz extends BaseViz {
                 <hr class="ch5-rule ch5-rule--right">
                 <div class="ch5-label">The Excluded Fourth</div>
                 <div class="ch5-text">
-                    Trinity requires THREE — but wholeness
-                    requires four. The missing fourth is
-                    matter, earth, shadow, evil — everything
-                    the light refuses to see.
+                    Trinity images spiritual completion; quaternity
+                    images psychological totality. The missing fourth
+                    carries matter, earth, shadow, and the counter-pole
+                    that a light-only image cannot hold.
                 </div>
                 <span class="ch5-latin">privatio boni</span>
                 <span class="ch5-life">
-                    Evil as "absence of good" — a formula
-                    that refuses to grant darkness its own
-                    substance. But what you banish does
-                    not disappear.
+                    A doctrine can make darkness secondary; the
+                    psyche still has to meet the excluded material
+                    as a real symbolic pressure.
                 </span>
             </div>
             <div class="ch5-leader ch5-leader--excluded" data-phase="5"></div>
@@ -1088,15 +1094,13 @@ export default class ThreeChristViz extends BaseViz {
                 <hr class="ch5-rule ch5-rule--right">
                 <div class="ch5-label">A One-Sided Symbol</div>
                 <div class="ch5-text">
-                    Christ represents only the LIGHT half
-                    of the Self. Perfection — not completeness.
-                    The Antichrist follows necessarily, as
-                    shadow follows the body.
+                    In Jung's reading, Christ carries the bright
+                    ideal of the Self. The counter-image follows
+                    because perfection is not the same as
+                    psychological completeness.
                 </div>
                 <div class="ch5-quote">
-                    "The Antichrist develops as a perverse
-                    imitator of Christ's life — an imitating
-                    spirit of evil." &mdash; §77
+                    The counter-pole belongs to the same symbolic field.
                 </div>
             </div>
             <div class="ch5-leader ch5-leader--onesided" data-phase="6"></div>
@@ -1279,10 +1283,12 @@ export default class ThreeChristViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
-        removeEventListener('wheel', this._onWheel);
+        this._inputTarget?.removeEventListener('mousemove', this._onMM);
+        this._inputTarget?.removeEventListener('wheel', this._onWheel);
         if (this._annTimers) this._annTimers.forEach(t => clearTimeout(t));
         this._annotationOverlay?.remove();
+        this.bloom?.dispose?.();
+        this.composer?.dispose?.();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {
