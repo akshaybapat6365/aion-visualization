@@ -6249,14 +6249,14 @@ h3 {
   top: 1rem;
   width: 2.2rem;
   height: 1.45rem;
-  border: 1px solid rgba(181, 130, 255, 0.25);
+  border: 1px solid rgba(143, 231, 237, 0.26);
   border-radius: 50%;
   background:
     radial-gradient(circle at 28% 52%, rgba(83, 216, 232, 0.75) 0 0.12rem, transparent 0.14rem),
     radial-gradient(circle at 58% 35%, rgba(255, 227, 156, 0.64) 0 0.1rem, transparent 0.12rem),
     radial-gradient(circle at 69% 70%, rgba(194, 55, 43, 0.58) 0 0.1rem, transparent 0.12rem),
-    radial-gradient(ellipse at 50% 50%, rgba(181, 130, 255, 0.1), transparent 72%);
-  box-shadow: 0 0 1.2rem rgba(181, 130, 255, 0.16);
+    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.11), transparent 72%);
+  box-shadow: 0 0 1.2rem rgba(83, 216, 232, 0.16);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .chapter-stage__reference-node[data-panel-id="prima"] .chapter-stage__reference-mark::after {
@@ -6289,14 +6289,17 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
+  isolation: isolate;
   position: relative;
   width: min(32.5rem, 100%);
   min-height: clamp(8.15rem, 12.2vh, 9.35rem);
   overflow: hidden;
   margin-top: 0.78rem;
-  border: 1px solid rgba(244, 240, 232, 0.12);
+  border: 1px solid rgba(255, 227, 156, 0.18);
   border-radius: var(--radius);
   background:
+    repeating-linear-gradient(112deg, transparent 0 0.74rem, rgba(255, 227, 156, 0.045) 0.78rem 0.82rem),
+    repeating-linear-gradient(0deg, transparent 0 0.62rem, rgba(143, 231, 237, 0.025) 0.64rem 0.66rem),
     radial-gradient(circle at 24% 50%, rgba(83, 216, 232, 0.22), transparent 5.4rem),
     radial-gradient(circle at 49% 55%, rgba(212, 175, 55, 0.3), transparent 5.9rem),
     radial-gradient(circle at 75% 66%, rgba(194, 55, 43, 0.22), transparent 5.4rem),
@@ -6304,7 +6307,8 @@ h3 {
   box-shadow:
     var(--shadow-inset),
     0 1.45rem 4.2rem rgba(0, 0, 0, 0.28),
-    0 0 3.8rem rgba(212, 175, 55, 0.1);
+    0 0 3.8rem rgba(212, 175, 55, 0.14),
+    inset 0 0 3.6rem rgba(83, 216, 232, 0.06);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before,
@@ -6315,6 +6319,7 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before {
+  z-index: 1;
   inset: 0.58rem;
   border: 1px solid rgba(255, 227, 156, 0.12);
   border-radius: calc(var(--radius) - 2px);
@@ -6324,6 +6329,7 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::after {
+  z-index: 1;
   left: 50%;
   bottom: 1.16rem;
   width: 70%;
@@ -6348,6 +6354,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__particle,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__stages,
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__label {
+  z-index: 2;
   position: absolute;
   pointer-events: none;
 }
@@ -6356,6 +6363,7 @@ h3 {
   inset: 0.62rem;
   border-radius: calc(var(--radius) - 4px);
   background:
+    radial-gradient(circle at 50% 50%, rgba(255, 227, 156, 0.08), transparent 2.8rem),
     linear-gradient(90deg, rgba(83, 216, 232, 0.12), transparent 44%, rgba(212, 175, 55, 0.08) 54%, rgba(194, 55, 43, 0.12)),
     radial-gradient(circle at 50% 68%, rgba(212, 175, 55, 0.14), transparent 52%);
   opacity: 0.76;
@@ -6517,12 +6525,14 @@ h3 {
   top: 42%;
   width: 1.18rem;
   aspect-ratio: 1;
-  border: 1px solid rgba(181, 130, 255, 0.34);
+  border: 1px solid rgba(143, 231, 237, 0.38);
   border-radius: 0.2rem;
-  background: rgba(181, 130, 255, 0.16);
+  background:
+    linear-gradient(135deg, rgba(83, 216, 232, 0.24), rgba(212, 175, 55, 0.09)),
+    rgba(3, 20, 25, 0.24);
   box-shadow:
-    0 0 0 0.48rem rgba(181, 130, 255, 0.04),
-    0 0 1.35rem rgba(181, 130, 255, 0.18);
+    0 0 0 0.48rem rgba(83, 216, 232, 0.05),
+    0 0 1.35rem rgba(83, 216, 232, 0.18);
   opacity: 0.72;
   transform: translate(-50%, -50%) rotate(45deg);
   transition:
@@ -6636,7 +6646,7 @@ h3 {
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__particle--three {
   left: 55%;
   top: 38%;
-  background: rgba(181, 130, 255, 0.68);
+  background: rgba(143, 231, 237, 0.68);
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__particle--four {
@@ -6731,11 +6741,17 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__label {
-  color: rgba(244, 240, 232, 0.82);
+  padding: 0.12rem 0.26rem;
+  border: 1px solid rgba(244, 240, 232, 0.09);
+  border-radius: 999px;
+  background: rgba(3, 3, 7, 0.36);
+  color: rgba(244, 240, 232, 0.86);
   font-family: var(--font-ui);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0;
+  font-size: 0.52rem;
+  font-weight: 840;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument__label--fish {
@@ -6787,8 +6803,8 @@ h3 {
 
 .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument[data-active-panel="prima"] .alchemical-vessel-instrument__magnet {
   box-shadow:
-    0 0 0 0.64rem rgba(181, 130, 255, 0.07),
-    0 0 1.55rem rgba(181, 130, 255, 0.26);
+    0 0 0 0.64rem rgba(83, 216, 232, 0.07),
+    0 0 1.55rem rgba(83, 216, 232, 0.26);
   transform: translate(-50%, -50%) rotate(45deg) scale(1.14);
 }
 
@@ -9631,6 +9647,32 @@ h3 {
 }
 
 .chapter-experience[data-chapter-id="ch9"] .scene-host__status span {
+  color: rgba(255, 227, 156, 0.82);
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chapter-experience[data-chapter-id="ch10"] .scene-host__status {
+  left: clamp(1rem, 3vw, 2rem);
+  top: auto;
+  bottom: clamp(1rem, 3vh, 2rem);
+  width: min(18rem, calc(100% - 2rem));
+  transform: none;
+  padding: 0.72rem 0.82rem;
+  border-color: rgba(255, 227, 156, 0.2);
+  background:
+    linear-gradient(135deg, rgba(8, 7, 10, 0.76), rgba(24, 12, 8, 0.58)),
+    radial-gradient(circle at 18% 30%, rgba(255, 227, 156, 0.13), transparent 3rem),
+    radial-gradient(circle at 82% 70%, rgba(83, 216, 232, 0.1), transparent 3rem);
+  text-align: left;
+  box-shadow:
+    var(--shadow-inset),
+    0 1.2rem 3rem rgba(0, 0, 0, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch10"] .scene-host__status span {
   color: rgba(255, 227, 156, 0.82);
   font-family: var(--font-ui);
   font-size: 0.66rem;
@@ -13778,7 +13820,14 @@ h3 {
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .chapter-sigil {
-	    display: none;
+	    display: block;
+	    position: absolute;
+	    right: 0;
+	    top: 10.78rem;
+	    width: 2.82rem;
+	    height: 2.82rem;
+	    opacity: 0.78;
+	    filter: drop-shadow(0 0 1rem rgba(212, 175, 55, 0.14));
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__intro h1 {
@@ -13810,9 +13859,45 @@ h3 {
 	    white-space: nowrap;
 	  }
 
+	  .chapter-experience[data-chapter-id="ch10"] .scene-host__status {
+	    left: 0.78rem;
+	    bottom: 0.78rem;
+	    width: min(12.5rem, calc(100% - 1.56rem));
+	    padding: 0.54rem 0.62rem;
+	    opacity: 0.88;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .scene-host__status strong {
+	    display: block;
+	    overflow: hidden;
+	    max-width: 100%;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .scene-host__status span {
+	    font-size: 0.58rem;
+	  }
+
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument {
 	    min-height: 6.95rem;
 	    margin-top: 0.58rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__reference-map {
+	    grid-template-columns: repeat(3, minmax(0, 1fr));
+	    gap: 0.32rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__reference-node {
+	    min-height: 3.42rem;
+	    padding: 0.38rem;
+	  }
+
+	  .chapter-experience[data-chapter-id="ch10"] .chapter-stage__reference-label {
+	    margin-top: 1.86rem;
+	    font-size: 0.52rem;
+	    letter-spacing: 0.04em;
 	  }
 
 	  .chapter-experience[data-chapter-id="ch10"] .alchemical-vessel-instrument::before {

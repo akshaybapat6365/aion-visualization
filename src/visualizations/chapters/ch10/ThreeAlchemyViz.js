@@ -1,35 +1,32 @@
-/**
- * ThreeAlchemyViz.js — Chapter 10: "The Fish in Alchemy"
- *
- * Jung: The echeneis/remora — a tiny fish that stops great ships.
- * The "magnet of the wise" draws secrets from the depths. The lapis
- * animatus has a heartbeat. Two yoked fish plough from nigredo to rubedo.
- *
- * Visual: A tiny glowing fish halting a massive ghostly ship. A magnetic
- * field pulling luminous particles from black depths. A pulsing stone
- * with a heartbeat. Two yoked fish dragging a plough through alchemical
- * stages (nigredo black → albedo white → citrinitas yellow → rubedo red).
- */
+// Chapter 10: fish, prima materia, and opus inside an alchemical vessel.
 
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
+import {
+    ALCHEMY_COLORS,
+    DESKTOP_MAGNET_PARTICLES,
+    VOID,
+    getAlchemyBloomStrength,
+    getAlchemyMagnetParticleCount,
+    getAlchemyPixelRatioCap,
+    isAlchemyMobile,
+} from './alchemySceneConfig.js';
 
-const NIGREDO_BLACK = new THREE.Color('#0a0a0a');
-const ALBEDO_WHITE = new THREE.Color('#e8e8f0');
-const CITRINITAS = new THREE.Color('#ffd700');
-const RUBEDO_RED = new THREE.Color('#c0392b');
-const ECHENEIS_CYAN = new THREE.Color('#22d3ee');
-const SHIP_GREY = new THREE.Color('#3a3a4a');
-const MAGNET_PURPLE = new THREE.Color('#6a2c91');
-const LAPIS_GOLD = new THREE.Color('#d4af37');
-const FIRE_ORANGE = new THREE.Color('#ff8a3d');
-const YOKE_BROWN = new THREE.Color('#8b6914');
-const VOID = 0x030308;
-
-const MAGNET_PARTICLES = 260;
+const {
+    NIGREDO_BLACK,
+    ALBEDO_WHITE,
+    CITRINITAS,
+    RUBEDO_RED,
+    ECHENEIS_CYAN,
+    SHIP_GREY,
+    MAGNET_TEAL,
+    LAPIS_GOLD,
+    FIRE_ORANGE,
+    YOKE_BROWN,
+} = ALCHEMY_COLORS;
 
 export default class ThreeAlchemyViz extends BaseViz {
     constructor(container, opts = {}) {
@@ -55,7 +52,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas, antialias: true, alpha: false, powerPreference: 'high-performance',
         });
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, getAlchemyPixelRatioCap(this.width)));
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(VOID);
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -69,7 +66,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.mouse = new THREE.Vector2(0, 0);
         this.mouseSmooth = new THREE.Vector2(0, 0);
         this._onMouseMove = this._onMouseMove.bind(this);
-        window.addEventListener('mousemove', this._onMouseMove);
+        this.pointerTarget = this.container || window;
+        this.pointerTarget.addEventListener('mousemove', this._onMouseMove);
 
         this._createEcheneis();
         this._createShip();
@@ -83,7 +81,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.composer = new EffectComposer(this.renderer);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.42, 0.5, 0.28
+            new THREE.Vector2(this.width, this.height), getAlchemyBloomStrength(this.width), 0.5, 0.28
         );
         this.composer.addPass(this.bloomPass);
     }
@@ -128,7 +126,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.shipGroup = new THREE.Group();
         this.shipParts = [];
 
-        // Hull — elongated box
         const hullGeo = new THREE.BoxGeometry(4, 0.8, 1.2);
         const hullMat = new THREE.MeshStandardMaterial({
             color: SHIP_GREY, transparent: true, opacity: 0.2,
@@ -138,7 +135,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.shipGroup.add(hull);
         this.shipParts.push(hull);
 
-        // Mast
         const mastGeo = new THREE.CylinderGeometry(0.03, 0.03, 2.5, 6);
         const mast = new THREE.Mesh(mastGeo, new THREE.MeshStandardMaterial({
             color: SHIP_GREY, transparent: true, opacity: 0.25,
@@ -147,7 +143,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.shipGroup.add(mast);
         this.shipParts.push(mast);
 
-        // Sail
         const sailGeo = new THREE.PlaneGeometry(1.5, 1.5);
         const sail = new THREE.Mesh(sailGeo, new THREE.MeshStandardMaterial({
             color: '#5a5a6a', transparent: true, opacity: 0.15,
@@ -162,7 +157,8 @@ export default class ThreeAlchemyViz extends BaseViz {
     }
 
     _createMagnetField() {
-        const count = MAGNET_PARTICLES;
+        const count = getAlchemyMagnetParticleCount(this.width);
+        this.magnetParticleCount = count;
         const positions = new Float32Array(count * 3);
         this.magnetBasePositions = new Float32Array(count * 3);
 
@@ -188,7 +184,7 @@ export default class ThreeAlchemyViz extends BaseViz {
 
         const magnetGeo = new THREE.OctahedronGeometry(0.3, 0);
         this.magnetCore = new THREE.Mesh(magnetGeo, new THREE.MeshStandardMaterial({
-            color: MAGNET_PURPLE, emissive: MAGNET_PURPLE, emissiveIntensity: 0.9,
+            color: MAGNET_TEAL, emissive: MAGNET_TEAL, emissiveIntensity: 0.9,
             transparent: true, opacity: 0.78,
         }));
         this.magnetCore.position.set(3, -1, 1);
@@ -206,7 +202,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.lapisStone = new THREE.Mesh(stoneGeo, stoneMat);
         this.lapisGroup.add(this.lapisStone);
 
-        // Heartbeat aura
         const heartGeo = new THREE.SphereGeometry(0.8, 16, 16);
         this.heartAura = new THREE.Mesh(heartGeo, new THREE.MeshBasicMaterial({
             color: RUBEDO_RED, transparent: true, opacity: 0,
@@ -301,7 +296,6 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.yokeGroup = new THREE.Group();
         this.yokedFishParts = [];
 
-        // Two fish
         for (let i = 0; i < 2; i++) {
             const bodyGeo = new THREE.SphereGeometry(0.12, 8, 6);
             bodyGeo.scale(2, 0.6, 0.4);
@@ -315,7 +309,6 @@ export default class ThreeAlchemyViz extends BaseViz {
             this.yokedFishParts.push(fish);
         }
 
-        // Yoke bar
         const yokeGeo = new THREE.BoxGeometry(1, 0.04, 0.04);
         const yoke = new THREE.Mesh(yokeGeo, new THREE.MeshStandardMaterial({
             color: YOKE_BROWN, transparent: true, opacity: 0.5,
@@ -328,7 +321,6 @@ export default class ThreeAlchemyViz extends BaseViz {
     }
 
     _createAlchemicalGround() {
-        // Four-stage ground strips: nigredo → albedo → citrinitas → rubedo
         const stages = [NIGREDO_BLACK, ALBEDO_WHITE, CITRINITAS, RUBEDO_RED];
         this.groundStrips = [];
         for (let i = 0; i < 4; i++) {
@@ -351,7 +343,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         echeneisLight.position.set(-4, 3, 3);
         this.scene.add(echeneisLight);
 
-        const magnetLight = new THREE.PointLight(0x6a2c91, 0.68, 15);
+        const magnetLight = new THREE.PointLight(0x2f6674, 0.68, 15);
         magnetLight.position.set(3, -2, 3);
         this.scene.add(magnetLight);
 
@@ -368,7 +360,7 @@ export default class ThreeAlchemyViz extends BaseViz {
         if (!this.scene) return;
         const t = this.time;
         const panelId = this.panelState?.activePanelId || 'vessel';
-        const isMobile = this.width < 720;
+        const isMobile = isAlchemyMobile(this.width);
         const dampRate = this.reducedMotion ? 9 : 3.5;
         const motionScale = this.reducedMotion ? 0.12 : 1;
         this.vesselFocus = THREE.MathUtils.damp(this.vesselFocus, panelId === 'vessel' ? 1 : 0.22, dampRate, dt);
@@ -376,14 +368,12 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.opusFocus = THREE.MathUtils.damp(this.opusFocus, panelId === 'opus' ? 1 : 0.16, dampRate, dt);
         this.mouseSmooth.lerp(this.mouse, 0.03);
 
-        // Echeneis hovering near ship
         this.echeneisGroup.position.x = -3.25 + Math.sin(t * 0.08 * motionScale) * 0.28 - this.vesselFocus * 0.16;
         this.echeneisGroup.position.y = 2.05 + Math.sin(t * 0.15 * motionScale) * 0.18;
         this.echeneisGroup.scale.setScalar(0.9 + this.vesselFocus * 0.34);
         this.echeneisBody.material.opacity = 0.48 + this.vesselFocus * 0.5;
         this.echeneisAura.material.opacity = (0.07 + Math.sin(t * 0.6 * motionScale) * 0.018) + this.vesselFocus * 0.18;
 
-        // Ship halted — only rocking
         this.shipGroup.rotation.z = Math.sin(t * 0.12 * motionScale) * 0.03;
         this.shipGroup.position.y = 2 + Math.sin(t * 0.08 * motionScale) * 0.05;
         this.shipGroup.scale.setScalar(0.94 + this.vesselFocus * 0.08);
@@ -391,11 +381,10 @@ export default class ThreeAlchemyViz extends BaseViz {
             part.material.opacity = (part === this.shipParts[2] ? 0.13 : 0.18) + this.vesselFocus * (part === this.shipParts[2] ? 0.2 : 0.22);
         });
 
-        // Magnet drawing particles upward
         const magPos = this.magnetField.geometry.attributes.position.array;
         const pullStrength = 0.18 + this.primaFocus * 0.48 + Math.sin(t * 0.2 * motionScale) * 0.12;
-        for (let i = 0; i < MAGNET_PARTICLES; i++) {
-            // Pull toward magnet core
+        const particleCount = this.magnetParticleCount || DESKTOP_MAGNET_PARTICLES;
+        for (let i = 0; i < particleCount; i++) {
             const dx = this.magnetCore.position.x - magPos[i * 3];
             const dy = this.magnetCore.position.y - magPos[i * 3 + 1];
             const dz = this.magnetCore.position.z - magPos[i * 3 + 2];
@@ -404,7 +393,6 @@ export default class ThreeAlchemyViz extends BaseViz {
             magPos[i * 3 + 1] += (dy / d) * pullStrength * dt;
             magPos[i * 3 + 2] += (dz / d) * pullStrength * dt;
 
-            // Reset when too close
             if (d < 0.5) {
                 magPos[i * 3] = this.magnetBasePositions[i * 3];
                 magPos[i * 3 + 1] = this.magnetBasePositions[i * 3 + 1];
@@ -418,9 +406,8 @@ export default class ThreeAlchemyViz extends BaseViz {
         this.magnetCore.scale.setScalar(0.76 + this.primaFocus * 0.58);
         this.magnetCore.material.opacity = 0.38 + this.primaFocus * 0.58;
 
-        // Lapis heartbeat — systole/diastole
-        const heartbeat = Math.sin(t * 2 * motionScale); // Fast pulse
-        const pulse = heartbeat > 0.7 ? 1 : 0; // Sharp beat
+        const heartbeat = Math.sin(t * 2 * motionScale);
+        const pulse = heartbeat > 0.7 ? 1 : 0;
         this.lapisStone.scale.setScalar(0.82 + this.primaFocus * 0.16 + this.opusFocus * 0.22 + pulse * 0.15);
         this.lapisStone.material.opacity = 0.46 + this.primaFocus * 0.22 + this.opusFocus * 0.38;
         this.lapisStone.material.emissiveIntensity = 0.42 + this.opusFocus * 0.54 + pulse * 0.5;
@@ -460,7 +447,6 @@ export default class ThreeAlchemyViz extends BaseViz {
             stage.material.emissiveIntensity = 0.32 + this.opusFocus * (0.32 + stageLift * 0.22);
         });
 
-        // Yoked fish ploughing across stages
         this.yokeGroup.position.x = -5 + ((t * 0.2 * motionScale * (0.5 + this.opusFocus)) % 14);
         if (this.yokeGroup.position.x > 9) this.yokeGroup.position.x = -5;
         this.yokeGroup.position.y = -3.5 + Math.sin(t * 0.3 * motionScale) * 0.1;
@@ -472,25 +458,35 @@ export default class ThreeAlchemyViz extends BaseViz {
             strip.material.opacity = 0.04 + this.opusFocus * (0.085 + index * 0.018);
         });
 
-        // Camera
         const camAngle = t * 0.015 * motionScale + this.mouseSmooth.x * 0.3;
         const camH = 1.75 + this.mouseSmooth.y * 2.25 - this.opusFocus * 0.42 + (isMobile ? 0.55 : 0);
         const camRadius = 12.9 - this.vesselFocus * 0.45 - this.primaFocus * 0.22 + this.opusFocus * 0.58 + (isMobile ? 2.35 : 0);
         this.camera.position.set(Math.sin(camAngle) * camRadius, camH, Math.cos(camAngle) * camRadius);
         this.camera.lookAt(this.primaFocus * 0.7 - this.vesselFocus * 0.28, -0.78 - this.opusFocus * 0.54, 0.2);
 
-        if (this.bloomPass) this.bloomPass.strength = 1.08 + Math.sin(t * 0.1 * motionScale) * 0.16 + this.vesselFocus * 0.18 + this.opusFocus * 0.28;
+        if (this.bloomPass) this.bloomPass.strength = getAlchemyBloomStrength(this.width) + Math.sin(t * 0.1 * motionScale) * 0.16 + this.vesselFocus * 0.18 + this.opusFocus * 0.28;
     }
 
     render() { this.composer?.render(); }
     onResize(w, h) {
         if (!this.renderer || !this.camera) return;
         this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, getAlchemyPixelRatioCap(w)));
         this.renderer.setSize(w, h); this.composer?.setSize(w, h); this.bloomPass?.setSize(w, h);
     }
-    _onMouseMove(e) { this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; }
+    _onMouseMove(e) {
+        const bounds = this.container?.getBoundingClientRect?.();
+        const width = bounds?.width || window.innerWidth;
+        const height = bounds?.height || window.innerHeight;
+        const left = bounds?.left || 0;
+        const top = bounds?.top || 0;
+        const x = ((e.clientX - left) / Math.max(width, 1)) * 2 - 1;
+        const y = -(((e.clientY - top) / Math.max(height, 1)) * 2 - 1);
+        this.mouse.x = THREE.MathUtils.clamp(x, -1, 1);
+        this.mouse.y = THREE.MathUtils.clamp(y, -1, 1);
+    }
     dispose() {
-        window.removeEventListener('mousemove', this._onMouseMove);
+        (this.pointerTarget || window).removeEventListener('mousemove', this._onMouseMove);
         this.stop();
         this.resizeObserver?.disconnect();
         this.bloomPass?.dispose?.();
