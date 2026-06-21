@@ -29,21 +29,21 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ── Palette ── */
-const GOLD = new THREE.Color('#ffd700');
-const GOLD_DIM = new THREE.Color('#a08520');
+const GOLD = new THREE.Color('#ffe39c');
+const GOLD_DIM = new THREE.Color('#d4af37');
 const QUAD_COLORS = [
-    new THREE.Color('#e63946'),  // Q0: Feeling  (red/warm)  — left
-    new THREE.Color('#457b9d'),  // Q1: Thinking  (blue/cool) — top
-    new THREE.Color('#2a9d8f'),  // Q2: Sensation (teal/earth) — bottom
-    new THREE.Color('#e9c46a'),  // Q3: Intuition (gold/light) — right
+    new THREE.Color('#cc6d86'),  // Q0: Feeling  (rose/warm)  — left
+    new THREE.Color('#53d8e8'),  // Q1: Thinking  (cyan/cool) — top
+    new THREE.Color('#84c99b'),  // Q2: Sensation (green/earth) — bottom
+    new THREE.Color('#d4af37'),  // Q3: Intuition (gold/light) — right
 ];
 const ZONE_COLORS = [
-    new THREE.Color('#ffd700'),  // innermost: ego — gold
-    new THREE.Color('#665544'),  // shadow — muted earth
-    new THREE.Color('#884466'),  // anima — deep rose
-    new THREE.Color('#2244aa'),  // Self — deep blue (outermost)
+    new THREE.Color('#ffe39c'),  // innermost: ego — gold
+    new THREE.Color('#6f6253'),  // shadow — muted earth
+    new THREE.Color('#9e5c78'),  // anima — deep rose
+    new THREE.Color('#274a89'),  // Self — deep blue (outermost)
 ];
-const STAR_CLR = 0x1a1a40;
+const STAR_CLR = 0x25304f;
 
 export default class ThreeSelfViz extends BaseViz {
     constructor(c, o = {}) {
@@ -72,7 +72,7 @@ export default class ThreeSelfViz extends BaseViz {
         });
         R.setPixelRatio(Math.min(devicePixelRatio, 2));
         R.setSize(this.width, this.height);
-        R.setClearColor(0x030308);
+        R.setClearColor(0x020207);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 200);
@@ -82,14 +82,19 @@ export default class ThreeSelfViz extends BaseViz {
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
         this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+            const bounds = this.canvas.getBoundingClientRect();
+            const width = Math.max(bounds.width, 1);
+            const height = Math.max(bounds.height, 1);
+            this.mouse.x = ((e.clientX - bounds.left) / width) * 2 - 1;
+            this.mouse.y = -(((e.clientY - bounds.top) / height) * 2 - 1);
         };
-        addEventListener('mousemove', this._onMM);
+        this._inputTarget = this.container || this.canvas.parentElement || this.canvas;
+        this._inputTarget.addEventListener('mousemove', this._onMM);
         this._onWheel = e => {
+            if (this._inputTarget && !this._inputTarget.contains(e.target)) return;
             this.zoomTarget = Math.max(5, Math.min(30, this.zoomTarget + e.deltaY * 0.01));
         };
-        addEventListener('wheel', this._onWheel, { passive: true });
+        this._inputTarget.addEventListener('wheel', this._onWheel, { passive: true });
         this.zoomTarget = 20;
         this.introT = 0;
 
@@ -103,13 +108,13 @@ export default class ThreeSelfViz extends BaseViz {
         this._buildStarfield();
         this._buildAnnotations();
 
-        this.scene.add(new THREE.AmbientLight(0x0a0a10, 0.2));
+        this.scene.add(new THREE.AmbientLight(0x0a0a10, 0.24));
 
         /* ── Post-processing ── */
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.4, 0.5, 0.35
+            new THREE.Vector2(this.width, this.height), 1.32, 0.42, 0.26
         );
         this.composer.addPass(this.bloom);
     }
@@ -194,7 +199,7 @@ export default class ThreeSelfViz extends BaseViz {
         this.scene.add(this.centerHalo);
 
         /* Center point light */
-        this.centerLight = new THREE.PointLight(GOLD, 1.5, 15);
+        this.centerLight = new THREE.PointLight(GOLD, 1.42, 17);
         this.scene.add(this.centerLight);
     }
 
@@ -345,7 +350,7 @@ export default class ThreeSelfViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.stars = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: STAR_CLR, size: 0.04, transparent: true, opacity: 0.3,
+            color: STAR_CLR, size: 0.04, transparent: true, opacity: 0.34,
             depthWrite: false
         }));
         this.scene.add(this.stars);
@@ -924,8 +929,8 @@ export default class ThreeSelfViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
-        removeEventListener('wheel', this._onWheel);
+        this._inputTarget?.removeEventListener('mousemove', this._onMM);
+        this._inputTarget?.removeEventListener('wheel', this._onWheel);
         if (this._annTimers) this._annTimers.forEach(t => clearTimeout(t));
         this._annotationOverlay?.remove();
         this.renderer?.dispose();

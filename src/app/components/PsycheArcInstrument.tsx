@@ -198,14 +198,24 @@ function SelfMandalaField({ activePanelId, label }: { activePanelId: string; lab
       role="img"
       aria-label={label}
     >
+      <span className="self-mandala-instrument__field-glow self-mandala-instrument__field-glow--gold" aria-hidden="true" />
+      <span className="self-mandala-instrument__field-glow self-mandala-instrument__field-glow--cyan" aria-hidden="true" />
       <span className="self-mandala-instrument__ring self-mandala-instrument__ring--outer" aria-hidden="true" />
       <span className="self-mandala-instrument__ring self-mandala-instrument__ring--middle" aria-hidden="true" />
       <span className="self-mandala-instrument__ring self-mandala-instrument__ring--inner" aria-hidden="true" />
+      <span className="self-mandala-instrument__quaternity-square" aria-hidden="true" />
+      <span className="self-mandala-instrument__inner-diamond" aria-hidden="true" />
       <span className="self-mandala-instrument__axis self-mandala-instrument__axis--vertical" aria-hidden="true" />
       <span className="self-mandala-instrument__axis self-mandala-instrument__axis--horizontal" aria-hidden="true" />
+      <span className="self-mandala-instrument__thread self-mandala-instrument__thread--ascending" aria-hidden="true" />
+      <span className="self-mandala-instrument__thread self-mandala-instrument__thread--descending" aria-hidden="true" />
+      {quaternityDirections.map((direction) => (
+        <span key={`petal-${direction}`} className={`self-mandala-instrument__petal self-mandala-instrument__petal--${direction}`} aria-hidden="true" />
+      ))}
       {quaternityDirections.map((direction) => (
         <span key={direction} className={`self-mandala-instrument__point self-mandala-instrument__point--${direction}`} aria-hidden="true" />
       ))}
+      <span className="self-mandala-instrument__seed-halo" aria-hidden="true" />
       <span className="self-mandala-instrument__center" aria-hidden="true" />
       <span className="self-mandala-instrument__label self-mandala-instrument__label--center" aria-hidden="true">center</span>
       <span className="self-mandala-instrument__label self-mandala-instrument__label--fourfold" aria-hidden="true">fourfold</span>
