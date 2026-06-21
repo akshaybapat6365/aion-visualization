@@ -22,19 +22,18 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ── Palette (true black base) ── */
-const STAR_GOLD = new THREE.Color('#ffd700');
-const WOMAN_WHITE = new THREE.Color('#f0f0ff');
-const DRAGON_RED = new THREE.Color('#8b0000');
+const STAR_GOLD = new THREE.Color('#edbd68');
+const WOMAN_WHITE = new THREE.Color('#f4f0e8');
+const DRAGON_RED = new THREE.Color('#7b2438');
 const HOOK_SILVER = new THREE.Color('#c0c0c8');
-const FISH_CYAN = new THREE.Color('#22d3ee');
-const HEAL_GREEN = new THREE.Color('#32cd32');
-const ARIES_RED = new THREE.Color('#ff4444');
-const PISCES_BLUE = new THREE.Color('#4a90d9');
-const WATER_DARK = new THREE.Color('#050505');
-const VOID = 0x000000;
-const STRATA_GOLD = new THREE.Color('#d4af37');
-const STRATA_GREEN = new THREE.Color('#5bd68f');
-const STRATA_CYAN = new THREE.Color('#53d8e8');
+const FISH_CYAN = new THREE.Color('#6ee7f2');
+const HEAL_GREEN = new THREE.Color('#8fe9b2');
+const ARIES_RED = new THREE.Color('#d46254');
+const PISCES_BLUE = new THREE.Color('#6ee7f2');
+const VOID = 0x03040a;
+const STRATA_GOLD = new THREE.Color('#edbd68');
+const STRATA_GREEN = new THREE.Color('#8fe9b2');
+const STRATA_CYAN = new THREE.Color('#6ee7f2');
 
 /* ── Scene boundaries ── */
 const S1_END = 0.20;
@@ -80,25 +79,31 @@ export default class ThreeHistoricalViz extends BaseViz {
             canvas: this.canvas, antialias: true, alpha: false,
             powerPreference: 'high-performance',
         });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2));
+        R.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2));
         R.setSize(this.width, this.height);
         R.setClearColor(VOID);
         R.toneMapping = THREE.ACESFilmicToneMapping;
-        R.toneMappingExposure = 1.1;
+        R.toneMappingExposure = 1.18;
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(VOID, 0.008);
-        this.camera = new THREE.PerspectiveCamera(55, this.width / this.height, 0.1, 200);
-        this.camera.position.set(0, 4, 16);
+        this.scene.fog = new THREE.FogExp2(VOID, 0.0058);
+        this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 200);
+        this.camera.position.set(0, 3.8, 15.5);
 
         /* ── Mouse tracking ── */
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
+        this._inputTarget = this.canvas?.parentElement || this.container || this.canvas || globalThis;
         this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+            const bounds = this._inputTarget === globalThis ? null : this._inputTarget?.getBoundingClientRect?.();
+            const width = bounds?.width || globalThis.innerWidth || 1;
+            const height = bounds?.height || globalThis.innerHeight || 1;
+            const left = bounds?.left || 0;
+            const top = bounds?.top || 0;
+            this.mouse.x = ((e.clientX - left) / width) * 2 - 1;
+            this.mouse.y = -((e.clientY - top) / height) * 2 + 1;
         };
-        addEventListener('mousemove', this._onMM);
+        this._inputTarget?.addEventListener?.('mousemove', this._onMM, { passive: true });
 
         /* The React chapter shell owns scroll. This scene receives panel state
            and maps it to the historical-symbol descent internally. */
@@ -117,7 +122,7 @@ export default class ThreeHistoricalViz extends BaseViz {
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.2, 0.5, 0.35
+            new THREE.Vector2(this.width, this.height), 1.34, 0.58, 0.26
         );
         this.composer.addPass(this.bloom);
     }
@@ -557,7 +562,7 @@ export default class ThreeHistoricalViz extends BaseViz {
        ═══════════════════════════════════════════════════════════════ */
     _buildHistoricalAtlas() {
         this._atlas = new THREE.Group();
-        this._atlas.position.set(0.6, 0.4, -4.8);
+        this._atlas.position.set(0.75, 0.44, -4.55);
         this._atlas.renderOrder = -1;
         this._atlasBands = [];
         this._atlasNodes = [];
@@ -567,7 +572,7 @@ export default class ThreeHistoricalViz extends BaseViz {
         bandY.forEach((y, index) => {
             const width = 12.6 - index * 0.42;
             const color = index < 3 ? STRATA_GOLD : index < 6 ? STRATA_GREEN : STRATA_CYAN;
-            const opacity = index < 3 ? 0.12 : index < 6 ? 0.1 : 0.09;
+            const opacity = index < 3 ? 0.18 : index < 6 ? 0.15 : 0.14;
 
             const line = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints([
@@ -590,7 +595,7 @@ export default class ThreeHistoricalViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color,
                     transparent: true,
-                    opacity: opacity * 0.15,
+                    opacity: opacity * 0.22,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                     side: THREE.DoubleSide,
@@ -616,7 +621,7 @@ export default class ThreeHistoricalViz extends BaseViz {
                 new THREE.MeshBasicMaterial({
                     color: node.color,
                     transparent: true,
-                    opacity: 0.7,
+                    opacity: 0.86,
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                 })
@@ -640,7 +645,7 @@ export default class ThreeHistoricalViz extends BaseViz {
             new THREE.LineBasicMaterial({
                 color: STRATA_CYAN,
                 transparent: true,
-                opacity: 0.2,
+                opacity: 0.32,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -659,7 +664,7 @@ export default class ThreeHistoricalViz extends BaseViz {
             new THREE.LineBasicMaterial({
                 color: STRATA_GOLD,
                 transparent: true,
-                opacity: 0.14,
+                opacity: 0.22,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -673,7 +678,7 @@ export default class ThreeHistoricalViz extends BaseViz {
             new THREE.MeshBasicMaterial({
                 color: STRATA_CYAN,
                 transparent: true,
-                opacity: 0.16,
+                opacity: 0.24,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -692,7 +697,7 @@ export default class ThreeHistoricalViz extends BaseViz {
             new THREE.MeshBasicMaterial({
                 color: STRATA_GOLD,
                 transparent: true,
-                opacity: 0.18,
+                opacity: 0.24,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
                 side: THREE.DoubleSide,
@@ -704,11 +709,11 @@ export default class ThreeHistoricalViz extends BaseViz {
         this._atlas.add(this._atlasFish);
 
         this._afterlifeEcho = new THREE.Mesh(
-            new THREE.TorusGeometry(2.35, 0.018, 8, 96),
+            new THREE.TorusGeometry(2.35, 0.024, 8, 96),
             new THREE.MeshBasicMaterial({
                 color: STRATA_CYAN,
                 transparent: true,
-                opacity: 0.08,
+                opacity: 0.12,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
             })
@@ -725,17 +730,17 @@ export default class ThreeHistoricalViz extends BaseViz {
     _buildLights() {
         this.scene.add(new THREE.AmbientLight(0x080808, 0.3));
         // Golden light from above (woman)
-        const sunLight = new THREE.PointLight(0xffd700, 0.9, 20);
+        const sunLight = new THREE.PointLight(0xedbd68, 0.9, 20);
         sunLight.position.set(0, 8, 5);
         this.scene.add(sunLight);
         this._sunLight = sunLight;
         // Red light from below (dragon)
-        const dragonLight = new THREE.PointLight(0x8b0000, 0.5, 15);
+        const dragonLight = new THREE.PointLight(0x7b2438, 0.5, 15);
         dragonLight.position.set(0, -4, 3);
         this.scene.add(dragonLight);
         this._dragonLight = dragonLight;
         // Green heal light
-        const healLight = new THREE.PointLight(0x32cd32, 0.4, 12);
+        const healLight = new THREE.PointLight(0x8fe9b2, 0.4, 12);
         healLight.position.set(-4, -1, 4);
         this.scene.add(healLight);
         this._healLight = healLight;
@@ -823,7 +828,7 @@ export default class ThreeHistoricalViz extends BaseViz {
                 margin-bottom: 14px;
             }
             .ch8-quote.ch8-entering .ch8-quote-main {
-                animation: ch8Glow 3s ease-in-out 1.4s infinite;
+                animation: ch8Glow 3.2s cubic-bezier(0.45, 0, 0.2, 1) 1.4s infinite;
             }
             .ch8-quote-sub {
                 font-family: 'Instrument Serif', serif;
@@ -886,13 +891,17 @@ export default class ThreeHistoricalViz extends BaseViz {
             .ch8-dot {
                 width: 4px; height: 4px; border-radius: 50%;
                 background: rgba(255,255,255,0.12);
-                transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                transition:
+                    background 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    box-shadow 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
             .ch8-dot-label {
                 font-family: 'Instrument Serif', serif;
                 font-style: italic; font-size: 0.4rem;
                 color: rgba(255,255,255,0); letter-spacing: 0.08em;
-                transition: color 0.6s ease; white-space: nowrap;
+                transition: color 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); white-space: nowrap;
             }
             .ch8-annotations [data-ch8-copy="quiet"] {
                 display: none !important;
@@ -1190,19 +1199,19 @@ export default class ThreeHistoricalViz extends BaseViz {
             const pulse = this.reducedMotion ? 0 : (Math.sin(t * 0.55) + 1) * 0.5;
             const compactStage = this.width < 560;
             const tabletStage = this.width >= 560 && this.width < 900;
-            const atlasBoost = compactStage ? 1.32 : tabletStage ? 1.16 : 1;
-            const atlasScale = compactStage ? 0.74 : tabletStage ? 0.86 : 1;
+            const atlasBoost = compactStage ? 1.34 : tabletStage ? 1.22 : 1.22;
+            const atlasScale = compactStage ? 0.74 : tabletStage ? 0.9 : 1.08;
 
             this._atlas.rotation.y = this.mouseSmooth.x * 0.08 + Math.sin(t * 0.04 * motionScale) * 0.025;
             this._atlas.rotation.x = -0.08 + this.mouseSmooth.y * 0.035;
             this._atlas.scale.setScalar(atlasScale);
-            this._atlas.position.x = compactStage ? 0.08 : tabletStage ? 0.24 : 0.6;
-            this._atlas.position.y = (compactStage ? 1.08 : tabletStage ? 0.72 : 0.25) - p * (compactStage ? 1.08 : 1.45);
-            this._atlas.position.z = (compactStage ? -4.45 : -5.2) + p * 1.4;
+            this._atlas.position.x = compactStage ? 0.08 : tabletStage ? 0.28 : 0.72;
+            this._atlas.position.y = (compactStage ? 1.12 : tabletStage ? 0.78 : 0.42) - p * (compactStage ? 1.02 : 1.25);
+            this._atlas.position.z = (compactStage ? -4.38 : tabletStage ? -4.62 : -4.85) + p * 1.15;
 
             this._atlasBands.forEach((band, index) => {
                 const layerIndex = Math.floor(index / 2);
-                const base = index % 2 === 0 ? 0.11 : 0.018;
+                const base = index % 2 === 0 ? 0.16 : 0.028;
                 const historicalBias = layerIndex < 3 ? strataWeight : layerIndex < 6 ? carrierWeight : depthWeight;
                 band.material.opacity = clamp01(base * historicalBias * atlasBoost * (0.86 + pulse * 0.18));
             });
@@ -1211,25 +1220,25 @@ export default class ThreeHistoricalViz extends BaseViz {
                 const isEarly = index < 3;
                 const isLate = index > 3;
                 const weight = isEarly ? strataWeight : isLate ? depthWeight : carrierWeight;
-                node.material.opacity = clamp01((0.38 + weight * 0.38) * atlasBoost * (0.88 + pulse * 0.22));
+                node.material.opacity = clamp01((0.46 + weight * 0.42) * atlasBoost * (0.88 + pulse * 0.22));
                 node.scale.setScalar(1 + weight * 0.28 + pulse * 0.08);
             });
 
             if (this._atlasThreads[0]) {
-                this._atlasThreads[0].material.opacity = clamp01((0.16 + carrierWeight * 0.18) * atlasBoost * (0.9 + pulse * 0.18));
+                this._atlasThreads[0].material.opacity = clamp01((0.22 + carrierWeight * 0.22) * atlasBoost * (0.9 + pulse * 0.18));
             }
             if (this._atlasThreads[1]) {
-                this._atlasThreads[1].material.opacity = clamp01((0.08 + depthWeight * 0.12) * atlasBoost * (0.9 + pulse * 0.16));
+                this._atlasThreads[1].material.opacity = clamp01((0.13 + depthWeight * 0.16) * atlasBoost * (0.9 + pulse * 0.16));
             }
             if (this._atlasFish) {
                 this._atlasFish.position.x = 0.2 + Math.sin(t * 0.1 * motionScale) * 0.2;
                 this._atlasFish.rotation.z = -0.16 + Math.sin(t * 0.13 * motionScale) * 0.05;
                 this._atlasFish.children.forEach((part) => {
-                    if (part.material) part.material.opacity = clamp01(((part === this._atlasFishTail ? 0.14 : 0.18) + carrierWeight * 0.12) * atlasBoost);
+                    if (part.material) part.material.opacity = clamp01(((part === this._atlasFishTail ? 0.2 : 0.22) + carrierWeight * 0.15) * atlasBoost);
                 });
             }
             if (this._afterlifeEcho) {
-                this._afterlifeEcho.material.opacity = clamp01((0.05 + depthWeight * 0.11) * atlasBoost * (0.92 + pulse * 0.18));
+                this._afterlifeEcho.material.opacity = clamp01((0.08 + depthWeight * 0.15) * atlasBoost * (0.92 + pulse * 0.18));
                 this._afterlifeEcho.rotation.z = -0.18 + Math.sin(t * 0.05 * motionScale) * 0.06;
                 this._afterlifeEcho.scale.set(1.68 + depthWeight * 0.12, 0.55 + depthWeight * 0.1, 1);
             }
@@ -1299,7 +1308,7 @@ export default class ThreeHistoricalViz extends BaseViz {
 
         /* ── Bloom modulation ── */
         if (this.bloom) {
-            this.bloom.strength = lerp(1.4, 0.8, clamp01(p));
+            this.bloom.strength = lerp(1.32, 0.92, clamp01(p));
         }
 
         /* ── Light intensity modulation ── */
@@ -1342,12 +1351,13 @@ export default class ThreeHistoricalViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
+        this._inputTarget?.removeEventListener?.('mousemove', this._onMM);
         if (this._onScroll) removeEventListener('scroll', this._onScroll);
         if (this._onWheel) removeEventListener('wheel', this._onWheel);
         if (this._overlay) this._overlay.remove();
         if (this._progressContainer) this._progressContainer.remove();
         if (this._ch8Style) this._ch8Style.remove();
+        this.composer?.dispose?.();
         if (this.renderer) { this.renderer.dispose(); this.renderer.forceContextLoss(); }
         this.scene?.traverse(o => {
             o.geometry?.dispose();

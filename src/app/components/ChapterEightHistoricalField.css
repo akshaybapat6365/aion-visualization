@@ -1,21 +1,22 @@
 .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument {
   position: relative;
   width: 100%;
-  min-height: clamp(8.05rem, 13.6vh, 9.45rem);
+  min-height: clamp(8.7rem, 15.2vh, 10.45rem);
   overflow: hidden;
   margin: 0;
-  border: 1px solid rgba(255, 227, 156, 0.13);
+  border: 1px solid rgba(255, 227, 156, 0.17);
   border-radius: calc(var(--radius) - 0.12rem);
   background:
-    radial-gradient(circle at 18% 45%, rgba(225, 182, 79, 0.32), transparent 5.4rem),
-    radial-gradient(circle at 50% 43%, rgba(130, 226, 165, 0.22), transparent 6rem),
-    radial-gradient(circle at 83% 56%, rgba(83, 216, 232, 0.22), transparent 6rem),
-    repeating-linear-gradient(0deg, rgba(255, 227, 156, 0.07) 0 1px, transparent 1px 0.62rem),
-    linear-gradient(90deg, rgba(9, 7, 7, 0.9), rgba(5, 14, 14, 0.72) 53%, rgba(2, 14, 20, 0.62));
+    radial-gradient(circle at 17% 46%, rgba(237, 189, 104, 0.42), transparent 5.9rem),
+    radial-gradient(circle at 50% 43%, rgba(143, 233, 178, 0.27), transparent 6.2rem),
+    radial-gradient(circle at 84% 57%, rgba(110, 231, 242, 0.28), transparent 6.5rem),
+    repeating-linear-gradient(0deg, rgba(255, 232, 177, 0.085) 0 1px, transparent 1px 0.56rem),
+    repeating-linear-gradient(90deg, rgba(244, 240, 232, 0.032) 0 1px, transparent 1px 2.2rem),
+    linear-gradient(90deg, rgba(10, 7, 6, 0.94), rgba(5, 16, 14, 0.78) 52%, rgba(2, 15, 22, 0.66));
   box-shadow:
     var(--shadow-inset),
-    0 1.4rem 4rem rgba(0, 0, 0, 0.24),
-    0 0 2.8rem rgba(83, 216, 232, 0.08);
+    0 1.55rem 4.4rem rgba(0, 0, 0, 0.3),
+    0 0 3.2rem rgba(110, 231, 242, 0.11);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::before,
@@ -27,23 +28,23 @@
 
 .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::before {
   inset: 0.6rem;
-  border: 1px solid rgba(255, 227, 156, 0.1);
+  border: 1px solid rgba(255, 227, 156, 0.13);
   border-radius: calc(var(--radius) - 0.35rem);
   background:
-    linear-gradient(90deg, rgba(255, 227, 156, 0.035), transparent 45%, rgba(83, 216, 232, 0.04)),
-    repeating-linear-gradient(0deg, transparent 0 0.82rem, rgba(244, 240, 232, 0.024) 0.86rem 0.88rem);
+    linear-gradient(90deg, rgba(255, 232, 177, 0.052), transparent 45%, rgba(110, 231, 242, 0.055)),
+    repeating-linear-gradient(0deg, transparent 0 0.76rem, rgba(244, 240, 232, 0.032) 0.8rem 0.82rem);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument::after {
   left: 56%;
   top: 51%;
-  width: 10.8rem;
-  height: 5.65rem;
-  border: 1px solid rgba(143, 231, 237, 0.26);
+  width: 11.65rem;
+  height: 6.05rem;
+  border: 1px solid rgba(143, 231, 237, 0.34);
   border-radius: 50%;
   box-shadow:
-    inset 0 0 1.55rem rgba(83, 216, 232, 0.16),
-    0 0 2.15rem rgba(225, 182, 79, 0.12);
+    inset 0 0 1.8rem rgba(110, 231, 242, 0.2),
+    0 0 2.4rem rgba(237, 189, 104, 0.16);
   transform: translate(-50%, -50%) rotate(-9deg);
 }
 
@@ -64,7 +65,7 @@
 .chapter-eight-history__grain {
   inset: 0;
   z-index: 1;
-  opacity: 0.42;
+  opacity: 0.5;
   background:
     radial-gradient(circle at 18% 32%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1.5px),
     radial-gradient(circle at 62% 62%, rgba(255, 255, 255, 0.1) 0 1px, transparent 1.5px),
@@ -78,8 +79,8 @@
   right: 12%;
   z-index: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.22), rgba(83, 216, 232, 0.18), transparent);
-  opacity: 0.74;
+  background: linear-gradient(90deg, transparent, rgba(255, 232, 177, 0.28), rgba(110, 231, 242, 0.23), transparent);
+  opacity: 0.8;
 }
 
 .chapter-eight-history__archive-line--one {
@@ -95,13 +96,15 @@
 }
 
 .chapter-eight-history__source-orb {
-  top: 19%;
+  top: 19.5%;
   z-index: 1;
-  width: 0.42rem;
+  width: 0.48rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  opacity: 0.78;
-  box-shadow: 0 0 1.1rem currentColor;
+  opacity: 0.9;
+  box-shadow:
+    0 0 0 0.35rem color-mix(in srgb, currentColor 12%, transparent),
+    0 0 1.3rem currentColor;
 }
 
 .chapter-eight-history__source-orb--gold {
@@ -128,10 +131,10 @@
   z-index: 1;
   width: 66%;
   height: 3.8rem;
-  border-bottom: 1px solid rgba(83, 216, 232, 0.18);
-  border-left: 1px solid rgba(225, 182, 79, 0.18);
+  border-bottom: 1px solid rgba(110, 231, 242, 0.26);
+  border-left: 1px solid rgba(237, 189, 104, 0.24);
   border-radius: 0 0 50% 50%;
-  opacity: 0.7;
+  opacity: 0.8;
   transform: rotate(7deg);
 }
 
@@ -139,7 +142,7 @@
   top: 0;
   bottom: 0;
   width: 50%;
-  opacity: 0.6;
+  opacity: 0.66;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
@@ -148,15 +151,15 @@
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field--archive {
   left: 0;
   background:
-    radial-gradient(circle at 42% 44%, rgba(225, 182, 79, 0.18), transparent 4.5rem),
-    linear-gradient(90deg, rgba(225, 182, 79, 0.09), transparent);
+    radial-gradient(circle at 42% 44%, rgba(237, 189, 104, 0.23), transparent 4.8rem),
+    linear-gradient(90deg, rgba(237, 189, 104, 0.12), transparent);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__field--afterlife {
   right: 0;
   background:
-    radial-gradient(circle at 63% 51%, rgba(83, 216, 232, 0.17), transparent 4.8rem),
-    linear-gradient(270deg, rgba(83, 216, 232, 0.09), transparent);
+    radial-gradient(circle at 63% 51%, rgba(110, 231, 242, 0.22), transparent 5.1rem),
+    linear-gradient(270deg, rgba(110, 231, 242, 0.12), transparent);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__axis {
@@ -164,8 +167,8 @@
   right: 8%;
   top: 56%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(225, 182, 79, 0.18), rgba(244, 240, 232, 0.58), rgba(83, 216, 232, 0.22));
-  opacity: 0.78;
+  background: linear-gradient(90deg, rgba(237, 189, 104, 0.24), rgba(244, 240, 232, 0.68), rgba(110, 231, 242, 0.3));
+  opacity: 0.86;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring);
@@ -177,10 +180,10 @@
   height: 0.52rem;
   border-radius: 999px;
   background:
-    linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.34), rgba(130, 226, 165, 0.29), rgba(83, 216, 232, 0.3), transparent);
-  border-top: 1px solid rgba(244, 240, 232, 0.14);
-  box-shadow: 0 0 1.25rem rgba(83, 216, 232, 0.1);
-  opacity: 0.72;
+    linear-gradient(90deg, transparent, rgba(255, 232, 177, 0.46), rgba(143, 233, 178, 0.34), rgba(110, 231, 242, 0.38), transparent);
+  border-top: 1px solid rgba(244, 240, 232, 0.18);
+  box-shadow: 0 0 1.45rem rgba(110, 231, 242, 0.13);
+  opacity: 0.8;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -208,12 +211,12 @@
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment {
-  width: 0.6rem;
+  width: 0.68rem;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(255, 227, 156, 0.74);
-  box-shadow: 0 0 0.95rem rgba(225, 182, 79, 0.26);
-  opacity: 0.88;
+  background: rgba(255, 232, 177, 0.84);
+  box-shadow: 0 0 1.15rem rgba(237, 189, 104, 0.34);
+  opacity: 0.94;
   transition:
     opacity 0.55s var(--motion-spring),
     transform 0.55s var(--motion-spring),
@@ -228,30 +231,30 @@
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment--two {
   left: 35%;
   top: 52%;
-  background: rgba(130, 226, 165, 0.68);
+  background: rgba(143, 233, 178, 0.78);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__sediment--three {
   left: 70%;
   top: 43%;
-  background: rgba(143, 231, 237, 0.68);
+  background: rgba(143, 231, 237, 0.78);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__fish {
   left: 49%;
   top: 48%;
-  width: 5rem;
-  height: 1.52rem;
-  border-top: 1px solid rgba(255, 227, 156, 0.74);
-  border-bottom: 1px solid rgba(143, 231, 237, 0.58);
+  width: 5.35rem;
+  height: 1.62rem;
+  border-top: 1px solid rgba(255, 232, 177, 0.86);
+  border-bottom: 1px solid rgba(143, 231, 237, 0.72);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 31% 50%, rgba(255, 227, 156, 0.7) 0 0.17rem, transparent 0.19rem),
-    radial-gradient(ellipse at 50% 50%, rgba(83, 216, 232, 0.16), transparent 66%);
+    radial-gradient(circle at 31% 50%, rgba(255, 232, 177, 0.86) 0 0.18rem, transparent 0.2rem),
+    radial-gradient(ellipse at 50% 50%, rgba(110, 231, 242, 0.22), transparent 66%);
   box-shadow:
-    0 0 1.55rem rgba(83, 216, 232, 0.2),
-    0 0 1.3rem rgba(225, 182, 79, 0.13);
-  opacity: 0.94;
+    0 0 1.85rem rgba(110, 231, 242, 0.26),
+    0 0 1.55rem rgba(237, 189, 104, 0.17);
+  opacity: 1;
   transform: translate(-50%, -50%) rotate(-8deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -276,9 +279,9 @@
   top: 49%;
   width: 1px;
   height: 5rem;
-  background: linear-gradient(180deg, transparent, rgba(255, 227, 156, 0.74), rgba(130, 226, 165, 0.3), transparent);
-  box-shadow: 0 0 1.35rem rgba(225, 182, 79, 0.28);
-  opacity: 0.64;
+  background: linear-gradient(180deg, transparent, rgba(255, 232, 177, 0.84), rgba(143, 233, 178, 0.36), transparent);
+  box-shadow: 0 0 1.55rem rgba(237, 189, 104, 0.34);
+  opacity: 0.72;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -293,7 +296,7 @@
   top: 35%;
   width: 2.55rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 227, 156, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 232, 177, 0.72), transparent);
   transform: translateX(-50%);
 }
 
@@ -303,7 +306,7 @@
   width: 8.5rem;
   height: 4.05rem;
   border-radius: 50%;
-  opacity: 0.48;
+  opacity: 0.58;
   transition:
     border-color 0.55s var(--motion-spring),
     opacity 0.55s var(--motion-spring),
@@ -311,29 +314,31 @@
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread--descent {
-  border-top: 1px solid rgba(255, 227, 156, 0.32);
-  border-left: 1px solid rgba(255, 227, 156, 0.2);
+  border-top: 1px solid rgba(255, 232, 177, 0.42);
+  border-left: 1px solid rgba(255, 232, 177, 0.24);
   transform: translate(-50%, -50%) rotate(-11deg);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__thread--return {
-  border-bottom: 1px solid rgba(143, 231, 237, 0.35);
-  border-right: 1px solid rgba(130, 226, 165, 0.24);
+  border-bottom: 1px solid rgba(143, 231, 237, 0.44);
+  border-right: 1px solid rgba(143, 233, 178, 0.28);
   transform: translate(-50%, -50%) rotate(15deg);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__depth {
   right: 8%;
   top: 50%;
-  width: 4rem;
-  height: 2.55rem;
-  border: 1px solid rgba(143, 231, 237, 0.28);
+  width: 4.25rem;
+  height: 2.7rem;
+  border: 1px solid rgba(143, 231, 237, 0.36);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 44% 50%, rgba(83, 216, 232, 0.22), transparent 66%),
-    linear-gradient(130deg, transparent 48%, rgba(83, 216, 232, 0.3) 49%, transparent 51%);
-  box-shadow: inset 0 0 1.35rem rgba(83, 216, 232, 0.13);
-  opacity: 0.7;
+    radial-gradient(circle at 44% 50%, rgba(110, 231, 242, 0.28), transparent 66%),
+    linear-gradient(130deg, transparent 48%, rgba(110, 231, 242, 0.36) 49%, transparent 51%);
+  box-shadow:
+    inset 0 0 1.55rem rgba(110, 231, 242, 0.16),
+    0 0 1.45rem rgba(110, 231, 242, 0.12);
+  opacity: 0.78;
   transform: translateY(-50%) rotate(-9deg);
   transition:
     opacity 0.55s var(--motion-spring),
@@ -343,7 +348,7 @@
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label {
   z-index: 3;
-  color: rgba(244, 240, 232, 0.82);
+  color: rgba(244, 240, 232, 0.86);
   font-family: var(--font-ui);
   font-size: 0.58rem;
   font-weight: 800;
@@ -353,31 +358,36 @@
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--strata {
   left: 7%;
   top: 13%;
-  color: rgba(255, 227, 156, 0.95);
+  color: rgba(255, 232, 177, 0.96);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--carrier {
   left: 47%;
   top: 13%;
-  color: rgba(159, 238, 186, 0.95);
+  color: rgba(169, 248, 198, 0.96);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument__label--afterlife {
   right: 5%;
   top: 13%;
-  color: rgba(143, 231, 237, 0.96);
+  color: rgba(156, 239, 247, 0.97);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__layer,
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__sediment {
   opacity: 1;
   transform: translateY(-0.1rem);
-  box-shadow: 0 0 1.45rem rgba(225, 182, 79, 0.22);
+  box-shadow:
+    0 0 1.55rem rgba(237, 189, 104, 0.28),
+    0 0 0.6rem rgba(255, 232, 177, 0.12);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="strata"] .historical-strata-instrument__fish {
   opacity: 1;
-  transform: translate(-50%, -50%) rotate(-8deg) scale(1.08);
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.12);
+  box-shadow:
+    0 0 2.05rem rgba(110, 231, 242, 0.28),
+    0 0 1.8rem rgba(237, 189, 104, 0.22);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__carrier,
@@ -393,7 +403,7 @@
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="christian"] .historical-strata-instrument__fish {
   border-top-color: rgba(255, 227, 156, 0.86);
   border-bottom-color: rgba(130, 226, 165, 0.7);
-  box-shadow: 0 0 1.85rem rgba(130, 226, 165, 0.25), 0 0 1.25rem rgba(225, 182, 79, 0.12);
+  box-shadow: 0 0 2.05rem rgba(143, 233, 178, 0.3), 0 0 1.42rem rgba(237, 189, 104, 0.16);
   opacity: 1;
 }
 
@@ -404,14 +414,14 @@
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__field--afterlife {
-  opacity: 0.95;
+  opacity: 1;
   transform: scaleX(1.06);
 }
 
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__depth,
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__thread--return {
   opacity: 1;
-  box-shadow: 0 0 1.72rem rgba(83, 216, 232, 0.22);
+  box-shadow: 0 0 1.95rem rgba(110, 231, 242, 0.28);
   transform: translateY(-50%) rotate(-9deg) scale(1.12);
 }
 
@@ -423,12 +433,12 @@
 .chapter-experience[data-chapter-id="ch8"] .historical-strata-instrument[data-active-panel="modern"] .historical-strata-instrument__layer--5 {
   opacity: 1;
   transform: translateY(0.06rem) scaleX(1.05);
-  box-shadow: 0 0 1.35rem rgba(83, 216, 232, 0.18);
+  box-shadow: 0 0 1.55rem rgba(110, 231, 242, 0.22);
 }
 
 @media (max-width: 720px) {
   .chapter-experience[data-chapter-id="ch8"] .chapter-eight-history .historical-strata-instrument {
-    min-height: 6.9rem;
+    min-height: 7.45rem;
     margin: 0;
   }
 
