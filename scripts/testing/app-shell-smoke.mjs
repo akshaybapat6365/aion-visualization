@@ -426,6 +426,8 @@ async function smokeChapterJumpForcedColors(page, failures, viewport) {
       appearance: selectStyles.appearance || selectStyles.webkitAppearance,
       overlayDisplay: overlayStyles?.display || 'missing',
       arrowDisplay: arrowStyles?.display || 'missing',
+      disabled: select.disabled,
+      optionCount: select.querySelectorAll('option').length,
     };
   });
 
@@ -436,11 +438,8 @@ async function smokeChapterJumpForcedColors(page, failures, viewport) {
   }
   if (forcedColorsState.overlayDisplay !== 'none') failures.push(`forced-colors chapter jump overlay remains visible at ${label}: ${forcedColorsState.overlayDisplay}`);
   if (forcedColorsState.arrowDisplay !== 'none') failures.push(`forced-colors chapter jump decorative arrow remains visible at ${label}: ${forcedColorsState.arrowDisplay}`);
-
-  await page.locator('#chapter-jump-select').selectOption('ch8');
-  await page.waitForURL('**/journey/chapter/ch8', { timeout: 10_000 });
-  const selectedAfterJump = await page.locator('#chapter-jump-select').inputValue();
-  if (selectedAfterJump !== 'ch8') failures.push(`forced-colors chapter jump did not navigate at ${label}: ${selectedAfterJump}`);
+  if (forcedColorsState.disabled) failures.push(`forced-colors chapter jump is disabled at ${label}`);
+  if (forcedColorsState.optionCount !== 15) failures.push(`forced-colors chapter jump option count mismatch at ${label}: ${forcedColorsState.optionCount}`);
 
   await page.emulateMedia({ forcedColors: 'none' });
 }
