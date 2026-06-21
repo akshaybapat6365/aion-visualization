@@ -13,7 +13,7 @@ const SERPENT_CLR = new THREE.Color('#53d8e8');
 const SERPENT_DARK = new THREE.Color('#123f38');
 const GOLD = new THREE.Color('#f2c95d');
 const SILVER = new THREE.Color('#f4f0e8');
-const SHADOW = new THREE.Color('#6d5a9c');
+const SHADOW = new THREE.Color('#2f6674');
 const MIRROR = new THREE.Color('#d9fff8');
 
 export default class ThreeOuroborosViz extends BaseViz {
@@ -36,7 +36,7 @@ export default class ThreeOuroborosViz extends BaseViz {
 
     async init() {
         const R = this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.setSize(this.width, this.height); R.setClearColor(0x04050d);
+        R.setPixelRatio(Math.min(window.devicePixelRatio || 1, this.width < 700 ? 1.5 : 2)); R.setSize(this.width, this.height); R.setClearColor(0x04050d);
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x04050d, 0.007);
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 100);
@@ -44,8 +44,17 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.focusTarget = new THREE.Vector3(0.25, 0, 0);
 
         this.mouse = new THREE.Vector2(); this.mouseSmooth = new THREE.Vector2();
-        this._onMM = e => { this.mouse.x = (e.clientX / innerWidth) * 2 - 1; this.mouse.y = -(e.clientY / innerHeight) * 2 + 1; };
-        addEventListener('mousemove', this._onMM);
+        this._onMM = e => {
+            const rect = this.container?.getBoundingClientRect();
+            const width = rect?.width || window.innerWidth || 1;
+            const height = rect?.height || window.innerHeight || 1;
+            const left = rect?.left || 0;
+            const top = rect?.top || 0;
+            this.mouse.x = THREE.MathUtils.clamp(((e.clientX - left) / width) * 2 - 1, -1, 1);
+            this.mouse.y = THREE.MathUtils.clamp(-(((e.clientY - top) / height) * 2 - 1), -1, 1);
+        };
+        this.pointerTarget = this.container || window;
+        this.pointerTarget.addEventListener('mousemove', this._onMM);
 
         this._createTeachingField();
 
@@ -99,7 +108,7 @@ export default class ThreeOuroborosViz extends BaseViz {
         this.scene.add(this.junction);
 
         // Cyclic particle flow along the serpent body
-        const flowN = 300;
+        const flowN = this.width < 700 ? 180 : 300;
         const flowPos = new Float32Array(flowN * 3);
         this.flowPhases = new Float32Array(flowN);
         for (let i = 0; i < flowN; i++) {
@@ -211,13 +220,13 @@ export default class ThreeOuroborosViz extends BaseViz {
         const goldLight = new THREE.PointLight(0xf2c95d, 0.46, 12);
         goldLight.position.set(3.3, 2.2, 4);
         this.scene.add(goldLight);
-        const shadowLight = new THREE.PointLight(0x7b6aa8, 0.42, 14);
+        const shadowLight = new THREE.PointLight(0x2f6674, 0.42, 14);
         shadowLight.position.set(5, -1, 3);
         this.scene.add(shadowLight);
 
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
-        this.bloom = new UnrealBloomPass(new THREE.Vector2(this.width, this.height), 1.2, 0.5, 0.35);
+        this.bloom = new UnrealBloomPass(new THREE.Vector2(this.width, this.height), this.width < 700 ? 0.95 : 1.2, 0.5, 0.35);
         this.composer.addPass(this.bloom);
     }
 
@@ -414,10 +423,14 @@ export default class ThreeOuroborosViz extends BaseViz {
     onResize(w, h) {
         if (!this.renderer) return;
         this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, w < 700 ? 1.5 : 2));
         this.renderer.setSize(w, h); this.composer?.setSize(w, h); this.bloom?.setSize(w, h);
     }
     dispose() {
-        removeEventListener('mousemove', this._onMM);
+        this.pointerTarget?.removeEventListener('mousemove', this._onMM);
+        this.pointerTarget = null;
+        this.bloom?.dispose?.();
+        this.composer?.dispose?.();
         this.renderer?.dispose(); this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {
             o.geometry?.dispose();
@@ -428,6 +441,6 @@ export default class ThreeOuroborosViz extends BaseViz {
                 });
             }
         });
-        this.composer = null; this.scene = null; this.renderer = null; super.dispose();
+        this.bloom = null; this.composer = null; this.scene = null; this.renderer = null; super.dispose();
     }
 }
