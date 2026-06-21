@@ -76,21 +76,33 @@ export default function Shell({ children }: { children: ReactNode }) {
             <label className="sr-only" htmlFor="chapter-jump-select">
               Jump to chapter
             </label>
-            <select
-              id="chapter-jump-select"
-              aria-label="Jump to chapter"
-              value={activeChapter?.id || ''}
-              onChange={(event) => {
-                if (event.target.value) navigate(getChapterRoute(event.target.value));
-              }}
-            >
-              <option value="">Jump</option>
-              {getChapters().map((chapter) => (
-                <option key={chapter.id} value={chapter.id}>
-                  {String(chapter.order).padStart(2, '0')} · {chapter.title}
-                </option>
-              ))}
-            </select>
+            <div className="chapter-jump__select">
+              <select
+                id="chapter-jump-select"
+                aria-label={activeChapter ? `Jump to chapter. Current chapter: ${activeChapter.title}` : 'Jump to chapter'}
+                value={activeChapter?.id || ''}
+                onChange={(event) => {
+                  if (event.target.value) navigate(getChapterRoute(event.target.value));
+                }}
+              >
+                <option value="">Jump</option>
+                {getChapters().map((chapter) => (
+                  <option key={chapter.id} value={chapter.id}>
+                    {String(chapter.order).padStart(2, '0')} · {chapter.title}
+                  </option>
+                ))}
+              </select>
+              <span className="chapter-jump__current" aria-hidden="true">
+                {activeChapter ? (
+                  <>
+                    <span className="chapter-jump__current-index">{String(activeChapter.order).padStart(2, '0')}</span>
+                    <span className="chapter-jump__current-title">{activeChapter.title}</span>
+                  </>
+                ) : (
+                  <span className="chapter-jump__current-title">Jump to chapter</span>
+                )}
+              </span>
+            </div>
           </nav>
         </div>
       </header>
