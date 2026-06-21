@@ -12,7 +12,7 @@
  * Collective anxiety and projection make historical time feel charged,
  * so older archetypal images reappear as visions of the future.
  *
- * Palette: warm amber/gold with violet shadows — prophetic firelight.
+ * Palette: alchemical gold, violet collective image, cyan threshold.
  */
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -21,13 +21,13 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import BaseViz from '../../../features/viz-platform/BaseViz.js';
 
 /* ═══════════════════ Constants ═══════════════════ */
-const AMBER = 0xff8c00;
-const GOLD = 0xc8a040;
-const COOL_BLUE = 0x6688bb;
-const VIOLET = 0x6633aa;
-const CRIMSON = 0xcc3366;
-const TEAL = 0x44bbcc;
-const PARCHMENT = '#d4c8a8';
+const AMBER = 0xedbd68;
+const GOLD = 0xd4af37;
+const COOL_BLUE = 0x6ee7f2;
+const VIOLET = 0x8f74d6;
+const CRIMSON = 0xc84c6c;
+const TEAL = 0x5bd5e8;
+const PARCHMENT = '#f4f0e8';
 
 /* Scene boundaries in scroll progress (0–1) — rebalanced for pacing */
 const SCENE1_START = 0.0;
@@ -49,8 +49,8 @@ const ZODIAC = [
     { glyph: '♏', name: 'Scorpio' },
     { glyph: '♐', name: 'Sagittarius' },
     { glyph: '♑', name: 'Capricorn' },
-    { glyph: '♒', name: 'Aquarius', highlight: true, color: '#44bbcc', label: 'THE COMING AEON' },
-    { glyph: '♓', name: 'Pisces', highlight: true, color: '#e8c060', label: 'THE CURRENT AEON' },
+    { glyph: '♒', name: 'Aquarius', highlight: true, color: '#6ee7f2', label: 'THRESHOLD AEON' },
+    { glyph: '♓', name: 'Pisces', highlight: true, color: '#edbd68', label: 'PISCEAN AEON' },
 ];
 
 /* Events Jung discusses — The Pisces Timeline (Scene 3)
@@ -59,25 +59,25 @@ const ZODIAC = [
    Violet = Unconscious/Gnostic  |  Teal = Aquarian/future
    White/Pale = Historical turning points */
 const TIMELINE_EVENTS = [
-    { year: -7, label: 'Star of Bethlehem', symbol: '☆', color: 0xf0d060, desc: 'Jupiter–Saturn conjunction in Pisces — the celestial sign inaugurating the new aeon', archetype: 'Self' },
-    { year: 30, label: 'Crucifixion', symbol: '✝', color: 0xf0e8d0, desc: 'The Self projected onto a single figure — the supreme symbol of wholeness sacrificed', archetype: 'Self' },
+    { year: -7, label: 'Star of Bethlehem', symbol: '☆', color: 0xf0d060, desc: 'Later astrological readings connect a Jupiter-Saturn conjunction in Pisces with the aeon\'s symbolic opening', archetype: 'Self' },
+    { year: 30, label: 'Crucifixion', symbol: '✝', color: 0xf0e8d0, desc: 'The Christ image gathers sacrifice, wholeness, and collective expectation into one central figure', archetype: 'Self' },
     { year: 100, label: 'Revelation of St. John', symbol: '🔥', color: 0xcc4444, desc: 'Apocalyptic imagery gives collective fear a fiery symbolic form', archetype: 'Shadow' },
     { year: 325, label: 'Council of Nicæa', symbol: '⬡', color: 0xf0d060, desc: 'Doctrine gathers the Christ image into a bright center while shadow pressure remains outside it', archetype: 'Self' },
-    { year: 1000, label: 'Enantiodromia', symbol: '◆', color: 0xcc3366, desc: 'The aeon’s midpoint — everything begins turning into its opposite. The shadow stirs.', archetype: 'Shadow' },
-    { year: 1179, label: 'Joachim of Fiore', symbol: '△', color: 0x9966cc, desc: 'Prophecy of the Third Age — beyond Father and Son, the Holy Spirit as integration', archetype: 'Unconscious' },
-    { year: 1484, label: 'Malleus Maleficarum', symbol: '▼', color: 0x882233, desc: 'Shadow projected onto "witches" — collective psychosis manifests as persecution', archetype: 'Shadow' },
+    { year: 1000, label: 'Enantiodromia', symbol: '◆', color: 0xcc3366, desc: 'The aeon\'s midpoint becomes a symbolic image of reversal: the bright form begins to show its counter-pole', archetype: 'Shadow' },
+    { year: 1179, label: 'Joachim of Fiore', symbol: '△', color: 0x9966cc, desc: 'A prophetic third-age pattern imagines history moving toward a changed spiritual form', archetype: 'Unconscious' },
+    { year: 1484, label: 'Malleus Maleficarum', symbol: '▼', color: 0x882233, desc: 'Collective fear hardens into projected shadow and persecution', archetype: 'Shadow' },
     { year: 1555, label: 'Nostradamus\' Centuries', symbol: '✦', color: 0xff8c00, desc: 'Prophetic image-making as sensitivity to collective tension', archetype: 'Unconscious' },
     { year: 1789, label: 'French Revolution', symbol: '⚡', color: 0xcc4444, desc: 'Later readers could fold revolutionary violence into prophetic imagery; the point is projection under historical pressure', archetype: 'Shadow' },
-    { year: 1914, label: 'World War I', symbol: '◼', color: 0x553333, desc: 'Eruption of the collective shadow — the European psyche fragments into mass violence', archetype: 'Shadow' },
+    { year: 1914, label: 'World War I', symbol: '◼', color: 0x553333, desc: 'A modern rupture lets collective shadow appear in mass violence', archetype: 'Shadow' },
     { year: 1945, label: 'Atomic Bomb', symbol: '☢', color: 0xeeeeee, desc: 'Reason and annihilation become fused in a modern image of reversal', archetype: 'Shadow' },
-    { year: 2000, label: 'Aquarian Threshold', symbol: '♒', color: 0x44bbcc, desc: 'A new aeon approaches — will the psyche integrate its opposites, or split further?', archetype: 'Future' },
+    { year: 2000, label: 'Aquarian Threshold', symbol: '♒', color: 0x44bbcc, desc: 'The threshold image asks whether opposition can be held consciously instead of split further', archetype: 'Future' },
 ];
 
 /* Aeon definitions for the spiral */
 const AEONS = [
-    { name: 'Aeon of Aries', startYear: -2000, endYear: 0, color: new THREE.Color(0x443366), desc: 'Age of the Ram · War, Empire, Sacrifice' },
-    { name: 'Aeon of Pisces', startYear: 0, endYear: 2000, color: new THREE.Color(0xc8a040), desc: 'Age of the Fish · Christ, Faith, Shadow' },
-    { name: 'Aeon of Aquarius', startYear: 2000, endYear: 4000, color: new THREE.Color(0x44bbcc), desc: 'Age of the Water-Bearer · Integration?' },
+    { name: 'Aeon of Aries', startYear: -2000, endYear: 0, color: new THREE.Color(0x4c3b78), desc: 'Age of the Ram · war, empire, sacrifice' },
+    { name: 'Aeon of Pisces', startYear: 0, endYear: 2000, color: new THREE.Color(0xedbd68), desc: 'Age of the Fish · Christ image, faith, shadow' },
+    { name: 'Aeon of Aquarius', startYear: 2000, endYear: 4000, color: new THREE.Color(0x5bd5e8), desc: 'Age of the Water-Bearer · threshold' },
 ];
 
 /* ═══════════════════ Helper: Glyph Sprite Factory ═══════════════════ */
@@ -155,24 +155,30 @@ export default class ThreeProphecyViz extends BaseViz {
         const R = this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas, antialias: true, alpha: false
         });
-        R.setPixelRatio(Math.min(devicePixelRatio, 2));
+        R.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2));
         R.setSize(this.width, this.height);
-        R.setClearColor(0x020208);
+        R.setClearColor(0x03040a);
 
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x020208, 0.004);
-        this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 500);
-        this.camera.position.set(0, 0, 20);
+        this.scene.fog = new THREE.FogExp2(0x03040a, 0.0034);
+        this.camera = new THREE.PerspectiveCamera(46, this.width / this.height, 0.1, 500);
+        this.camera.position.set(0, 0, 19);
         this.camera.lookAt(0, 0, 0);
 
         /* Mouse parallax */
         this.mouse = new THREE.Vector2();
         this.mouseSmooth = new THREE.Vector2();
+        this._inputTarget = this.container || this.canvas || globalThis;
         this._onMM = e => {
-            this.mouse.x = (e.clientX / innerWidth) * 2 - 1;
-            this.mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+            const bounds = this._inputTarget.getBoundingClientRect?.();
+            const left = bounds?.left ?? 0;
+            const top = bounds?.top ?? 0;
+            const width = bounds?.width || globalThis.innerWidth || 1;
+            const height = bounds?.height || globalThis.innerHeight || 1;
+            this.mouse.x = ((e.clientX - left) / width) * 2 - 1;
+            this.mouse.y = -((e.clientY - top) / height) * 2 + 1;
         };
-        addEventListener('mousemove', this._onMM);
+        this._inputTarget.addEventListener?.('mousemove', this._onMM);
 
         /* ─── Starfield (shared across all scenes) ─── */
         this._buildStarfield();
@@ -191,16 +197,19 @@ export default class ThreeProphecyViz extends BaseViz {
         this._buildPiscesTimeline();
 
         /* Light */
-        this.scene.add(new THREE.AmbientLight(0x0a0a15, 0.3));
-        const pointLight = new THREE.PointLight(AMBER, 0.3, 50);
-        pointLight.position.set(0, 5, 10);
-        this.scene.add(pointLight);
+        this.scene.add(new THREE.AmbientLight(0x11131f, 0.42));
+        const goldLight = new THREE.PointLight(AMBER, 0.42, 58);
+        goldLight.position.set(-4, 4.5, 10);
+        this.scene.add(goldLight);
+        const thresholdLight = new THREE.PointLight(COOL_BLUE, 0.22, 48);
+        thresholdLight.position.set(5.5, -1.5, 9);
+        this.scene.add(thresholdLight);
 
         /* Postprocessing */
         this.composer = new EffectComposer(R);
         this.composer.addPass(new RenderPass(this.scene, this.camera));
         this.bloom = new UnrealBloomPass(
-            new THREE.Vector2(this.width, this.height), 1.18, 0.55, 0.28
+            new THREE.Vector2(this.width, this.height), 1.28, 0.62, 0.22
         );
         this.composer.addPass(this.bloom);
 
@@ -227,7 +236,7 @@ export default class ThreeProphecyViz extends BaseViz {
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
         this.starfield = new THREE.Points(geo, new THREE.PointsMaterial({
-            color: 0xaaaad0, size: 0.055, transparent: true, opacity: 0.62,
+            color: 0xf4f0e8, size: 0.06, transparent: true, opacity: 0.7,
             sizeAttenuation: true, depthWrite: false
         }));
         this.scene.add(this.starfield);
@@ -240,17 +249,18 @@ export default class ThreeProphecyViz extends BaseViz {
         const g = this.scene1Group;
 
         /* Outer ring */
-        const outerR = 5;
-        this._addRing(g, outerR, GOLD, 0.34);
-        this._addRing(g, 4.2, COOL_BLUE, 0.18);
-        this._addRing(g, 3.2, GOLD, 0.13);
+        const outerR = 5.35;
+        this._addRing(g, outerR, GOLD, 0.42);
+        this._addRing(g, 4.45, COOL_BLUE, 0.24);
+        this._addRing(g, 3.28, GOLD, 0.18);
+        this._addRing(g, 2.12, VIOLET, 0.12);
 
         /* Zodiac glyph sprites */
         for (let i = 0; i < 12; i++) {
             const z = ZODIAC[i];
             const a = (i / 12) * Math.PI * 2;
-            const glyphColor = z.highlight ? z.color : 'rgba(180,170,150,0.3)';
-            const glyphSize = z.highlight ? 0.7 : 0.45;
+            const glyphColor = z.highlight ? z.color : 'rgba(244,240,232,0.36)';
+            const glyphSize = z.highlight ? 0.76 : 0.48;
             const sprite = makeGlyphSprite(z.glyph, glyphColor, glyphSize);
             sprite.position.set(
                 Math.cos(a) * (outerR + 0.7),
@@ -264,7 +274,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 const halo = new THREE.Mesh(
                     new THREE.RingGeometry(0.3, 0.45, 16),
                     new THREE.MeshBasicMaterial({
-                        color: new THREE.Color(z.color), transparent: true, opacity: 0.1,
+                        color: new THREE.Color(z.color), transparent: true, opacity: 0.16,
                         blending: THREE.AdditiveBlending, side: THREE.DoubleSide
                     })
                 );
@@ -273,7 +283,7 @@ export default class ThreeProphecyViz extends BaseViz {
 
                 /* Sign label */
                 const lbl = makeTextSprite(z.label, {
-                    fontSize: 20, color: z.color, opacity: 0.4, scale: 2
+                    fontSize: 20, color: z.color, opacity: 0.54, scale: 2.15
                 });
                 lbl.position.set(
                     Math.cos(a) * (outerR + 1.8),
@@ -294,7 +304,7 @@ export default class ThreeProphecyViz extends BaseViz {
             const spoke = new THREE.Line(
                 new THREE.BufferGeometry().setFromPoints(pts),
                 new THREE.LineBasicMaterial({
-                    color: GOLD, transparent: true, opacity: 0.09,
+                    color: GOLD, transparent: true, opacity: 0.12,
                     blending: THREE.AdditiveBlending
                 })
             );
@@ -303,13 +313,13 @@ export default class ThreeProphecyViz extends BaseViz {
 
         /* Center label */
         const centerLbl = makeTextSprite('THE GREAT YEAR', {
-            fontSize: 22, color: PARCHMENT, opacity: 0.3, scale: 2.5
+            fontSize: 22, color: PARCHMENT, opacity: 0.44, scale: 2.55
         });
         centerLbl.position.set(0, 0, 0.1);
         g.add(centerLbl);
 
         const subLbl = makeTextSprite('~26,000 YEARS', {
-            fontSize: 16, color: 'rgba(200,160,64,0.3)', opacity: 0.25, scale: 2
+            fontSize: 16, color: 'rgba(237,189,104,0.42)', opacity: 0.34, scale: 2
         });
         subLbl.position.set(0, -0.6, 0.1);
         g.add(subLbl);
@@ -416,9 +426,9 @@ export default class ThreeProphecyViz extends BaseViz {
         /* Aeon boundary markers — meaningful Jungian labels */
         const markers = [
             { year: -2000, label: 'END OF ARIES', sub: 'Age of the Ram yields', color: 0x443366 },
-            { year: 0, label: 'BIRTH OF CHRIST', sub: 'The Pisces aeon begins', color: 0xf0d060 },
-            { year: 1000, label: 'ENANTIODROMIA', sub: 'The turning point — shadow rises', color: 0xcc3366 },
-            { year: 2000, label: 'AQUARIAN THRESHOLD', sub: 'A new aeon approaches', color: 0x44bbcc },
+            { year: 0, label: 'BIRTH OF CHRIST', sub: 'Piscean symbolism gathers', color: 0xf0d060 },
+            { year: 1000, label: 'ENANTIODROMIA', sub: 'Reversal pressure becomes visible', color: 0xcc3366 },
+            { year: 2000, label: 'AQUARIAN THRESHOLD', sub: 'A threshold image appears', color: 0x44bbcc },
         ];
 
         this._spiralMarkers = [];
@@ -761,7 +771,8 @@ export default class ThreeProphecyViz extends BaseViz {
             .ch7-scene-dot {
                 width: 7px; height: 7px; border-radius: 50%;
                 background: rgba(200,160,64,0.15); border: 1px solid rgba(200,160,64,0.2);
-                transition: all 0.6s ease; margin: 8px 0;
+                transition: opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1), background 0.6s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.6s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+                margin: 8px 0;
             }
             .ch7-scene-dot.active {
                 background: rgba(255,140,0,0.5); border-color: rgba(255,140,0,0.4);
@@ -801,7 +812,7 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;bottom:6%;left:50%;transform:translateX(-50%);
                 text-align:center;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     font-size:clamp(0.65rem,0.9vw,0.75rem);letter-spacing:0.25em;
@@ -821,7 +832,7 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;right:3%;top:50%;transform:translateY(-50%);
                 display:flex;flex-direction:column;align-items:center;
-                opacity:0;transition:opacity 1s ease;
+                opacity:0;transition:opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div class="ch7-scene-dot active" data-scene="1"></div>
                 <div class="ch7-scene-dot" data-scene="2"></div>
@@ -840,7 +851,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 position:absolute;top:6%;left:50%;transform:translateX(-50%);
                 font-size:clamp(0.85rem,1.4vw,1.1rem);letter-spacing:0.3em;
                 text-transform:uppercase;color:${PARCHMENT};
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">VII · THE PROPHECIES OF NOSTRADAMUS</div>
         `);
 
@@ -849,13 +860,13 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);
                 text-align:center;max-width:50%;
-                opacity:0;transition:opacity 2s ease;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     font-size:clamp(0.85rem,1.5vw,1.15rem);color:rgba(232,192,96,0.6);
                     font-style:italic;line-height:1.8;
-                ">The precession of the equinoxes — a cosmic clock<br>
-                    marking the rise and fall of aeons.</div>
+                ">The precession of the equinoxes becomes<br>
+                    a symbolic clock for collective imagination.</div>
             </div>
         `);
 
@@ -863,7 +874,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene1Explain = this._makeOverlayEl(ol, `
             <div class="ch7-annotation" style="
                 position:absolute;bottom:18%;left:5%;max-width:34%;
-                opacity:0;transition:opacity 2s ease 0.5s;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
             ">
                 <div style="
                     border-left:2px solid rgba(200,160,64,0.2);padding-left:14px;
@@ -871,10 +882,9 @@ export default class ThreeProphecyViz extends BaseViz {
                     <div style="
                         font-size:clamp(0.7rem,1vw,0.85rem);color:rgba(200,190,170,0.5);
                         line-height:1.7;
-                    ">The spring equinox shifts through each zodiac sign over ~2,160 years.
-                    Each period, or <em style="color:rgba(232,192,96,0.6)">aeon</em>, is dominated
-                    by the archetype of its constellation. We are now at the
-                    end of Pisces, approaching Aquarius.</div>
+                    ">The spring equinox is traditionally mapped through zodiac signs
+                    over long cycles. In Aion, that symbolic time helps show how
+                    collective anxiety can condense around transitions.</div>
                 </div>
             </div>
         `);
@@ -883,7 +893,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene1Direction = this._makeOverlayEl(ol, `
             <div class="ch7-annotation" style="
                 position:absolute;bottom:18%;right:5%;max-width:28%;text-align:right;
-                opacity:0;transition:opacity 2s ease 0.8s;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.8s;
             ">
                 <div style="
                     border-right:2px solid rgba(68,187,204,0.2);padding-right:14px;
@@ -895,7 +905,7 @@ export default class ThreeProphecyViz extends BaseViz {
                     <div style="
                         font-size:clamp(0.6rem,0.85vw,0.72rem);color:rgba(200,190,170,0.35);
                         margin-top:4px;line-height:1.5;
-                    ">The precession moves retrograde<br>through the zodiac wheel ↻</div>
+                    ">The wheel becomes a map<br>of backward-looking future images</div>
                 </div>
             </div>
         `);
@@ -910,7 +920,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 position:absolute;top:5%;left:50%;transform:translateX(-50%);
                 font-size:clamp(0.55rem,1vw,0.85rem);letter-spacing:0.25em;
                 text-transform:uppercase;color:rgba(200,160,64,0.5);
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">THE SPIRAL OF THE AEONS</div>
         `);
 
@@ -918,7 +928,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene2Thesis = this._makeOverlayEl(ol, `
             <div style="
                 position:absolute;top:12%;right:6%;max-width:30%;text-align:right;
-                opacity:0;transition:opacity 2s ease;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     border-right:2px solid rgba(200,160,64,0.2);padding-right:14px;
@@ -932,7 +942,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene2Legend = this._makeOverlayEl(ol, `
             <div style="
                 position:absolute;bottom:12%;left:5%;
-                opacity:0;transition:opacity 2s ease 0.3s;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
             ">
                 <div style="
                     font-size:clamp(0.6rem,0.8vw,0.7rem);letter-spacing:0.2em;
@@ -958,7 +968,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene2Enantio = this._makeOverlayEl(ol, `
             <div class="ch7-annotation" style="
                 position:absolute;bottom:10%;right:5%;max-width:32%;text-align:right;
-                opacity:0;transition:opacity 2s ease;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     border-right:2px solid rgba(204,51,102,0.25);padding-right:14px;
@@ -971,9 +981,9 @@ export default class ThreeProphecyViz extends BaseViz {
                     <div style="
                         font-size:clamp(0.65rem,0.9vw,0.75rem);color:rgba(200,190,170,0.45);
                         line-height:1.6;font-style:italic;
-                    ">The tendency of things to flip into their opposite
-                    at the extreme. At the aeon's midpoint (~1000 AD),
-                    the shadow side of Christianity begins to emerge.</div>
+                    ">A symbolic tendency for one-sided forms to call up
+                    their opposite. The midpoint becomes a charged image
+                    of reversal and shadow pressure.</div>
                 </div>
             </div>
         `);
@@ -983,7 +993,7 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;top:50%;left:3%;transform:translateY(-50%);
                 text-align:center;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     writing-mode:vertical-lr;text-orientation:mixed;
@@ -1000,18 +1010,18 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
                 text-align:center;max-width:60%;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     font-size:clamp(0.9rem,1.4vw,1.1rem);letter-spacing:0.3em;
                     text-transform:uppercase;color:rgba(200,160,64,0.6);
                     margin-bottom:12px;
-                ">ENTERING THE AEON OF PISCES</div>
+                ">ENTERING THE PISCEAN FIELD</div>
                 <div style="
                     font-size:clamp(0.7rem,1vw,0.85rem);color:rgba(200,190,170,0.4);
                     font-style:italic;line-height:1.7;
-                ">Two thousand years of Christ and shadow —<br>
-                from the star over Bethlehem to the atomic fire.</div>
+                ">Sacred birth, reversal, shadow, and modern fire<br>
+                gather as one symbolic pressure field.</div>
             </div>
         `);
 
@@ -1025,7 +1035,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 position:absolute;top:4%;left:50%;transform:translateX(-50%);
                 font-size:clamp(0.8rem,1.2vw,1rem);letter-spacing:0.25em;
                 text-transform:uppercase;color:rgba(200,160,64,0.6);
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">THE AEON OF PISCES · 0 – 2000 AD</div>
         `);
 
@@ -1033,13 +1043,13 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene3Quote = this._makeOverlayEl(ol, `
             <div style="
                 position:absolute;top:11%;left:5%;max-width:35%;
-                opacity:0;transition:opacity 2s ease;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     border-left:2px solid rgba(200,160,64,0.25);padding-left:14px;
                     font-size:clamp(0.8rem,1.15vw,0.95rem);color:rgba(200,190,170,0.55);
                     font-style:italic;line-height:1.7;
-                ">Four hundred years before Jung,<br>Nostradamus sensed the psyche's<br>approaching reversal.</div>
+                ">Later readers place Nostradamus<br>inside a wider anxiety field<br>around reversal.</div>
             </div>
         `);
 
@@ -1047,7 +1057,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene3DualFish = this._makeOverlayEl(ol, `
             <div class="ch7-annotation" style="
                 position:absolute;top:10%;right:5%;max-width:30%;text-align:right;
-                opacity:0;transition:opacity 2s ease 0.3s;
+                opacity:0;transition:opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
             ">
                 <div style="
                     border-right:2px solid rgba(200,160,64,0.2);padding-right:14px;
@@ -1065,7 +1075,7 @@ export default class ThreeProphecyViz extends BaseViz {
                         <span style="color:rgba(204,51,102,0.5)">Second Fish</span> (1000–2000 AD) — shadow pressure<br>
                         <span style="font-style:italic;margin-top:6px;display:inline-block">
                         They swim in opposite directions,<br>
-                        mirroring the psyche's split.</span>
+                        making the symbolic split legible.</span>
                     </div>
                 </div>
             </div>
@@ -1076,13 +1086,13 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;bottom:8%;left:10%;right:10%;
                 display:flex;justify-content:space-between;align-items:flex-end;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div class="ch7-era-label" style="text-align:left">EARLY<br>CHURCH</div>
                 <div class="ch7-era-label">AGE OF<br>FAITH</div>
                 <div class="ch7-era-label" style="color:rgba(204,51,102,0.35)">ENANTIODROMIA<br>↕</div>
                 <div class="ch7-era-label">AGE OF<br>REASON</div>
-                <div class="ch7-era-label" style="text-align:right;color:rgba(68,187,204,0.3)">MODERN<br>SHADOW</div>
+                <div class="ch7-era-label" style="text-align:right;color:rgba(68,187,204,0.3)">MODERN<br>RUPTURE</div>
             </div>
         `);
 
@@ -1090,7 +1100,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._scene3Nostradamus = this._makeOverlayEl(ol, `
             <div class="ch7-annotation" style="
                 position:absolute;bottom:28%;left:5%;max-width:38%;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     border-left:2px solid rgba(255,140,0,0.25);padding-left:14px;
@@ -1103,10 +1113,9 @@ export default class ThreeProphecyViz extends BaseViz {
                     <div style="
                         font-size:clamp(0.65rem,0.9vw,0.75rem);color:rgba(200,190,170,0.4);
                         line-height:1.6;font-style:italic;
-                    ">Jung argues that Nostradamus perceived the approaching
-                    enantiodromia through the collective unconscious — his
-                    "prophecy" was a psychological sensitivity to archetypal
-                    currents already stirring in the European psyche.</div>
+                    ">Within this reading, Nostradamus becomes a marker for
+                    how collective pressure can turn forecast into symbolic
+                    image.</div>
                 </div>
             </div>
         `);
@@ -1115,7 +1124,7 @@ export default class ThreeProphecyViz extends BaseViz {
         this._yearClockEl = this._makeOverlayEl(ol, `
             <div style="
                 position:absolute;bottom:16%;right:6%;text-align:right;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div class="ch7-year-num" style="
                     font-size:clamp(2.5rem,6vw,4rem);color:rgba(255,140,0,0.35);
@@ -1135,7 +1144,7 @@ export default class ThreeProphecyViz extends BaseViz {
             <div class="ch7-event-tooltip" style="
                 position:absolute;left:50%;bottom:22%;transform:translateX(-50%);
                 max-width:50%;text-align:center;
-                opacity:0;transition:opacity 0.8s ease;
+                opacity:0;transition:opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div class="ch7-evt-label" style="
                     font-size:clamp(0.75rem,1.1vw,0.9rem);letter-spacing:0.15em;
@@ -1155,7 +1164,7 @@ export default class ThreeProphecyViz extends BaseViz {
                 position:absolute;bottom:2.5%;left:50%;transform:translateX(-50%);
                 font-size:clamp(0.55rem,0.75vw,0.65rem);letter-spacing:0.2em;
                 color:rgba(200,160,64,0.2);text-transform:uppercase;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">BRIGHT IDEAL -> REVERSAL -> SHADOW PRESSURE · THE TWO FISH SWIM IN OPPOSITE DIRECTIONS</div>
         `);
 
@@ -1167,7 +1176,7 @@ export default class ThreeProphecyViz extends BaseViz {
                     rgba(240,232,208,0.2),
                     rgba(204,51,102,0.3) 50%,
                     rgba(68,187,204,0.2));
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             "></div>
         `);
 
@@ -1176,7 +1185,7 @@ export default class ThreeProphecyViz extends BaseViz {
             <div style="
                 position:absolute;bottom:4.5%;left:50%;transform:translateX(-50%);
                 text-align:center;
-                opacity:0;transition:opacity 1.5s ease;
+                opacity:0;transition:opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
             ">
                 <div style="
                     width:1px;height:18px;background:rgba(204,51,102,0.25);
@@ -1548,9 +1557,10 @@ export default class ThreeProphecyViz extends BaseViz {
     }
 
     dispose() {
-        removeEventListener('mousemove', this._onMM);
+        this._inputTarget?.removeEventListener?.('mousemove', this._onMM);
         if (this._scrollSpacer) this._scrollSpacer.remove();
         if (this._overlay) this._overlay.remove();
+        this.composer?.dispose?.();
         this.renderer?.dispose();
         this.renderer?.forceContextLoss();
         this.scene?.traverse(o => {

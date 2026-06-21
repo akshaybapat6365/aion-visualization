@@ -10235,6 +10235,232 @@ h3 {
     0 0 1.8rem rgba(83, 216, 232, 0.72);
 }
 
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__symbol {
+  border-color: rgba(237, 189, 104, 0.16);
+  background:
+    radial-gradient(circle at 30% 52%, rgba(237, 189, 104, 0.16), transparent 5.4rem),
+    radial-gradient(circle at 58% 44%, rgba(189, 164, 255, 0.14), transparent 6.2rem),
+    radial-gradient(circle at 78% 52%, rgba(110, 231, 242, 0.12), transparent 5.8rem),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.014));
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__symbol::before {
+  inset: 12% 10%;
+  border-color: rgba(244, 240, 232, 0.12);
+  border-radius: 46%;
+  box-shadow:
+    inset 0 0 4.5rem rgba(189, 164, 255, 0.08),
+    0 0 3.4rem rgba(237, 189, 104, 0.05);
+  transform: rotate(-5deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__symbol::after {
+  left: 41%;
+  top: 58%;
+  width: 0.82rem;
+  height: 0.82rem;
+  background: rgba(255, 232, 177, 0.96);
+  box-shadow:
+    0 0 0 0.52rem rgba(237, 189, 104, 0.12),
+    0 0 2rem rgba(237, 189, 104, 0.58),
+    7.8rem -1.5rem 2.2rem rgba(189, 164, 255, 0.28);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__ring,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__axis,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__spark,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__depth,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__mandala-band {
+  display: block;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__ring--outer {
+  width: 72%;
+  border-color: rgba(237, 189, 104, 0.18);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__ring--inner {
+  width: 42%;
+  border-color: rgba(110, 231, 242, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__axis--vertical {
+  left: 77%;
+  height: 74%;
+  background: linear-gradient(180deg, transparent, rgba(110, 231, 242, 0.52), rgba(237, 189, 104, 0.18), transparent);
+  box-shadow: 0 0 1.35rem rgba(110, 231, 242, 0.2);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__axis--horizontal {
+  top: 62%;
+  width: 72%;
+  background: linear-gradient(90deg, rgba(237, 189, 104, 0.12), rgba(244, 240, 232, 0.48), rgba(110, 231, 242, 0.2));
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__spark--one {
+  left: 42%;
+  top: 62%;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: rgba(255, 232, 177, 0.98);
+  box-shadow:
+    0 0 0 0.42rem rgba(237, 189, 104, 0.12),
+    0 0 1.7rem rgba(237, 189, 104, 0.72);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__spark--two {
+  right: 21%;
+  top: 48%;
+  background: var(--cyan);
+  box-shadow:
+    0 0 0 0.38rem rgba(110, 231, 242, 0.1),
+    0 0 1.55rem rgba(110, 231, 242, 0.68);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__depth--one {
+  left: 56%;
+  top: 37%;
+  width: 30%;
+  height: 32%;
+  border: 1px solid rgba(189, 164, 255, 0.24);
+  border-right-color: rgba(110, 231, 242, 0.18);
+  border-radius: 50%;
+  background: transparent;
+  transform: translateX(-50%) rotate(-17deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__depth--two {
+  left: 58%;
+  top: 52%;
+  width: 36%;
+  height: 30%;
+  border-color: rgba(110, 231, 242, 0.2);
+  transform: translateX(-50%) rotate(18deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point {
+  width: 0.56rem;
+  height: 0.56rem;
+  background: rgba(226, 210, 255, 0.94);
+  box-shadow: 0 0 1.25rem rgba(189, 164, 255, 0.62);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point--north {
+  left: 53%;
+  top: 31%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point--east {
+  left: 67%;
+  top: 47%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point--south {
+  left: 56%;
+  top: 69%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__quaternity-point--west {
+  left: 44%;
+  top: 51%;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__mandala-band--outer {
+  width: 80%;
+  border-color: rgba(244, 240, 232, 0.08);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__mandala-band--middle {
+  width: 62%;
+  border-color: rgba(189, 164, 255, 0.1);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel__mandala-band--inner {
+  width: 28%;
+  border-color: rgba(110, 231, 242, 0.14);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="prophecy"] .chapter-panel__ring--outer {
+  left: 35%;
+  top: 57%;
+  width: 46%;
+  aspect-ratio: 2.2 / 1;
+  border-color: rgba(237, 189, 104, 0.28);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="prophecy"] .chapter-panel__ring--inner {
+  left: 35%;
+  top: 57%;
+  width: 28%;
+  aspect-ratio: 2.05 / 1;
+  border-color: rgba(255, 232, 177, 0.22);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="prophecy"] .chapter-panel__quaternity-point,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="prophecy"] .chapter-panel__depth--two {
+  opacity: 0.28;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="collective"] .chapter-panel__symbol::after {
+  left: 55%;
+  top: 52%;
+  background: rgba(226, 210, 255, 0.96);
+  box-shadow:
+    0 0 0 0.48rem rgba(189, 164, 255, 0.12),
+    0 0 1.8rem rgba(189, 164, 255, 0.62);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="collective"] .chapter-panel__axis--vertical {
+  opacity: 0.28;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="collective"] .chapter-panel__axis--horizontal {
+  top: 55%;
+  background: linear-gradient(90deg, transparent, rgba(189, 164, 255, 0.42), rgba(110, 231, 242, 0.24), transparent);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="collective"] .chapter-panel__depth {
+  opacity: 0.9;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__symbol {
+  background:
+    radial-gradient(circle at 78% 52%, rgba(110, 231, 242, 0.24), transparent 5.8rem),
+    radial-gradient(circle at 36% 55%, rgba(237, 189, 104, 0.1), transparent 5rem),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__ring--outer,
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__ring--inner {
+  left: 74%;
+  border-color: rgba(110, 231, 242, 0.22);
+  transform: translate(-50%, -50%) rotate(-13deg);
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__ring--outer {
+  width: 36%;
+  aspect-ratio: 0.78 / 1;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__ring--inner {
+  width: 22%;
+  aspect-ratio: 0.78 / 1;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__quaternity-point {
+  opacity: 0.32;
+}
+
+.chapter-experience[data-chapter-id="ch7"] .chapter-panel[data-panel-id="threshold"] .chapter-panel__spark--two {
+  right: 24%;
+  top: 50%;
+  width: 0.78rem;
+  height: 0.78rem;
+}
+
 .chapter-experience[data-chapter-id="ch1"] .chapter-panels {
   width: min(1260px, calc(100% - 2rem));
   gap: 10vh;
